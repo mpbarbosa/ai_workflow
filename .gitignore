@@ -1,0 +1,32 @@
+# Workflow execution artifacts
+shell_scripts/workflow/backlog/
+shell_scripts/workflow/summaries/
+shell_scripts/workflow/logs/
+shell_scripts/workflow/metrics/
+shell_scripts/workflow/.checkpoints/
+
+# Temporary files
+*.tmp
+*.bak
+*.swp
+*~
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Editor files
+.vscode/
+.idea/
+*.sublime-*
+
+# Test coverage
+coverage/
+*.coverage
+
+# Node modules (if tests use Node.js)
+node_modules/
+
+# Environment files
+.env
+.env.local
