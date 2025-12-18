@@ -38,18 +38,23 @@ cd shell_scripts/workflow/lib
 To use this workflow on other projects (e.g., mpbarbosa_site):
 
 ```bash
-# Option 1: Copy workflow to target project
-cp -r ai_workflow/shell_scripts/workflow /path/to/target/project/shell_scripts/
-
-# Option 2: Run from this repository (update paths.yaml first)
+# Option 1: Run with --target option (recommended)
 cd ai_workflow
-./shell_scripts/workflow/execute_tests_docs_workflow.sh
+./shell_scripts/workflow/execute_tests_docs_workflow.sh --target /path/to/target/project
 
-# Run in auto mode (CI/CD friendly)
-./shell_scripts/workflow/execute_tests_docs_workflow.sh --auto
+# Run on target project in auto mode
+./shell_scripts/workflow/execute_tests_docs_workflow.sh --target /path/to/target/project --auto
+
+# Example: Run on mpbarbosa_site
+./shell_scripts/workflow/execute_tests_docs_workflow.sh --target ~/Documents/GitHub/mpbarbosa_site
+
+# Option 2: Copy workflow to target project
+cp -r ai_workflow/shell_scripts/workflow /path/to/target/project/shell_scripts/
+cd /path/to/target/project
+./shell_scripts/workflow/execute_tests_docs_workflow.sh
 ```
 
-**Note**: Update `shell_scripts/workflow/config/paths.yaml` to configure target project paths.
+**Note**: The `--target` option allows you to run the workflow on any project without copying files.
 
 ## Documentation
 

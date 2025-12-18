@@ -107,11 +107,13 @@ set -euo pipefail
 
 SCRIPT_VERSION="2.2.0"
 SCRIPT_NAME="Tests & Documentation Workflow Automation"
-PROJECT_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
+WORKFLOW_HOME="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
+PROJECT_ROOT="${WORKFLOW_HOME}"  # Can be overridden with --target option
+TARGET_PROJECT_ROOT=""  # Set via --target option
 SRC_DIR="${PROJECT_ROOT}/src"
-BACKLOG_DIR="${PROJECT_ROOT}/shell_scripts/workflow/backlog"
-SUMMARIES_DIR="${PROJECT_ROOT}/shell_scripts/workflow/summaries"
-LOGS_DIR="${PROJECT_ROOT}/shell_scripts/workflow/logs"
+BACKLOG_DIR="${WORKFLOW_HOME}/shell_scripts/workflow/backlog"
+SUMMARIES_DIR="${WORKFLOW_HOME}/shell_scripts/workflow/summaries"
+LOGS_DIR="${WORKFLOW_HOME}/shell_scripts/workflow/logs"
 
 # Temporary files tracking for cleanup
 # Used by AI-enhanced steps to store intermediate validation results
@@ -149,6 +151,8 @@ export DRY_RUN
 export INTERACTIVE_MODE
 export AUTO_MODE
 export VERBOSE
+export PROJECT_ROOT
+export WORKFLOW_HOME
 
 # Step execution control
 EXECUTE_STEPS="all"  # Default: execute all steps
@@ -368,7 +372,8 @@ Script Version: ${SCRIPT_VERSION}
 Started: $(date '+%Y-%m-%d %H:%M:%S')
 Mode: $(if [[ "$DRY_RUN" == true ]]; then echo "DRY RUN"; elif [[ "$AUTO_MODE" == true ]]; then echo "AUTO"; else echo "INTERACTIVE"; fi)
 Steps: ${EXECUTE_STEPS}
-Project Root: ${PROJECT_ROOT}
+Workflow Home: ${WORKFLOW_HOME}
+Project Root: ${PROJECT_ROOT}$(if [[ -n "$TARGET_PROJECT_ROOT" ]]; then echo " (target project)"; fi)
 
 ================================================================================
 EXECUTION LOG
@@ -4837,6 +4842,7 @@ USAGE:
     $0 [OPTIONS]
 
 OPTIONS:
+    --target PATH       Target project root directory (default: ai_workflow repository)
     --dry-run           Preview all actions without executing
     --auto              Run in automatic mode (no confirmations)
     --interactive       Run in interactive mode (default)
@@ -4884,11 +4890,17 @@ EXAMPLES:
     # Run in automatic mode (no confirmations - all steps)
     $0 --auto
     
+    # Run workflow on a target project
+    $0 --target /home/mpb/Documents/GitHub/mpbarbosa_site
+    
+    # Run workflow on target project in auto mode
+    $0 --target /home/mpb/Documents/GitHub/monitora_vagas --auto
+    
     # Execute only documentation steps (0-4)
     $0 --steps 0,1,2,3,4
     
-    # Execute only testing steps (0,5,6,7)
-    $0 --steps 0,5,6,7
+    # Execute only testing steps (0,5,6,7) on target project
+    $0 --target /path/to/project --steps 0,5,6,7
     
     # Execute only git finalization (11)
     $0 --steps 11
@@ -4906,6 +4918,24 @@ EOF
 parse_arguments() {
     while [[ $# -gt 0 ]]; do
         case $1 in
+            --target)
+                if [[ -z "$2" ]] || [[ "$2" == --* ]]; then
+                    print_error "--target requires a directory path argument"
+                    exit 1
+                fi
+                TARGET_PROJECT_ROOT="$2"
+                # Validate target directory exists
+                if [[ ! -d "$TARGET_PROJECT_ROOT" ]]; then
+                    print_error "Target directory does not exist: $TARGET_PROJECT_ROOT"
+                    exit 1
+                fi
+                # Convert to absolute path
+                TARGET_PROJECT_ROOT="$(cd "$TARGET_PROJECT_ROOT" && pwd)"
+                PROJECT_ROOT="$TARGET_PROJECT_ROOT"
+                SRC_DIR="${PROJECT_ROOT}/src"
+                print_info "Target project: $PROJECT_ROOT"
+                shift 2
+                ;;
             --dry-run)
                 DRY_RUN=true
                 export DRY_RUN
@@ -4972,6 +5002,13 @@ main() {
     print_header "${SCRIPT_NAME} v${SCRIPT_VERSION}"
     
     parse_arguments "$@"
+    
+    if [[ -n "$TARGET_PROJECT_ROOT" ]]; then
+        print_info "Running workflow on target project: ${PROJECT_ROOT}"
+        print_info "Workflow home: ${WORKFLOW_HOME}"
+    else
+        print_info "Running workflow on: ${PROJECT_ROOT}"
+    fi
     
     if [[ "$DRY_RUN" == true ]]; then
         print_warning "DRY RUN MODE - No changes will be made"
