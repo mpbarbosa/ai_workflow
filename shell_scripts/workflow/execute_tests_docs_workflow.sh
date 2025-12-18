@@ -603,32 +603,29 @@ check_prerequisites() {
         log_to_workflow "SUCCESS" "Project root validated: $PROJECT_ROOT"
     fi
     
-    # Check 2: Verify src directory
+    # Check 2: Verify src directory (optional for standalone workflow repo)
     if [[ ! -d "$SRC_DIR" ]]; then
-        print_error "Source directory not found: $SRC_DIR"
-        log_to_workflow "ERROR" "Source directory not found: $SRC_DIR"
-        checks_passed=false
+        print_warning "Source directory not found: $SRC_DIR (optional for workflow-only repo)"
+        log_to_workflow "WARNING" "Source directory not found: $SRC_DIR"
     else
         print_success "Source directory: $SRC_DIR"
         log_to_workflow "SUCCESS" "Source directory validated: $SRC_DIR"
     fi
     
-    # Check 3: Verify package.json exists
+    # Check 3: Verify package.json exists (optional for standalone workflow repo)
     if [[ ! -f "$SRC_DIR/package.json" ]]; then
-        print_error "package.json not found in $SRC_DIR"
-        log_to_workflow "ERROR" "package.json not found"
-        checks_passed=false
+        print_warning "package.json not found in $SRC_DIR (optional for workflow-only repo)"
+        log_to_workflow "WARNING" "package.json not found"
     else
         print_success "package.json found"
         log_to_workflow "SUCCESS" "package.json found"
     fi
     
-    # Check 4: Verify Node.js/npm installation
+    # Check 4: Verify Node.js/npm installation (optional for workflow-only repo)
     print_info "Checking Node.js and npm..."
     if ! command -v node &> /dev/null; then
-        print_error "Node.js is not installed"
-        log_to_workflow "ERROR" "Node.js not installed"
-        checks_passed=false
+        print_warning "Node.js is not installed (required only for test execution on target projects)"
+        log_to_workflow "WARNING" "Node.js not installed"
     else
         local node_version
         node_version=$(node --version)
@@ -637,9 +634,8 @@ check_prerequisites() {
     fi
     
     if ! command -v npm &> /dev/null; then
-        print_error "npm is not installed"
-        log_to_workflow "ERROR" "npm not installed"
-        checks_passed=false
+        print_warning "npm is not installed (required only for test execution on target projects)"
+        log_to_workflow "WARNING" "npm not installed"
     else
         local npm_version
         npm_version=$(npm --version)

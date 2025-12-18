@@ -4,8 +4,8 @@
 
 # Base Paths
 project:
-  root: /home/mpb/Documents/GitHub/mpbarbosa_site
-  name: mpbarbosa_site
+  root: /home/mpb/Documents/GitHub/ai_workflow
+  name: ai_workflow
 
 # Source Directories
 directories:
@@ -15,14 +15,9 @@ directories:
   shell_scripts: ${project.root}/shell_scripts
   config: ${project.root}/config
   
-  # Submodules
-  submodules:
-    root: ${project.root}/src/submodules
-    music_in_numbers: ${project.root}/src/submodules/music_in_numbers
-    guia_turistico: ${project.root}/src/submodules/guia_turistico
-  
-  # Sibling Projects (not submodules)
-  siblings:
+  # Target Projects (where workflow may be applied)
+  targets:
+    mpbarbosa_site: /home/mpb/Documents/GitHub/mpbarbosa_site
     monitora_vagas: /home/mpb/Documents/GitHub/monitora_vagas
     busca_vagas: /home/mpb/Documents/GitHub/busca_vagas
 
@@ -35,37 +30,19 @@ workflow:
   logs: ${project.root}/shell_scripts/workflow/logs
   summaries: ${project.root}/shell_scripts/workflow/summaries
 
-# Deployment Paths
-deployment:
-  # Development
-  dev_server_port: 8080
-  dev_server_host: 127.0.0.1
-  
-  # Production
-  production_root: /var/www/html
-  nginx_config: /etc/nginx/sites-available/default
-  systemd_services: /etc/systemd/system
+# Testing Configuration
+testing:
+  lib_tests: ${project.root}/shell_scripts/workflow/lib/test_enhancements.sh
 
-# Node.js Configuration
+# Node.js Configuration (for target projects)
 node:
-  version_file: ${project.root}/.node-version
-  nvm_file: ${project.root}/.nvmrc
   required_version: "25.2.1"
-
-# Package Management
-packages:
-  package_json: ${project.root}/src/package.json
-  package_lock: ${project.root}/src/package-lock.json
-  node_modules: ${project.root}/src/node_modules
 
 # Documentation Paths
 documentation:
   readme: ${project.root}/README.md
-  copilot_instructions: ${project.root}/.github/copilot-instructions.md
-  development_guides: ${project.root}/docs/development-guides
-  deployment_architecture: ${project.root}/docs/deployment-architecture
+  migration_readme: ${project.root}/MIGRATION_README.md
   workflow_automation: ${project.root}/docs/workflow-automation
-  validation_reports: ${project.root}/docs/validation-reports
 
 # Git Configuration
 git:
@@ -90,35 +67,19 @@ environment:
   # Detect if running in CI/CD
   is_ci: false
 
-# URL Configuration
-urls:
-  development:
-    main: http://127.0.0.1:8080
-    api: http://localhost:3001/api
-  
-  production:
-    main: https://www.mpbarbosa.com
-    api: https://www.mpbarbosa.com/api
+# Repository Configuration
+repository:
+  url: git@github.com:mpbarbosa/ai_workflow.git
+  origin: mpbarbosa_site
 
-# Script Paths (for reference)
+# Script Paths
 scripts:
-  deployment:
-    sync_to_public: ${project.root}/shell_scripts/sync_to_public.sh
-    deploy_to_webserver: ${project.root}/shell_scripts/deploy_to_webserver.sh
-  
-  submodules:
-    pull_all: ${project.root}/shell_scripts/pull_all_submodules.sh
-    push_all: ${project.root}/shell_scripts/push_all_submodules.sh
-  
   workflow:
     main: ${project.root}/shell_scripts/workflow/execute_tests_docs_workflow.sh
-  
-  maintenance:
-    cleanup_old_folders: ${project.root}/shell_scripts/cleanup_old_folders.sh
-    fix_documentation: ${project.root}/shell_scripts/fix_documentation_consistency.sh
+    session_manager: ${project.root}/shell_scripts/workflow/example_session_manager.sh
 
 # Notes:
 # - Use ${variable.path} syntax for path interpolation in scripts
 # - Update project.root when deploying to new environments
-# - Sibling projects are not submodules and must be cloned separately
-# - Production paths require sudo privileges for deployment
+# - Target projects can be configured for workflow application
+# - This is a standalone workflow automation repository
