@@ -22,7 +22,7 @@ The workflow automation script supports flexible project targeting: it runs on t
 
 ```bash
 cd /path/to/your/project
-/path/to/ai_workflow/shell_scripts/workflow/execute_tests_docs_workflow.sh
+/path/to/ai_workflow/src/workflow/execute_tests_docs_workflow.sh
 ```
 
 This makes it convenient to integrate the workflow into any project without needing to specify paths.
@@ -32,24 +32,24 @@ This makes it convenient to integrate the workflow into any project without need
 ```bash
 # Default: Run on current directory
 cd /home/mpb/Documents/GitHub/mpbarbosa_site
-/path/to/ai_workflow/shell_scripts/workflow/execute_tests_docs_workflow.sh
+/path/to/ai_workflow/src/workflow/execute_tests_docs_workflow.sh
 
 # Explicit: Use --target to specify a different project
-./shell_scripts/workflow/execute_tests_docs_workflow.sh \
+./src/workflow/execute_tests_docs_workflow.sh \
   --target /home/mpb/Documents/GitHub/mpbarbosa_site
 
 # Run on monitora_vagas in auto mode
-./shell_scripts/workflow/execute_tests_docs_workflow.sh \
+./src/workflow/execute_tests_docs_workflow.sh \
   --target /home/mpb/Documents/GitHub/monitora_vagas \
   --auto
 
 # Run specific steps on busca_vagas
-./shell_scripts/workflow/execute_tests_docs_workflow.sh \
+./src/workflow/execute_tests_docs_workflow.sh \
   --target /home/mpb/Documents/GitHub/busca_vagas \
   --steps 0,5,6,7
 
 # Dry-run on target project
-./shell_scripts/workflow/execute_tests_docs_workflow.sh \
+./src/workflow/execute_tests_docs_workflow.sh \
   --target /path/to/project \
   --dry-run
 ```
@@ -79,7 +79,7 @@ cd /home/mpb/Documents/GitHub/mpbarbosa_site
 ```bash
 # Default behavior (running from project directory, no --target)
 cd /home/mpb/Documents/GitHub/mpbarbosa_site
-/path/to/ai_workflow/shell_scripts/workflow/execute_tests_docs_workflow.sh
+/path/to/ai_workflow/src/workflow/execute_tests_docs_workflow.sh
 
 WORKFLOW_HOME=/home/mpb/Documents/GitHub/ai_workflow       # Workflow location
 PROJECT_ROOT=/home/mpb/Documents/GitHub/mpbarbosa_site    # Current directory
@@ -87,7 +87,7 @@ TARGET_PROJECT_ROOT=""                                     # Not specified
 
 # With --target option (running from anywhere)
 cd /home/mpb/Documents/GitHub/ai_workflow
-./shell_scripts/workflow/execute_tests_docs_workflow.sh --target /path/to/project
+./src/workflow/execute_tests_docs_workflow.sh --target /path/to/project
 
 WORKFLOW_HOME=/home/mpb/Documents/GitHub/ai_workflow       # Workflow location
 PROJECT_ROOT=/path/to/project                              # From --target
@@ -101,7 +101,7 @@ When using --target:
 
 Workflow Files (WORKFLOW_HOME):
   /home/mpb/Documents/GitHub/ai_workflow/
-  ├── shell_scripts/workflow/
+  ├── src/workflow/
   │   ├── lib/                    # Library modules
   │   ├── steps/                  # Step modules
   │   ├── backlog/                # Execution reports
@@ -214,13 +214,13 @@ EXECUTION LOG
 #### 1. Self-Validation (Default)
 ```bash
 cd ai_workflow
-./shell_scripts/workflow/execute_tests_docs_workflow.sh --dry-run
+./src/workflow/execute_tests_docs_workflow.sh --dry-run
 # Expected: Runs on ai_workflow repository
 ```
 
 #### 2. Target Project Validation
 ```bash
-./shell_scripts/workflow/execute_tests_docs_workflow.sh \
+./src/workflow/execute_tests_docs_workflow.sh \
   --target /home/mpb/Documents/GitHub/mpbarbosa_site \
   --dry-run
 # Expected: Runs on mpbarbosa_site, reports stored in ai_workflow
@@ -228,14 +228,14 @@ cd ai_workflow
 
 #### 3. Invalid Target
 ```bash
-./shell_scripts/workflow/execute_tests_docs_workflow.sh \
+./src/workflow/execute_tests_docs_workflow.sh \
   --target /nonexistent/path
 # Expected: Error message and exit code 1
 ```
 
 #### 4. Combined Options
 ```bash
-./shell_scripts/workflow/execute_tests_docs_workflow.sh \
+./src/workflow/execute_tests_docs_workflow.sh \
   --target /path/to/project \
   --auto \
   --steps 0,1,2,3,4
@@ -293,7 +293,7 @@ This is informational only; --target accepts any valid path.
 ### Help Text
 Run `--help` to see the complete usage information:
 ```bash
-./shell_scripts/workflow/execute_tests_docs_workflow.sh --help
+./src/workflow/execute_tests_docs_workflow.sh --help
 ```
 
 ## Migration Guide
@@ -304,13 +304,13 @@ If you previously copied the workflow to target projects:
 **Before:**
 ```bash
 cd /path/to/target/project
-./shell_scripts/workflow/execute_tests_docs_workflow.sh
+./src/workflow/execute_tests_docs_workflow.sh
 ```
 
 **After:**
 ```bash
 cd /path/to/ai_workflow
-./shell_scripts/workflow/execute_tests_docs_workflow.sh \
+./src/workflow/execute_tests_docs_workflow.sh \
   --target /path/to/target/project
 ```
 

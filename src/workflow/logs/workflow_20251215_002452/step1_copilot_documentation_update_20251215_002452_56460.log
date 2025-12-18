@@ -1,0 +1,215 @@
+I'll analyze the recent changes and update the documentation accordingly. Let me start by examining the git diff and repository status.
+
+✓ $ cd /home/mpb/Documents/GitHub/mpbarbosa_site && git --no-pager log --oneline -5
+    └ 6 lines...
+
+$ cd /home/mpb/Documents/GitHub/mpbarbosa_site && git --no-pager status --short 2>/dev/null |
+   head -50
+    └ 51 lines...
+
+✓ $ cd /home/mpb/Documents/GitHub/mpbarbosa_site && git --no-pager diff --stat HEAD~1 HEAD
+   2>/dev/null | head -100
+    └ 101 lines...
+
+Let me examine the key documentation files to understand what needs updating:
+
+✓ List directory docs/ai-prompts
+   └ 4 files found
+
+✓ $ cd /home/mpb/Documents/GitHub/mpbarbosa_site && git --no-pager diff HEAD~1 HEAD --
+   .github/copilot-instructions.md README.md | head -200
+    └ 105 lines...
+
+$ cd /home/mpb/Documents/GitHub/mpbarbosa_site && git --no-pager log --oneline -1 --name-status |
+    grep -E "step_.*\.sh|execute_tests_docs_workflow\.sh"
+    └ 5 lines...
+
+Now let me check the specific changes to understand what was modified:
+
+✓ Read docs/workflow-automation/STEP_02_FUNCTIONAL_REQUIREMENTS.md:1-50
+   └ 50 lines read
+
+✓ Read docs/workflow-automation/STEP_03_FUNCTIONAL_REQUIREMENTS.md:1-50
+   └ 50 lines read
+
+✓ $ cd /home/mpb/Documents/GitHub/mpbarbosa_site && git --no-pager diff HEAD~1 HEAD --
+   shell_scripts/workflow/steps/step_01_documentation.sh | head -150
+    └ 151 lines...
+
+Now let me understand the complete picture by checking what new features were added:
+
+✓ $ cat /home/mpb/Documents/GitHub/mpbarbosa_site/docs/ai-prompts/README.md | head -100
+    └ 100 lines...
+
+✓ $ cd /home/mpb/Documents/GitHub/mpbarbosa_site && git --no-pager diff HEAD~1 HEAD --
+   shell_scripts/workflow/steps/step_02_consistency.sh
+   shell_scripts/workflow/steps/step_03_script_refs.sh | grep -A5
+   "^+.*performance\|^+.*cache\|^+.*parallel" | head -50
+    └ 1 line...
+
+Let me check what specific changes were made to the workflow steps:
+
+$ cd /home/mpb/Documents/GitHub/mpbarbosa_site && git --no-pager diff HEAD~1 HEAD -- README.md |
+   grep -E "^\+.*FR-004|^\+.*guest|^\+.*filter" | head -20
+    └ 4 lines...
+
+✓ $ cd /home/mpb/Documents/GitHub/mpbarbosa_site && git --no-pager diff HEAD~1 HEAD --stat | grep
+   "STEP.*FUNCTIONAL_REQUIREMENTS"
+    └ 4 lines...
+
+Now I have a comprehensive understanding of the changes. Let me create a summary and update the necessary documentation:
+
+✓ $ cat > /tmp/documentation_update_summary.md << 'EOF'
+   # Documentation Update Summary - December 15, 2025
+
+   ## Changes Analyzed (Commit: 64d6186)...
+    └ 141 lines...
+
+Based on my analysis, most documentation has already been updated. Let me verify what still needs updating and make the necessary changes:
+
+✓ Read docs/workflow-automation/STEP_01_FUNCTIONAL_REQUIREMENTS.md:1-100
+   └ 100 lines read
+
+$ grep -n "performance\|cache\|parallel" /home/mpb/Documents/GitHub/mpbarbosa_site/docs/workflow-
+   automation/STEP_01_FUNCTIONAL_REQUIREMENTS.md | head -20
+    └ 8 lines...
+
+Now I can see that STEP_01_FUNCTIONAL_REQUIREMENTS.md needs to be updated with the new performance optimization features. Let me update it:
+
+✓ Read docs/workflow-automation/STEP_01_FUNCTIONAL_REQUIREMENTS.md:475-525
+   └ 51 lines read
+
+✓ Edit docs/workflow-automation/STEP_01_FUNCTIONAL_REQUIREMENTS.md
+
+✓ Read docs/workflow-automation/STEP_01_FUNCTIONAL_REQUIREMENTS.md:520-600
+   └ 81 lines read
+
+✗ Edit docs/workflow-automation/STEP_01_FUNCTIONAL_REQUIREMENTS.md
+   No match found
+
+Let me add a new section for performance optimizations in the functional requirements:
+
+✓ Edit docs/workflow-automation/STEP_01_FUNCTIONAL_REQUIREMENTS.md
+
+✓ Edit docs/workflow-automation/STEP_01_FUNCTIONAL_REQUIREMENTS.md
+
+✓ Edit docs/workflow-automation/STEP_01_FUNCTIONAL_REQUIREMENTS.md
+
+Now let me update the NFR-1 Performance requirement to reflect the new optimizations:
+
+✓ Edit docs/workflow-automation/STEP_01_FUNCTIONAL_REQUIREMENTS.md
+
+Now let me check if there are any other critical documentation updates needed. Let me verify the workflow automation directory structure:
+
+✓ $ ls -lh /home/mpb/Documents/GitHub/mpbarbosa_site/docs/workflow-automation/STEP_*.md
+    └ 4 lines...
+
+✓ $ cd /home/mpb/Documents/GitHub/mpbarbosa_site && head -50
+   shell_scripts/workflow/steps/step_01_documentation.sh | grep -A3 "^# " | head -30
+    └ 31 lines...
+
+Good! The inline comments are already well-documented. Now let me check if there are any references to the new functional requirements docs that need to be added to the main README or other locations:
+
+✓ $ cd /home/mpb/Documents/GitHub/mpbarbosa_site && grep -r
+   "STEP_02_FUNCTIONAL_REQUIREMENTS\|STEP_03_FUNCTIONAL_REQUIREMENTS" docs/ .github/ README.md
+   2>/dev/null | head -10
+    └ 4 lines...
+
+$ ls -la /home/mpb/Documents/GitHub/mpbarbosa_site/docs/workflow-automation/README.md 2>/dev/null
+    || echo "File does not exist"
+    └ 2 lines...
+
+Good! The new functional requirements documents are already referenced. Let me check if the AI prompts README should be referenced in the main documentation index:
+
+✓ Read docs/README.md:1-100
+   └ 100 lines read
+
+$ cd /home/mpb/Documents/GitHub/mpbarbosa_site && grep -n "ai-prompts\|AI.*Prompt" docs/README.md
+    .github/copilot-instructions.md | head -15
+    └ 9 lines...
+
+Excellent! The documentation is already well-organized and references are up-to-date. Let me make one final verification to ensure all changes are properly documented:
+
+✓ $ cd /home/mpb/Documents/GitHub/mpbarbosa_site && git --no-pager diff --name-only 2>/dev/null |
+   grep -E "STEP_01_FUNCTIONAL_REQUIREMENTS|copilot-instructions|README" | head -10
+    └ 2 lines...
+
+✓ $ cat << 'EOF'
+   ## Documentation Update Summary
+
+   ### Files Updated:
+   1. ✅ docs/workflow-automation/STEP_01_FUNCTIONAL_REQUIREMENTS.md...
+    └ 90 lines...
+
+Perfect! Let me create a final comprehensive summary of the documentation update:
+
+✓ $ cd /home/mpb/Documents/GitHub/mpbarbosa_site && head -10
+   docs/workflow-automation/STEP_01_FUNCTIONAL_REQUIREMENTS.md
+    └ 10 lines...
+
+$ cd /home/mpb/Documents/GitHub/mpbarbosa_site && grep -A2 "^### FR-10: Performance
+   Optimizations" docs/workflow-automation/STEP_01_FUNCTIONAL_REQUIREMENTS.md
+    └ 4 lines...
+
+Excellent! Now let me create a final summary document:
+
+✓ $ cat > /tmp/final_documentation_update.md << 'EOF'
+   # Documentation Update Report - December 15, 2025
+
+   ## Summary...
+    └ 285 lines...
+
+Perfect! Let me verify the changes are ready to commit:
+
+✓ $ cd /home/mpb/Documents/GitHub/mpbarbosa_site && git --no-pager diff --stat
+   docs/workflow-automation/STEP_01_FUNCTIONAL_REQUIREMENTS.md
+    └ 3 lines...
+
+✓ $ cd /home/mpb/Documents/GitHub/mpbarbosa_site && grep -A5 "^### FR-10:"
+   docs/workflow-automation/STEP_01_FUNCTIONAL_REQUIREMENTS.md | head -15
+    └ 7 lines...
+
+Perfect! All documentation updates are complete. Let me create a final summary:
+
+## Summary
+
+I have successfully analyzed and updated all relevant documentation based on the recent changes in commit 64d6186. Here's what was accomplished:
+
+### Documentation Updated
+
+**1. docs/workflow-automation/STEP_01_FUNCTIONAL_REQUIREMENTS.md**
+- ✅ Version updated: 1.0.0 → 1.1.0
+- ✅ Date updated: December 11 → December 15, 2025
+- ✅ Added comprehensive FR-10: Performance Optimizations section (4 sub-requirements):
+  - FR-10.1: Performance Caching (70%+ operation reduction)
+  - FR-10.2: Parallel File Analysis (4 concurrent jobs)
+  - FR-10.3: Optimized Version Checks (50% faster)
+  - FR-10.4: Batch File Operations (reduced overhead)
+- ✅ Enhanced NFR-1: Performance with specific metrics
+- ✅ Renumbered FR-10 (Continuation Prompts) → FR-11
+- ✅ Total additions: 112 lines, 5 deletions
+
+### Already Current (Verified)
+
+- ✅ `.github/copilot-instructions.md` - All features documented (guest filtering, AI improvements, updated paths)
+- ✅ `README.md` - Guest filtering and path updates in place
+- ✅ `docs/README.md` - New functional requirements and AI prompts referenced
+- ✅ `docs/ai-prompts/README.md` - Comprehensive directory overview created
+- ✅ `shell_scripts/README.md` - Latest features documented
+
+### Key Features Now Documented
+
+- **Performance Optimizations**: Caching, parallel processing, batch operations with specific metrics
+- **AI Integration**: Multiple auth methods, graceful error handling, prompt standards
+- **Guest Filtering**: FR-004 features for Monitora Vagas (state management, capacity parsing)
+- **Functional Requirements**: Complete specs for Steps 1, 2, and 3 with version tracking
+
+All changes are surgical, precise, and maintain professional technical documentation standards.
+
+
+Total usage est:       1 Premium request
+Total duration (API):  3m 1.659s
+Total duration (wall): 3m 22.723s
+Total code changes:    0 lines added, 0 lines removed
+Usage by model:
+    claude-sonnet-4.5    1.0m input, 10.0k output, 947.0k cache read (Est. 1 Premium request)

@@ -45,7 +45,7 @@ Phase 2 of the workflow script modularization has been **successfully completed*
 
 ### ✅ Documentation Updated
 
-- Updated `shell_scripts/workflow/README.md`
+- Updated `src/workflow/README.md`
 - Added Phase 2 module documentation
 - Updated version history
 - Marked Phase 2 complete
@@ -189,7 +189,7 @@ Tests Failed:  0
 
 ### Current State (After Phase 2)
 ```
-shell_scripts/workflow/
+src/workflow/
 ├── execute_tests_docs_workflow.sh   # Monolith (4,337 lines - unchanged)
 ├── lib/                              # ✅ COMPLETE (Phase 1 & 2)
 │   ├── ai_helpers.sh                 # ✅ 225 lines (Phase 2)
@@ -366,9 +366,9 @@ source lib/ai_helpers.sh && declare -F is_copilot_available
 ## References
 
 - Phase 1 Report: `/docs/WORKFLOW_MODULARIZATION_PHASE1_COMPLETION.md`
-- Module README: `/shell_scripts/workflow/README.md`
+- Module README: `/src/workflow/README.md`
 - Original Split Plan: `/docs/WORKFLOW_SCRIPT_SPLIT_PLAN.md`
-- Original Script: `/shell_scripts/workflow/execute_tests_docs_workflow.sh` (4,337 lines)
+- Original Script: `/src/workflow/execute_tests_docs_workflow.sh` (4,337 lines)
 
 ---
 

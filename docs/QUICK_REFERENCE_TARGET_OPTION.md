@@ -4,7 +4,7 @@
 
 ```bash
 # Run workflow on target project
-./shell_scripts/workflow/execute_tests_docs_workflow.sh --target /path/to/project
+./src/workflow/execute_tests_docs_workflow.sh --target /path/to/project
 
 # Common examples
 ./execute_tests_docs_workflow.sh --target ~/Documents/GitHub/mpbarbosa_site
@@ -62,7 +62,7 @@ All reports saved in ai_workflow regardless of target:
 
 ```
 ai_workflow/
-└── shell_scripts/workflow/
+└── src/workflow/
     ├── backlog/workflow_YYYYMMDD_HHMMSS/     # Execution reports
     ├── summaries/workflow_YYYYMMDD_HHMMSS/   # Step summaries
     └── logs/workflow_YYYYMMDD_HHMMSS/        # Workflow logs

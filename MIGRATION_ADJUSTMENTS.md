@@ -9,7 +9,7 @@ This document describes the adjustments made after migrating the workflow automa
 
 ## Changes Made
 
-### 1. Configuration Updates (`shell_scripts/workflow/config/paths.yaml`)
+### 1. Configuration Updates (`src/workflow/config/paths.yaml`)
 
 **Before**: Configured for mpbarbosa_site project structure
 **After**: Configured for ai_workflow standalone repository
@@ -29,7 +29,7 @@ This document describes the adjustments made after migrating the workflow automa
 
 **Lines changed**: ~75 lines reduced to ~75 lines (restructured)
 
-### 2. Workflow Script Updates (`shell_scripts/workflow/execute_tests_docs_workflow.sh`)
+### 2. Workflow Script Updates (`src/workflow/execute_tests_docs_workflow.sh`)
 
 **Purpose**: Make workflow flexible for standalone repository without src directory
 
@@ -101,24 +101,24 @@ directories:
 ### Pattern 1: Validate This Repository
 ```bash
 cd ai_workflow
-./shell_scripts/workflow/execute_tests_docs_workflow.sh --dry-run
+./src/workflow/execute_tests_docs_workflow.sh --dry-run
 ```
 Expected: Documentation validation, no src directory errors
 
 ### Pattern 2: Apply to Target Project
 ```bash
 # Copy workflow to target
-cp -r ai_workflow/shell_scripts/workflow /path/to/target/shell_scripts/
+cp -r ai_workflow/src/workflow /path/to/target/src/
 
 # Or update paths.yaml and run from ai_workflow
 cd ai_workflow
 # Edit paths.yaml to point to target
-./shell_scripts/workflow/execute_tests_docs_workflow.sh
+./src/workflow/execute_tests_docs_workflow.sh
 ```
 
 ### Pattern 3: Run Tests
 ```bash
-cd ai_workflow/shell_scripts/workflow/lib
+cd ai_workflow/src/workflow/lib
 ./test_enhancements.sh
 ```
 Expected: 37 tests, 100% pass rate ✅
@@ -128,8 +128,8 @@ Expected: 37 tests, 100% pass rate ✅
 | File | Lines Changed | Change Type |
 |------|---------------|-------------|
 | `README.md` | +87, -3 | Rewritten |
-| `shell_scripts/workflow/config/paths.yaml` | +30, -45 | Restructured |
-| `shell_scripts/workflow/execute_tests_docs_workflow.sh` | +13, -13 | Modified |
+| `src/workflow/config/paths.yaml` | +30, -45 | Restructured |
+| `src/workflow/execute_tests_docs_workflow.sh` | +13, -13 | Modified |
 
 **Total**: +130 lines, -61 lines (net +69 lines)
 
@@ -148,15 +148,15 @@ Expected: 37 tests, 100% pass rate ✅
 ### Testing
 ```bash
 # Test 1: Run library tests
-cd shell_scripts/workflow/lib && ./test_enhancements.sh
+cd src/workflow/lib && ./test_enhancements.sh
 # Expected: 37/37 tests pass ✅
 
 # Test 2: Dry-run workflow
-./shell_scripts/workflow/execute_tests_docs_workflow.sh --dry-run
+./src/workflow/execute_tests_docs_workflow.sh --dry-run
 # Expected: Warnings (not errors) for missing src directory ✅
 
 # Test 3: Check configuration
-cat shell_scripts/workflow/config/paths.yaml
+cat src/workflow/config/paths.yaml
 # Expected: ai_workflow paths, not mpbarbosa_site ✅
 ```
 
@@ -170,10 +170,11 @@ cat shell_scripts/workflow/config/paths.yaml
 ### Documentation Structure
 ```
 ai_workflow/
-├── README.md                    # Entry point, quick start
-├── MIGRATION_README.md          # Detailed migration info
-├── MIGRATION_ADJUSTMENTS.md     # This file
-└── docs/workflow-automation/    # Comprehensive documentation
+├── README.md                       # Entry point, quick start
+├── MIGRATION_README.md             # Detailed migration info
+├── MIGRATION_ADJUSTMENTS.md        # This file
+├── docs/workflow-automation/       # Comprehensive documentation
+└── src/workflow/                   # Workflow automation scripts
 ```
 
 ## Next Steps

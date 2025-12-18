@@ -1,0 +1,61 @@
+================================================================================
+WORKFLOW EXECUTION LOG
+================================================================================
+Workflow ID: workflow_20251218_032511
+Script Version: 2.3.0
+Started: 2025-12-18 03:25:11
+Mode: DRY RUN
+Steps: all
+Workflow Home: /home/mpb/Documents/GitHub/ai_workflow
+Project Root: /home/mpb/Documents/GitHub/ai_workflow
+
+================================================================================
+EXECUTION LOG
+================================================================================
+
+[2025-12-18 03:25:11] [INFO] Starting pre-flight system checks
+[2025-12-18 03:25:11] [SUCCESS] Project root validated: /home/mpb/Documents/GitHub/ai_workflow
+[2025-12-18 03:25:11] [SUCCESS] Source directory validated: /home/mpb/Documents/GitHub/ai_workflow/src
+[2025-12-18 03:25:11] [WARNING] package.json not found
+[2025-12-18 03:25:11] [SUCCESS] Node.js detected: v25.2.1
+[2025-12-18 03:25:11] [SUCCESS] npm detected: 11.7.0
+[2025-12-18 03:25:11] [SUCCESS] Git repository validated
+[2025-12-18 03:25:11] [INFO] [DRY RUN] Would stage all changes
+[2025-12-18 03:25:11] [SUCCESS] docs directory found
+[2025-12-18 03:25:11] [SUCCESS] tree command available
+[2025-12-18 03:25:11] [SUCCESS] All pre-flight checks PASSED
+[2025-12-18 03:25:11] [INFO] Starting dependency validation
+[2025-12-18 03:25:11] [WARNING] node_modules not found, installing...
+[2025-12-18 03:25:11] [INFO] [DRY RUN] Would run: npm install
+[2025-12-18 03:25:11] [ERROR] Jest not found in node_modules
+
+================================================================================
+WORKFLOW SUMMARY
+================================================================================
+Completed: 2025-12-18 03:25:11
+Duration: 0m 0s
+Total Steps: 13
+
+Step Status:
+  Step 0: NOT_EXECUTED
+  Step 1: NOT_EXECUTED
+  Step 2: NOT_EXECUTED
+  Step 3: NOT_EXECUTED
+  Step 4: NOT_EXECUTED
+  Step 5: NOT_EXECUTED
+  Step 6: NOT_EXECUTED
+  Step 7: NOT_EXECUTED
+  Step 8: NOT_EXECUTED
+  Step 9: NOT_EXECUTED
+  Step 10: NOT_EXECUTED
+  Step 11: NOT_EXECUTED
+  Step 12: NOT_EXECUTED
+
+Output Files:
+  - Backlog: /home/mpb/Documents/GitHub/ai_workflow/src/workflow/backlog/workflow_20251218_032511
+  - Summaries: /home/mpb/Documents/GitHub/ai_workflow/src/workflow/summaries/workflow_20251218_032511
+  - Logs: /home/mpb/Documents/GitHub/ai_workflow/src/workflow/logs/workflow_20251218_032511
+
+================================================================================
+END OF LOG
+================================================================================

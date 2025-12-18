@@ -7,7 +7,7 @@
 ### 1. No Step Progression Tracking
 **Problem:** Workflow stopped at Step 3 without clear indication of why
 
-**Root Cause:** Workflow run `workflow_20251218_005327` stopped at Step 3 (Script Reference Validation) after finding 1 undocumented script: `shell_scripts/workflow/lib/test_batch_operations.sh`
+**Root Cause:** Workflow run `workflow_20251218_005327` stopped at Step 3 (Script Reference Validation) after finding 1 undocumented script: `src/workflow/lib/test_batch_operations.sh`
 
 **Resolution:**
 - Workflow artifacts now staged: `backlog/workflow_20251218_005327/` and `summaries/workflow_20251218_005327/`
@@ -30,8 +30,8 @@
 **Resolution:**
 - Staged all workflow artifacts from latest run (workflow_20251218_005327)
 - Files staged:
-  - `shell_scripts/workflow/backlog/workflow_20251218_005327/` (5 step files)
-  - `shell_scripts/workflow/summaries/workflow_20251218_005327/` (4 summary files)
+  - `src/workflow/backlog/workflow_20251218_005327/` (5 step files)
+  - `src/workflow/summaries/workflow_20251218_005327/` (4 summary files)
   - `docs/documentation-updates/DOCUMENTATION_UPDATE_SUMMARY_20251218.md`
 
 **Status:** ✅ Resolved - all artifacts now staged
@@ -51,7 +51,7 @@
 5. ⏸️ Workflow paused for manual intervention
 
 ### Next Actions:
-1. Document `shell_scripts/workflow/lib/test_batch_operations.sh`
+1. Document `src/workflow/lib/test_batch_operations.sh`
 2. Resume workflow from Step 4 or restart with `--auto` mode
 
 ## Summary

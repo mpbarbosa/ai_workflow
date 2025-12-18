@@ -24,7 +24,7 @@ These enhancements provide immediate value while laying the foundation for paral
 
 ### Implementation Details
 
-**File:** `shell_scripts/workflow/lib/metrics.sh`  
+**File:** `src/workflow/lib/metrics.sh`  
 **Lines of Code:** 455 lines  
 **Functions:** 20+ functions for metrics tracking and reporting
 
@@ -114,7 +114,7 @@ avg_test_time=$(get_average_step_duration 7)
 
 ### Implementation Details
 
-**File:** `shell_scripts/workflow/lib/change_detection.sh`  
+**File:** `src/workflow/lib/change_detection.sh`  
 **Lines of Code:** 424 lines  
 **Functions:** 15+ functions for change analysis and recommendations
 
@@ -231,7 +231,7 @@ echo "Change report: ${report_file}"
 
 ### Implementation Details
 
-**File:** `shell_scripts/workflow/lib/dependency_graph.sh`  
+**File:** `src/workflow/lib/dependency_graph.sh`  
 **Lines of Code:** 466 lines  
 **Functions:** 12+ functions for dependency analysis and visualization
 
@@ -378,7 +378,7 @@ echo "Critical path: ${critical_duration} seconds"
 
 ### Test Suite Implementation
 
-**File:** `shell_scripts/workflow/lib/test_enhancements.sh`  
+**File:** `src/workflow/lib/test_enhancements.sh`  
 **Total Tests:** 37 tests across 4 test suites  
 **Pass Rate:** 100% (37/37 passing)
 
@@ -427,7 +427,7 @@ echo "Critical path: ${critical_duration} seconds"
 ### Running the Tests
 
 ```bash
-cd /home/mpb/Documents/GitHub/mpbarbosa_site/shell_scripts/workflow/lib
+cd /home/mpb/Documents/GitHub/mpbarbosa_site/src/workflow/lib
 ./test_enhancements.sh
 ```
 

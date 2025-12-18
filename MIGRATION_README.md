@@ -21,14 +21,14 @@ ai_workflow/
 │       ├── WORKFLOW_AUTOMATION_VERSION_EVOLUTION.md
 │       └── ... (all workflow documentation)
 │
-└── shell_scripts/
+└── src/
     └── workflow/                      # Workflow automation scripts
         ├── execute_tests_docs_workflow.sh  # Main orchestrator
-        ├── lib/                       # 16 library modules
+        ├── lib/                       # 19 library modules (18 .sh + 1 .yaml)
         │   ├── metrics.sh
         │   ├── change_detection.sh
         │   ├── dependency_graph.sh
-        │   └── ... (13 more modules)
+        │   └── ... (16 more modules)
         └── steps/                     # 13 step modules
             ├── step_00_analyze.sh
             ├── step_01_documentation.sh
@@ -49,26 +49,29 @@ ai_workflow/
 - Architecture guides and best practices
 - Version evolution tracking
 
-**Scripts** (shell_scripts/workflow/):
+**Scripts** (src/workflow/):
 - Main workflow orchestrator (4,740 lines)
-- 16 library modules (5,548 lines total)
+- 19 library modules (5,548 lines total: 18 .sh + 1 .yaml)
 - 13 step modules (3,200 lines)
 - Test suites and utilities
 
 ### Key Features
 
-**Version:** v2.1.0  
-**Total Modules:** 29 (16 libraries + 13 steps)  
-**Total Lines:** 8,264 lines of production code  
+**Version:** v2.3.0 (Phase 2 Complete)  
+**Total Modules:** 30 (17 libraries + 13 steps)  
+**Total Lines:** 19,053 lines of production code + 762 YAML config  
 **Test Coverage:** 37 tests with 100% pass rate
 
 **Capabilities:**
 1. **Workflow Orchestration**: 13-step automated pipeline
-2. **Metrics Collection**: Performance tracking and analysis
-3. **Change Detection**: Smart execution based on change type
-4. **Dependency Graph**: Parallelization opportunities
-5. **AI Integration**: GitHub Copilot CLI with 13 specialized personas
-6. **YAML Configuration**: Externalized prompt templates
+2. **Smart Execution**: Change-based step skipping (40-85% faster)
+3. **Parallel Execution**: Independent steps run simultaneously (33% faster)
+4. **AI Response Caching**: 60-80% token reduction (24-hour TTL)
+5. **Metrics Collection**: Automatic performance tracking and historical analysis
+6. **Dependency Graph**: Interactive visualization with Mermaid diagrams
+7. **Target Project Support**: Run on any project with --target option
+8. **AI Integration**: GitHub Copilot CLI with 13 specialized personas
+9. **YAML Configuration**: Externalized prompt templates (762 lines)
 
 ## Getting Started
 
@@ -86,20 +89,30 @@ cd /home/mpb/Documents/GitHub
 git clone <repository-url> ai_workflow
 cd ai_workflow
 
-# Run workflow (interactive mode)
-./shell_scripts/workflow/execute_tests_docs_workflow.sh
+# Run on current directory (default behavior)
+cd /path/to/your/project
+/path/to/ai_workflow/src/workflow/execute_tests_docs_workflow.sh
 
-# Run in auto mode (CI/CD friendly)
-./shell_scripts/workflow/execute_tests_docs_workflow.sh --auto
+# Or use --target to specify project
+./src/workflow/execute_tests_docs_workflow.sh --target /path/to/project
+
+# Optimized execution (recommended)
+./src/workflow/execute_tests_docs_workflow.sh \
+  --smart-execution \
+  --parallel \
+  --auto
+
+# Preview dependency graph
+./src/workflow/execute_tests_docs_workflow.sh --show-graph
 
 # Preview without executing
-./shell_scripts/workflow/execute_tests_docs_workflow.sh --dry-run
+./src/workflow/execute_tests_docs_workflow.sh --dry-run
 ```
 
 ### Running Tests
 
 ```bash
-cd shell_scripts/workflow/lib
+cd src/workflow/lib
 ./test_enhancements.sh
 ```
 
@@ -120,13 +133,13 @@ Expected output: 37 tests, 100% pass rate ✅
    - 37 automated tests documentation
 
 3. **WORKFLOW_AUTOMATION_VERSION_EVOLUTION.md**
-   - Complete version history (v1.0.0 to v2.1.0)
+   - Complete version history (v1.0.0 to v2.3.0)
    - Feature evolution timeline
    - Migration guides
 
-4. **shell_scripts/workflow/README.md**
+4. **src/workflow/README.md**
    - Module architecture documentation
-   - All 16 library modules documented
+   - All 19 library modules documented
    - Usage examples and API reference
 
 ## Architecture
@@ -190,7 +203,7 @@ Follow established patterns:
 ### Testing
 ```bash
 # Run all tests
-cd shell_scripts/workflow/lib
+cd src/workflow/lib
 ./test_enhancements.sh
 
 # Expected: 37 tests, 100% pass rate
@@ -200,7 +213,7 @@ cd shell_scripts/workflow/lib
 
 ### Issues and Questions
 - Check documentation in `docs/workflow-automation/`
-- Review module documentation in `shell_scripts/workflow/README.md`
+- Review module documentation in `src/workflow/README.md`
 - Run tests to verify functionality
 
 ## License

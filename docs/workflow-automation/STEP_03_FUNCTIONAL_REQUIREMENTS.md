@@ -20,7 +20,7 @@ The module provides automated and semi-automated script reference validation, le
 
 ### 1.3 Module Information
 
-- **Module File:** `shell_scripts/workflow/steps/step_03_script_refs.sh`
+- **Module File:** `src/workflow/steps/step_03_script_refs.sh`
 - **Module Version:** 2.0.0 (Major: 2, Minor: 0, Patch: 0)
 - **Parent System:** Tests & Documentation Workflow Automation
 - **Dependencies:** AI Helpers Library, File Operations Library, Step Execution Framework
@@ -806,7 +806,7 @@ fast_find "shell_scripts" "*.sh" 5 "node_modules" ".git"
 
 ### Related Documentation
 
-- `/shell_scripts/workflow/README.md` - Workflow system overview
+- `/src/workflow/README.md` - Workflow system overview
 - `/docs/TESTS_DOCS_WORKFLOW_AUTOMATION_PLAN.md` - Workflow architecture
 - `.github/copilot-instructions.md` - Project development guidelines
 - `/docs/workflow-automation/STEP_01_FUNCTIONAL_REQUIREMENTS.md` - Step 1 requirements

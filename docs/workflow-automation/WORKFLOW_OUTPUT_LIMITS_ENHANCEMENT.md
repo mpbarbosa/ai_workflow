@@ -28,7 +28,7 @@ This enhancement increases output limits across multiple workflow steps to provi
 
 **Location:**
 ```bash
-# shell_scripts/workflow/steps/step_07_test_exec.sh (line ~116)
+# src/workflow/steps/step_07_test_exec.sh (line ~116)
 test_output=$(cat "$test_results_file" 2>/dev/null | head -200 || echo "Test output unavailable")
 # Previously: head -100
 ```
@@ -54,11 +54,11 @@ test_output=$(cat "$test_results_file" 2>/dev/null | head -200 || echo "Test out
 
 **Locations:**
 ```bash
-# shell_scripts/workflow/steps/step_08_dependencies.sh (line ~165)
+# src/workflow/steps/step_08_dependencies.sh (line ~165)
 prod_deps=$(jq -r '.dependencies // {} | to_entries[] | "\(.key)@\(.value)"' package.json 2>/dev/null | head -50)
 # Previously: head -20
 
-# shell_scripts/workflow/steps/step_08_dependencies.sh (line ~174)
+# src/workflow/steps/step_08_dependencies.sh (line ~174)
 outdated_list=$(cat "$outdated_output" 2>/dev/null | jq -r 'to_entries[] | "\(.key): \(.value.current) -> \(.value.latest) (wanted: \(.value.wanted))"' | head -20 || echo "None or unable to parse")
 # Previously: head -10
 ```
@@ -84,7 +84,7 @@ outdated_list=$(cat "$outdated_output" 2>/dev/null | jq -r 'to_entries[] | "\(.k
 
 **Location:**
 ```bash
-# shell_scripts/workflow/steps/step_09_code_quality.sh (line ~154)
+# src/workflow/steps/step_09_code_quality.sh (line ~154)
 $(head -50 "$file" 2>/dev/null)
 # Previously: head -30
 # Comment updated: "Increased from 30 lines (Dec 15, 2025) for better file preview"
@@ -110,7 +110,7 @@ Automatic extraction of structured issues from Copilot logs in Step 1.
 
 **Implementation:**
 ```bash
-# shell_scripts/workflow/execute_tests_docs_workflow.sh (lines ~889-937)
+# src/workflow/execute_tests_docs_workflow.sh (lines ~889-937)
 if [[ "$AUTO_MODE" == true ]]; then
     print_info "[AUTO MODE] Automatically extracting issues from Copilot log..."
     
@@ -237,7 +237,7 @@ fi
 **Files updated:**
 - ✅ `.github/copilot-instructions.md` - Added recent improvements section
 - ✅ `shell_scripts/README.md` - Updated workflow mode descriptions
-- ✅ `shell_scripts/workflow/README.md` - Updated step module documentation
+- ✅ `src/workflow/README.md` - Updated step module documentation
 - ✅ Inline code comments - Added update timestamps and rationale
 
 ---

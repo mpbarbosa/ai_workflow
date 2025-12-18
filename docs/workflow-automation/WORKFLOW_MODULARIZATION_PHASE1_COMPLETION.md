@@ -49,7 +49,7 @@ Phase 1 of the workflow script modularization has been **successfully completed*
 
 ### ✅ Documentation Created
 
-1. **`shell_scripts/workflow/README.md`** (10,534 bytes)
+1. **`src/workflow/README.md`** (10,534 bytes)
    - Complete module architecture documentation
    - Extraction patterns and procedures
    - Testing strategies
@@ -64,7 +64,7 @@ Phase 1 of the workflow script modularization has been **successfully completed*
 
 ### ✅ Testing Infrastructure
 
-1. **`shell_scripts/workflow/test_modules.sh`** (7,226 bytes)
+1. **`src/workflow/test_modules.sh`** (7,226 bytes)
    - Automated test suite for all modules
    - 4 test phases:
      - Phase 1: Syntax validation (5 tests)
@@ -185,7 +185,7 @@ Tests Failed:  0
 
 ### Current State
 ```
-shell_scripts/workflow/
+src/workflow/
 ├── execute_tests_docs_workflow.sh   # Monolith (4,337 lines) - unchanged
 ├── lib/                              # ✅ Phase 1 Complete
 │   ├── colors.sh                     # ✅ 17 lines
@@ -200,7 +200,7 @@ shell_scripts/workflow/
 
 ### Target State (After Phase 3 & 4)
 ```
-shell_scripts/workflow/
+src/workflow/
 ├── execute_tests_docs_workflow.sh   # Orchestrator (< 300 lines)
 ├── lib/                              # 8 modules
 │   ├── ai_helpers.sh
@@ -258,7 +258,7 @@ shell_scripts/workflow/
 
 ### Run All Tests
 ```bash
-cd /home/mpb/Documents/GitHub/mpbarbosa_site/shell_scripts/workflow
+cd /home/mpb/Documents/GitHub/mpbarbosa_site/src/workflow
 ./test_modules.sh
 ```
 
@@ -302,8 +302,8 @@ source lib/colors.sh && echo -e "${GREEN}Colors work!${NC}"
 ## References
 
 - Split Plan: `/docs/WORKFLOW_SCRIPT_SPLIT_PLAN.md`
-- Module README: `/shell_scripts/workflow/README.md`
-- Original Script: `/shell_scripts/workflow/execute_tests_docs_workflow.sh` (4,337 lines)
+- Module README: `/src/workflow/README.md`
+- Original Script: `/src/workflow/execute_tests_docs_workflow.sh` (4,337 lines)
 - Performance Docs: `/docs/WORKFLOW_PERFORMANCE_OPTIMIZATION.md`
 
 ---

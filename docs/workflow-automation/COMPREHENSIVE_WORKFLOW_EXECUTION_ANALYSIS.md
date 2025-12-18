@@ -85,7 +85,7 @@ Execution Modes:
 2. ✅ **Comprehensive AI Integration** - 13 specialized personas with AI response caching
 3. ✅ **Automated CI/CD Support** - Auto-mode with issue extraction eliminates manual intervention
 4. ✅ **Robust Error Handling** - Graceful degradation with Copilot CLI authentication fallbacks
-5. ✅ **Complete Documentation** - All 17 library modules fully documented
+5. ✅ **Complete Documentation** - All 19 library modules fully documented
 6. ✅ **⭐ Smart Execution** - Intelligent step skipping based on change detection (40-85% faster)
 7. ✅ **⭐ Parallel Execution** - Independent steps run simultaneously (33% time savings)
 8. ✅ **⭐ AI Response Caching** - 60-80% token reduction with automatic management
@@ -114,23 +114,23 @@ Execution Modes:
 cd /home/mpb/Documents/GitHub/ai_workflow
 
 # Check workflow version
-./shell_scripts/workflow/execute_tests_docs_workflow.sh --version
+./src/workflow/execute_tests_docs_workflow.sh --version
 # Expected: v2.3.0 - CURRENT
 
 # Verify all modules loaded
-ls -1 shell_scripts/workflow/lib/*.sh | wc -l
+ls -1 src/workflow/lib/*.sh | wc -l
 # Expected: 17 modules (including ai_cache.sh) - HEALTHY
 
 # Test smart execution flag
-./shell_scripts/workflow/execute_tests_docs_workflow.sh --help | grep smart
+./src/workflow/execute_tests_docs_workflow.sh --help | grep smart
 # Expected: --smart-execution flag documentation - AVAILABLE
 
 # Verify AI cache initialization
-ls -d shell_scripts/workflow/.ai_cache 2>/dev/null && echo "Cache dir ready"
+ls -d src/workflow/.ai_cache 2>/dev/null && echo "Cache dir ready"
 # Expected: Cache directory structure - OPERATIONAL
 
 # Test parallel execution capability
-./shell_scripts/workflow/execute_tests_docs_workflow.sh --help | grep parallel
+./src/workflow/execute_tests_docs_workflow.sh --help | grep parallel
 # Expected: --parallel flag documentation - AVAILABLE
 git status
 # Clean working tree with recent commits - HEALTHY
@@ -299,7 +299,7 @@ Recent commits show excellent workflow integration:
 | Workflow Reliability | ✅ Excellent | 100% recent success rate, Phase 2 optimizations working |
 | Code Quality | ✅ Excellent | 30 modular components, comprehensive documentation |
 | Maintainability | ✅ Strong | YAML config, single responsibility, AI caching |
-| Documentation | ✅ Complete | All 17 library modules documented, Phase 2 guide |
+| Documentation | ✅ Complete | All 19 library modules documented, Phase 2 guide |
 | Test Coverage | ✅ Excellent | 37 tests with 100% pass rate |
 | Performance | ✅ Optimized | Up to 90% faster with Phase 2 features |
 
@@ -333,7 +333,7 @@ Recent commits show excellent workflow integration:
 - ✅ YAML configuration system - 762 lines externalized
 - ✅ Enhanced output limits - 100% increase in visibility
 - ✅ Auto-mode issue extraction - CI/CD ready
-- ✅ Comprehensive documentation - All 17 library modules documented
+- ✅ Comprehensive documentation - All 19 library modules documented
 - ✅ **Performance optimization modules** (v2.1.0):
   - ✅ Metrics collection module (455 lines)
   - ✅ Change detection module (424 lines)
@@ -372,49 +372,49 @@ Recent commits show excellent workflow integration:
 cd /home/mpb/Documents/GitHub/ai_workflow
 
 # Run on target project (recommended approach)
-./shell_scripts/workflow/execute_tests_docs_workflow.sh \
+./src/workflow/execute_tests_docs_workflow.sh \
   --target /path/to/project
 
 # Full workflow in auto mode (CI/CD friendly, no prompts)
-./shell_scripts/workflow/execute_tests_docs_workflow.sh \
+./src/workflow/execute_tests_docs_workflow.sh \
   --target /path/to/project \
   --auto
 
 # Preview without executing
-./shell_scripts/workflow/execute_tests_docs_workflow.sh --dry-run
+./src/workflow/execute_tests_docs_workflow.sh --dry-run
 
 # Individual step execution (for debugging)
 # Example: Run only Step 11 (Git Finalization)
-./shell_scripts/workflow/execute_tests_docs_workflow.sh --steps 11
+./src/workflow/execute_tests_docs_workflow.sh --steps 11
 ```
 
 ### **⚡ Optimized Execution (v2.3.0)**
 
 ```bash
 # Maximum performance mode (recommended for most cases)
-./shell_scripts/workflow/execute_tests_docs_workflow.sh \
+./src/workflow/execute_tests_docs_workflow.sh \
   --target /path/to/project \
   --smart-execution \
   --parallel \
   --auto
 
 # Smart execution only (40-85% faster)
-./shell_scripts/workflow/execute_tests_docs_workflow.sh \
+./src/workflow/execute_tests_docs_workflow.sh \
   --target /path/to/project \
   --smart-execution
 
 # Parallel execution only (33% faster)
-./shell_scripts/workflow/execute_tests_docs_workflow.sh \
+./src/workflow/execute_tests_docs_workflow.sh \
   --target /path/to/project \
   --parallel
 
 # Show dependency graph before execution
-./shell_scripts/workflow/execute_tests_docs_workflow.sh \
+./src/workflow/execute_tests_docs_workflow.sh \
   --target /path/to/project \
   --show-graph
 
 # Disable AI caching (for testing/development)
-./shell_scripts/workflow/execute_tests_docs_workflow.sh \
+./src/workflow/execute_tests_docs_workflow.sh \
   --target /path/to/project \
   --no-ai-cache
 ```
@@ -433,32 +433,32 @@ cd /home/mpb/Documents/GitHub/ai_workflow
 
 ```bash
 # Check recent workflow executions
-ls -lht shell_scripts/workflow/backlog/ | head -10
+ls -lht src/workflow/backlog/ | head -10
 
 # View latest workflow summaries
-ls -lht shell_scripts/workflow/summaries/ | head -10
+ls -lht src/workflow/summaries/ | head -10
 
 # Check logs for errors
-grep -r "ERROR\|FAILED" shell_scripts/workflow/logs/ | tail -20
+grep -r "ERROR\|FAILED" src/workflow/logs/ | tail -20
 
 # Validate workflow artifacts
-find shell_scripts/workflow/backlog -name "*.md" -mtime -7
+find src/workflow/backlog -name "*.md" -mtime -7
 
 # ⭐ View workflow metrics (v2.3.0)
-cat shell_scripts/workflow/metrics/summary.md
+cat src/workflow/metrics/summary.md
 
 # ⭐ Check AI cache statistics
-ls -lh shell_scripts/workflow/.ai_cache/
-cat shell_scripts/workflow/.ai_cache/index.json | jq .
+ls -lh src/workflow/.ai_cache/
+cat src/workflow/.ai_cache/index.json | jq .
 
 # ⭐ View performance metrics from last run
-cat shell_scripts/workflow/logs/workflow_*/workflow_execution.log | tail -50
+cat src/workflow/logs/workflow_*/workflow_execution.log | tail -50
 
 # ⭐ Generate dependency visualization
-./shell_scripts/workflow/execute_tests_docs_workflow.sh --show-graph
+./src/workflow/execute_tests_docs_workflow.sh --show-graph
 
 # ⭐ Check cache hit rate
-cd shell_scripts/workflow/lib
+cd src/workflow/lib
 source ai_cache.sh
 get_cache_stats
 ```
@@ -474,7 +474,7 @@ gh auth login
 
 # Issue: Workflow artifacts not generated
 # Solution: Check backlog directory permissions
-chmod -R u+w shell_scripts/workflow/backlog/
+chmod -R u+w src/workflow/backlog/
 
 # Issue: Step execution timeout
 # Solution: Check logs for hanging processes
@@ -607,7 +607,7 @@ git add docs/README.md && git commit -m "docs: update"
 **Management**:
 ```bash
 # View cache statistics
-cd shell_scripts/workflow/lib
+cd src/workflow/lib
 source ai_cache.sh
 get_cache_stats
 
@@ -637,10 +637,10 @@ clear_ai_cache
 **Access**:
 ```bash
 # View current metrics
-cat shell_scripts/workflow/metrics/summary.md
+cat src/workflow/metrics/summary.md
 
 # Query historical data
-cd shell_scripts/workflow/lib
+cd src/workflow/lib
 source metrics.sh
 get_success_rate 10        # Last 10 runs
 get_average_step_duration 7  # Average for Step 7
@@ -713,7 +713,7 @@ get_average_step_duration 7  # Average for Step 7
 **References**:
 - Phase 2 Report: `docs/PHASE2_COMPLETION.md`
 - Short-term enhancements: `docs/workflow-automation/SHORT_TERM_ENHANCEMENTS_COMPLETION.md`
-- Module documentation: `shell_scripts/workflow/README.md`
-- AI cache module: `shell_scripts/workflow/lib/ai_cache.sh`
-- Test suite: `shell_scripts/workflow/lib/test_enhancements.sh` (37 tests, 100% pass rate)
+- Module documentation: `src/workflow/README.md`
+- AI cache module: `src/workflow/lib/ai_cache.sh`
+- Test suite: `src/workflow/lib/test_enhancements.sh` (37 tests, 100% pass rate)
 

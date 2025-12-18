@@ -20,7 +20,7 @@ The module provides automated and semi-automated documentation review and update
 
 ### 1.3 Module Information
 
-- **Module File:** `shell_scripts/workflow/steps/step_01_documentation.sh`
+- **Module File:** `src/workflow/steps/step_01_documentation.sh`
 - **Module Version:** 1.5.0 (Major: 1, Minor: 5, Patch: 0)
 - **Parent System:** Tests & Documentation Workflow Automation
 - **Dependencies:** AI Helpers Library, Git Cache Module, Step Execution Framework
@@ -867,7 +867,7 @@ The system SHALL support continuation prompts after step completion.
 
 ### Related Documentation
 
-- `/shell_scripts/workflow/README.md` - Workflow system overview
+- `/src/workflow/README.md` - Workflow system overview
 - `/docs/TESTS_DOCS_WORKFLOW_AUTOMATION_PLAN.md` - Workflow architecture
 - `.github/copilot-instructions.md` - Project development guidelines
 - `/prompts/tests_documentation_update_enhanced.txt` - AI prompt templates

@@ -1,0 +1,70 @@
+================================================================================
+WORKFLOW EXECUTION LOG
+================================================================================
+Workflow ID: workflow_20251215_231110
+Script Version: 2.0.0
+Started: 2025-12-15 23:11:10
+Mode: AUTO
+Steps: all
+Project Root: /home/mpb/Documents/GitHub/mpbarbosa_site
+
+================================================================================
+EXECUTION LOG
+================================================================================
+
+[2025-12-15 23:11:10] [INFO] Starting pre-flight system checks
+[2025-12-15 23:11:10] [SUCCESS] Project root validated: /home/mpb/Documents/GitHub/mpbarbosa_site
+[2025-12-15 23:11:10] [SUCCESS] Source directory validated: /home/mpb/Documents/GitHub/mpbarbosa_site/src
+[2025-12-15 23:11:10] [SUCCESS] package.json found
+[2025-12-15 23:11:11] [SUCCESS] Node.js detected: v25.2.1
+[2025-12-15 23:11:11] [SUCCESS] npm detected: 11.7.0
+[2025-12-15 23:11:11] [SUCCESS] Git repository validated
+[2025-12-15 23:11:11] [INFO] Staged all uncommitted changes
+[2025-12-15 23:11:11] [SUCCESS] shell_scripts directory found
+[2025-12-15 23:11:11] [SUCCESS] docs directory found
+[2025-12-15 23:11:11] [SUCCESS] tree command available
+[2025-12-15 23:11:11] [SUCCESS] All pre-flight checks PASSED
+[2025-12-15 23:11:11] [INFO] Starting dependency validation
+[2025-12-15 23:11:11] [SUCCESS] node_modules directory exists
+[2025-12-15 23:11:11] [SUCCESS] Jest detected in node_modules
+[2025-12-15 23:11:11] [SUCCESS] Dependency validation completed
+[2025-12-15 23:11:11] [INFO] Starting workflow execution
+[2025-12-15 23:11:11] [INFO] Execution mode: AUTO
+[2025-12-15 23:11:11] [INFO] Step selection: all
+[2025-12-15 23:11:11] [STEP] ========== Step 0: Pre-Analysis ==========
+[2025-12-15 23:11:11] [INFO] Step 0 started
+[2025-12-15 23:11:11] [INFO] Step step0 status updated: ✅
+[2025-12-15 23:11:11] [STEP] ========== Step 1: Documentation Updates ==========
+[2025-12-15 23:11:11] [INFO] Step 1 started
+[2025-12-15 23:15:04] [INFO] Cleaning up 1 temporary files
+
+================================================================================
+WORKFLOW SUMMARY
+================================================================================
+Completed: 2025-12-15 23:15:04
+Duration: 3m 54s
+Total Steps: 13
+
+Step Status:
+  Step 0
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12: NOT_EXECUTED
+
+Output Files:
+  - Backlog: /home/mpb/Documents/GitHub/mpbarbosa_site/shell_scripts/workflow/backlog/workflow_20251215_231110
+  - Summaries: /home/mpb/Documents/GitHub/mpbarbosa_site/shell_scripts/workflow/summaries/workflow_20251215_231110
+  - Logs: /home/mpb/Documents/GitHub/mpbarbosa_site/shell_scripts/workflow/logs/workflow_20251215_231110
+
+================================================================================
+END OF LOG
+================================================================================

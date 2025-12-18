@@ -60,7 +60,7 @@
 - Created `WORKFLOW_OUTPUT_LIMITS_ENHANCEMENT.md`
 - Updated `.github/copilot-instructions.md`
 - Updated `shell_scripts/README.md`
-- Updated `shell_scripts/workflow/README.md`
+- Updated `src/workflow/README.md`
 - Enhanced inline code comments with timestamps
 
 **Migration from v1.5.0**:
@@ -80,7 +80,7 @@
   - Reduced redundant command executions
   - Optimized step dependencies
 
-- ✅ **Logs Directory** (`/shell_scripts/workflow/logs/`)
+- ✅ **Logs Directory** (`/src/workflow/logs/`)
   - Raw execution traces
   - AI session logs (GitHub Copilot CLI interactions)
   - PID tracking for multi-instance support
@@ -99,12 +99,12 @@
 - Enhanced error handling and debugging
 
 **Output Directories**:
-- `/shell_scripts/workflow/logs/` - Raw execution traces (NEW)
-- `/shell_scripts/workflow/backlog/` - Detailed issue reports
+- `/src/workflow/logs/` - Raw execution traces (NEW)
+- `/src/workflow/backlog/` - Detailed issue reports
 - `/summaries/` - High-level conclusions
 
 **Documentation**:
-- Created `/shell_scripts/workflow/logs/README.md`
+- Created `/src/workflow/logs/README.md`
 - Updated `/shell_scripts/README.md` with workflow output section
 - Enhanced `/shell_scripts/CHANGELOG.md`
 - Updated version references across all READMEs
@@ -346,7 +346,7 @@
 - Status indicators (✅/⚠️/❌)
 - Indefinite retention
 
-**v1.5.0**: Added `/shell_scripts/workflow/logs/`
+**v1.5.0**: Added `/src/workflow/logs/`
 - Raw execution traces
 - AI session logs
 - 30-day retention
@@ -355,7 +355,7 @@
 
 ```
 mpbarbosa_site/
-├── shell_scripts/workflow/logs/    # v1.5.0 - Raw traces (30 days)
+├── src/workflow/logs/    # v1.5.0 - Raw traces (30 days)
 │   ├── README.md
 │   └── workflow_YYYYMMDD_HHMMSS/
 │       ├── step1_copilot_*.log
@@ -388,7 +388,7 @@ mpbarbosa_site/
 **Action Required**: None (automatic)
 
 **Optional**:
-- Review `/shell_scripts/workflow/logs/README.md` for log management best practices
+- Review `/src/workflow/logs/README.md` for log management best practices
 - Configure log retention policy if needed
 - Set up log rotation for production environments
 
@@ -474,8 +474,8 @@ mpbarbosa_site/
 ### Current Version (v1.5.0)
 - **Script Documentation**: `/shell_scripts/README.md`
 - **Changelog**: `/shell_scripts/CHANGELOG.md`
-- **Logs Directory**: `/shell_scripts/workflow/logs/README.md`
-- **Backlog Directory**: `/shell_scripts/workflow/backlog/README.md`
+- **Logs Directory**: `/src/workflow/logs/README.md`
+- **Backlog Directory**: `/src/workflow/backlog/README.md`
 - **Summaries Directory**: `/summaries/README.md`
 
 ### Historical Documentation

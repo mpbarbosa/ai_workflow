@@ -184,7 +184,7 @@ Testing:
 Phase Progress: X of 12 step modules complete
 Total Extracted: X,XXX lines
 
-See: shell_scripts/workflow/steps/step_XX_name.sh
+See: src/workflow/steps/step_XX_name.sh
 ```
 
 ---
@@ -457,8 +457,8 @@ git checkout -b workflow-phase3
 - Split Plan: `/docs/WORKFLOW_SCRIPT_SPLIT_PLAN.md`
 - Phase 1 Report: `/docs/WORKFLOW_MODULARIZATION_PHASE1_COMPLETION.md`
 - Phase 2 Report: `/docs/WORKFLOW_MODULARIZATION_PHASE2_COMPLETION.md`
-- Module README: `/shell_scripts/workflow/README.md`
-- Original Script: `/shell_scripts/workflow/execute_tests_docs_workflow.sh`
+- Module README: `/src/workflow/README.md`
+- Original Script: `/src/workflow/execute_tests_docs_workflow.sh`
 
 ---
 

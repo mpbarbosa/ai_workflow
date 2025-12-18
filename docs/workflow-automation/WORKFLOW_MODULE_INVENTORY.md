@@ -57,19 +57,19 @@
 
 ```bash
 # Verify library modules
-wc -l shell_scripts/workflow/lib/*.sh | tail -1
+wc -l src/workflow/lib/*.sh | tail -1
 # Expected: 3352 total
 
 # Verify step modules
-wc -l shell_scripts/workflow/steps/*.sh | tail -1
+wc -l src/workflow/steps/*.sh | tail -1
 # Expected: 3033 total
 
 # Verify main script
-wc -l shell_scripts/workflow/execute_tests_docs_workflow.sh
+wc -l src/workflow/execute_tests_docs_workflow.sh
 # Expected: 4740
 
 # Verify complete system
-wc -l shell_scripts/workflow/lib/*.sh shell_scripts/workflow/steps/*.sh shell_scripts/workflow/execute_tests_docs_workflow.sh | tail -1
+wc -l src/workflow/lib/*.sh src/workflow/steps/*.sh src/workflow/execute_tests_docs_workflow.sh | tail -1
 # Expected: 11125 total
 ```
 
@@ -94,7 +94,7 @@ wc -l shell_scripts/workflow/lib/*.sh shell_scripts/workflow/steps/*.sh shell_sc
 ## File Locations
 
 ```
-shell_scripts/workflow/
+src/workflow/
 ├── execute_tests_docs_workflow.sh    # 4,740 lines
 ├── lib/                               # 12 files, 3,352 lines
 │   ├── ai_helpers.sh                  # 991 lines

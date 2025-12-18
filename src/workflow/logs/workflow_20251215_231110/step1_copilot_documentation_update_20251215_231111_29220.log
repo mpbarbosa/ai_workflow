@@ -1,0 +1,218 @@
+I'll analyze the git diff to understand the changes and update the relevant documentation sections surgically.
+
+✓ $ cd /home/mpb/Documents/GitHub/mpbarbosa_site && git --no-pager diff --stat HEAD~1 HEAD
+   2>/dev/null | head -100
+    └ 101 lines...
+
+✓ $ cd /home/mpb/Documents/GitHub/mpbarbosa_site && git --no-pager log --oneline -5
+    └ 6 lines...
+
+✓ $ cd /home/mpb/Documents/GitHub/mpbarbosa_site && git --no-pager diff HEAD~1 HEAD --
+   .github/copilot-instructions.md README.md shell_scripts/README.md | head -500
+    └ 154 lines...
+
+✓ List directory docs/ai-prompts
+   └ 4 files found
+
+✓ Read docs/development-guides/SECURITY_VULNERABILITY_RESOLUTION.md:1-50
+   └ 50 lines read
+
+$ cd /home/mpb/Documents/GitHub/mpbarbosa_site && git --no-pager diff HEAD~1 HEAD --name-status |
+    grep -E "^[AD]" | head -50
+    └ 41 lines...
+
+Now let me check what the main changes were and understand the scope better:
+
+✓ Read docs/ai-prompts/README.md:1-80
+   └ 80 lines read
+
+✓ $ cd /home/mpb/Documents/GitHub/mpbarbosa_site && git --no-pager diff HEAD~1 HEAD --name-only |
+   grep -E "workflow/(lib|steps)" | head -20
+    └ 8 lines...
+
+Based on my analysis, the recent changes include:
+
+1. **New AI Prompts documentation directory** (`docs/ai-prompts/`) with comprehensive guides
+2. **Security vulnerability resolution documentation** 
+3. **Workflow step module updates** (minor fixes)
+4. **New workflow execution backlog and summaries**
+5. **Test coverage updates**
+6. **Several orphan files** that need attention
+
+Let me now update the documentation surgically:
+
+✓ Read .github/copilot-instructions.md:868-920
+   └ 53 lines read
+
+✓ Read README.md:340-385
+   └ 46 lines read
+
+Good! The documentation already includes the AI prompts section. Now let me check what else needs updating:
+
+✓ List directory .
+   └ 31 files found
+
+✓ $ cd /home/mpb/Documents/GitHub/mpbarbosa_site && ls -la | grep -E
+   "^-.*attempting|^-.*workflow|^-.*documentation|^-.*sues"
+    └ 9 lines...
+
+I can see several orphan files in the root directory that appear to be workflow artifacts. Let me check the actual changes and then document the security resolution guide:
+
+✓ Read .github/copilot-instructions.md:877-885
+   └ 9 lines read
+
+✓ Read README.md:353-365
+   └ 13 lines read
+
+Now I'll add the Security Vulnerability Resolution documentation to both files:
+
+✓ Edit README.md
+
+✓ Edit .github/copilot-instructions.md
+
+Now let me check the docs/README.md to update it as well:
+
+✓ Read docs/README.md:1-100
+   └ 100 lines read
+
+✓ Read docs/README.md:100-200
+   └ 101 lines read
+
+✓ Read docs/README.md:200-280
+   └ 81 lines read
+
+✓ Read docs/README.md:280-350
+   └ 38 lines read
+
+Now let me add the security documentation reference to docs/README.md. Let me find the best place to insert it:
+
+✓ Read docs/README.md:54-65
+   └ 12 lines read
+
+✓ Edit docs/README.md
+
+Now let me check if shell_scripts/README.md needs any updates related to the recent changes:
+
+✓ $ cd /home/mpb/Documents/GitHub/mpbarbosa_site && grep -A 15 "Library Modules"
+   shell_scripts/README.md | head -20
+    └ 21 lines...
+
+Good! The shell_scripts/README.md already has the metrics_validation.sh documentation and the library count is correctly updated to 13. Now let me verify the changes are complete and check for any orphan files that need attention:
+
+✓ $ cd /home/mpb/Documents/GitHub/mpbarbosa_site && git --no-pager diff --name-only | grep -E
+   "(README|copilot-instructions)" | head -10
+    └ 4 lines...
+
+✓ $ cd /home/mpb/Documents/GitHub/mpbarbosa_site && ls -1 | grep -E "^(before|sues|wall|sed|in
+   workflow|ed on)" | head -10
+    └ 9 lines...
+
+I notice there are orphan files in the root directory. Let me document these as a technical debt issue and add a note to the copilot instructions about cleanup:
+
+✓ Read .github/copilot-instructions.md:180-220
+   └ 41 lines read
+
+Let me check if there's a troubleshooting or known issues section:
+
+✓ Read .github/copilot-instructions.md:605-650
+   └ 46 lines read
+
+✓ $ cd /home/mpb/Documents/GitHub/mpbarbosa_site && grep -n "## Troubleshooting"
+   .github/copilot-instructions.md
+    └ 2 lines...
+
+✓ Read .github/copilot-instructions.md:399-425
+   └ 27 lines read
+
+Now let me update the Common Issues section to remove the npm vulnerabilities note since they've been resolved:
+
+✓ Edit .github/copilot-instructions.md
+
+Now let me create a summary of the documentation updates and verify completeness:
+
+✓ $ cd /home/mpb/Documents/GitHub/mpbarbosa_site && git --no-pager diff --stat HEAD | grep -E
+   "(README|copilot-instructions)"
+    └ 5 lines...
+
+✓ $ cd /home/mpb/Documents/GitHub/mpbarbosa_site && git --no-pager diff --shortstat HEAD --
+   .github/copilot-instructions.md README.md docs/README.md
+    └ 2 lines...
+
+Perfect! Now let me check if the docs/ai-prompts/README.md needs any update:
+
+✓ $ cd /home/mpb/Documents/GitHub/mpbarbosa_site && git --no-pager diff HEAD --
+   docs/ai-prompts/README.md | head -50
+    └ 20 lines...
+
+That's just whitespace changes. Now let me verify the main changes are properly documented:
+
+✓ $ cd /home/mpb/Documents/GitHub/mpbarbosa_site && git --no-pager diff HEAD --
+   .github/copilot-instructions.md README.md docs/README.md | grep -A 2 "Security"
+    └ 14 lines...
+
+Excellent! Now let me create a brief summary document:
+
+✓ $ cd /home/mpb/Documents/GitHub/mpbarbosa_site && git --no-pager status --short | grep -E
+   "(README|copilot-instructions)" | head -10
+    └ 5 lines...
+
+Perfect! Let me now verify the changes are correct and complete:
+
+$ cd /home/mpb/Documents/GitHub/mpbarbosa_site && echo "=== Checking Security Vulnerability
+   Resolution references ===" && grep -r "SECURITY_VULNERABILITY_RESOLUTION"
+   .github/copilot-instructions.md README.md docs/README.md | wc -l && echo "=== Checking AI Prompts
+    references ===" && grep -r "ai-prompts" .github/copilot-instructions.md README.md docs/README.md
+    | wc -l
+    └ 5 lines...
+
+Perfect! All documentation has been updated. Let me create a summary of what was done:
+
+## Summary of Documentation Updates
+
+I've successfully analyzed the recent changes and updated all relevant documentation with surgical precision:
+
+### **Files Updated:**
+
+1. **`.github/copilot-instructions.md`** (2 changes):
+   - ✅ Added **Security Vulnerability Resolution** documentation reference in "Development Environment & Tools" section
+   - ✅ Updated "Common Issues" section: Removed outdated npm vulnerabilities note (now resolved) and added note about orphan workflow artifact files
+
+2. **`README.md`** (1 change):
+   - ✅ Added **Security Vulnerability Resolution** documentation reference in "Development Environment & Tools" section
+
+3. **`docs/README.md`** (1 change):
+   - ✅ Added new **"Security & Dependency Management"** section with Security Vulnerability Resolution and Dependabot Configuration references
+
+### **Key Changes Documented:**
+
+1. **New AI Prompts Documentation** (`docs/ai-prompts/`):
+   - Already properly referenced in all three main documentation files
+   - Includes: AI Prompt Extraction Standard, Copilot Prompt Scoping Guide, Prompt Extraction Refactoring
+
+2. **Security Vulnerability Resolution** (`docs/development-guides/SECURITY_VULNERABILITY_RESOLUTION.md`):
+   - **NEW**: Comprehensive guide documenting resolution of 8 vulnerabilities (5 High, 3 Moderate)
+   - Using npm package overrides for braces, micromatch, and glob dependencies
+   - Now referenced in all three main documentation files
+
+3. **Workflow Module Updates**:
+   - `metrics_validation.sh` library module already documented in `shell_scripts/README.md`
+   - 13 workflow library modules count already updated
+
+### **Documentation Consistency:**
+- ✅ All cross-references are consistent across documentation files
+- ✅ Professional technical writing standards maintained
+- ✅ Surgical edits - only affected sections updated
+- ✅ No unrelated documentation modified
+
+### **Technical Debt Noted:**
+- Added troubleshooting note about orphan workflow artifact files in root directory (e.g., "before attempting edits", "sues", "sed documentation sections")
+
+**Lines Changed**: 14 insertions, 6 deletions across 3 main documentation files
+
+
+Total usage est:       1 Premium request
+Total duration (API):  2m 39.293s
+Total duration (wall): 2m 51.3s
+Total code changes:    0 lines added, 0 lines removed
+Usage by model:
+    claude-sonnet-4.5    1.3m input, 7.2k output, 1.2m cache read (Est. 1 Premium request)

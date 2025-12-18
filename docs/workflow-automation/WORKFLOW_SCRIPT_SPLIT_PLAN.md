@@ -1,7 +1,7 @@
 # Execute Tests & Docs Workflow Script Split Plan
 
 **Date:** 2025-11-12
-**Script:** `shell_scripts/workflow/execute_tests_docs_workflow.sh`
+**Script:** `src/workflow/execute_tests_docs_workflow.sh`
 **Current Size:** 4,337 lines
 **Target:** Modular architecture with < 500 lines per file
 
@@ -46,7 +46,7 @@ The `execute_tests_docs_workflow.sh` script has grown to 4,337 lines and needs t
 
 ### Directory Structure
 ```
-shell_scripts/workflow/
+src/workflow/
 ├── execute_tests_docs_workflow.sh       # Main orchestrator (< 300 lines)
 ├── lib/
 │   ├── config.sh                        # Configuration & constants
@@ -264,7 +264,7 @@ main "$@"
 
 ### Phase 4: Documentation & Testing (Priority: HIGH)
 **Estimated Time:** 2-3 hours
-**Files to Create:** `shell_scripts/workflow/README.md`
+**Files to Create:** `src/workflow/README.md`
 
 1. Document module structure
 2. Create module API reference
@@ -309,8 +309,8 @@ bash -c "source lib/config.sh && echo \$SCRIPT_VERSION"
 
 ## Migration Checklist
 
-- [ ] Create `shell_scripts/workflow/lib/` directory
-- [ ] Create `shell_scripts/workflow/steps/` directory
+- [ ] Create `src/workflow/lib/` directory
+- [ ] Create `src/workflow/steps/` directory
 - [ ] Extract `lib/config.sh` (80 lines)
 - [ ] Extract `lib/colors.sh` (30 lines)
 - [ ] Extract `lib/utils.sh` (200 lines)

@@ -3,7 +3,7 @@
 **Document Version**: 1.0.0
 **Date Created**: 2025-11-06
 **Related Workflow**: `/prompts/tests_documentation_update_enhanced.txt`
-**Target Script**: `/shell_scripts/workflow/execute_tests_docs_workflow.sh`
+**Target Script**: `/src/workflow/execute_tests_docs_workflow.sh`
 
 ---
 

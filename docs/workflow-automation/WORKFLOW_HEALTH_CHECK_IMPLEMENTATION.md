@@ -17,7 +17,7 @@ This document describes the implementation of three short-term fixes to improve 
 **Purpose:** Verify all 13 steps complete successfully or capture exact failure point
 
 **Implementation:**
-- New library module: `shell_scripts/workflow/lib/health_check.sh`
+- New library module: `src/workflow/lib/health_check.sh`
 - Function: `verify_workflow_health()`
 - Automatically runs after workflow completion (success or failure)
 - Generates detailed health check report in backlog directory
@@ -56,7 +56,7 @@ This document describes the implementation of three short-term fixes to improve 
 **Usage:**
 ```bash
 # Automatic - runs at workflow completion
-./shell_scripts/workflow/execute_tests_docs_workflow.sh
+./src/workflow/execute_tests_docs_workflow.sh
 
 # Health check runs automatically and generates report
 ```
@@ -183,7 +183,7 @@ OR
 
 All three features are integrated into the main workflow script:
 
-**File:** `shell_scripts/workflow/execute_tests_docs_workflow.sh`
+**File:** `src/workflow/execute_tests_docs_workflow.sh`
 
 **Integration Points:**
 
@@ -234,7 +234,7 @@ Each workflow run now produces **4 additional reports** in the backlog directory
 
 **Report Location:**
 ```
-shell_scripts/workflow/backlog/workflow_YYYYMMDD_HHMMSS/
+src/workflow/backlog/workflow_YYYYMMDD_HHMMSS/
 ├── WORKFLOW_SUMMARY.md
 ├── WORKFLOW_HEALTH_CHECK.md              ← NEW
 ├── DOCUMENTATION_PLACEMENT_VALIDATION.md ← NEW
@@ -252,13 +252,13 @@ shell_scripts/workflow/backlog/workflow_YYYYMMDD_HHMMSS/
 
 ```bash
 # Interactive mode (default)
-./shell_scripts/workflow/execute_tests_docs_workflow.sh
+./src/workflow/execute_tests_docs_workflow.sh
 
 # Automatic mode (CI/CD)
-./shell_scripts/workflow/execute_tests_docs_workflow.sh --auto
+./src/workflow/execute_tests_docs_workflow.sh --auto
 
 # Dry run (preview only)
-./shell_scripts/workflow/execute_tests_docs_workflow.sh --dry-run
+./src/workflow/execute_tests_docs_workflow.sh --dry-run
 ```
 
 Health checks run automatically at completion and generate reports.
@@ -267,7 +267,7 @@ Health checks run automatically at completion and generate reports.
 
 ```bash
 # Navigate to latest workflow run
-cd shell_scripts/workflow/backlog/workflow_YYYYMMDD_HHMMSS/
+cd src/workflow/backlog/workflow_YYYYMMDD_HHMMSS/
 
 # View health check report
 cat WORKFLOW_HEALTH_CHECK.md
@@ -302,7 +302,7 @@ cat ENHANCED_GIT_STATE_REPORT.md
 
 1. **Successful Workflow Completion:**
    ```bash
-   ./shell_scripts/workflow/execute_tests_docs_workflow.sh --auto
+   ./src/workflow/execute_tests_docs_workflow.sh --auto
    # Verify: All 3 health check reports generated
    # Verify: WORKFLOW_HEALTH_CHECK.md shows ✅ HEALTHY
    ```
@@ -317,7 +317,7 @@ cat ENHANCED_GIT_STATE_REPORT.md
 3. **Misplaced Documentation:**
    ```bash
    # Create test file: src/TEST_EXECUTION_SAMPLE.md
-   ./shell_scripts/workflow/execute_tests_docs_workflow.sh --auto
+   ./src/workflow/execute_tests_docs_workflow.sh --auto
    # Verify: DOCUMENTATION_PLACEMENT_VALIDATION.md shows ❌ FAIL
    # Verify: Suggested location provided
    ```
@@ -327,7 +327,7 @@ cat ENHANCED_GIT_STATE_REPORT.md
    # Run tests to regenerate coverage
    npm test
    # Run workflow
-   ./shell_scripts/workflow/execute_tests_docs_workflow.sh --auto
+   ./src/workflow/execute_tests_docs_workflow.sh --auto
    # Verify: ENHANCED_GIT_STATE_REPORT.md separates coverage changes
    ```
 

@@ -20,7 +20,7 @@ The module provides automated and semi-automated documentation consistency valid
 
 ### 1.3 Module Information
 
-- **Module File:** `shell_scripts/workflow/steps/step_02_consistency.sh`
+- **Module File:** `src/workflow/steps/step_02_consistency.sh`
 - **Module Version:** 2.0.0 (Major: 2, Minor: 0, Patch: 0)
 - **Parent System:** Tests & Documentation Workflow Automation
 - **Dependencies:** AI Helpers Library, Git Cache Module, Step Execution Framework, Metrics Validation Library
@@ -152,8 +152,8 @@ The system SHALL detect broken absolute path references in documentation files.
 
 | Format | Extracted | Example |
 |--------|-----------|---------|
-| Markdown link | ✅ | `[text](/path/to/file.md)` |
-| Image reference | ✅ | `![alt](/images/pic.png)` |
+| Markdown link | ✅ | `[text](/path/to/file.md)` (example) |
+| Image reference | ✅ | `![alt](/images/pic.png)` (example) |
 | Relative path | ❌ | `[text](../file.md)` |
 
 #### FR-2.2 Priority Documentation Files
@@ -265,8 +265,8 @@ The system SHALL create backlog reports for detected consistency issues and auto
 **Documentation Files Checked**: N
 
 ### Broken References
-⚠️  **BROKEN LINK**: [source_file] references missing file
-   - Reference: /path/to/missing/file
+⚠️  **BROKEN LINK**: [source_file] references missing file (example)
+   - Reference: /path/to/missing/file (example path)
    - Line [N]: [content]
    - Action: Update reference or restore missing file
 
@@ -594,6 +594,7 @@ The system SHALL generate comprehensive broken reference reports.
 **Report Format:**
 
 ```text
+(Example output format)
 filename: /path/to/missing/file
 .github/copilot-instructions.md: /docs/MISSING.md
 README.md: /shell_scripts/DELETED.sh
@@ -881,7 +882,7 @@ README.md: /shell_scripts/DELETED.sh
 
 ### Related Documentation
 
-- `/shell_scripts/workflow/README.md` - Workflow system overview
+- `/src/workflow/README.md` - Workflow system overview
 - `/docs/TESTS_DOCS_WORKFLOW_AUTOMATION_PLAN.md` - Workflow architecture
 - `.github/copilot-instructions.md` - Project development guidelines
 - `/docs/workflow-automation/STEP_01_FUNCTIONAL_REQUIREMENTS.md` - Step 1 requirements
@@ -919,7 +920,7 @@ v1           → Missing MINOR and PATCH
 
 ### B. Broken Reference Detection Patterns
 
-**Detected Patterns:**
+**Detected Patterns (examples):**
 
 ```markdown
 [Link text](/absolute/path/to/file.md)

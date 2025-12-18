@@ -17,7 +17,7 @@ This document describes three medium-term improvements implemented to optimize w
 **Purpose:** Skip redundant steps when change impact is Low (documentation-only changes)
 
 **Implementation:**
-- New library module: `shell_scripts/workflow/lib/workflow_optimization.sh`
+- New library module: `src/workflow/lib/workflow_optimization.sh`
 - Function: `should_skip_step_by_impact(step_num, change_impact)`
 - Automatic change impact analysis: Low/Medium/High
 - Intelligent step skipping based on change type
@@ -102,7 +102,7 @@ This document describes three medium-term improvements implemented to optimize w
 **Implementation:**
 - Checkpoint system with automatic state saving
 - Functions: `save_checkpoint(step_num)`, `load_checkpoint()`
-- Checkpoint directory: `shell_scripts/workflow/.checkpoints/`
+- Checkpoint directory: `src/workflow/.checkpoints/`
 - Automatic checkpoint cleanup (7-day retention)
 
 **Checkpoint Features:**
@@ -138,7 +138,7 @@ This document describes three medium-term improvements implemented to optimize w
 
 **Checkpoint Management:**
 - Auto-cleanup: Removes checkpoints older than 7 days
-- Location: `shell_scripts/workflow/.checkpoints/`
+- Location: `src/workflow/.checkpoints/`
 - Naming: `workflow_YYYYMMDD_HHMMSS.checkpoint`
 
 ---
@@ -147,7 +147,7 @@ This document describes three medium-term improvements implemented to optimize w
 
 All three features are integrated into the main workflow script:
 
-**File:** `shell_scripts/workflow/execute_tests_docs_workflow.sh`
+**File:** `src/workflow/execute_tests_docs_workflow.sh`
 
 **Version:** v2.1.0 → v2.2.0
 
@@ -203,7 +203,7 @@ git add README.md
 git commit -m "docs: update README"
 
 # Run workflow
-./shell_scripts/workflow/execute_tests_docs_workflow.sh --auto
+./src/workflow/execute_tests_docs_workflow.sh --auto
 
 # Output:
 # Change Impact: LOW - Some steps can be skipped
@@ -221,7 +221,7 @@ git commit -m "docs: update README"
 ```bash
 # Scenario: Multiple changes requiring validation
 # Run workflow
-./shell_scripts/workflow/execute_tests_docs_workflow.sh
+./src/workflow/execute_tests_docs_workflow.sh
 
 # Output:
 # Parallel execution enabled for validation steps (1-4)
@@ -245,7 +245,7 @@ git commit -m "docs: update README"
 # ... workflow fails or user interrupts with Ctrl+C
 
 # Resume workflow
-./shell_scripts/workflow/execute_tests_docs_workflow.sh
+./src/workflow/execute_tests_docs_workflow.sh
 
 # Output:
 # Found checkpoint: workflow_20251218_101530.checkpoint
@@ -304,7 +304,7 @@ Each workflow run now produces **3 additional optimization reports**:
 
 **Report Location:**
 ```
-shell_scripts/workflow/backlog/workflow_YYYYMMDD_HHMMSS/
+src/workflow/backlog/workflow_YYYYMMDD_HHMMSS/
 ├── CHANGE_IMPACT_ANALYSIS.md              ← NEW (always)
 ├── PARALLEL_VALIDATION_REPORT.md          ← NEW (if parallel)
 ├── WORKFLOW_RESUME_REPORT.md              ← NEW (if resuming)
@@ -327,7 +327,7 @@ echo "# Test" > docs/TEST.md
 git add docs/TEST.md
 
 # Execute
-./shell_scripts/workflow/execute_tests_docs_workflow.sh --auto
+./src/workflow/execute_tests_docs_workflow.sh --auto
 
 # Verify
 # - CHANGE_IMPACT_ANALYSIS.md shows "Low" impact
@@ -338,7 +338,7 @@ git add docs/TEST.md
 ### Test 2: Parallel Validation
 ```bash
 # Execute with all validation steps
-./shell_scripts/workflow/execute_tests_docs_workflow.sh --steps 0,1,2,3,4
+./src/workflow/execute_tests_docs_workflow.sh --steps 0,1,2,3,4
 
 # Verify
 # - "Parallel execution enabled" message appears
@@ -350,11 +350,11 @@ git add docs/TEST.md
 ### Test 3: Workflow Resume
 ```bash
 # Start workflow and interrupt at Step 5
-./shell_scripts/workflow/execute_tests_docs_workflow.sh
+./src/workflow/execute_tests_docs_workflow.sh
 # ... press Ctrl+C after Step 4 completes
 
 # Resume workflow
-./shell_scripts/workflow/execute_tests_docs_workflow.sh
+./src/workflow/execute_tests_docs_workflow.sh
 
 # Verify
 # - Checkpoint detected and validated
@@ -367,14 +367,14 @@ git add docs/TEST.md
 ### Test 4: Checkpoint Safety (Branch Change)
 ```bash
 # Start workflow
-./shell_scripts/workflow/execute_tests_docs_workflow.sh
+./src/workflow/execute_tests_docs_workflow.sh
 # ... interrupt after Step 3
 
 # Change branch
 git checkout -b feature/test
 
 # Try to resume
-./shell_scripts/workflow/execute_tests_docs_workflow.sh
+./src/workflow/execute_tests_docs_workflow.sh
 
 # Verify
 # - "Branch changed" warning appears

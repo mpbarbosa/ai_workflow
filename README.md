@@ -3,7 +3,7 @@
 Intelligent workflow automation system for validating and enhancing documentation, code, and tests with AI support.
 
 **Migrated from**: mpbarbosa_site repository (2025-12-18)  
-**Version**: v2.1.0  
+**Version**: v2.3.0  
 **Repository**: [github.com/mpbarbosa/ai_workflow](https://github.com/mpbarbosa/ai_workflow)
 
 ## Overview
@@ -13,11 +13,12 @@ This repository provides a comprehensive, modular workflow automation system tha
 ### Key Features
 
 - **13-Step Automated Pipeline**: Complete workflow from analysis to finalization
-- **17 Library Modules**: Modular architecture with AI caching and advanced optimization
-- **AI Integration**: GitHub Copilot CLI with 13 specialized personas + response caching
-- **Smart Execution** (v2.3): Skip steps based on change detection (40-85% faster)
-- **Parallel Execution** (v2.3): Run independent steps simultaneously (33% faster)
-- **AI Response Caching** (v2.3): Reduce token usage by 60-80%
+- **19 Library Modules**: Modular architecture with AI caching and advanced optimization (18 .sh modules + 1 .yaml config)
+- **AI Integration**: GitHub Copilot CLI with 13 specialized personas
+- **Smart Execution** (NEW v2.3): Skip steps based on change detection (40-85% faster)
+- **Parallel Execution** (NEW v2.3): Run independent steps simultaneously (33% faster)
+- **AI Response Caching** (NEW v2.3): Reduce token usage by 60-80%
+- **Target Project Support** (NEW v2.3): Run on any project with --target option
 - **Metrics Collection**: Automatic performance tracking and historical analysis
 - **Dependency Visualization**: Interactive graph showing execution flow
 - **100% Test Coverage**: 37 automated tests ensure reliability
@@ -32,7 +33,7 @@ git clone git@github.com:mpbarbosa/ai_workflow.git
 cd ai_workflow
 
 # Run workflow tests
-cd shell_scripts/workflow/lib
+cd src/workflow/lib
 ./test_enhancements.sh
 ```
 
@@ -43,14 +44,14 @@ To use this workflow on other projects (e.g., mpbarbosa_site):
 ```bash
 # Option 1: Run from project directory (default behavior)
 cd /path/to/your/project
-/path/to/ai_workflow/shell_scripts/workflow/execute_tests_docs_workflow.sh \
+/path/to/ai_workflow/src/workflow/execute_tests_docs_workflow.sh \
   --smart-execution \
   --parallel \
   --auto
 
 # Option 2: Use --target flag from anywhere
 cd ai_workflow
-./shell_scripts/workflow/execute_tests_docs_workflow.sh \
+./src/workflow/execute_tests_docs_workflow.sh \
   --target /path/to/project \
   --smart-execution \
   --parallel \
@@ -58,13 +59,13 @@ cd ai_workflow
 
 # Option 3: With dependency visualization
 cd /path/to/your/project
-/path/to/ai_workflow/shell_scripts/workflow/execute_tests_docs_workflow.sh \
+/path/to/ai_workflow/src/workflow/execute_tests_docs_workflow.sh \
   --show-graph
 
 # Option 4: Copy workflow to target project
-cp -r ai_workflow/shell_scripts/workflow /path/to/target/project/shell_scripts/
+cp -r ai_workflow/src/workflow /path/to/target/project/src/
 cd /path/to/target/project
-./shell_scripts/workflow/execute_tests_docs_workflow.sh
+./src/workflow/execute_tests_docs_workflow.sh
 ```
 
 **Performance Tips**:
@@ -77,16 +78,16 @@ cd /path/to/target/project
 
 - **[MIGRATION_README.md](MIGRATION_README.md)**: Migration details and architecture overview
 - **[docs/workflow-automation/](docs/workflow-automation/)**: Comprehensive documentation
-- **[shell_scripts/workflow/README.md](shell_scripts/workflow/README.md)**: Module API reference
+- **[src/workflow/README.md](src/workflow/README.md)**: Module API reference
 
 ## Repository Structure
 
 ```
 ai_workflow/
 ├── docs/workflow-automation/      # Complete workflow documentation
-├── shell_scripts/workflow/        # Workflow automation system
+├── src/workflow/                  # Workflow automation system
 │   ├── execute_tests_docs_workflow.sh  # Main orchestrator (4,740 lines)
-│   ├── lib/                       # 16 library modules (5,548 lines)
+│   ├── lib/                       # 19 library modules (5,548 lines: 18 .sh + 1 .yaml)
 │   ├── steps/                     # 13 step modules (3,200 lines)
 │   ├── config/                    # YAML configuration
 │   └── backlog/                   # Execution history

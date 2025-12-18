@@ -75,7 +75,7 @@
 
 **Module Details**
 
-**File:** `shell_scripts/workflow/steps/step_11_git.sh`
+**File:** `src/workflow/steps/step_11_git.sh`
 **Lines:** 395
 **Function:** `step11_git_finalization()`
 **Status:** ✅ COMPLETE
@@ -217,7 +217,7 @@ The module includes a comprehensive 245-line AI prompt template covering:
 ### Final Module Structure
 
 ```
-shell_scripts/workflow/
+src/workflow/
 ├── execute_tests_docs_workflow.sh   # Main orchestrator (4,323 lines)
 ├── lib/                              # 12 library modules (3,352 lines)
 │   ├── config.sh                     # Configuration (55 lines)
@@ -397,7 +397,7 @@ step11_git_finalization
 
 ### Updated Documentation Files
 
-1. **`shell_scripts/workflow/README.md`**
+1. **`src/workflow/README.md`**
    - Updated status to "Phase 3 COMPLETE ✅"
    - Updated last modified date to 2025-11-13
    - Changed Step 11 status from "⭐ NEW" to "✅ PHASE 3 COMPLETE"
@@ -502,7 +502,7 @@ step11_git_finalization
 
 ## 📖 Related Documentation
 
-- **Module Documentation:** `/shell_scripts/workflow/README.md`
+- **Module Documentation:** `/src/workflow/README.md`
 - **Phase 1 Completion:** `/docs/WORKFLOW_MODULARIZATION_PHASE1_COMPLETION.md`
 - **Phase 2 Completion:** `/docs/WORKFLOW_MODULARIZATION_PHASE2_COMPLETION.md`
 - **Phase 3 Plan:** `/docs/WORKFLOW_MODULARIZATION_PHASE3_PLAN.md`

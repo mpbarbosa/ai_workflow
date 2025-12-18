@@ -56,7 +56,7 @@ done
 
 ### ✅ Library Modules (8)
 
-All library modules located in `shell_scripts/workflow/lib/`:
+All library modules located in `src/workflow/lib/`:
 
 1. **`ai_helpers.sh`** (1,200+ lines)
    - AI prompt builders for all steps
@@ -93,7 +93,7 @@ All library modules located in `shell_scripts/workflow/lib/`:
 
 ### ✅ Step Modules (13)
 
-All step modules located in `shell_scripts/workflow/steps/`:
+All step modules located in `src/workflow/steps/`:
 
 | Step | File | Main Function | AI Integration |
 |------|------|---------------|----------------|
@@ -298,5 +298,5 @@ All 21 modules (8 libraries + 13 steps) are properly:
 
 **Related Documentation**:
 - `/docs/WORKFLOW_MODULARIZATION_PHASE3_COMPLETION.md` - Modularization implementation
-- `/shell_scripts/workflow/README.md` - Module architecture documentation
+- `/src/workflow/README.md` - Module architecture documentation
 - `/.github/copilot-instructions.md` - Workflow automation usage guide

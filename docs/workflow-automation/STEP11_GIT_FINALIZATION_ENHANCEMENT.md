@@ -231,7 +231,7 @@ expertise in conventional commits and technical communication.
 
 ## 📚 Related Documentation
 
-- **Main Script**: `/shell_scripts/workflow/execute_tests_docs_workflow.sh`
+- **Main Script**: `/src/workflow/execute_tests_docs_workflow.sh`
 - **Architecture**: Two-phase automated + AI pattern
 - **Conventional Commits**: https://www.conventionalcommits.org/
 - **Copilot CLI**: https://github.com/github/gh-copilot
