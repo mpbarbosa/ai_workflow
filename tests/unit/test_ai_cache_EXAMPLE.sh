@@ -14,9 +14,12 @@ set -uo pipefail
 # ==============================================================================
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+WORKFLOW_LIB_DIR="${SCRIPT_DIR}/../../src/workflow/lib"
+WORKFLOW_HOME="${SCRIPT_DIR}/../.."
+export WORKFLOW_HOME
 
 # Source dependencies
-source "${SCRIPT_DIR}/colors.sh" 2>/dev/null || {
+source "${WORKFLOW_LIB_DIR}/colors.sh" 2>/dev/null || {
     RED='\033[0;31m'
     GREEN='\033[0;32m'
     YELLOW='\033[1;33m'
@@ -134,7 +137,7 @@ teardown_test_cache() {
 }
 
 # Source the module under test
-source "${SCRIPT_DIR}/ai_cache.sh" 2>/dev/null || {
+source "${WORKFLOW_LIB_DIR}/ai_cache.sh" 2>/dev/null || {
     echo "ERROR: Cannot load ai_cache.sh - skipping tests"
     exit 1
 }

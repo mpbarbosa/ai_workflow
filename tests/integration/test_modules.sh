@@ -8,8 +8,9 @@
 set -uo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-LIB_DIR="${SCRIPT_DIR}/lib"
-STEPS_DIR="${SCRIPT_DIR}/steps"
+PROJECT_ROOT="${SCRIPT_DIR}/../.."
+LIB_DIR="${PROJECT_ROOT}/src/workflow/lib"
+STEPS_DIR="${PROJECT_ROOT}/src/workflow/steps"
 
 # Color codes for output
 RED='\033[0;31m'

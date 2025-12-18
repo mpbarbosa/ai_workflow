@@ -202,6 +202,7 @@ Python Layer (40%)
 ### **🔴 CRITICAL (Do Immediately)**
 
 #### 1. **Refactor Monolithic Main Script**
+
 - **Target**: Break into <1,500 line modules
 - **Create sub-orchestrators**: 
   - `pre_flight.sh` - Pre-flight checks and initialization

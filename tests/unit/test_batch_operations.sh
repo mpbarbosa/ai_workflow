@@ -7,10 +7,11 @@
 
 # Get script directory
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+WORKFLOW_LIB_DIR="${SCRIPT_DIR}/../../src/workflow/lib"
 
 # Source required libraries
-source "$SCRIPT_DIR/colors.sh"
-source "$SCRIPT_DIR/performance.sh"
+source "$WORKFLOW_LIB_DIR/colors.sh"
+source "$WORKFLOW_LIB_DIR/performance.sh"
 
 # Test counters
 TESTS_RUN=0

@@ -17,7 +17,12 @@ readonly STEP7_VERSION_PATCH=0
 step7_execute_test_suite() {
     print_step "7" "Execute Full Test Suite with AI Analysis"
     
-    cd "$SRC_DIR" || return 1
+    # Use TARGET_DIR for test execution (where package.json typically lives)
+    local test_dir="${TARGET_DIR:-$PROJECT_ROOT}"
+    cd "$test_dir" || {
+        print_error "Cannot navigate to test directory: $test_dir"
+        return 1
+    }
     
     local test_failures=0
     local test_results_file
@@ -27,19 +32,30 @@ step7_execute_test_suite() {
     coverage_summary_file=$(mktemp)
     TEMP_FILES+=("$test_results_file" "$coverage_summary_file")
     
-    # PHASE 1: Automated test execution
-    print_info "Phase 1: Executing Jest test suite..."
+    # PHASE 1: Automated test execution (ADAPTIVE - Phase 3)
+    local test_cmd="${TEST_COMMAND:-}"
+    local language_name="${PRIMARY_LANGUAGE:-unknown}"
+    
+    # Validate that TEST_COMMAND is set
+    if [[ -z "$test_cmd" ]]; then
+        print_error "TEST_COMMAND not set - tech stack configuration not loaded"
+        print_info "Please run with --init-config to configure project"
+        return 1
+    fi
+    
+    print_info "Phase 1: Executing ${language_name} test suite..."
+    print_info "Test command: $test_cmd"
     
     # Check 1: Run full test suite
     print_info "Running tests with coverage..."
     local test_exit_code=0
     
     if [[ "$DRY_RUN" == true ]]; then
-        print_info "[DRY RUN] Would execute: npm run test:coverage"
+        print_info "[DRY RUN] Would execute: $test_cmd"
         test_exit_code=0
     else
         # Run tests and capture output
-        if npm run test:coverage > "$test_results_file" 2>&1; then
+        if eval "$test_cmd" > "$test_results_file" 2>&1; then
             test_exit_code=0
             print_success "All tests passed ✅"
         else
@@ -56,10 +72,38 @@ step7_execute_test_suite() {
     local tests_failed=0
     
     if [[ -f "$test_results_file" ]]; then
-        # Extract Jest summary
-        tests_total=$(grep -oP 'Tests:.*\K\d+(?= total)' "$test_results_file" 2>/dev/null || echo "0")
-        tests_passed=$(grep -oP 'Tests:.*\K\d+(?= passed)' "$test_results_file" 2>/dev/null || echo "0")
-        tests_failed=$(grep -oP 'Tests:.*\K\d+(?= failed)' "$test_results_file" 2>/dev/null || echo "0")
+        # Parse based on test framework
+        case "${TEST_FRAMEWORK:-unknown}" in
+            jest)
+                # Extract Jest summary
+                tests_total=$(grep -oP 'Tests:.*\K\d+(?= total)' "$test_results_file" 2>/dev/null || echo "0")
+                tests_passed=$(grep -oP 'Tests:.*\K\d+(?= passed)' "$test_results_file" 2>/dev/null || echo "0")
+                tests_failed=$(grep -oP 'Tests:.*\K\d+(?= failed)' "$test_results_file" 2>/dev/null || echo "0")
+                ;;
+            bats)
+                # Extract BATS summary
+                # BATS format: "X tests, Y failures"
+                tests_total=$(grep -oP '\K\d+(?= tests?)' "$test_results_file" 2>/dev/null | head -1 || echo "0")
+                tests_failed=$(grep -oP '\K\d+(?= failures?)' "$test_results_file" 2>/dev/null | head -1 || echo "0")
+                tests_passed=$((tests_total - tests_failed))
+                ;;
+            pytest)
+                # Extract pytest summary
+                tests_passed=$(grep -oP '\K\d+(?= passed)' "$test_results_file" 2>/dev/null || echo "0")
+                tests_failed=$(grep -oP '\K\d+(?= failed)' "$test_results_file" 2>/dev/null || echo "0")
+                tests_total=$((tests_passed + tests_failed))
+                ;;
+            *)
+                # Generic extraction - use exit code
+                if [[ $test_exit_code -eq 0 ]]; then
+                    tests_passed=1
+                    tests_total=1
+                else
+                    tests_failed=1
+                    tests_total=1
+                fi
+                ;;
+        esac
         
         print_info "Test Results: $tests_passed passed, $tests_failed failed, $tests_total total"
     fi
@@ -71,8 +115,16 @@ step7_execute_test_suite() {
     local coverage_functions=0
     local coverage_lines=0
     
+    # Check coverage in multiple possible locations
+    local coverage_file=""
     if [[ -f "coverage/coverage-summary.json" ]]; then
-        cp "coverage/coverage-summary.json" "$coverage_summary_file"
+        coverage_file="coverage/coverage-summary.json"
+    elif [[ -f "$test_dir/coverage/coverage-summary.json" ]]; then
+        coverage_file="$test_dir/coverage/coverage-summary.json"
+    fi
+    
+    if [[ -n "$coverage_file" ]]; then
+        cp "$coverage_file" "$coverage_summary_file"
         
         # Extract total coverage percentages
         if command -v jq &> /dev/null; then

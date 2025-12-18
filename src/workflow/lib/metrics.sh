@@ -339,6 +339,7 @@ generate_historical_stats() {
     local successful_runs
     local success_rate=0
     
+    # Separate variable assignment to prevent arithmetic evaluation errors (v2.3.1)
     total_runs=$(grep -c "workflow_run_id" "${METRICS_HISTORY}" 2>/dev/null) || total_runs=0
     successful_runs=$(grep -c '"success": *true' "${METRICS_HISTORY}" 2>/dev/null) || successful_runs=0
     

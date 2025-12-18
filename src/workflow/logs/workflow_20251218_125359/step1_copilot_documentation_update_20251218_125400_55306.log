@@ -1,0 +1,201 @@
+I'll analyze the recent changes and update the relevant documentation sections with surgical precision.
+
+✓ $ cd /home/mpb/Documents/GitHub/ai_workflow && git --no-pager log --oneline -10
+    └ 11 lines...
+
+$ cd /home/mpb/Documents/GitHub/ai_workflow && git --no-pager diff HEAD~1 HEAD --stat | head -100
+
+    └ 101 lines...
+
+✓ $ cd /home/mpb/Documents/GitHub/ai_workflow && git --no-pager diff HEAD~1 HEAD --
+   .github/copilot-instructions.md README.md MIGRATION_README.md | head -200
+    └ 84 lines...
+
+✓ $ cd /home/mpb/Documents/GitHub/ai_workflow && git --no-pager log -1 --name-status | head -150
+    └ 151 lines...
+
+✓ $ cd /home/mpb/Documents/GitHub/ai_workflow && git --no-pager diff HEAD~1 HEAD --
+   src/workflow/execute_tests_docs_workflow.sh src/workflow/lib/workflow_optimization.sh
+   src/workflow/lib/metrics.sh | head -300
+    └ 139 lines...
+
+Now I'll analyze the actual changes and update the documentation. The commit shows v2.3.1 features including:
+1. New `--no-resume` flag
+2. Checkpoint file format fixes (quoting)
+3. Metrics calculation fixes
+
+Let me check the current documentation state and make surgical updates.
+
+✓ Read .github/copilot-instructions.md:1-100
+   └ 100 lines read
+
+✓ Read MIGRATION_README.md:1-100
+   └ 100 lines read
+
+✓ Read README.md:1-150
+   └ 111 lines read
+
+Now let me check the specific command-line options section to update it with the --no-resume flag:
+
+✓ Read .github/copilot-instructions.md:200-250
+   └ 51 lines read
+
+✓ Read .github/copilot-instructions.md:145-190
+   └ 46 lines read
+
+Now let me make the surgical updates to document v2.3.1 features:
+
+✓ Edit .github/copilot-instructions.md
+
+✓ Edit .github/copilot-instructions.md
+
+✓ Edit .github/copilot-instructions.md
+
+✓ Edit .github/copilot-instructions.md
+
+✓ Edit .github/copilot-instructions.md
+
+Now update README.md:
+
+✓ Read README.md:40-80
+   └ 41 lines read
+
+✓ Edit README.md
+
+✓ Edit README.md
+
+✓ Edit README.md
+
+Now update MIGRATION_README.md:
+
+✓ Read MIGRATION_README.md:95-140
+   └ 46 lines read
+
+✓ Edit MIGRATION_README.md
+
+✓ Edit MIGRATION_README.md
+
+✓ Edit MIGRATION_README.md
+
+Now let me check if there's a workflow README that needs updating:
+
+✓ Read src/workflow/README.md:1-60
+   └ 60 lines read
+
+✓ Read src/workflow/README.md:60-140
+   └ 81 lines read
+
+✓ Edit src/workflow/README.md
+
+✓ Edit src/workflow/README.md
+
+Now let me check if there are any technical docs that need updating:
+
+✓ $ cd /home/mpb/Documents/GitHub/ai_workflow && grep -l "v2.3.0\|Version.*2.3.0\|2\.3\.0"
+   docs/workflow-automation/*.md 2>/dev/null | head -10
+    └ 2 lines...
+
+✓ Read docs/workflow-automation/COMPREHENSIVE_WORKFLOW_EXECUTION_ANALYSIS.md:1-80
+   └ 80 lines read
+
+✓ Edit docs/workflow-automation/COMPREHENSIVE_WORKFLOW_EXECUTION_ANALYSIS.md
+
+✓ Edit docs/workflow-automation/COMPREHENSIVE_WORKFLOW_EXECUTION_ANALYSIS.md
+
+✓ Edit docs/workflow-automation/COMPREHENSIVE_WORKFLOW_EXECUTION_ANALYSIS.md
+
+Now let me check for any inline code comments that need updating in the modified files:
+
+✓ Read src/workflow/execute_tests_docs_workflow.sh:1-25
+   └ 25 lines read
+
+✓ Read src/workflow/lib/workflow_optimization.sh:1-40
+   └ 40 lines read
+
+✓ Read src/workflow/lib/metrics.sh:1-40
+   └ 40 lines read
+
+✓ Read src/workflow/lib/workflow_optimization.sh:380-420
+   └ 41 lines read
+
+✓ Edit src/workflow/execute_tests_docs_workflow.sh
+
+Good, the checkpoint code already has the fixes. Let me add a comment explaining the fix:
+
+✓ Read src/workflow/lib/workflow_optimization.sh:383-395
+   └ 13 lines read
+
+✓ Read src/workflow/lib/metrics.sh:330-350
+   └ 21 lines read
+
+✓ Edit src/workflow/lib/workflow_optimization.sh
+
+✓ Edit src/workflow/lib/metrics.sh
+
+Now let me verify the changes and create a summary:
+
+✓ $ cd /home/mpb/Documents/GitHub/ai_workflow && git --no-pager diff --stat
+    └ 11 lines...
+
+✓ $ cd /home/mpb/Documents/GitHub/ai_workflow && grep -n "2\.3\.1\|v2\.3\.1"
+   .github/copilot-instructions.md README.md MIGRATION_README.md src/workflow/README.md
+   src/workflow/execute_tests_docs_workflow.sh | head -20
+    └ 13 lines...
+
+Perfect! Now let me create a comprehensive summary of the documentation updates:
+
+✓ $ cd /home/mpb/Documents/GitHub/ai_workflow && git --no-pager diff --shortstat
+    └ 2 lines...
+
+Excellent! Let me now verify that the key documentation sections are correct:
+
+✓ $ cd /home/mpb/Documents/GitHub/ai_workflow && grep -n "\-\-no-resume"
+   .github/copilot-instructions.md README.md MIGRATION_README.md src/workflow/README.md 2>/dev/null
+    └ 11 lines...
+
+Perfect! All documentation has been updated consistently. Let me create a final summary:
+
+✓ $ cat << 'EOF'
+   ## Documentation Update Summary - v2.3.1
+
+   ### Files Updated (9 total)
+   1. .github/copilot-instructions.md - Main AI context document...
+    └ 149 lines...
+
+Perfect! All documentation has been surgically updated to reflect v2.3.1 changes. Here's the final summary:
+
+## Documentation Updates Completed ✅
+
+**Updated 8 documentation files** to reflect v2.3.1 changes (103 insertions, 25 deletions):
+
+### Core Documentation Files
+1. **`.github/copilot-instructions.md`** - Updated version, added `--no-resume` flag documentation, added v2.3.1 version history with bug fixes
+2. **`README.md`** - Updated version, added checkpoint resume feature, added usage example with `--no-resume`
+3. **`MIGRATION_README.md`** - Updated feature list, version history, added checkpoint control documentation
+4. **`src/workflow/README.md`** - Added v2.3.1 features section with checkpoint control and bug fixes
+
+### Technical Documentation
+5. **`docs/workflow-automation/COMPREHENSIVE_WORKFLOW_EXECUTION_ANALYSIS.md`** - Updated workflow version, latest achievement, and feature list
+
+### Code Documentation
+6. **`src/workflow/execute_tests_docs_workflow.sh`** - Updated version header from 2.3.0 to 2.3.1
+7. **`src/workflow/lib/workflow_optimization.sh`** - Added inline comment explaining proper quoting fix (v2.3.1)
+8. **`src/workflow/lib/metrics.sh`** - Added inline comment explaining metrics calculation fix (v2.3.1)
+
+### Key Changes Documented
+- ✅ **New `--no-resume` flag** for forcing fresh workflow starts
+- ✅ **Bug fixes**: Checkpoint file syntax errors and metrics calculation errors
+- ✅ **Checkpoint Resume** feature added to capabilities lists
+- ✅ Version numbers consistently updated to v2.3.1
+- ✅ Command-line options and usage examples enhanced
+- ✅ Inline code comments added for critical fixes
+
+All documentation maintains professional technical writing standards, consistency in terminology, and proper formatting. No unrelated content was modified.
+
+
+Total usage est:       1 Premium request
+Total duration (API):  3m 23.356s
+Total duration (wall): 3m 39.982s
+Total code changes:    0 lines added, 0 lines removed
+Usage by model:
+    claude-sonnet-4.5    1.1m input, 12.2k output, 1.1m cache read (Est. 1 Premium request)

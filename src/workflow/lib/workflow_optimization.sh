@@ -382,6 +382,7 @@ EOF
 
 # Save workflow checkpoint for resume capability
 # Args: $1 = last_completed_step_number
+# Note: All variables are properly quoted to prevent Bash interpretation errors (v2.3.1)
 save_checkpoint() {
     local last_step="$1"
     

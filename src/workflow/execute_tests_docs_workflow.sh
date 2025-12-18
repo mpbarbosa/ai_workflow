@@ -2,7 +2,7 @@
 
 ################################################################################
 # Tests & Documentation Workflow Automation Script
-# Version: 2.3.0
+# Version: 2.3.1
 # Purpose: Automate the complete tests and documentation update workflow
 # Related: /prompts/tests_documentation_update_enhanced.txt
 #
@@ -179,6 +179,9 @@ export NO_RESUME
 # Step execution control
 EXECUTE_STEPS="all"  # Default: execute all steps
 declare -a SELECTED_STEPS
+
+# Configuration wizard control
+INIT_CONFIG_WIZARD=false
 
 # Analysis variables (populated during execution)
 ANALYSIS_COMMITS=""
@@ -416,7 +419,13 @@ log_to_workflow() {
     local message="$*"
     local timestamp=$(date '+%Y-%m-%d %H:%M:%S')
     
-    echo "[${timestamp}] [${level}] ${message}" >> "$WORKFLOW_LOG_FILE"
+    # Only log if log file directory exists (safe for early execution like --init-config)
+    if [[ -n "${WORKFLOW_LOG_FILE:-}" ]]; then
+        local log_dir=$(dirname "$WORKFLOW_LOG_FILE")
+        if [[ -d "$log_dir" ]]; then
+            echo "[${timestamp}] [${level}] ${message}" >> "$WORKFLOW_LOG_FILE"
+        fi
+    fi
 }
 
 # Log step start
@@ -5021,6 +5030,9 @@ OPTIONS:
     --parallel          Enable parallel execution for independent steps (33% faster)
     --no-ai-cache       Disable AI response caching (increases token usage)
     --no-resume         Start from step 0, ignore any checkpoints
+    --show-tech-stack   Display detected tech stack configuration
+    --config-file FILE  Use specific .workflow-config.yaml file
+    --init-config       Run interactive configuration wizard
     --help              Show this help message
     --version           Show script version
 
@@ -5192,6 +5204,26 @@ parse_arguments() {
                 print_info "Fresh start enabled - ignoring any checkpoints"
                 shift
                 ;;
+            --show-tech-stack)
+                SHOW_TECH_STACK=true
+                export SHOW_TECH_STACK
+                shift
+                ;;
+            --config-file)
+                if [[ -z "$2" ]] || [[ "$2" == --* ]]; then
+                    print_error "--config-file requires a file path argument"
+                    exit 1
+                fi
+                TECH_STACK_CONFIG_FILE="$2"
+                export TECH_STACK_CONFIG_FILE
+                print_info "Using config file: $TECH_STACK_CONFIG_FILE"
+                shift 2
+                ;;
+            --init-config)
+                INIT_CONFIG_WIZARD=true
+                export INIT_CONFIG_WIZARD
+                shift
+                ;;
             --help)
                 show_usage
                 exit 0
@@ -5219,6 +5251,26 @@ main() {
     print_header "${SCRIPT_NAME} v${SCRIPT_VERSION}"
     
     parse_arguments "$@"
+    
+    # If --init-config flag is set, run wizard immediately and exit
+    if [[ "${INIT_CONFIG_WIZARD:-false}" == "true" ]]; then
+        print_header "Configuration Wizard"
+        
+        # Change to target project directory
+        cd "$PROJECT_ROOT" || exit 1
+        
+        echo "Project directory: $PROJECT_ROOT"
+        echo ""
+        
+        # Run the wizard
+        if run_config_wizard; then
+            print_success "Configuration wizard completed successfully"
+            exit 0
+        else
+            print_error "Configuration wizard cancelled or failed"
+            exit 1
+        fi
+    fi
     
     if [[ -n "$TARGET_PROJECT_ROOT" ]]; then
         print_info "Running workflow on target project: ${PROJECT_ROOT}"
@@ -5249,6 +5301,50 @@ main() {
     # Initialize git state cache (performance optimization v1.5.0)
     # Captures all git information once to eliminate 30+ redundant git calls
     init_git_cache
+    
+    # Initialize tech stack detection (v2.5.0 Phase 1)
+    # Loads .workflow-config.yaml or auto-detects technology stack
+    if ! init_tech_stack; then
+        print_error "Tech stack initialization failed"
+        log_to_workflow "ERROR" "Tech stack initialization failed"
+        exit 1
+    fi
+    
+    # If --show-tech-stack flag is set, display and exit
+    if [[ "${SHOW_TECH_STACK:-false}" == "true" ]]; then
+        print_header "Tech Stack Configuration"
+        print_tech_stack_summary
+        echo ""
+        print_info "Configuration Details:"
+        echo ""
+        echo "  Primary Language:   ${PRIMARY_LANGUAGE}"
+        echo "  Build System:       ${BUILD_SYSTEM}"
+        echo "  Test Framework:     ${TEST_FRAMEWORK}"
+        echo "  Test Command:       ${TEST_COMMAND}"
+        echo "  Lint Command:       ${LINT_COMMAND}"
+        echo "  Install Command:    ${INSTALL_COMMAND}"
+        echo ""
+        if [[ -n "${TECH_STACK_CONFIG[package_file]:-}" ]]; then
+            echo "  Package File:       ${TECH_STACK_CONFIG[package_file]}"
+        fi
+        if [[ -n "${TECH_STACK_CONFIG[source_dirs]:-}" ]]; then
+            echo "  Source Dirs:        ${TECH_STACK_CONFIG[source_dirs]}"
+        fi
+        if [[ -n "${TECH_STACK_CONFIG[test_dirs]:-}" ]]; then
+            echo "  Test Dirs:          ${TECH_STACK_CONFIG[test_dirs]}"
+        fi
+        echo ""
+        local confidence=$(get_confidence_score "$PRIMARY_LANGUAGE")
+        if [[ $confidence -gt 0 ]]; then
+            echo "  Detection Method:   Auto-detection"
+            echo "  Confidence Score:   ${confidence}%"
+        else
+            echo "  Detection Method:   Configuration file"
+        fi
+        echo ""
+        print_success "Tech stack display complete"
+        exit 0
+    fi
     
     # Initialize AI cache (v2.3.0)
     init_ai_cache

@@ -45,18 +45,22 @@ detect_project_tech_stack_step8() {
     echo "${tech_stack[@]}"
 }
 
-# Main step function - validates dependencies with AI assistance (adaptive)
+# Main step function - validates dependencies with AI assistance (adaptive - Phase 3)
 # Returns: 0 for success, 1 for failure
 step8_validate_dependencies() {
     print_step "8" "Validate Dependencies & Environment"
     
-    # Detect project tech stack first
-    local tech_stack=($(detect_project_tech_stack_step8))
-    print_info "Detected tech stack: ${tech_stack[*]}"
+    # Use global tech stack detection from Phase 3
+    local language="${PRIMARY_LANGUAGE:-javascript}"
+    local build_system="${BUILD_SYSTEM:-npm}"
+    local package_file="${TECH_STACK_CONFIG[package_file]:-package.json}"
     
-    # Skip dependency validation for shell/bash projects
-    if [[ " ${tech_stack[*]} " =~ " shell " ]] && [[ ${#tech_stack[@]} -eq 1 ]]; then
-        print_info "Shell/Bash project detected - no package dependencies to validate"
+    print_info "Tech Stack: ${language}/${build_system}"
+    print_info "Package file: ${package_file}"
+    
+    # Skip dependency validation for languages without package managers
+    if [[ "$language" == "bash" ]] || [[ "$build_system" == "none" ]]; then
+        print_info "Bash/Shell project detected - no package dependencies to validate"
         
         local step_summary="### Dependency Validation - Shell Project
 
@@ -92,13 +96,14 @@ Validation focused on system tools and git repository health.
     dependency_report=$(mktemp)
     TEMP_FILES+=("$dependency_report")
     
-    # PHASE 1: Automated dependency analysis (Node.js specific)
-    if [[ " ${tech_stack[*]} " =~ " nodejs " ]]; then
-        print_info "Phase 1: Automated dependency analysis (Node.js)..."
-        
-        # Check 1: Verify package.json exists and is valid
-        print_info "Validating package.json..."
-        if [[ ! -f "package.json" ]]; then
+    # PHASE 1: Automated dependency analysis (ADAPTIVE - Phase 3)
+    print_info "Phase 1: Automated dependency analysis (${language})..."
+    
+    case "$language" in
+        javascript)
+            # JavaScript/Node.js dependency validation
+            print_info "Validating ${package_file}..."
+            if [[ ! -f "$package_file" ]]; then
             print_error "package.json not found!"
             echo "CRITICAL: Missing package.json" >> "$dependency_report"
             ((issues++))
@@ -213,6 +218,115 @@ CRITICAL: Invalid package.json syntax. Cannot validate dependencies.
     
     print_info "Dependencies: $dep_count, DevDependencies: $dev_dep_count (Total: $total_deps)"
     echo "Dependency count: $dep_count prod, $dev_dep_count dev, $total_deps total" >> "$dependency_report"
+            ;;
+            
+        python)
+            # Python dependency validation
+            print_info "Validating Python dependencies..."
+            if [[ -f "requirements.txt" ]]; then
+                print_success "requirements.txt found"
+                local req_count
+                req_count=$(grep -v "^#" requirements.txt | grep -v "^$" | wc -l)
+                print_info "Requirements: $req_count packages"
+                echo "Python requirements: $req_count packages" >> "$dependency_report"
+            elif [[ -f "pyproject.toml" ]]; then
+                print_success "pyproject.toml found (Poetry)"
+                echo "Python project using Poetry" >> "$dependency_report"
+            else
+                print_warning "No Python dependency file found"
+                echo "Warning: No requirements.txt or pyproject.toml" >> "$dependency_report"
+            fi
+            ;;
+            
+        go)
+            # Go dependency validation
+            print_info "Validating Go modules..."
+            if [[ -f "go.mod" ]]; then
+                print_success "go.mod found"
+                if command -v go &> /dev/null; then
+                    if go mod verify &> /dev/null; then
+                        print_success "Go modules verified"
+                    else
+                        print_warning "Go module verification failed"
+                        echo "Warning: go mod verify failed" >> "$dependency_report"
+                        ((issues++))
+                    fi
+                fi
+            else
+                print_warning "go.mod not found"
+                echo "Warning: No go.mod file" >> "$dependency_report"
+            fi
+            ;;
+            
+        java)
+            # Java dependency validation
+            print_info "Validating Java dependencies..."
+            if [[ -f "pom.xml" ]]; then
+                print_success "pom.xml found (Maven)"
+                echo "Java project using Maven" >> "$dependency_report"
+            elif [[ -f "build.gradle" ]]; then
+                print_success "build.gradle found (Gradle)"
+                echo "Java project using Gradle" >> "$dependency_report"
+            else
+                print_warning "No Java build file found"
+                echo "Warning: No pom.xml or build.gradle" >> "$dependency_report"
+            fi
+            ;;
+            
+        ruby)
+            # Ruby dependency validation
+            print_info "Validating Ruby gems..."
+            if [[ -f "Gemfile" ]]; then
+                print_success "Gemfile found"
+                if [[ -f "Gemfile.lock" ]]; then
+                    print_success "Gemfile.lock found"
+                else
+                    print_warning "Gemfile.lock not found"
+                    echo "Warning: Missing Gemfile.lock" >> "$dependency_report"
+                fi
+            else
+                print_warning "Gemfile not found"
+                echo "Warning: No Gemfile" >> "$dependency_report"
+            fi
+            ;;
+            
+        rust)
+            # Rust dependency validation
+            print_info "Validating Rust dependencies..."
+            if [[ -f "Cargo.toml" ]]; then
+                print_success "Cargo.toml found"
+                if [[ -f "Cargo.lock" ]]; then
+                    print_success "Cargo.lock found"
+                else
+                    print_warning "Cargo.lock not found"
+                    echo "Warning: Missing Cargo.lock" >> "$dependency_report"
+                fi
+            else
+                print_warning "Cargo.toml not found"
+                echo "Warning: No Cargo.toml" >> "$dependency_report"
+            fi
+            ;;
+            
+        cpp)
+            # C++ dependency validation
+            print_info "Validating C++ build configuration..."
+            if [[ -f "CMakeLists.txt" ]]; then
+                print_success "CMakeLists.txt found"
+                echo "C++ project using CMake" >> "$dependency_report"
+            elif [[ -f "Makefile" ]]; then
+                print_success "Makefile found"
+                echo "C++ project using Make" >> "$dependency_report"
+            else
+                print_warning "No C++ build file found"
+                echo "Warning: No CMakeLists.txt or Makefile" >> "$dependency_report"
+            fi
+            ;;
+            
+        *)
+            print_info "No language-specific dependency validation for: $language"
+            echo "Language: $language (no specific validation)" >> "$dependency_report"
+            ;;
+    esac
     
     # PHASE 2: AI-powered dependency strategy analysis
     print_info "Phase 2: Preparing AI-powered dependency analysis..."
@@ -295,27 +409,7 @@ CRITICAL: Invalid package.json syntax. Cannot validate dependencies.
         fi
     fi
     
-    else
-        # For non-Node.js projects (Python, Ruby, Go, etc.)
-        print_info "Non-Node.js project detected - dependency validation not yet implemented"
-        
-        local step_summary="### Dependency Validation - Non-Node.js Project
-
-**Tech Stack:** ${tech_stack[*]}
-**Status:** ⚠️  SKIPPED (Not yet implemented)
-
-Dependency validation for ${tech_stack[*]} projects is not yet implemented.
-Manual dependency review recommended.
-"
-        save_step_issues "8" "Dependency_Validation" "$step_summary"
-        save_step_summary "8" "Dependency_Validation" "${tech_stack[*]} project - validation not implemented" "⚠️"
-        update_workflow_status "step8" "⚠️"
-        
-        cd "$PROJECT_ROOT" || return 1
-        return 0
-    fi
-    
-    # Handle critical dependency issues (Node.js only)
+    # Handle critical dependency issues
     if [[ $issues -gt 0 ]]; then
         if confirm_action "Critical dependency issues found - continue workflow?"; then
             print_warning "Continuing despite dependency issues"

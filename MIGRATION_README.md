@@ -57,7 +57,7 @@ ai_workflow/
 
 ### Key Features
 
-**Version:** v2.3.0 (Phase 2 Complete)  
+**Version:** v2.3.1 (Critical Fixes & Checkpoint Control)  
 **Total Modules:** 33 (20 libraries + 13 steps)  
 **Total Lines:** 19,053 lines of production code + 762 YAML config  
 **Test Coverage:** 37 tests with 100% pass rate
@@ -67,11 +67,12 @@ ai_workflow/
 2. **Smart Execution**: Change-based step skipping (40-85% faster)
 3. **Parallel Execution**: Independent steps run simultaneously (33% faster)
 4. **AI Response Caching**: 60-80% token reduction (24-hour TTL)
-5. **Metrics Collection**: Automatic performance tracking and historical analysis
-6. **Dependency Graph**: Interactive visualization with Mermaid diagrams
-7. **Target Project Support**: Run on any project with --target option
-8. **AI Integration**: GitHub Copilot CLI with 13 specialized personas
-9. **YAML Configuration**: Externalized prompt templates (762 lines)
+5. **Checkpoint Resume**: Automatic workflow continuation (--no-resume to disable)
+6. **Metrics Collection**: Automatic performance tracking and historical analysis
+7. **Dependency Graph**: Interactive visualization with Mermaid diagrams
+8. **Target Project Support**: Run on any project with --target option
+9. **AI Integration**: GitHub Copilot CLI with 13 specialized personas
+10. **YAML Configuration**: Externalized prompt templates (762 lines)
 
 ## Getting Started
 
@@ -105,6 +106,9 @@ cd /path/to/your/project
 # Preview dependency graph
 ./src/workflow/execute_tests_docs_workflow.sh --show-graph
 
+# Force fresh start (ignore checkpoints)
+./src/workflow/execute_tests_docs_workflow.sh --no-resume --auto
+
 # Preview without executing
 ./src/workflow/execute_tests_docs_workflow.sh --dry-run
 ```
@@ -133,7 +137,7 @@ Expected output: 37 tests, 100% pass rate ✅
    - 37 automated tests documentation
 
 3. **WORKFLOW_AUTOMATION_VERSION_EVOLUTION.md**
-   - Complete version history (v1.0.0 to v2.3.0)
+   - Complete version history (v1.0.0 to v2.3.1)
    - Feature evolution timeline
    - Migration guides
 

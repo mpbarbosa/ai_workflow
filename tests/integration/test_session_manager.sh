@@ -7,10 +7,11 @@
 
 # Source the module to test
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-source "${SCRIPT_DIR}/lib/colors.sh"
-source "${SCRIPT_DIR}/lib/config.sh"
-source "${SCRIPT_DIR}/lib/utils.sh"
-source "${SCRIPT_DIR}/lib/session_manager.sh"
+WORKFLOW_LIB_DIR="${SCRIPT_DIR}/../../src/workflow/lib"
+source "${WORKFLOW_LIB_DIR}/colors.sh"
+source "${WORKFLOW_LIB_DIR}/config.sh"
+source "${WORKFLOW_LIB_DIR}/utils.sh"
+source "${WORKFLOW_LIB_DIR}/session_manager.sh"
 
 # Test counters
 TESTS_RUN=0

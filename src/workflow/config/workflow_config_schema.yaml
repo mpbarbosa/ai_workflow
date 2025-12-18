@@ -1,0 +1,306 @@
+# Configuration Schema for AI Workflow Automation
+# Version: 1.0.0
+# Date: 2025-12-18
+#
+# This schema defines the structure and validation rules for .workflow-config.yaml
+
+version: "1.0"
+
+# Required fields that must be present
+required_fields:
+  - tech_stack.primary_language
+
+# Optional but recommended fields
+recommended_fields:
+  - project.name
+  - tech_stack.build_system
+  - tech_stack.test_framework
+  - structure.source_dirs
+  - structure.test_dirs
+
+# Field definitions with validation rules
+fields:
+  project:
+    name:
+      type: string
+      description: "Project display name"
+      max_length: 100
+    description:
+      type: string
+      description: "Brief project description"
+      max_length: 500
+    repository:
+      type: string
+      description: "Repository URL"
+      pattern: "^https?://.*"
+  
+  tech_stack:
+    primary_language:
+      type: enum
+      description: "Main programming language"
+      required: true
+      values:
+        - javascript
+        - python
+        - go
+        - java
+        - ruby
+        - rust
+        - cpp
+        - bash
+    
+    languages:
+      type: array
+      description: "Additional languages (optional)"
+      items:
+        type: enum
+        values:
+          - javascript
+          - python
+          - go
+          - java
+          - ruby
+          - rust
+          - cpp
+          - bash
+          - typescript
+          - css
+          - html
+          - shell
+    
+    build_system:
+      type: string
+      description: "Build/package manager"
+      examples:
+        - npm
+        - yarn
+        - pnpm
+        - pip
+        - poetry
+        - pipenv
+        - "go mod"
+        - maven
+        - gradle
+        - bundler
+        - cargo
+        - cmake
+        - make
+    
+    build_tools:
+      type: array
+      description: "Additional build tools (optional)"
+      items:
+        type: string
+    
+    test_framework:
+      type: string
+      description: "Testing framework"
+      examples:
+        - jest
+        - mocha
+        - vitest
+        - pytest
+        - unittest
+        - "go test"
+        - junit
+        - testng
+        - rspec
+        - minitest
+        - "cargo test"
+        - gtest
+        - catch2
+    
+    test_command:
+      type: string
+      description: "Command to run tests"
+      examples:
+        - "npm test"
+        - "pytest"
+        - "go test ./..."
+        - "mvn test"
+    
+    linter:
+      type: string
+      description: "Code linter"
+      examples:
+        - eslint
+        - pylint
+        - flake8
+        - golint
+        - checkstyle
+        - rubocop
+        - clippy
+    
+    lint_command:
+      type: string
+      description: "Command to run linter"
+  
+  structure:
+    source_dirs:
+      type: array
+      description: "Source code directories"
+      items:
+        type: string
+      default: ["src"]
+    
+    test_dirs:
+      type: array
+      description: "Test directories"
+      items:
+        type: string
+      default: ["tests", "test"]
+    
+    docs_dirs:
+      type: array
+      description: "Documentation directories"
+      items:
+        type: string
+      default: ["docs"]
+    
+    exclude_dirs:
+      type: array
+      description: "Directories to exclude from processing"
+      items:
+        type: string
+      examples:
+        - node_modules
+        - venv
+        - .venv
+        - __pycache__
+        - dist
+        - build
+        - target
+        - vendor
+    
+    entry_point:
+      type: string
+      description: "Main entry point file (optional)"
+  
+  dependencies:
+    package_file:
+      type: string
+      description: "Primary dependency file"
+      examples:
+        - package.json
+        - requirements.txt
+        - pyproject.toml
+        - go.mod
+        - pom.xml
+        - build.gradle
+        - Gemfile
+        - Cargo.toml
+    
+    lock_file:
+      type: string
+      description: "Lock file (optional)"
+      examples:
+        - package-lock.json
+        - yarn.lock
+        - poetry.lock
+        - go.sum
+        - Gemfile.lock
+        - Cargo.lock
+    
+    install_command:
+      type: string
+      description: "Command to install dependencies"
+      examples:
+        - "npm install"
+        - "pip install -r requirements.txt"
+        - "go mod download"
+        - "mvn install"
+  
+  ai_prompts:
+    language_context:
+      type: string
+      description: "Additional context for AI prompts"
+      max_length: 2000
+    
+    custom_instructions:
+      type: array
+      description: "Custom AI instructions (optional)"
+      items:
+        type: string
+
+# Validation rules
+validation_rules:
+  - name: "primary_language_in_languages"
+    description: "If languages array is specified, it must include primary_language"
+    check: "tech_stack.languages must contain tech_stack.primary_language"
+  
+  - name: "source_dirs_exist"
+    description: "Source directories should exist"
+    check: "structure.source_dirs paths should exist"
+    severity: warning
+  
+  - name: "test_dirs_exist"
+    description: "Test directories should exist"
+    check: "structure.test_dirs paths should exist"
+    severity: warning
+  
+  - name: "package_file_exists"
+    description: "Package file should exist"
+    check: "dependencies.package_file should exist"
+    severity: warning
+  
+  - name: "commands_executable"
+    description: "Specified commands should be executable"
+    check: "Commands in test_command, lint_command, install_command should be in PATH"
+    severity: warning
+
+# Error messages
+error_messages:
+  missing_required_field: "Required field '{field}' is missing"
+  invalid_enum_value: "Invalid value '{value}' for field '{field}'. Valid values: {valid_values}"
+  invalid_type: "Field '{field}' must be of type {expected_type}, got {actual_type}"
+  validation_failed: "Validation rule '{rule}' failed: {message}"
+
+# Supported language metadata
+supported_languages:
+  javascript:
+    display_name: "JavaScript/Node.js"
+    aliases: [js, node, nodejs]
+    default_build_system: npm
+    default_test_framework: jest
+  
+  python:
+    display_name: "Python"
+    aliases: [py]
+    default_build_system: pip
+    default_test_framework: pytest
+  
+  go:
+    display_name: "Go"
+    aliases: [golang]
+    default_build_system: "go mod"
+    default_test_framework: "go test"
+  
+  java:
+    display_name: "Java"
+    aliases: []
+    default_build_system: maven
+    default_test_framework: junit
+  
+  ruby:
+    display_name: "Ruby"
+    aliases: [rb]
+    default_build_system: bundler
+    default_test_framework: rspec
+  
+  rust:
+    display_name: "Rust"
+    aliases: [rs]
+    default_build_system: cargo
+    default_test_framework: "cargo test"
+  
+  cpp:
+    display_name: "C/C++"
+    aliases: [c, "c++", cxx]
+    default_build_system: cmake
+    default_test_framework: gtest
+  
+  bash:
+    display_name: "Bash/Shell"
+    aliases: [sh, shell]
+    default_build_system: null
+    default_test_framework: bats

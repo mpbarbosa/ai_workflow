@@ -1,7 +1,7 @@
 # GitHub Copilot Instructions - AI Workflow Automation
 
 **Repository**: ai_workflow  
-**Version**: v2.3.0  
+**Version**: v2.3.1  
 **Last Updated**: 2025-12-18
 
 ## Project Overview
@@ -16,6 +16,7 @@ AI Workflow Automation is an intelligent workflow system for validating and enha
 - **Smart Execution**: Change-based step skipping (40-85% faster)
 - **Parallel Execution**: Independent steps run simultaneously (33% faster)
 - **AI Response Caching**: 60-80% token usage reduction with automatic TTL management
+- **Checkpoint Resume**: Automatic workflow continuation from last completed step
 - **Metrics Collection**: Automatic performance tracking and historical analysis
 - **Dependency Visualization**: Interactive graph with Mermaid diagrams
 - **100% Test Coverage**: 37 automated tests ensure reliability
@@ -177,7 +178,7 @@ src/workflow/
 
 ## Development Workflow
 
-### Command-Line Options (v2.3.0)
+### Command-Line Options (v2.3.1)
 
 ```bash
 # Basic usage - runs on current directory by default
@@ -202,6 +203,9 @@ cd /path/to/project
 # Disable AI caching (caching enabled by default)
 ./execute_tests_docs_workflow.sh --no-ai-cache
 
+# Force fresh start (ignore checkpoints)
+./execute_tests_docs_workflow.sh --no-resume
+
 # Selective step execution
 ./execute_tests_docs_workflow.sh --steps 0,5,6,7
 
@@ -209,7 +213,7 @@ cd /path/to/project
 ./execute_tests_docs_workflow.sh --dry-run
 ```
 
-### Performance Characteristics (v2.3.0)
+### Performance Characteristics (v2.3.1)
 
 | Change Type | Baseline | Smart | Parallel | Combined |
 |-------------|----------|-------|----------|----------|
@@ -217,7 +221,8 @@ cd /path/to/project
 | Code Changes | 23 min | 14 min (40% faster) | 15.5 min (33% faster) | 10 min (57% faster) |
 | Full Changes | 23 min | 23 min (baseline) | 15.5 min (33% faster) | 15.5 min (33% faster) |
 
-**AI Response Caching**: 60-80% token usage reduction with 24-hour TTL
+**AI Response Caching**: 60-80% token usage reduction with 24-hour TTL  
+**Checkpoint Resume**: Automatic continuation from last completed step (use `--no-resume` to disable)
 
 ### Testing
 
@@ -284,6 +289,22 @@ The system uses 13 specialized AI personas for different tasks:
 Each persona has specialized prompts in `ai_helpers.yaml`.
 
 ## Version History
+
+### v2.3.1 (2025-12-18) - Critical Fixes & Checkpoint Control
+
+**New Features**:
+- ✅ `--no-resume` flag to bypass checkpoint resume functionality
+- ✅ Force fresh workflow start from Step 0 when needed
+
+**Bug Fixes**:
+- ✅ Fixed checkpoint file Bash syntax errors (proper variable quoting)
+- ✅ Fixed metrics calculation arithmetic errors in historical stats
+- ✅ Resolved "command not found" errors in checkpoint files
+
+**Improvements**:
+- Enhanced checkpoint file format with proper quoting
+- Improved error handling in metrics calculations
+- Added comprehensive project critical analysis documentation
 
 ### v2.3.0 (2025-12-18) - Phase 2 Integration Complete
 

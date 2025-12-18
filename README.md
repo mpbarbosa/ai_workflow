@@ -3,7 +3,7 @@
 Intelligent workflow automation system for validating and enhancing documentation, code, and tests with AI support.
 
 **Migrated from**: mpbarbosa_site repository (2025-12-18)  
-**Version**: v2.3.0  
+**Version**: v2.3.1  
 **Repository**: [github.com/mpbarbosa/ai_workflow](https://github.com/mpbarbosa/ai_workflow)
 
 ## Overview
@@ -15,10 +15,11 @@ This repository provides a comprehensive, modular workflow automation system tha
 - **13-Step Automated Pipeline**: Complete workflow from analysis to finalization
 - **20 Library Modules**: Modular architecture with AI caching and advanced optimization (19 .sh modules + 1 .yaml config)
 - **AI Integration**: GitHub Copilot CLI with 13 specialized personas
-- **Smart Execution** (NEW v2.3): Skip steps based on change detection (40-85% faster)
-- **Parallel Execution** (NEW v2.3): Run independent steps simultaneously (33% faster)
-- **AI Response Caching** (NEW v2.3): Reduce token usage by 60-80%
-- **Target Project Support** (NEW v2.3): Run on any project with --target option
+- **Smart Execution** (v2.3): Skip steps based on change detection (40-85% faster)
+- **Parallel Execution** (v2.3): Run independent steps simultaneously (33% faster)
+- **AI Response Caching** (v2.3): Reduce token usage by 60-80%
+- **Target Project Support** (v2.3): Run on any project with --target option
+- **Checkpoint Resume** (v2.3): Automatic workflow continuation (use --no-resume to disable)
 - **Metrics Collection**: Automatic performance tracking and historical analysis
 - **Dependency Visualization**: Interactive graph showing execution flow
 - **100% Test Coverage**: 37 automated tests ensure reliability
@@ -32,9 +33,12 @@ This repository provides a comprehensive, modular workflow automation system tha
 git clone git@github.com:mpbarbosa/ai_workflow.git
 cd ai_workflow
 
-# Run workflow tests
-cd src/workflow/lib
-./test_enhancements.sh
+# Run all tests
+./tests/run_all_tests.sh
+
+# Run specific test suites
+./tests/run_all_tests.sh --unit          # Unit tests only
+./tests/run_all_tests.sh --integration   # Integration tests only
 ```
 
 ### Applying to Target Projects
@@ -57,12 +61,18 @@ cd ai_workflow
   --parallel \
   --auto
 
-# Option 3: With dependency visualization
+# Option 3: Force fresh start (ignore checkpoints)
+cd /path/to/your/project
+/path/to/ai_workflow/src/workflow/execute_tests_docs_workflow.sh \
+  --no-resume \
+  --auto
+
+# Option 4: With dependency visualization
 cd /path/to/your/project
 /path/to/ai_workflow/src/workflow/execute_tests_docs_workflow.sh \
   --show-graph
 
-# Option 4: Copy workflow to target project
+# Option 5: Copy workflow to target project
 cp -r ai_workflow/src/workflow /path/to/target/project/src/
 cd /path/to/target/project
 ./src/workflow/execute_tests_docs_workflow.sh
@@ -72,6 +82,7 @@ cd /path/to/target/project
 - Use `--smart-execution` for 40-85% faster execution
 - Use `--parallel` for 33% additional speed improvement
 - AI responses cached automatically (60-80% token savings)
+- Checkpoint resume enabled by default (use `--no-resume` for fresh start)
 - Combined optimizations: Up to 90% faster for simple changes
 
 ## Documentation
@@ -91,6 +102,10 @@ ai_workflow/
 │   ├── steps/                     # 13 step modules (3,200 lines)
 │   ├── config/                    # YAML configuration
 │   └── backlog/                   # Execution history
+├── tests/                         # Comprehensive test suite
+│   ├── unit/                      # Unit tests (4 tests)
+│   ├── integration/               # Integration tests (5 tests)
+│   └── run_all_tests.sh          # Master test runner
 ├── MIGRATION_README.md            # Migration documentation
 └── README.md                      # This file
 ```

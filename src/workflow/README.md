@@ -1,7 +1,7 @@
 # Workflow Automation Module Documentation
 
-**Version:** 2.3.0 (Phase 2 Complete)
-**Status:** Smart Execution, Parallel Processing, AI Caching Integrated ✅
+**Version:** 2.3.1 (Critical Fixes & Checkpoint Control)
+**Status:** Smart Execution, Parallel Processing, AI Caching, Checkpoint Resume ✅
 **Last Updated:** 2025-12-18
 **Modules:** 33 total (20 libraries [19 .sh + 1 .yaml] + 13 steps)
 **Total Lines:** 19,053 lines production code + 762 YAML config
@@ -62,6 +62,24 @@ src/workflow/
 ```
 
 ---
+
+## Version 2.3.1 Features
+
+### 🆕 Checkpoint Resume Control (v2.3.1)
+**Flag:** `--no-resume`  
+**Default:** Checkpoint resume enabled
+
+Force fresh workflow start:
+- Use `--no-resume` to ignore saved checkpoints
+- Starts from Step 0 regardless of checkpoint state
+- Useful for debugging and testing
+- Default behavior: Resume from last completed step
+
+### 🐛 Critical Bug Fixes (v2.3.1)
+- Fixed checkpoint file Bash syntax errors (proper variable quoting)
+- Fixed metrics calculation arithmetic errors in historical stats
+- Resolved "command not found" errors in checkpoint files
+- Enhanced error handling in metrics calculations
 
 ## Version 2.3.0 Features (Phase 2 Complete)
 

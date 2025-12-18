@@ -23,19 +23,43 @@ step9_code_quality_validation() {
     local quality_report=$(mktemp)
     TEMP_FILES+=("$quality_report")
     
-    # PHASE 1: Automated code quality checks
-    print_info "Phase 1: Automated code quality analysis..."
+    # PHASE 1: Automated code quality checks (ADAPTIVE - Phase 3)
+    local language="${PRIMARY_LANGUAGE:-javascript}"
+    local lint_cmd="${LINT_COMMAND:-npm run lint}"
     
-    # Check 1: Enumerate code files
-    print_info "Enumerating code files..."
-    local js_files=$(fast_find "." "*.js" 10 "node_modules" ".git" "coverage" | wc -l)
-    js_files=$((js_files + $(fast_find "." "*.mjs" 10 "node_modules" ".git" "coverage" | wc -l)))
-    local html_files=$(fast_find "." "*.html" 10 "node_modules" ".git" "coverage" | wc -l)
-    local css_files=$(fast_find "." "*.css" 10 "node_modules" ".git" "coverage" | wc -l)
-    local total_files=$((js_files + html_files + css_files))
+    print_info "Phase 1: Automated code quality analysis (${language})..."
+    print_info "Linter command: $lint_cmd"
     
-    print_info "Code files: $js_files JS, $html_files HTML, $css_files CSS (Total: $total_files)"
-    echo "File count: $js_files JavaScript, $html_files HTML, $css_files CSS" >> "$quality_report"
+    # Check 1: Enumerate code files (adaptive)
+    print_info "Enumerating ${language} code files..."
+    local source_files_list=$(find_source_files 2>/dev/null || echo "")
+    local source_file_count=$(echo "$source_files_list" | grep -v "^$" | wc -l)
+    
+    print_info "Source files: $source_file_count"
+    echo "File count: $source_file_count ${language} files" >> "$quality_report"
+    
+    # Check 1.5: Run language-specific linter (ADAPTIVE)
+    if [[ -n "$lint_cmd" ]] && [[ "$lint_cmd" != *"npm run lint"* ]] || command -v npm &> /dev/null; then
+        print_info "Running ${language} linter..."
+        local lint_output=$(mktemp)
+        TEMP_FILES+=("$lint_output")
+        
+        if [[ "$DRY_RUN" == true ]]; then
+            print_info "[DRY RUN] Would execute: $lint_cmd"
+        else
+            if eval "$lint_cmd" > "$lint_output" 2>&1; then
+                print_success "Linter passed with no issues"
+            else
+                print_warning "Linter found issues"
+                local lint_issue_count=$(wc -l < "$lint_output" 2>/dev/null || echo 0)
+                echo "Linter issues: $lint_issue_count" >> "$quality_report"
+                head -20 "$lint_output" >> "$quality_report" 2>/dev/null
+                ((quality_issues++))
+            fi
+        fi
+    else
+        print_info "No linter configured for ${language}"
+    fi
     
     # Check 2: Analyze file sizes and complexity
     print_info "Analyzing code complexity..."

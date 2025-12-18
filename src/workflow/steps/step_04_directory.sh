@@ -39,17 +39,51 @@ step4_validate_directory_structure() {
     
     # Check 2: Validate expected critical directories exist
     print_info "Validating critical directories..."
-    local critical_dirs=("src" "docs" "shell_scripts" ".github" "public")
+    
+    # Determine expected directories based on project configuration
+    local critical_dirs=()
+    
+    # Check if we have tech stack configuration
+    if [[ -f ".workflow-config.yaml" ]] && command -v yq &>/dev/null; then
+        # Load source, test, and docs dirs from config
+        # Note: yq syntax varies - try both versions (mikefarah's yq uses 'e' flag, kislyuk's doesn't)
+        local config_src_dirs=$(yq '.structure.source_dirs[]' .workflow-config.yaml 2>/dev/null || yq e '.structure.source_dirs[]' .workflow-config.yaml 2>/dev/null)
+        local config_test_dirs=$(yq '.structure.test_dirs[]' .workflow-config.yaml 2>/dev/null || yq e '.structure.test_dirs[]' .workflow-config.yaml 2>/dev/null)
+        local config_docs_dirs=$(yq '.structure.docs_dirs[]' .workflow-config.yaml 2>/dev/null || yq e '.structure.docs_dirs[]' .workflow-config.yaml 2>/dev/null)
+        
+        # Add to critical dirs if they exist in config (strip quotes from yq output)
+        [[ -n "$config_src_dirs" ]] && while read -r dir; do dir=$(echo "$dir" | tr -d '"'); [[ -n "$dir" ]] && critical_dirs+=("$dir"); done <<< "$config_src_dirs"
+        [[ -n "$config_test_dirs" ]] && while read -r dir; do dir=$(echo "$dir" | tr -d '"'); [[ -n "$dir" ]] && critical_dirs+=("$dir"); done <<< "$config_test_dirs"
+        [[ -n "$config_docs_dirs" ]] && while read -r dir; do dir=$(echo "$dir" | tr -d '"'); [[ -n "$dir" ]] && critical_dirs+=("$dir"); done <<< "$config_docs_dirs"
+    else
+        # Fallback: use generic defaults appropriate for most projects
+        # Only include .github as it's common across all project types
+        critical_dirs=(".github")
+        
+        # Add common directories if they exist (non-critical)
+        [[ -d "src" ]] && critical_dirs+=("src")
+        [[ -d "docs" ]] && critical_dirs+=("docs")
+        [[ -d "lib" ]] && critical_dirs+=("lib")
+        [[ -d "bin" ]] && critical_dirs+=("bin")
+        [[ -d "tests" ]] && critical_dirs+=("tests")
+        [[ -d "test" ]] && critical_dirs+=("test")
+    fi
+    
     local missing_critical=0
     
-    for dir in "${critical_dirs[@]}"; do
-        if [[ ! -d "$dir" ]]; then
-            print_warning "Critical directory missing: $dir"
-            echo "Missing critical: $dir" >> "$structure_issues_file"
-            ((missing_critical++))
-            ((issues++))
-        fi
-    done
+    # Only validate if we have critical dirs defined
+    if [[ ${#critical_dirs[@]} -gt 0 ]]; then
+        for dir in "${critical_dirs[@]}"; do
+            if [[ ! -d "$dir" ]]; then
+                print_warning "Expected directory missing: $dir"
+                echo "Missing expected: $dir" >> "$structure_issues_file"
+                ((missing_critical++))
+                ((issues++))
+            fi
+        done
+    else
+        print_info "No critical directories defined, skipping validation"
+    fi
     
     # Check 3: Identify undocumented directories
     print_info "Checking for undocumented directories..."
@@ -91,8 +125,12 @@ step4_validate_directory_structure() {
     if [[ -f ".github/copilot-instructions.md" ]]; then
         # Look for directory structure documentation
         if grep -q "directory structure\|Directory Structure\|File Structure" ".github/copilot-instructions.md" 2>/dev/null; then
-            # Basic check: are the key directories mentioned?
-            local key_dirs=("src" "docs" "shell_scripts" "public")
+            # Use config-defined directories or auto-detected ones
+            local key_dirs=()
+            if [[ ${#critical_dirs[@]} -gt 0 ]]; then
+                key_dirs=("${critical_dirs[@]}")
+            fi
+            
             for dir in "${key_dirs[@]}"; do
                 if grep -q "$dir" ".github/copilot-instructions.md" 2>/dev/null; then
                     if [[ ! -d "$dir" ]]; then

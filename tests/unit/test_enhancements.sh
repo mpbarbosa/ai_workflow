@@ -11,10 +11,11 @@ set -uo pipefail
 
 # Script directory
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-PROJECT_ROOT="$(cd "${SCRIPT_DIR}/../../.." && pwd)"
+PROJECT_ROOT="$(cd "${SCRIPT_DIR}/../.." && pwd)"
+WORKFLOW_LIB_DIR="${PROJECT_ROOT}/src/workflow/lib"
 
 # Load color definitions
-source "${SCRIPT_DIR}/colors.sh"
+source "${WORKFLOW_LIB_DIR}/colors.sh"
 
 # Test counters
 TESTS_RUN=0
@@ -131,8 +132,8 @@ test_metrics_module() {
     export INTERACTIVE_MODE=true
     
     # Source config and metrics modules
-    source "${SCRIPT_DIR}/config.sh"
-    source "${SCRIPT_DIR}/metrics.sh"
+    source "${WORKFLOW_LIB_DIR}/config.sh"
+    source "${WORKFLOW_LIB_DIR}/metrics.sh"
     
     # Test 1: Initialization
     init_metrics
@@ -190,8 +191,8 @@ test_change_detection_module() {
     export BACKLOG_RUN_DIR="${PROJECT_ROOT}/src/workflow/backlog/${WORKFLOW_RUN_ID}"
     
     # Source modules
-    source "${SCRIPT_DIR}/config.sh"
-    source "${SCRIPT_DIR}/change_detection.sh"
+    source "${WORKFLOW_LIB_DIR}/config.sh"
+    source "${WORKFLOW_LIB_DIR}/change_detection.sh"
     
     # Test 1: Pattern matching
     if matches_pattern "README.md" "*.md|*.txt"; then
@@ -260,8 +261,8 @@ test_dependency_graph_module() {
     export BACKLOG_RUN_DIR="${PROJECT_ROOT}/src/workflow/backlog/${WORKFLOW_RUN_ID}"
     
     # Source modules
-    source "${SCRIPT_DIR}/config.sh"
-    source "${SCRIPT_DIR}/dependency_graph.sh"
+    source "${WORKFLOW_LIB_DIR}/config.sh"
+    source "${WORKFLOW_LIB_DIR}/dependency_graph.sh"
     
     # Test 1: Dependency checking - no dependencies
     if check_dependencies 0 ""; then
@@ -345,10 +346,10 @@ test_module_integration() {
     export SCRIPT_VERSION="2.0.0"
     
     # Source all modules
-    source "${SCRIPT_DIR}/config.sh"
-    source "${SCRIPT_DIR}/metrics.sh"
-    source "${SCRIPT_DIR}/change_detection.sh"
-    source "${SCRIPT_DIR}/dependency_graph.sh"
+    source "${WORKFLOW_LIB_DIR}/config.sh"
+    source "${WORKFLOW_LIB_DIR}/metrics.sh"
+    source "${WORKFLOW_LIB_DIR}/change_detection.sh"
+    source "${WORKFLOW_LIB_DIR}/dependency_graph.sh"
     
     # Test 1: Metrics + Change Detection
     init_metrics

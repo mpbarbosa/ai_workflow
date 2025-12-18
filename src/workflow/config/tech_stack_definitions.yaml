@@ -1,0 +1,568 @@
+# Tech Stack Language Definitions
+# Version: 1.0.0
+# Date: 2025-12-18
+#
+# Centralized language definitions for tech stack detection
+# Each language has detection signals, file patterns, and default configurations
+
+version: "1.0"
+
+# Language Definitions
+languages:
+  
+  # ============================================================================
+  # JavaScript/Node.js
+  # ============================================================================
+  javascript:
+    display_name: "JavaScript/Node.js"
+    aliases: [js, node, nodejs]
+    
+    # Detection signals with weights (max 100 points)
+    package_files:
+      - name: "package.json"
+        weight: 50
+        required_fields: [name, version]
+      - name: "package-lock.json"
+        weight: 20
+      - name: "yarn.lock"
+        weight: 20
+      - name: "pnpm-lock.yaml"
+        weight: 20
+    
+    directories:
+      - name: "node_modules"
+        weight: 10
+    
+    config_files:
+      - name: ".eslintrc"
+        weight: 5
+      - name: ".eslintrc.js"
+        weight: 5
+      - name: ".eslintrc.json"
+        weight: 5
+      - name: "jest.config.js"
+        weight: 5
+      - name: ".prettierrc"
+        weight: 3
+      - name: "tsconfig.json"
+        weight: 5
+    
+    source_extensions: [".js", ".jsx", ".mjs", ".cjs", ".ts", ".tsx"]
+    test_patterns: ["*.test.js", "*.spec.js", "*.test.ts", "*.spec.ts", "__tests__/**"]
+    exclude_dirs: ["node_modules", "dist", "build", "coverage", ".next", "out"]
+    
+    build_systems:
+      npm:
+        default: true
+        detection: ["package-lock.json"]
+      yarn:
+        detection: ["yarn.lock"]
+      pnpm:
+        detection: ["pnpm-lock.yaml"]
+    
+    test_frameworks:
+      jest:
+        default: true
+        detection: ["jest.config.js", "jest.config.json"]
+      mocha:
+        detection: ["mocha.opts", ".mocharc.json"]
+      vitest:
+        detection: ["vitest.config.js"]
+    
+    linters:
+      eslint:
+        default: true
+        detection: [".eslintrc", ".eslintrc.js", ".eslintrc.json"]
+      prettier:
+        detection: [".prettierrc", "prettier.config.js"]
+    
+    commands:
+      install: "npm install"
+      test: "npm test"
+      test_verbose: "npm test -- --verbose"
+      test_coverage: "npm test -- --coverage"
+      lint: "npm run lint"
+      build: "npm run build"
+      clean: "rm -rf node_modules dist build"
+  
+  # ============================================================================
+  # Python
+  # ============================================================================
+  python:
+    display_name: "Python"
+    aliases: [py]
+    
+    package_files:
+      - name: "requirements.txt"
+        weight: 40
+      - name: "pyproject.toml"
+        weight: 50
+      - name: "setup.py"
+        weight: 35
+      - name: "Pipfile"
+        weight: 40
+      - name: "poetry.lock"
+        weight: 20
+      - name: "Pipfile.lock"
+        weight: 20
+    
+    directories:
+      - name: "venv"
+        weight: 10
+      - name: ".venv"
+        weight: 10
+      - name: "__pycache__"
+        weight: 5
+    
+    config_files:
+      - name: "pytest.ini"
+        weight: 5
+      - name: "setup.cfg"
+        weight: 5
+      - name: "tox.ini"
+        weight: 3
+      - name: ".pylintrc"
+        weight: 3
+      - name: "mypy.ini"
+        weight: 3
+    
+    source_extensions: [".py", ".pyw", ".pyx"]
+    test_patterns: ["test_*.py", "*_test.py", "tests/**", "test/**"]
+    exclude_dirs: ["venv", ".venv", "__pycache__", ".pytest_cache", "dist", "build", "*.egg-info"]
+    
+    build_systems:
+      pip:
+        default: true
+        detection: ["requirements.txt"]
+      poetry:
+        detection: ["pyproject.toml", "poetry.lock"]
+      pipenv:
+        detection: ["Pipfile", "Pipfile.lock"]
+    
+    test_frameworks:
+      pytest:
+        default: true
+        detection: ["pytest.ini", "pyproject.toml"]
+      unittest:
+        detection: []
+      nose:
+        detection: [".noserc"]
+    
+    linters:
+      pylint:
+        default: true
+        detection: [".pylintrc", "pylintrc"]
+      flake8:
+        detection: [".flake8", "setup.cfg"]
+      black:
+        detection: ["pyproject.toml"]
+      mypy:
+        detection: ["mypy.ini", "pyproject.toml"]
+    
+    commands:
+      install: "pip install -r requirements.txt"
+      test: "pytest"
+      test_verbose: "pytest -v"
+      test_coverage: "pytest --cov"
+      lint: "pylint src/"
+      format: "black src/"
+      type_check: "mypy src/"
+      clean: "find . -type d -name __pycache__ -exec rm -rf {} + 2>/dev/null || true"
+  
+  # ============================================================================
+  # Go
+  # ============================================================================
+  go:
+    display_name: "Go"
+    aliases: [golang]
+    
+    package_files:
+      - name: "go.mod"
+        weight: 50
+      - name: "go.sum"
+        weight: 30
+      - name: "Gopkg.toml"
+        weight: 40
+      - name: "Gopkg.lock"
+        weight: 20
+    
+    directories:
+      - name: "vendor"
+        weight: 10
+      - name: "bin"
+        weight: 5
+    
+    config_files:
+      - name: ".golangci.yml"
+        weight: 5
+      - name: "Makefile"
+        weight: 3
+    
+    source_extensions: [".go"]
+    test_patterns: ["*_test.go"]
+    exclude_dirs: ["vendor", "bin", "pkg"]
+    
+    build_systems:
+      go_mod:
+        default: true
+        detection: ["go.mod"]
+      dep:
+        detection: ["Gopkg.toml"]
+    
+    test_frameworks:
+      go_test:
+        default: true
+        detection: []
+      testify:
+        detection: []
+    
+    linters:
+      golangci-lint:
+        default: true
+        detection: [".golangci.yml"]
+      golint:
+        detection: []
+      staticcheck:
+        detection: []
+    
+    commands:
+      install: "go mod download"
+      test: "go test ./..."
+      test_verbose: "go test -v ./..."
+      test_coverage: "go test -cover ./..."
+      lint: "golangci-lint run"
+      build: "go build ./..."
+      clean: "go clean"
+  
+  # ============================================================================
+  # Java
+  # ============================================================================
+  java:
+    display_name: "Java"
+    aliases: []
+    
+    package_files:
+      - name: "pom.xml"
+        weight: 50
+      - name: "build.gradle"
+        weight: 50
+      - name: "build.gradle.kts"
+        weight: 50
+      - name: "settings.gradle"
+        weight: 20
+    
+    directories:
+      - name: "target"
+        weight: 10
+      - name: "build"
+        weight: 10
+      - name: ".gradle"
+        weight: 5
+    
+    config_files:
+      - name: "checkstyle.xml"
+        weight: 5
+      - name: "pmd.xml"
+        weight: 3
+    
+    source_extensions: [".java", ".class", ".jar"]
+    test_patterns: ["*Test.java", "*Tests.java", "Test*.java"]
+    exclude_dirs: ["target", "build", ".gradle", "out"]
+    
+    build_systems:
+      maven:
+        default: true
+        detection: ["pom.xml"]
+      gradle:
+        detection: ["build.gradle", "build.gradle.kts"]
+      ant:
+        detection: ["build.xml"]
+    
+    test_frameworks:
+      junit:
+        default: true
+        detection: []
+      testng:
+        detection: ["testng.xml"]
+    
+    linters:
+      checkstyle:
+        default: true
+        detection: ["checkstyle.xml"]
+      pmd:
+        detection: ["pmd.xml"]
+      spotbugs:
+        detection: []
+    
+    commands:
+      install: "mvn install"
+      test: "mvn test"
+      test_verbose: "mvn test -X"
+      test_coverage: "mvn test jacoco:report"
+      lint: "mvn checkstyle:check"
+      build: "mvn package"
+      clean: "mvn clean"
+  
+  # ============================================================================
+  # Ruby
+  # ============================================================================
+  ruby:
+    display_name: "Ruby"
+    aliases: [rb]
+    
+    package_files:
+      - name: "Gemfile"
+        weight: 50
+      - name: "Gemfile.lock"
+        weight: 30
+      - name: "*.gemspec"
+        weight: 40
+    
+    directories:
+      - name: "vendor/bundle"
+        weight: 10
+      - name: ".bundle"
+        weight: 5
+    
+    config_files:
+      - name: ".rubocop.yml"
+        weight: 5
+      - name: "Rakefile"
+        weight: 3
+      - name: "config.ru"
+        weight: 5
+    
+    source_extensions: [".rb", ".rake", ".gemspec"]
+    test_patterns: ["*_spec.rb", "test_*.rb", "spec/**", "test/**"]
+    exclude_dirs: ["vendor", ".bundle", "tmp", "log"]
+    
+    build_systems:
+      bundler:
+        default: true
+        detection: ["Gemfile"]
+      gem:
+        detection: ["*.gemspec"]
+    
+    test_frameworks:
+      rspec:
+        default: true
+        detection: [".rspec", "spec"]
+      minitest:
+        detection: ["test"]
+    
+    linters:
+      rubocop:
+        default: true
+        detection: [".rubocop.yml"]
+    
+    commands:
+      install: "bundle install"
+      test: "bundle exec rspec"
+      test_verbose: "bundle exec rspec --format documentation"
+      test_coverage: "bundle exec rspec --coverage"
+      lint: "rubocop"
+      build: "bundle exec rake build"
+      clean: "rm -rf vendor/bundle .bundle"
+  
+  # ============================================================================
+  # Rust
+  # ============================================================================
+  rust:
+    display_name: "Rust"
+    aliases: [rs]
+    
+    package_files:
+      - name: "Cargo.toml"
+        weight: 50
+      - name: "Cargo.lock"
+        weight: 30
+    
+    directories:
+      - name: "target"
+        weight: 10
+      - name: "src"
+        weight: 5
+    
+    config_files:
+      - name: "rustfmt.toml"
+        weight: 5
+      - name: ".rustfmt.toml"
+        weight: 5
+      - name: "clippy.toml"
+        weight: 3
+    
+    source_extensions: [".rs"]
+    test_patterns: ["tests/**"]
+    exclude_dirs: ["target"]
+    
+    build_systems:
+      cargo:
+        default: true
+        detection: ["Cargo.toml"]
+    
+    test_frameworks:
+      cargo_test:
+        default: true
+        detection: []
+    
+    linters:
+      clippy:
+        default: true
+        detection: []
+      rustfmt:
+        detection: []
+    
+    commands:
+      install: "cargo fetch"
+      test: "cargo test"
+      test_verbose: "cargo test -- --nocapture"
+      test_coverage: "cargo tarpaulin"
+      lint: "cargo clippy"
+      format: "cargo fmt"
+      build: "cargo build"
+      clean: "cargo clean"
+  
+  # ============================================================================
+  # C/C++
+  # ============================================================================
+  cpp:
+    display_name: "C/C++"
+    aliases: [c, "c++", cxx]
+    
+    package_files:
+      - name: "CMakeLists.txt"
+        weight: 50
+      - name: "Makefile"
+        weight: 40
+      - name: "configure.ac"
+        weight: 30
+      - name: "meson.build"
+        weight: 40
+    
+    directories:
+      - name: "build"
+        weight: 10
+      - name: "cmake-build-debug"
+        weight: 10
+      - name: ".deps"
+        weight: 5
+    
+    config_files:
+      - name: ".clang-format"
+        weight: 5
+      - name: ".clang-tidy"
+        weight: 5
+      - name: "compile_commands.json"
+        weight: 5
+    
+    source_extensions: [".c", ".cpp", ".cc", ".cxx", ".h", ".hpp", ".hxx"]
+    test_patterns: ["*_test.cpp", "test_*.cpp", "tests/**"]
+    exclude_dirs: ["build", "cmake-build-debug", ".deps", "obj"]
+    
+    build_systems:
+      cmake:
+        default: true
+        detection: ["CMakeLists.txt"]
+      make:
+        detection: ["Makefile"]
+      meson:
+        detection: ["meson.build"]
+    
+    test_frameworks:
+      gtest:
+        default: true
+        detection: []
+      catch2:
+        detection: []
+      ctest:
+        detection: []
+    
+    linters:
+      clang-tidy:
+        default: true
+        detection: [".clang-tidy"]
+      cppcheck:
+        detection: []
+    
+    commands:
+      install: "cmake -B build && cmake --build build"
+      test: "ctest --test-dir build"
+      test_verbose: "ctest --test-dir build --verbose"
+      test_coverage: "ctest --test-dir build --coverage"
+      lint: "clang-tidy src/*.cpp"
+      format: "clang-format -i src/*.cpp"
+      build: "cmake --build build"
+      clean: "rm -rf build"
+  
+  # ============================================================================
+  # Bash/Shell
+  # ============================================================================
+  bash:
+    display_name: "Bash/Shell"
+    aliases: [sh, shell]
+    
+    package_files: []
+    
+    directories:
+      - name: "lib"
+        weight: 5
+      - name: "bin"
+        weight: 5
+    
+    config_files:
+      - name: ".shellcheckrc"
+        weight: 10
+      - name: "shfmt.conf"
+        weight: 5
+    
+    source_extensions: [".sh", ".bash"]
+    test_patterns: ["*_test.sh", "test_*.sh", "tests/**"]
+    exclude_dirs: []
+    
+    build_systems:
+      none:
+        default: true
+        detection: []
+    
+    test_frameworks:
+      bats:
+        default: true
+        detection: ["*.bats"]
+      shunit2:
+        detection: []
+    
+    linters:
+      shellcheck:
+        default: true
+        detection: [".shellcheckrc"]
+    
+    commands:
+      install: "echo 'No installation needed'"
+      test: "bats tests/"
+      test_verbose: "bats -t tests/"
+      test_coverage: "echo 'Coverage not available for bash'"
+      lint: "shellcheck *.sh"
+      format: "shfmt -w *.sh"
+      build: "echo 'No build needed'"
+      clean: "echo 'No cleanup needed'"
+
+# Detection algorithm weights
+detection_weights:
+  package_file: 1.0        # Full weight for package files
+  lock_file: 0.5           # Half weight for lock files
+  config_file: 0.3         # 30% weight for config files
+  directory: 0.2           # 20% weight for directories
+  source_files: 0.15       # 15% weight per 10 source files
+  max_source_score: 15     # Maximum points from source files
+
+# Confidence thresholds
+confidence_thresholds:
+  high: 80       # High confidence
+  medium: 60     # Medium confidence
+  low: 40        # Low confidence
+  minimum: 20    # Minimum to consider
+
+# Multi-language handling
+multi_language:
+  primary_threshold: 0.5   # Must have >50% to be primary
+  secondary_threshold: 0.2 # Must have >20% to be secondary
