@@ -527,6 +527,7 @@ git add docs/README.md && git commit -m "docs: update"
 - **Savings**: 270 seconds (60% faster)
 
 **How It Works**:
+
 1. Identifies steps with no interdependencies
 2. Executes them using Bash background jobs
 3. Waits for all to complete before proceeding
@@ -535,6 +536,7 @@ git add docs/README.md && git commit -m "docs: update"
 **Performance**: 33% overall time savings (465 seconds)
 
 **Example**:
+
 ```bash
 ./execute_tests_docs_workflow.sh --parallel
 

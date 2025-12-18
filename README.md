@@ -41,7 +41,14 @@ cd shell_scripts/workflow/lib
 To use this workflow on other projects (e.g., mpbarbosa_site):
 
 ```bash
-# Option 1: Maximum performance (recommended)
+# Option 1: Run from project directory (default behavior)
+cd /path/to/your/project
+/path/to/ai_workflow/shell_scripts/workflow/execute_tests_docs_workflow.sh \
+  --smart-execution \
+  --parallel \
+  --auto
+
+# Option 2: Use --target flag from anywhere
 cd ai_workflow
 ./shell_scripts/workflow/execute_tests_docs_workflow.sh \
   --target /path/to/project \
@@ -49,14 +56,10 @@ cd ai_workflow
   --parallel \
   --auto
 
-# Option 2: With dependency visualization
-./shell_scripts/workflow/execute_tests_docs_workflow.sh \
-  --target /path/to/project \
+# Option 3: With dependency visualization
+cd /path/to/your/project
+/path/to/ai_workflow/shell_scripts/workflow/execute_tests_docs_workflow.sh \
   --show-graph
-
-# Option 3: Standard execution
-./shell_scripts/workflow/execute_tests_docs_workflow.sh \
-  --target ~/Documents/GitHub/mpbarbosa_site
 
 # Option 4: Copy workflow to target project
 cp -r ai_workflow/shell_scripts/workflow /path/to/target/project/shell_scripts/

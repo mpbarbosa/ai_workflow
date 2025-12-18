@@ -1,26 +1,42 @@
 # Target Project Feature - Dynamic Workflow Execution
 
 **Date**: 2025-12-18  
-**Feature Version**: 2.2.1  
+**Feature Version**: 2.3.0  
 **Status**: ✅ Implemented
 
 ## Overview
 
-The workflow automation script now supports dynamic target project specification via the `--target` command-line option. This allows the workflow to be executed on any project without requiring file copying or configuration updates.
+The workflow automation script supports flexible project targeting: it runs on the **current directory by default**, or you can specify a different project using the `--target` option. This allows the workflow to be executed on any project without requiring file copying or configuration updates.
 
 ## Feature Details
 
 ### Command-Line Option
 
 ```bash
---target PATH       Target project root directory (default: ai_workflow repository)
+--target PATH       Target project root directory (default: current directory)
 ```
+
+### Default Behavior
+
+**By default, the workflow runs on the current directory** where you execute the script:
+
+```bash
+cd /path/to/your/project
+/path/to/ai_workflow/shell_scripts/workflow/execute_tests_docs_workflow.sh
+```
+
+This makes it convenient to integrate the workflow into any project without needing to specify paths.
 
 ### Usage Examples
 
 ```bash
-# Run workflow on mpbarbosa_site project
-./shell_scripts/workflow/execute_tests_docs_workflow.sh --target /home/mpb/Documents/GitHub/mpbarbosa_site
+# Default: Run on current directory
+cd /home/mpb/Documents/GitHub/mpbarbosa_site
+/path/to/ai_workflow/shell_scripts/workflow/execute_tests_docs_workflow.sh
+
+# Explicit: Use --target to specify a different project
+./shell_scripts/workflow/execute_tests_docs_workflow.sh \
+  --target /home/mpb/Documents/GitHub/mpbarbosa_site
 
 # Run on monitora_vagas in auto mode
 ./shell_scripts/workflow/execute_tests_docs_workflow.sh \
@@ -48,26 +64,34 @@ The workflow automation script now supports dynamic target project specification
    - Never changes, regardless of target
 
 2. **PROJECT_ROOT**: Points to the project being validated
+   - **Default**: Current working directory (`pwd`)
+   - **With --target**: The specified target directory
    - Defaults to WORKFLOW_HOME (self-validation)
    - Overridden by --target option
    - Where workflow operations are performed
 
 3. **TARGET_PROJECT_ROOT**: Set by --target option
-   - Empty string when running on ai_workflow itself
-   - Contains absolute path when targeting another project
+   - Empty string when running on current directory (default)
+   - Contains absolute path when targeting a different project via --target
 
 ### Path Resolution
 
 ```bash
-# Default behavior (no --target)
-WORKFLOW_HOME=/home/mpb/Documents/GitHub/ai_workflow
-PROJECT_ROOT=/home/mpb/Documents/GitHub/ai_workflow
-TARGET_PROJECT_ROOT=""
+# Default behavior (running from project directory, no --target)
+cd /home/mpb/Documents/GitHub/mpbarbosa_site
+/path/to/ai_workflow/shell_scripts/workflow/execute_tests_docs_workflow.sh
 
-# With --target option
-WORKFLOW_HOME=/home/mpb/Documents/GitHub/ai_workflow
-PROJECT_ROOT=/home/mpb/Documents/GitHub/mpbarbosa_site  # From --target
-TARGET_PROJECT_ROOT=/home/mpb/Documents/GitHub/mpbarbosa_site
+WORKFLOW_HOME=/home/mpb/Documents/GitHub/ai_workflow       # Workflow location
+PROJECT_ROOT=/home/mpb/Documents/GitHub/mpbarbosa_site    # Current directory
+TARGET_PROJECT_ROOT=""                                     # Not specified
+
+# With --target option (running from anywhere)
+cd /home/mpb/Documents/GitHub/ai_workflow
+./shell_scripts/workflow/execute_tests_docs_workflow.sh --target /path/to/project
+
+WORKFLOW_HOME=/home/mpb/Documents/GitHub/ai_workflow       # Workflow location
+PROJECT_ROOT=/path/to/project                              # From --target
+TARGET_PROJECT_ROOT=/path/to/project                       # Specified via flag
 ```
 
 ### Directory Structure

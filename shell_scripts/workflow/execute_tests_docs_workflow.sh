@@ -118,8 +118,8 @@ set -euo pipefail
 SCRIPT_VERSION="2.3.0"
 SCRIPT_NAME="Tests & Documentation Workflow Automation"
 WORKFLOW_HOME="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
-PROJECT_ROOT="${WORKFLOW_HOME}"  # Can be overridden with --target option
-TARGET_PROJECT_ROOT=""  # Set via --target option
+PROJECT_ROOT="$(pwd)"  # Default: current directory; can be overridden with --target option
+TARGET_PROJECT_ROOT=""  # Set via --target option when specified
 SRC_DIR="${PROJECT_ROOT}/src"
 BACKLOG_DIR="${WORKFLOW_HOME}/shell_scripts/workflow/backlog"
 SUMMARIES_DIR="${WORKFLOW_HOME}/shell_scripts/workflow/summaries"
@@ -4890,7 +4890,7 @@ USAGE:
     $0 [OPTIONS]
 
 OPTIONS:
-    --target PATH       Target project root directory (default: ai_workflow repository)
+    --target PATH       Target project root directory (default: current directory)
     --dry-run           Preview all actions without executing
     --auto              Run in automatic mode (no confirmations)
     --interactive       Run in interactive mode (default)
@@ -4914,6 +4914,9 @@ DESCRIPTION:
     - Context analysis (Step 10)
     - Git finalization (Step 11)
     - Markdown linting (Step 12)
+    
+    By default, the workflow runs on the current directory. Use --target to specify
+    a different project directory.
 
 STEP EXECUTION:
     By default, all steps (0-12) are executed. Use --steps to select specific steps:
@@ -4933,19 +4936,21 @@ STEP EXECUTION:
     Step 12: Markdown Linting
 
 EXAMPLES:
+    # Run on current directory (default behavior)
+    cd /path/to/your/project
+    $0
+    
     # Preview workflow without execution
     $0 --dry-run
     
-    # Run in interactive mode (default - all steps)
-    $0
-    
-    # Run in automatic mode (no confirmations - all steps)
+    # Run in automatic mode (no confirmations)
     $0 --auto
     
-    # Run workflow on a target project
+    # Run workflow on a different project using --target
     $0 --target /home/mpb/Documents/GitHub/mpbarbosa_site
     
-    # Run workflow on target project in auto mode
+    # Run from workflow repository on target project
+    cd /path/to/ai_workflow
     $0 --target /home/mpb/Documents/GitHub/monitora_vagas --auto
     
     # Execute only documentation steps (0-4)
@@ -4957,9 +4962,6 @@ EXAMPLES:
     # Execute only git finalization (11)
     $0 --steps 11
     
-    # Execute all steps explicitly
-    $0 --steps all
-    
     # Enable smart execution for faster workflow
     $0 --smart-execution --parallel
     
@@ -4967,7 +4969,9 @@ EXAMPLES:
     $0 --show-graph
     
     # Maximum performance (smart + parallel + AI cache)
-    $0 --target /path/to/project --smart-execution --parallel --auto
+    cd /path/to/project
+    /path/to/ai_workflow/shell_scripts/workflow/execute_tests_docs_workflow.sh \
+      --smart-execution --parallel --auto
 
 For more information, see:
     - /prompts/tests_documentation_update_enhanced.txt
