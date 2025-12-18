@@ -2,7 +2,7 @@
 
 ################################################################################
 # Tests & Documentation Workflow Automation Script
-# Version: 2.2.0
+# Version: 2.3.0
 # Purpose: Automate the complete tests and documentation update workflow
 # Related: /prompts/tests_documentation_update_enhanced.txt
 #
@@ -161,6 +161,7 @@ SMART_EXECUTION=false
 SHOW_GRAPH=false
 PARALLEL_EXECUTION=false
 USE_AI_CACHE=true  # Enabled by default
+NO_RESUME=false    # When true, ignore checkpoints and start from step 0
 
 # Export mode variables so they're available in step functions
 export DRY_RUN
@@ -173,6 +174,7 @@ export SMART_EXECUTION
 export SHOW_GRAPH
 export PARALLEL_EXECUTION
 export USE_AI_CACHE
+export NO_RESUME
 
 # Step execution control
 EXECUTE_STEPS="all"  # Default: execute all steps
@@ -5018,6 +5020,7 @@ OPTIONS:
     --show-graph        Display dependency graph and parallelization opportunities
     --parallel          Enable parallel execution for independent steps (33% faster)
     --no-ai-cache       Disable AI response caching (increases token usage)
+    --no-resume         Start from step 0, ignore any checkpoints
     --help              Show this help message
     --version           Show script version
 
@@ -5089,6 +5092,9 @@ EXAMPLES:
     cd /path/to/project
     /path/to/ai_workflow/src/workflow/execute_tests_docs_workflow.sh \
       --smart-execution --parallel --auto
+    
+    # Force fresh start (ignore checkpoints)
+    $0 --no-resume --auto
 
 For more information, see:
     - /prompts/tests_documentation_update_enhanced.txt
@@ -5180,6 +5186,12 @@ parse_arguments() {
                 print_warning "AI response caching disabled - this will increase token usage"
                 shift
                 ;;
+            --no-resume)
+                NO_RESUME=true
+                export NO_RESUME
+                print_info "Fresh start enabled - ignoring any checkpoints"
+                shift
+                ;;
             --help)
                 show_usage
                 exit 0
@@ -5264,9 +5276,11 @@ main() {
     # Cleanup old checkpoints (v2.2.0)
     cleanup_old_checkpoints
     
-    # Check for resume capability (v2.2.0)
-    if load_checkpoint; then
+    # Check for resume capability (v2.2.0) unless --no-resume flag is set
+    if [[ "${NO_RESUME}" == "false" ]] && load_checkpoint; then
         print_info "Workflow will resume from Step ${RESUME_FROM_STEP}"
+    elif [[ "${NO_RESUME}" == "true" ]]; then
+        print_info "Fresh start mode - starting from Step 0"
     fi
     
     # Execute full workflow with all AI-enhanced steps

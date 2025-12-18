@@ -270,7 +270,7 @@ Comprehensive test suite: `test_session_manager.sh`
 
 **Run Tests:**
 ```bash
-cd shell_scripts/workflow
+cd src/workflow
 bash test_session_manager.sh
 ```
 

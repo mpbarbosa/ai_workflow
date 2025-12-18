@@ -1,0 +1,108 @@
+================================================================================
+WORKFLOW EXECUTION LOG
+================================================================================
+Workflow ID: workflow_20251218_042919
+Script Version: 2.3.0
+Started: 2025-12-18 04:29:19
+Mode: AUTO
+Steps: all
+Workflow Home: /home/mpb/Documents/GitHub/ai_workflow
+Project Root: /home/mpb/Documents/GitHub/ai_workflow (target project)
+
+================================================================================
+EXECUTION LOG
+================================================================================
+
+[2025-12-18 04:29:19] [INFO] Starting pre-flight system checks
+[2025-12-18 04:29:19] [SUCCESS] Project root validated: /home/mpb/Documents/GitHub/ai_workflow
+[2025-12-18 04:29:19] [SUCCESS] Source directory validated: /home/mpb/Documents/GitHub/ai_workflow/src
+[2025-12-18 04:29:19] [INFO] Tech stack: shell
+[2025-12-18 04:29:19] [INFO] Node.js detected: v25.2.1 (optional)
+[2025-12-18 04:29:19] [INFO] npm detected: 11.7.0 (optional)
+[2025-12-18 04:29:19] [SUCCESS] Git repository validated
+[2025-12-18 04:29:19] [INFO] Staged all uncommitted changes
+[2025-12-18 04:29:19] [SUCCESS] docs directory found
+[2025-12-18 04:29:19] [SUCCESS] tree command available
+[2025-12-18 04:29:19] [SUCCESS] All pre-flight checks PASSED
+[2025-12-18 04:29:19] [INFO] Starting dependency validation
+[2025-12-18 04:29:19] [INFO] Tech stack: shell
+[2025-12-18 04:29:19] [INFO] Shell project - npm dependencies not required
+[2025-12-18 04:29:19] [SUCCESS] Dependency validation completed
+[2025-12-18 04:29:20] [INFO] Analyzing change impact for optimization
+[2025-12-18 04:29:20] [INFO] Change impact: MEDIUM (code=0, tests=0)
+[2025-12-18 04:29:20] [INFO] Starting workflow execution
+[2025-12-18 04:29:20] [INFO] Execution mode: AUTO
+[2025-12-18 04:29:20] [INFO] Change impact level: Medium
+[2025-12-18 04:29:20] [INFO] Step selection: all
+[2025-12-18 04:29:20] [STEP] ========== Step 0: Pre-Analysis ==========
+[2025-12-18 04:29:20] [INFO] Step 0 started
+[2025-12-18 04:29:20] [INFO] Step step0 status updated: ✅
+[2025-12-18 04:29:20] [INFO] Checkpoint saved: Step 0 completed
+[2025-12-18 04:29:20] [STEP] ========== Step 1: Documentation Updates ==========
+[2025-12-18 04:29:20] [INFO] Step 1 started
+[2025-12-18 04:33:36] [INFO] Step step1 status updated: ✅
+[2025-12-18 04:33:36] [INFO] Checkpoint saved: Step 1 completed
+[2025-12-18 04:33:36] [STEP] ========== Step 2: Consistency Analysis ==========
+[2025-12-18 04:33:36] [INFO] Step 2 started
+[2025-12-18 04:33:41] [INFO] Step step2 status updated: ✅
+[2025-12-18 04:33:41] [INFO] Checkpoint saved: Step 2 completed
+[2025-12-18 04:33:41] [STEP] ========== Step 3: Script Reference Validation ==========
+[2025-12-18 04:33:41] [INFO] Step 3 started
+[2025-12-18 04:37:00] [INFO] Step step3 status updated: ✅
+[2025-12-18 04:37:00] [INFO] Checkpoint saved: Step 3 completed
+[2025-12-18 04:37:00] [STEP] ========== Step 4: Directory Structure Validation ==========
+[2025-12-18 04:37:00] [INFO] Step 4 started
+[2025-12-18 04:41:02] [INFO] Step step4 status updated: ✅
+[2025-12-18 04:41:02] [INFO] Checkpoint saved: Step 4 completed
+[2025-12-18 04:41:02] [STEP] ========== Step 5: Test Review ==========
+[2025-12-18 04:41:02] [INFO] Step 5 started
+[2025-12-18 04:48:51] [INFO] Step step5 status updated: ✅
+[2025-12-18 04:48:51] [INFO] Checkpoint saved: Step 5 completed
+[2025-12-18 04:48:51] [STEP] ========== Step 6: Test Generation ==========
+[2025-12-18 04:48:51] [INFO] Step 6 started
+[2025-12-18 04:48:51] [INFO] Step step6 status updated: ✅
+[2025-12-18 04:48:51] [INFO] Checkpoint saved: Step 6 completed
+[2025-12-18 04:48:51] [STEP] ========== Step 7: Test Execution ==========
+[2025-12-18 04:48:52] [INFO] Step 7 started
+[2025-12-18 04:49:53] [INFO] Step step7 status updated: ✅
+[2025-12-18 04:49:53] [INFO] Checkpoint saved: Step 7 completed
+[2025-12-18 04:49:53] [STEP] ========== Step 8: Dependency Validation ==========
+[2025-12-18 04:49:53] [INFO] Step 8 started
+[2025-12-18 04:49:53] [INFO] Step step8 status updated: ❌
+[2025-12-18 04:49:53] [INFO] Checkpoint saved: Step 8 completed
+[2025-12-18 04:49:53] [INFO] Workflow execution completed
+[2025-12-18 04:49:53] [INFO] Executed steps: 9
+[2025-12-18 04:49:53] [INFO] Skipped steps: 0
+[2025-12-18 04:49:53] [ERROR] Workflow FAILED at: Step 8
+[2025-12-18 04:49:53] [INFO] Cleaning up 11 temporary files
+
+================================================================================
+WORKFLOW SUMMARY
+================================================================================
+Completed: 2025-12-18 04:49:53
+Duration: 20m 34s
+Total Steps: 13
+
+Step Status:
+  Step 0: NOT_EXECUTED
+  Step 1: NOT_EXECUTED
+  Step 2: NOT_EXECUTED
+  Step 3: NOT_EXECUTED
+  Step 4: NOT_EXECUTED
+  Step 5: NOT_EXECUTED
+  Step 6: NOT_EXECUTED
+  Step 7: NOT_EXECUTED
+  Step 8: NOT_EXECUTED
+  Step 9: NOT_EXECUTED
+  Step 10: NOT_EXECUTED
+  Step 11: NOT_EXECUTED
+  Step 12: NOT_EXECUTED
+
+Output Files:
+  - Backlog: /home/mpb/Documents/GitHub/ai_workflow/src/workflow/backlog/workflow_20251218_042919
+  - Summaries: /home/mpb/Documents/GitHub/ai_workflow/src/workflow/summaries/workflow_20251218_042919
+  - Logs: /home/mpb/Documents/GitHub/ai_workflow/src/workflow/logs/workflow_20251218_042919
+
+================================================================================
+END OF LOG
+================================================================================

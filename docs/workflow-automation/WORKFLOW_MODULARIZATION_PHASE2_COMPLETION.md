@@ -269,7 +269,7 @@ fi
 
 ### Run All Tests
 ```bash
-cd shell_scripts/workflow
+cd src/workflow
 ./test_modules.sh
 ```
 

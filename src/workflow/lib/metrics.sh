@@ -335,9 +335,12 @@ generate_historical_stats() {
         return
     fi
     
-    local total_runs=$(grep -c "workflow_run_id" "${METRICS_HISTORY}" 2>/dev/null || echo "0")
-    local successful_runs=$(grep -c '"success": *true' "${METRICS_HISTORY}" 2>/dev/null || echo "0")
+    local total_runs
+    local successful_runs
     local success_rate=0
+    
+    total_runs=$(grep -c "workflow_run_id" "${METRICS_HISTORY}" 2>/dev/null) || total_runs=0
+    successful_runs=$(grep -c '"success": *true' "${METRICS_HISTORY}" 2>/dev/null) || successful_runs=0
     
     if [[ ${total_runs} -gt 0 ]]; then
         success_rate=$((successful_runs * 100 / total_runs))

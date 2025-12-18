@@ -391,12 +391,12 @@ save_checkpoint() {
 # Workflow Checkpoint
 # DO NOT EDIT MANUALLY
 
-WORKFLOW_RUN_ID=${WORKFLOW_RUN_ID}
-LAST_COMPLETED_STEP=${last_step}
-TIMESTAMP=$(date '+%Y-%m-%d %H:%M:%S')
-CHANGE_IMPACT=${CHANGE_IMPACT:-Unknown}
-GIT_BRANCH=$(get_cached_git_branch)
-GIT_COMMIT=$(git rev-parse HEAD 2>/dev/null || echo "unknown")
+WORKFLOW_RUN_ID="${WORKFLOW_RUN_ID}"
+LAST_COMPLETED_STEP="${last_step}"
+TIMESTAMP="$(date '+%Y-%m-%d %H:%M:%S')"
+CHANGE_IMPACT="${CHANGE_IMPACT:-Unknown}"
+GIT_BRANCH="$(get_cached_git_branch)"
+GIT_COMMIT="$(git rev-parse HEAD 2>/dev/null || echo "unknown")"
 
 # Step Status
 EOF
@@ -405,16 +405,16 @@ EOF
     for step_num in {0..12}; do
         local step_key="step${step_num}"
         local status="${WORKFLOW_STATUS[$step_key]:-NOT_EXECUTED}"
-        echo "STEP_${step_num}_STATUS=${status}" >> "$CHECKPOINT_FILE"
+        echo "STEP_${step_num}_STATUS=\"${status}\"" >> "$CHECKPOINT_FILE"
     done
     
     # Save analysis variables
     cat >> "$CHECKPOINT_FILE" << EOF
 
 # Analysis Data
-ANALYSIS_COMMITS=${ANALYSIS_COMMITS}
-ANALYSIS_MODIFIED=${ANALYSIS_MODIFIED}
-CHANGE_SCOPE=${CHANGE_SCOPE}
+ANALYSIS_COMMITS="${ANALYSIS_COMMITS}"
+ANALYSIS_MODIFIED="${ANALYSIS_MODIFIED}"
+CHANGE_SCOPE="${CHANGE_SCOPE}"
 EOF
     
     log_to_workflow "INFO" "Checkpoint saved: Step ${last_step} completed"
