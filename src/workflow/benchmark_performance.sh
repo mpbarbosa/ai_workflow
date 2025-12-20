@@ -1,4 +1,6 @@
 #!/bin/bash
+set -euo pipefail
+
 ################################################################################
 # Performance Benchmark Script
 # Purpose: Measure and compare performance of optimized vs standard operations

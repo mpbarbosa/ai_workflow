@@ -1,4 +1,6 @@
 #!/bin/bash
+set -euo pipefail
+
 ################################################################################
 # Step Dependency Graph Module
 # Purpose: Visualize execution flow and identify parallelization opportunities

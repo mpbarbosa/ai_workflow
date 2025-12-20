@@ -1,4 +1,6 @@
 #!/bin/bash
+set -euo pipefail
+
 ################################################################################
 # Step 12: Markdown Linting Validation
 # Purpose: Validate markdown formatting with mdl and catch errors before commit
@@ -8,9 +10,9 @@
 ################################################################################
 
 # Module version information
-readonly STEP12_VERSION="2.0.0"
+readonly STEP12_VERSION="2.1.0"
 readonly STEP12_VERSION_MAJOR=2
-readonly STEP12_VERSION_MINOR=0
+readonly STEP12_VERSION_MINOR=1
 readonly STEP12_VERSION_PATCH=0
 
 # Main step function - validates markdown files with mdl linting

@@ -1,4 +1,6 @@
 #!/bin/bash
+set -euo pipefail
+
 ################################################################################
 # Git State Caching Module
 # Purpose: Performance optimization via centralized git state caching

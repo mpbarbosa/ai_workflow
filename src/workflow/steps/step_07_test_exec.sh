@@ -1,15 +1,17 @@
 #!/bin/bash
+set -euo pipefail
+
 ################################################################################
 # Step 7: AI-Powered Test Execution and Analysis
-# Purpose: Execute Jest test suite and analyze results with AI
-# Part of: Tests & Documentation Workflow Automation v2.0.0
-# Version: 2.0.0
+# Purpose: Execute test suite and analyze results with AI (adaptive)
+# Part of: Tests & Documentation Workflow Automation v2.3.1
+# Version: 2.1.0 (Phase 3 - Adaptive)
 ################################################################################
 
 # Module version information
-readonly STEP7_VERSION="2.0.0"
+readonly STEP7_VERSION="2.1.0"
 readonly STEP7_VERSION_MAJOR=2
-readonly STEP7_VERSION_MINOR=0
+readonly STEP7_VERSION_MINOR=1
 readonly STEP7_VERSION_PATCH=0
 
 # Main step function - executes tests and analyzes results with AI
@@ -33,13 +35,29 @@ step7_execute_test_suite() {
     TEMP_FILES+=("$test_results_file" "$coverage_summary_file")
     
     # PHASE 1: Automated test execution (ADAPTIVE - Phase 3)
-    local test_cmd="${TEST_COMMAND:-}"
-    local language_name="${PRIMARY_LANGUAGE:-unknown}"
+    local test_cmd=""
+    local language_name="${PRIMARY_LANGUAGE:-javascript}"
     
-    # Validate that TEST_COMMAND is set
+    # Get test command from tech stack (Phase 3 integration)
+    if command -v get_test_command &>/dev/null; then
+        test_cmd=$(get_test_command)
+    else
+        # Fallback to TEST_COMMAND variable
+        test_cmd="${TEST_COMMAND:-npm test}"
+    fi
+    
+    # Validate that test command is available
     if [[ -z "$test_cmd" ]]; then
-        print_error "TEST_COMMAND not set - tech stack configuration not loaded"
+        print_warning "No test command configured for ${language_name}"
         print_info "Please run with --init-config to configure project"
+        
+        # Try to skip gracefully for languages without tests
+        if [[ "$language_name" == "bash" ]]; then
+            print_info "Bash project - skipping test execution"
+            save_step_summary "7" "Test_Execution" "No tests configured for bash project" "⚠️"
+            return 0
+        fi
+        
         return 1
     fi
     

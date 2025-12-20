@@ -1,4 +1,6 @@
 #!/usr/bin/env bash
+set -euo pipefail
+
 
 ################################################################################
 # Tests & Documentation Workflow Automation Script

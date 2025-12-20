@@ -1,4 +1,6 @@
 #!/bin/bash
+set -euo pipefail
+
 ################################################################################
 # Color Codes Module
 # Purpose: ANSI color definitions for consistent terminal output

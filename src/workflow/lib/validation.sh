@@ -1,4 +1,6 @@
 #!/bin/bash
+set -euo pipefail
+
 ################################################################################
 # Validation Module
 # Purpose: Pre-flight checks and dependency validation

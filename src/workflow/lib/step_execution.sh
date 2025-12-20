@@ -1,4 +1,6 @@
 #!/bin/bash
+set -euo pipefail
+
 ################################################################################
 # Step Execution Library
 # Purpose: Shared execution patterns for workflow steps (DRY principle)

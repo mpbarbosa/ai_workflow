@@ -2,12 +2,14 @@
 
 **Version:** 2.3.1 (Critical Fixes & Checkpoint Control)
 **Status:** Smart Execution, Parallel Processing, AI Caching, Checkpoint Resume ✅
-**Last Updated:** 2025-12-18
-**Modules:** 33 total (20 libraries [19 .sh + 1 .yaml] + 13 steps)
-**Total Lines:** 19,053 lines production code + 762 YAML config
-**Documentation:** All 20 library modules fully documented ✅
+**Last Updated:** 2025-12-19
+**Modules:** 41 total (28 libraries [27 .sh + 1 .yaml] + 13 steps)
+**Total Lines:** 26,283 total (22,216 shell + 4,067 YAML)
+**Documentation:** All 28 library modules fully documented ✅
 **Tests:** 37 tests, 100% pass rate ✅
 **Performance:** Up to 90% faster with optimization flags
+
+> 📊 See [PROJECT_STATISTICS.md](../../PROJECT_STATISTICS.md) for official counts.
 
 ---
 
@@ -23,8 +25,8 @@ The Tests & Documentation Workflow Automation script has been modularized to imp
 
 ```
 src/workflow/
-├── execute_tests_docs_workflow.sh   # Main orchestrator (4,740 lines)
-├── lib/                              # Core library modules ✅ COMPLETE (20 modules, 5,548 lines total)
+├── execute_tests_docs_workflow.sh   # Main orchestrator (4,817 lines)
+├── lib/                              # Core library modules ✅ COMPLETE (28 modules, 12,671 lines total)
 │   ├── config.sh                     # Configuration and constants (6.8 KB)
 │   ├── colors.sh                     # ANSI color definitions (1.6 KB)
 │   ├── utils.sh                      # Utility functions (2.8 KB)
@@ -32,8 +34,8 @@ src/workflow/
 │   ├── validation.sh                 # Pre-flight checks (4.3 KB)
 │   ├── backlog.sh                    # Backlog tracking (6.7 KB)
 │   ├── summary.sh                    # Summary generation (3.0 KB)
-│   ├── ai_helpers.sh                 # AI integration with 13 personas (18.7 KB)
-│   ├── ai_helpers.yaml               # AI prompt templates (762 lines) ⭐
+│   ├── ai_helpers.sh                 # AI integration with 13 personas (18.7 KB) Project-aware
+│   ├── ai_helpers.yaml               # AI prompt templates (762 lines) ⭐ Project-aware personas
 │   ├── ai_cache.sh                   # AI response caching (10.6 KB) 🚀 NEW v2.3.0
 │   ├── session_manager.sh            # Bash session management (4.5 KB)
 │   ├── file_operations.sh            # File resilience operations (5.9 KB)
@@ -75,10 +77,23 @@ Force fresh workflow start:
 - Useful for debugging and testing
 - Default behavior: Resume from last completed step
 
+### 🆕 Tech Stack Configuration (v2.3.1)
+**Flags:** `--init-config`, `--show-tech-stack`, `--config-file FILE`
+
+Interactive configuration and tech stack detection:
+- `--init-config`: Run interactive wizard to create `.workflow-config.yaml`
+- `--show-tech-stack`: Display detected tech stack and configuration
+- `--config-file FILE`: Use custom config file instead of `.workflow-config.yaml`
+- Auto-detection for Bash, Node.js, Python, and other ecosystems
+- Adaptive test execution supporting Jest, BATS, pytest frameworks
+- Config-based directory validation (source, test, docs directories)
+
 ### 🐛 Critical Bug Fixes (v2.3.1)
 - Fixed checkpoint file Bash syntax errors (proper variable quoting)
 - Fixed metrics calculation arithmetic errors in historical stats
 - Resolved "command not found" errors in checkpoint files
+- Fixed Step 7 test execution directory navigation (uses TARGET_DIR correctly)
+- Added safe log file directory checks to prevent early execution errors
 - Enhanced error handling in metrics calculations
 
 ## Version 2.3.0 Features (Phase 2 Complete)

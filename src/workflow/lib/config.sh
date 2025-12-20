@@ -1,4 +1,6 @@
 #!/bin/bash
+set -euo pipefail
+
 ################################################################################
 # Workflow Configuration Module
 # Purpose: Central configuration and constants for workflow automation

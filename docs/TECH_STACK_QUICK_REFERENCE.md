@@ -30,9 +30,10 @@ cd /path/to/your/python/project
 Create `.workflow-config.yaml` in your project root:
 
 ```yaml
-# Minimal configuration (5 lines)
+# Minimal configuration (6 lines)
 project:
   name: "my-project"
+  kind: "python_api"              # Optional: auto-detected if not specified
 
 tech_stack:
   primary_language: "python"
@@ -57,6 +58,7 @@ Let the wizard create the config for you:
 ```yaml
 project:
   name: "ml-pipeline"
+  kind: "python_api"
 
 tech_stack:
   primary_language: "python"
@@ -81,6 +83,7 @@ dependencies:
 ```yaml
 project:
   name: "web-app"
+  kind: "react_spa"
 
 tech_stack:
   primary_language: "javascript"
@@ -106,6 +109,7 @@ dependencies:
 ```yaml
 project:
   name: "api-service"
+  kind: "go_api"
 
 tech_stack:
   primary_language: "go"
@@ -128,6 +132,7 @@ dependencies:
 ```yaml
 project:
   name: "backend-service"
+  kind: "java_api"
 
 tech_stack:
   primary_language: "java"
@@ -207,6 +212,12 @@ tech_stack:
 ### Optional Fields (Recommended)
 
 ```yaml
+project:
+  kind: "string"              # Project type: shell_automation, nodejs_api, nodejs_cli,
+                              # nodejs_library, static_website, react_spa, vue_spa,
+                              # python_api, python_cli, python_library, documentation
+                              # (auto-detected if not specified)
+
 tech_stack:
   languages: [list]           # Additional languages
   build_system: "string"      # npm, pip, go mod, maven, etc.
@@ -230,6 +241,28 @@ ai_prompts:
   language_context: "string"  # Custom context for AI
   custom_instructions: [list] # Custom AI instructions
 ```
+
+---
+
+## Supported Project Kinds
+
+The `project.kind` field enables project-aware AI personas and optimized workflow execution:
+
+| Kind | Description | Characteristics |
+|------|-------------|-----------------|
+| **shell_automation** | Shell script workflow/automation | executable_focus, script_heavy, no_build |
+| **nodejs_api** | Node.js REST API / backend service | server_runtime, requires_build, dependency_heavy |
+| **nodejs_cli** | Node.js command-line tool | executable_focus, requires_build, binary_output |
+| **nodejs_library** | Node.js reusable library/module | library_focus, requires_build, npm_publish |
+| **static_website** | Static HTML/CSS/JS website | no_runtime, no_build, browser_target |
+| **react_spa** | React single-page application | client_runtime, requires_build, browser_target |
+| **vue_spa** | Vue.js single-page application | client_runtime, requires_build, browser_target |
+| **python_api** | Python API / web service | server_runtime, optional_build, dependency_heavy |
+| **python_cli** | Python command-line tool | executable_focus, optional_build, binary_output |
+| **python_library** | Python reusable library/package | library_focus, optional_build, pypi_publish |
+| **documentation** | Documentation-only project | no_runtime, optional_build, content_focus |
+
+**Note**: If not specified, project kind is auto-detected using the `detect_project_kind()` function.
 
 ---
 

@@ -1,4 +1,6 @@
 #!/bin/bash
+set -euo pipefail
+
 ################################################################################
 # AI Response Caching Module
 # Version: 1.0.0

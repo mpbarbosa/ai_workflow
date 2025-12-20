@@ -1,4 +1,6 @@
 #!/bin/bash
+set -euo pipefail
+
 ################################################################################
 # Summary Generation Module
 # Purpose: Helper functions for generating step-level summaries

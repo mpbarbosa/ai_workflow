@@ -1,4 +1,6 @@
 #!/bin/bash
+set -euo pipefail
+
 ################################################################################
 # Bash Session Management Module
 # Purpose: Manage unique bash sessions, timeouts, and cleanup for workflow steps

@@ -1,0 +1,398 @@
+# Project Kind Configuration Schema
+# Version: 1.0.0
+# Purpose: Define validation rules, test commands, and quality standards per project kind
+# Last Updated: 2025-12-18
+
+# ============================================================================
+# PROJECT KIND DEFINITIONS
+# ============================================================================
+
+project_kinds:
+  
+  # ----------------------------------------------------------------------------
+  # Shell Script Automation Project
+  # ----------------------------------------------------------------------------
+  shell_script_automation:
+    name: "Shell Script Automation"
+    description: "Bash/shell script based automation tools and utilities"
+    
+    # Validation rules
+    validation:
+      required_files:
+        - "*.sh"
+      required_directories:
+        - "src"
+      optional_files:
+        - "README.md"
+        - ".gitignore"
+      file_patterns:
+        - "*.sh"
+        - "*.bash"
+    
+    # Test execution configuration
+    testing:
+      test_framework: "bash_unit"
+      test_directory: "tests"
+      test_file_pattern: "test_*.sh"
+      test_command: "bash"
+      coverage_required: false
+      coverage_threshold: 0
+      
+    # Quality standards
+    quality:
+      linters:
+        - name: "shellcheck"
+          enabled: true
+          command: "shellcheck"
+          args: ["-x", "-S", "warning"]
+          file_pattern: "*.sh"
+        - name: "shfmt"
+          enabled: false
+          command: "shfmt"
+          args: ["-d", "-i", "4"]
+          file_pattern: "*.sh"
+      
+      documentation_required: true
+      inline_comments_recommended: true
+      readme_required: true
+    
+    # Dependencies configuration
+    dependencies:
+      package_files: []
+      lock_files: []
+      validation_required: false
+    
+    # Build configuration
+    build:
+      required: false
+      build_command: ""
+      output_directory: ""
+    
+    # Deployment configuration  
+    deployment:
+      type: "script"
+      requires_build: false
+      artifact_patterns: ["*.sh"]
+
+  # ----------------------------------------------------------------------------
+  # Node.js API Project
+  # ----------------------------------------------------------------------------
+  nodejs_api:
+    name: "Node.js API"
+    description: "Node.js backend API with Express or similar framework"
+    
+    validation:
+      required_files:
+        - "package.json"
+        - "server.js|app.js|index.js"
+      required_directories:
+        - "src|lib|routes"
+      optional_files:
+        - "README.md"
+        - ".env.example"
+        - "docker-compose.yml"
+      file_patterns:
+        - "*.js"
+        - "*.ts"
+        - "*.mjs"
+    
+    testing:
+      test_framework: "jest|mocha|vitest"
+      test_directory: "test|tests|__tests__"
+      test_file_pattern: "*.test.js|*.spec.js|*.test.ts|*.spec.ts"
+      test_command: "npm test"
+      coverage_required: true
+      coverage_threshold: 80
+      
+    quality:
+      linters:
+        - name: "eslint"
+          enabled: true
+          command: "npx eslint"
+          args: ["."]
+          file_pattern: "*.js|*.ts"
+        - name: "prettier"
+          enabled: true
+          command: "npx prettier"
+          args: ["--check", "."]
+          file_pattern: "*.js|*.ts|*.json"
+      
+      documentation_required: true
+      inline_comments_recommended: true
+      readme_required: true
+      api_documentation_required: true
+      api_documentation_format: "openapi|swagger|jsdoc"
+    
+    dependencies:
+      package_files: ["package.json"]
+      lock_files: ["package-lock.json", "yarn.lock", "pnpm-lock.yaml"]
+      validation_required: true
+      security_audit_required: true
+      audit_command: "npm audit"
+    
+    build:
+      required: false  # May be true for TypeScript
+      build_command: "npm run build"
+      output_directory: "dist|build"
+    
+    deployment:
+      type: "service"
+      requires_build: false
+      artifact_patterns: ["package.json", "*.js", "src/**/*"]
+      environment_required: true
+
+  # ----------------------------------------------------------------------------
+  # Static Website Project
+  # ----------------------------------------------------------------------------
+  static_website:
+    name: "Static Website"
+    description: "HTML/CSS/JavaScript static website or portfolio"
+    
+    validation:
+      required_files:
+        - "index.html"
+      required_directories: []
+      optional_files:
+        - "README.md"
+        - "package.json"
+        - "style.css|styles.css"
+      file_patterns:
+        - "*.html"
+        - "*.css"
+        - "*.js"
+    
+    testing:
+      test_framework: "none|jest|playwright"
+      test_directory: "tests"
+      test_file_pattern: "*.test.js|*.spec.js"
+      test_command: "npm test"
+      coverage_required: false
+      coverage_threshold: 0
+      
+    quality:
+      linters:
+        - name: "htmlhint"
+          enabled: true
+          command: "npx htmlhint"
+          args: ["**/*.html"]
+          file_pattern: "*.html"
+        - name: "stylelint"
+          enabled: true
+          command: "npx stylelint"
+          args: ["**/*.css"]
+          file_pattern: "*.css"
+        - name: "eslint"
+          enabled: false
+          command: "npx eslint"
+          args: ["."]
+          file_pattern: "*.js"
+      
+      documentation_required: true
+      inline_comments_recommended: false
+      readme_required: true
+      accessibility_required: true
+      wcag_level: "AA"
+    
+    dependencies:
+      package_files: ["package.json"]
+      lock_files: ["package-lock.json", "yarn.lock"]
+      validation_required: false
+    
+    build:
+      required: false
+      build_command: "npm run build"
+      output_directory: "dist|build|public"
+    
+    deployment:
+      type: "static"
+      requires_build: false
+      artifact_patterns: ["*.html", "*.css", "*.js", "assets/**/*"]
+      cdn_compatible: true
+
+  # ----------------------------------------------------------------------------
+  # React/SPA Application
+  # ----------------------------------------------------------------------------
+  react_spa:
+    name: "React SPA"
+    description: "Single Page Application using React"
+    
+    validation:
+      required_files:
+        - "package.json"
+        - "src/App.js|src/App.tsx"
+      required_directories:
+        - "src"
+        - "public"
+      optional_files:
+        - "README.md"
+        - "tsconfig.json"
+      file_patterns:
+        - "*.jsx"
+        - "*.tsx"
+        - "*.js"
+        - "*.ts"
+    
+    testing:
+      test_framework: "jest|vitest"
+      test_directory: "src"
+      test_file_pattern: "*.test.js|*.test.tsx|*.spec.js|*.spec.tsx"
+      test_command: "npm test"
+      coverage_required: true
+      coverage_threshold: 70
+      
+    quality:
+      linters:
+        - name: "eslint"
+          enabled: true
+          command: "npx eslint"
+          args: ["src"]
+          file_pattern: "*.jsx|*.tsx|*.js|*.ts"
+        - name: "prettier"
+          enabled: true
+          command: "npx prettier"
+          args: ["--check", "src"]
+          file_pattern: "*.jsx|*.tsx|*.js|*.ts"
+      
+      documentation_required: true
+      inline_comments_recommended: true
+      readme_required: true
+      component_documentation_required: true
+    
+    dependencies:
+      package_files: ["package.json"]
+      lock_files: ["package-lock.json", "yarn.lock", "pnpm-lock.yaml"]
+      validation_required: true
+      security_audit_required: true
+      audit_command: "npm audit"
+    
+    build:
+      required: true
+      build_command: "npm run build"
+      output_directory: "build|dist"
+    
+    deployment:
+      type: "static"
+      requires_build: true
+      artifact_patterns: ["build/**/*", "dist/**/*"]
+      cdn_compatible: true
+
+  # ----------------------------------------------------------------------------
+  # Python Application
+  # ----------------------------------------------------------------------------
+  python_app:
+    name: "Python Application"
+    description: "Python application or script collection"
+    
+    validation:
+      required_files:
+        - "*.py"
+      required_directories:
+        - "src|lib"
+      optional_files:
+        - "README.md"
+        - "requirements.txt"
+        - "setup.py"
+        - "pyproject.toml"
+      file_patterns:
+        - "*.py"
+    
+    testing:
+      test_framework: "pytest|unittest"
+      test_directory: "tests"
+      test_file_pattern: "test_*.py|*_test.py"
+      test_command: "pytest"
+      coverage_required: true
+      coverage_threshold: 80
+      
+    quality:
+      linters:
+        - name: "pylint"
+          enabled: true
+          command: "pylint"
+          args: ["src"]
+          file_pattern: "*.py"
+        - name: "black"
+          enabled: true
+          command: "black"
+          args: ["--check", "src"]
+          file_pattern: "*.py"
+        - name: "mypy"
+          enabled: false
+          command: "mypy"
+          args: ["src"]
+          file_pattern: "*.py"
+      
+      documentation_required: true
+      inline_comments_recommended: true
+      readme_required: true
+      docstring_required: true
+      docstring_format: "google|numpy|sphinx"
+    
+    dependencies:
+      package_files: ["requirements.txt", "setup.py", "pyproject.toml"]
+      lock_files: ["Pipfile.lock", "poetry.lock"]
+      validation_required: true
+      security_audit_required: true
+      audit_command: "pip-audit"
+    
+    build:
+      required: false
+      build_command: "python setup.py build"
+      output_directory: "build|dist"
+    
+    deployment:
+      type: "application"
+      requires_build: false
+      artifact_patterns: ["*.py", "src/**/*.py"]
+
+  # ----------------------------------------------------------------------------
+  # Generic Project (Fallback)
+  # ----------------------------------------------------------------------------
+  generic:
+    name: "Generic Project"
+    description: "Generic project with minimal assumptions"
+    
+    validation:
+      required_files: []
+      required_directories: []
+      optional_files:
+        - "README.md"
+      file_patterns: ["*"]
+    
+    testing:
+      test_framework: "unknown"
+      test_directory: "tests|test"
+      test_file_pattern: "test_*|*_test.*|*.test.*|*.spec.*"
+      test_command: ""
+      coverage_required: false
+      coverage_threshold: 0
+      
+    quality:
+      linters: []
+      documentation_required: true
+      inline_comments_recommended: false
+      readme_required: true
+    
+    dependencies:
+      package_files: []
+      lock_files: []
+      validation_required: false
+    
+    build:
+      required: false
+      build_command: ""
+      output_directory: ""
+    
+    deployment:
+      type: "unknown"
+      requires_build: false
+      artifact_patterns: []
+
+# ============================================================================
+# CONFIGURATION METADATA
+# ============================================================================
+
+metadata:
+  schema_version: "1.0.0"
+  last_updated: "2025-12-18"
+  compatible_workflow_version: "2.3.1"

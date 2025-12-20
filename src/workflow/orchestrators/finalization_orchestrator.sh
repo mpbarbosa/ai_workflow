@@ -2,7 +2,7 @@
 
 ################################################################################
 # Finalization Orchestrator
-# Version: 2.4.0
+# Version: 2.3.1
 # Purpose: Orchestrate context analysis, git operations, and cleanup (Steps 10-12)
 # Part of: Workflow Automation Modularization Phase 3
 ################################################################################

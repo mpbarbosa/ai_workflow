@@ -262,5 +262,5 @@ Checkpoints integrate with smart execution to skip unchanged steps:
 ---
 
 **Last Updated**: 2025-12-18  
-**Module Version**: 2.3.0  
+**Module Version**: 2.3.1  
 **Maintained By**: AI Workflow Automation Team

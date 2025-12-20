@@ -1,4 +1,6 @@
 #!/bin/bash
+set -euo pipefail
+
 ################################################################################
 # Metrics Validation Library
 # Purpose: Validate and verify project metrics consistency across documentation

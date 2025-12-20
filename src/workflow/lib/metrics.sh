@@ -1,4 +1,6 @@
 #!/bin/bash
+set -euo pipefail
+
 ################################################################################
 # Workflow Metrics Collection Module
 # Purpose: Track duration, success rate, and step timing for workflow automation
@@ -21,6 +23,11 @@ declare -A STEP_START_TIMES
 declare -A STEP_END_TIMES
 declare -A STEP_DURATIONS
 declare -A STEP_STATUSES
+
+# Phase timing tracking (for documentation update phases)
+declare -A PHASE_START_TIMES
+declare -A PHASE_DURATIONS
+declare -A PHASE_DESCRIPTIONS
 
 # Workflow-level metrics
 WORKFLOW_START_EPOCH=0
@@ -146,6 +153,73 @@ get_step_name() {
         12) echo "Markdown_Linting" ;;
         *) echo "Unknown_Step_${step_num}" ;;
     esac
+}
+
+# ==============================================================================
+# PHASE TIMING (For Documentation Update Phases)
+# ==============================================================================
+
+# Start timing for a phase within a step
+# Usage: start_phase_timer <step_num> <phase_name> <description>
+start_phase_timer() {
+    local step_num="$1"
+    local phase_name="$2"
+    local description="$3"
+    
+    local phase_key="${step_num}_${phase_name}"
+    PHASE_START_TIMES["${phase_key}"]=$(date +%s)
+    PHASE_DESCRIPTIONS["${phase_key}"]="${description}"
+    
+    print_info "→ Starting phase: ${description}"
+}
+
+# Stop timing for a phase
+# Usage: stop_phase_timer <step_num> <phase_name>
+stop_phase_timer() {
+    local step_num="$1"
+    local phase_name="$2"
+    
+    local phase_key="${step_num}_${phase_name}"
+    local start_time="${PHASE_START_TIMES[${phase_key}]:-0}"
+    local end_time=$(date +%s)
+    local duration=$((end_time - start_time))
+    
+    PHASE_DURATIONS["${phase_key}"]=${duration}
+    
+    local description="${PHASE_DESCRIPTIONS[${phase_key}]:-$phase_name}"
+    print_success "✓ Completed phase: ${description} ($(format_duration $duration))"
+}
+
+# Generate phase timing report for a step
+# Usage: generate_phase_report <step_num>
+generate_phase_report() {
+    local step_num="$1"
+    
+    echo ""
+    echo "### Phase Timing Breakdown (Step ${step_num})"
+    echo ""
+    echo "| Phase | Description | Duration |"
+    echo "|-------|-------------|----------|"
+    
+    local total_phase_time=0
+    
+    # Iterate through all phases for this step
+    for key in "${!PHASE_DURATIONS[@]}"; do
+        if [[ "$key" == "${step_num}_"* ]]; then
+            local phase_name="${key#${step_num}_}"
+            local duration="${PHASE_DURATIONS[$key]}"
+            local description="${PHASE_DESCRIPTIONS[$key]:-$phase_name}"
+            
+            echo "| ${phase_name} | ${description} | $(format_duration $duration) |"
+            total_phase_time=$((total_phase_time + duration))
+        fi
+    done
+    
+    if [[ $total_phase_time -gt 0 ]]; then
+        echo ""
+        echo "**Total Phase Time:** $(format_duration $total_phase_time)"
+        echo ""
+    fi
 }
 
 # ==============================================================================
@@ -340,6 +414,8 @@ generate_historical_stats() {
     local success_rate=0
     
     # Separate variable assignment to prevent arithmetic evaluation errors (v2.3.1)
+    # Previous bug: Assigning grep output directly in arithmetic context caused syntax errors
+    # when grep returned empty or malformed output. Now isolate assignment with || fallback.
     total_runs=$(grep -c "workflow_run_id" "${METRICS_HISTORY}" 2>/dev/null) || total_runs=0
     successful_runs=$(grep -c '"success": *true' "${METRICS_HISTORY}" 2>/dev/null) || successful_runs=0
     
@@ -431,4 +507,5 @@ get_average_step_duration() {
 
 # Export functions for use in workflow
 export -f init_metrics start_step_timer stop_step_timer finalize_metrics
+export -f start_phase_timer stop_phase_timer generate_phase_report
 export -f get_success_rate get_average_step_duration generate_metrics_summary

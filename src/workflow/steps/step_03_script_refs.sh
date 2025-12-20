@@ -1,16 +1,74 @@
 #!/bin/bash
+set -euo pipefail
+
 ################################################################################
-# Step 3: AI-Powered Script Reference Validation
-# Purpose: Validate shell script references and documentation accuracy
-# Part of: Tests & Documentation Workflow Automation v2.0.0
-# Version: 2.0.0
+# Step 3: AI-Powered Script Reference Validation (Language-Aware)
+# Purpose: Validate script/code references and documentation accuracy (adaptive)
+# Part of: Tests & Documentation Workflow Automation v2.6.0
+# Version: 2.1.0 (Phase 5 Final - Language-aware script detection)
 ################################################################################
 
 # Module version information
-readonly STEP3_VERSION="2.0.0"
+readonly STEP3_VERSION="2.1.0"
 readonly STEP3_VERSION_MAJOR=2
-readonly STEP3_VERSION_MINOR=0
+readonly STEP3_VERSION_MINOR=1
 readonly STEP3_VERSION_PATCH=0
+
+# Get script/source file patterns based on language
+# Returns: space-separated list of patterns
+get_script_patterns() {
+    local language="${PRIMARY_LANGUAGE:-bash}"
+    
+    case "$language" in
+        bash)
+            echo "*.sh"
+            ;;
+        python)
+            echo "*.py"
+            ;;
+        javascript|typescript)
+            echo "*.js *.mjs *.ts"
+            ;;
+        go)
+            echo "*.go"
+            ;;
+        java)
+            echo "*.java"
+            ;;
+        ruby)
+            echo "*.rb"
+            ;;
+        rust)
+            echo "*.rs"
+            ;;
+        cpp)
+            echo "*.cpp *.cc *.h *.hpp"
+            ;;
+        *)
+            echo "*.sh"
+            ;;
+    esac
+}
+
+# Get script directory based on language
+get_script_directory() {
+    local language="${PRIMARY_LANGUAGE:-bash}"
+    
+    case "$language" in
+        bash)
+            echo "shell_scripts"
+            ;;
+        python)
+            echo "scripts"
+            ;;
+        javascript|typescript)
+            echo "scripts"
+            ;;
+        *)
+            echo "scripts"
+            ;;
+    esac
+}
 
 # Creates comprehensive script issue report and saves to backlog
 # Arguments: 

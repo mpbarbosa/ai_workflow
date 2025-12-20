@@ -1,15 +1,17 @@
 #!/bin/bash
+set -euo pipefail
+
 ################################################################################
-# Step 10: AI-Powered Context Analysis & Workflow Adaptation
-# Purpose: Analyze workflow context and provide strategic recommendations
-# Part of: Tests & Documentation Workflow Automation v2.0.0
-# Version: 2.0.0
+# Step 10: AI-Powered Context Analysis & Workflow Adaptation (Language-Aware)
+# Purpose: Analyze workflow context and provide strategic recommendations (adaptive)
+# Part of: Tests & Documentation Workflow Automation v2.6.0
+# Version: 2.1.0 (Phase 5 Final - Language-aware context injection)
 ################################################################################
 
 # Module version information
-readonly STEP10_VERSION="2.0.0"
+readonly STEP10_VERSION="2.1.0"
 readonly STEP10_VERSION_MAJOR=2
-readonly STEP10_VERSION_MINOR=0
+readonly STEP10_VERSION_MINOR=1
 readonly STEP10_VERSION_PATCH=0
 
 # Main step function - analyzes workflow context with AI strategic planning

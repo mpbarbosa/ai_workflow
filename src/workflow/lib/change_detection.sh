@@ -1,4 +1,6 @@
 #!/bin/bash
+set -euo pipefail
+
 ################################################################################
 # Change Type Detection Module
 # Purpose: Auto-detect docs-only, test-only, or full-stack changes

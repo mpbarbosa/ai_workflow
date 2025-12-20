@@ -1,4 +1,6 @@
 #!/bin/bash
+set -euo pipefail
+
 
 ################################################################################
 # Workflow Optimization Library

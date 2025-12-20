@@ -12,9 +12,9 @@ This repository provides a comprehensive, modular workflow automation system tha
 
 ### Key Features
 
-- **14-Step Automated Pipeline**: Complete workflow from analysis to finalization (added Step 13 in v2.3.1)
+- **13-Step Automated Pipeline**: Complete workflow from analysis to finalization
 - **20 Library Modules**: Modular architecture with AI caching and advanced optimization (19 .sh modules + 1 .yaml config)
-- **AI Integration**: GitHub Copilot CLI with 14 specialized personas
+- **AI Integration**: GitHub Copilot CLI with 13 specialized personas
 - **Smart Execution** (v2.3): Skip steps based on change detection (40-85% faster)
 - **Parallel Execution** (v2.3): Run independent steps simultaneously (33% faster)
 - **AI Response Caching** (v2.3): Reduce token usage by 60-80%
@@ -23,7 +23,7 @@ This repository provides a comprehensive, modular workflow automation system tha
 - **Prompt Engineering** (v2.3.1): Analyze and improve AI persona prompts (Step 13 - ai_workflow only)
 - **Metrics Collection**: Automatic performance tracking and historical analysis
 - **Dependency Visualization**: Interactive graph showing execution flow
-- **100% Test Coverage**: 37 automated tests ensure reliability
+- **100% Test Coverage**: 37+ automated tests ensure reliability
 
 ## Quick Start
 
@@ -73,7 +73,17 @@ cd /path/to/your/project
 /path/to/ai_workflow/src/workflow/execute_tests_docs_workflow.sh \
   --show-graph
 
-# Option 5: Copy workflow to target project
+# Option 5: Configure project interactively
+cd /path/to/your/project
+/path/to/ai_workflow/src/workflow/execute_tests_docs_workflow.sh \
+  --init-config
+
+# Option 6: Show tech stack configuration
+cd /path/to/your/project
+/path/to/ai_workflow/src/workflow/execute_tests_docs_workflow.sh \
+  --show-tech-stack
+
+# Option 7: Copy workflow to target project
 cp -r ai_workflow/src/workflow /path/to/target/project/src/
 cd /path/to/target/project
 ./src/workflow/execute_tests_docs_workflow.sh
@@ -96,11 +106,14 @@ cd /path/to/target/project
 
 ```
 ai_workflow/
-├── docs/workflow-automation/      # Complete workflow documentation
+├── docs/                          # Comprehensive documentation
+│   ├── workflow-automation/       # Workflow system docs
+│   ├── TECH_STACK_ADAPTIVE_FRAMEWORK.md  # Tech stack detection
+│   └── PROJECT_KIND_ADAPTIVE_FRAMEWORK_PHASED_PLAN.md  # Project kind detection
 ├── src/workflow/                  # Workflow automation system
 │   ├── execute_tests_docs_workflow.sh  # Main orchestrator (4,740 lines)
 │   ├── lib/                       # 20 library modules (5,548 lines: 19 .sh + 1 .yaml)
-│   ├── steps/                     # 14 step modules (3,775 lines)
+│   ├── steps/                     # 13 step modules (3,200 lines)
 │   ├── config/                    # YAML configuration
 │   └── backlog/                   # Execution history
 ├── tests/                         # Comprehensive test suite

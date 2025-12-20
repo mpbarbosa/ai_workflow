@@ -177,5 +177,5 @@ AI_CACHE_CLEANUP_INTERVAL=86400  # Daily cleanup
 ---
 
 **Last Updated**: 2025-12-18  
-**Module Version**: 2.3.0  
+**Module Version**: 2.3.1  
 **Maintained By**: AI Workflow Automation Team

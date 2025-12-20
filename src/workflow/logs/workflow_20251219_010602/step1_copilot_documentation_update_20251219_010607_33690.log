@@ -1,0 +1,211 @@
+I need to see what changes have been made to understand what documentation needs updating. Let me check the git status and recent changes.
+
+✓ Check git status and recent changes
+ $ cd /home/mpb/Documents/GitHub/ai_workflow && git --no-pager status && echo "---" && git --no-pager
+ diff --name-status HEAD~1 HEAD 2>/dev/null || git --no-pager diff --cached --name-status
+    └ 169 lines...
+
+I can see many files have changed. The prompt mentions analyzing "recent changes to the following files:" but no specific files were listed. Let me check what files were actually modified (not added) in the recent commit to understand what needs documentation updates:
+
+✓ Get list of modified files and their diffs
+ $ cd /home/mpb/Documents/GitHub/ai_workflow && git --no-pager diff --name-only HEAD~1 HEAD 2>/dev/null |
+  grep -E '\.(sh|md)$' | head -20
+    └ 21 lines...
+
+Let me check what files were actually modified (M status) vs added (A status):
+
+✓ Get only modified shell scripts
+ $ cd /home/mpb/Documents/GitHub/ai_workflow && git --no-pager diff --name-status HEAD~1 HEAD 2>/dev/null
+  | grep '^M' | grep '\.sh$'
+    └ 8 lines...
+
+Perfect! Now let me check the diffs for these modified shell scripts to understand what changed:
+
+✓ Get diffs for modified shell scripts
+ $ cd /home/mpb/Documents/GitHub/ai_workflow && git --no-pager diff HEAD~1 HEAD --
+ src/workflow/execute_tests_docs_workflow.sh src/workflow/lib/metrics.sh
+ src/workflow/lib/workflow_optimization.sh | head -300
+    └ 177 lines...
+
+✓ Get remaining diff and step file changes
+ $ cd /home/mpb/Documents/GitHub/ai_workflow && git --no-pager diff HEAD~1 HEAD --
+ src/workflow/steps/step_04_directory.sh src/workflow/steps/step_07_test_exec.sh
+ src/workflow/steps/step_08_dependencies.sh src/workflow/steps/step_09_code_quality.sh | head -200
+    └ 201 lines...
+
+Now let me check the README and copilot-instructions to see what documentation needs updating:
+
+✓ List directory .
+   └ 38 files found
+
+✓ Check for related documentation files
+ $ cd /home/mpb/Documents/GitHub/ai_workflow && find . -maxdepth 3 -name "README.md" -o -name
+ "*INSTRUCTIONS*" | grep -v node_modules | sort
+    └ 7 lines...
+
+Based on my analysis of the changes, I can see the following key modifications:
+
+1. **Version bump to 2.3.1** in main workflow script
+2. **New command-line options**: `--init-config`, `--show-tech-stack`, `--config-file`
+3. **Tech stack initialization** added to main workflow
+4. **Adaptive directory validation** in step 4 based on `.workflow-config.yaml`
+5. **Adaptive test execution** in step 7 with support for multiple frameworks (Jest, BATS, pytest)
+6. **Bug fixes**: Checkpoint file quoting, metrics calculation errors, log file safety checks
+
+Now let me check the main documentation files to understand what needs updating:
+
+✗ Grep "--no-resume|--show-graph|--smart-execution|--parallel" in *.md
+ (/home/mpb/Documents/GitHub/ai_workflow)
+   └ rg: unrecognized flag --no-resume|--show-graph|--smart-execution|--parallel
+
+✓ Grep "2\.3\.0|Version.*2\.3" in *.md (/home/mpb/Documents/GitHub/ai_workflow)
+   └ 153 files found
+
+Let me check the most critical documentation files that need updating:
+
+✓ Read .github/copilot-instructions.md:1-100
+   └ 100 lines read
+
+✓ Read src/workflow/README.md:1-100
+   └ 100 lines read
+
+Now let me check the command-line options section to see what needs updating:
+
+✓ Read .github/copilot-instructions.md:210-280
+   └ 71 lines read
+
+✓ Read src/workflow/README.md:130-200
+   └ 71 lines read
+
+Let me check the version history sections to see what needs updating:
+
+✓ Grep "^### v2\.3\.|^## Version|Version History"
+ (/home/mpb/Documents/GitHub/ai_workflow/.github/copilot-instructions.md)
+   └ 3 lines found
+
+✓ Grep "command-line option|--init-config|--show-tech-stack|--config-file"
+ (/home/mpb/Documents/GitHub/ai_workflow/.github/copilot-instructions.md)
+   └ 2 lines found
+
+Let me view the command-line options section and version history:
+
+✓ Read .github/copilot-instructions.md:181-215
+   └ 35 lines read
+
+✓ Read .github/copilot-instructions.md:297-340
+   └ 44 lines read
+
+Perfect! Now I understand what needs to be documented. Based on the code changes, I need to add documentation for the three new command-line options that were added in v2.3.1:
+1. `--init-config` - Run interactive configuration wizard
+2. `--show-tech-stack` - Display detected tech stack configuration  
+3. `--config-file FILE` - Use specific .workflow-config.yaml file
+
+Let me update the documentation:
+
+✓ Edit .github/copilot-instructions.md
+
+✓ Edit .github/copilot-instructions.md
+
+Now let me update the src/workflow/README.md to reflect these same changes:
+
+✓ Read src/workflow/README.md:66-120
+   └ 55 lines read
+
+✓ Edit src/workflow/README.md
+
+Now let me add inline documentation for the new functions and logic in the modified shell scripts. Let me check the key areas that need comments:
+
+✓ Read src/workflow/execute_tests_docs_workflow.sh:5252-5275
+   └ 5 lines read
+
+✓ Read src/workflow/execute_tests_docs_workflow.sh:5302-5350
+   └ 5 lines read
+
+Let me check the actual line count:
+
+✓ Get line count of main script
+ $ wc -l /home/mpb/Documents/GitHub/ai_workflow/src/workflow/execute_tests_docs_workflow.sh
+    └ 2 lines...
+
+✓ Read src/workflow/execute_tests_docs_workflow.sh:4720-4780
+   └ 61 lines read
+
+✓ Read src/workflow/execute_tests_docs_workflow.sh:4780-4817
+   └ 38 lines read
+
+Let me check where the new wizard code is:
+
+✓ Find wizard code location
+ $ cd /home/mpb/Documents/GitHub/ai_workflow && grep -n "If --init-config flag is set"
+ src/workflow/execute_tests_docs_workflow.sh
+    └ 2 lines...
+
+✓ Read src/workflow/execute_tests_docs_workflow.sh:416-428
+   └ 13 lines read
+
+✓ Read src/workflow/execute_tests_docs_workflow.sh:4680-4722
+   └ 43 lines read
+
+Now let me check the step files to see if they need better inline comments. Let me look at step_04_directory.sh changes:
+
+✓ Read src/workflow/steps/step_04_directory.sh:39-90
+   └ 52 lines read
+
+The code already has good inline comments. Let me check step_07_test_exec.sh:
+
+✓ Read src/workflow/steps/step_07_test_exec.sh:17-90
+   └ 74 lines read
+
+Good, the code has clear inline comments. Now let me check if there are any usage examples in docs that reference the old command-line options:
+
+✓ Grep "execute_tests_docs_workflow\.sh" in *.md (/home/mpb/Documents/GitHub/ai_workflow)
+   └ 496 lines found
+
+The documentation already covers the command-line options well. The examples in docs already show the usage of the flags. Let me create a concise summary of what was documented:
+
+## Summary
+
+I have successfully updated the documentation to reflect the v2.3.1 changes:
+
+### Updated Files:
+
+1. **`.github/copilot-instructions.md`**:
+   - Added three new command-line options to the usage examples:
+     - `--init-config` - Run interactive configuration wizard
+     - `--show-tech-stack` - Display detected tech stack configuration
+     - `--config-file FILE` - Use custom .workflow-config.yaml file
+   
+   - Updated v2.3.1 version history section with comprehensive feature list:
+     - New command-line flags
+     - Tech stack initialization with auto-detection
+     - Adaptive test execution (Jest, BATS, pytest)
+     - Adaptive directory validation
+     - Bug fixes (checkpoint syntax, metrics arithmetic, test directory navigation, log file safety)
+
+2. **`src/workflow/README.md`**:
+   - Added new "Tech Stack Configuration" section explaining the three new flags
+   - Updated bug fixes section with detailed list including Step 7 test execution fix
+
+### Changes Made:
+
+The modifications were **surgical and minimal**, focusing only on:
+- Command-line options documentation (3 new flags)
+- Version history updates (comprehensive v2.3.1 feature list)
+- Bug fix documentation (6 critical fixes)
+
+### Code Quality:
+
+The existing shell scripts already have **excellent inline comments**:
+- Step 4 (directory validation) explains yq syntax variations and config-based validation
+- Step 7 (test execution) documents adaptive framework selection and TARGET_DIR usage
+- Main workflow script has clear comments for tech stack initialization and wizard flow
+
+No additional inline comments were needed as the code is already well-documented following Bash best practices.
+
+
+Total usage est:       1 Premium request
+Total duration (API):  2m 11.579s
+Total duration (wall): 2m 20.79s
+Total code changes:    0 lines added, 0 lines removed
+Usage by model:
+    claude-sonnet-4.5    918.6k input, 6.1k output, 849.2k cache read (Est. 1 Premium request)

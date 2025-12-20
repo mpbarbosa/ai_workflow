@@ -1,15 +1,17 @@
 #!/bin/bash
+set -euo pipefail
+
 ################################################################################
-# Step 5: AI-Powered Test Review
-# Purpose: Review existing Jest tests and identify coverage gaps
-# Part of: Tests & Documentation Workflow Automation v2.0.0
-# Version: 2.0.0
+# Step 5: AI-Powered Test Review (Language-Aware)
+# Purpose: Review existing tests and identify coverage gaps (adaptive)
+# Part of: Tests & Documentation Workflow Automation v2.5.0
+# Version: 2.1.0 (Phase 5 - Language-aware test review)
 ################################################################################
 
 # Module version information
-readonly STEP5_VERSION="2.0.0"
+readonly STEP5_VERSION="2.1.0"
 readonly STEP5_VERSION_MAJOR=2
-readonly STEP5_VERSION_MINOR=0
+readonly STEP5_VERSION_MINOR=1
 readonly STEP5_VERSION_PATCH=0
 
 # Main step function - reviews existing tests with AI assistance
@@ -27,12 +29,61 @@ step5_review_existing_tests() {
     # PHASE 1: Automated test analysis
     print_info "Phase 1: Automated test analysis..."
     
-    # Check 1: Test file inventory
+    # Check 1: Test file inventory (language-aware)
     print_info "Gathering test file inventory..."
     local test_files
-    test_files=$(fast_find "." "*.test.js" 10 "node_modules" ".git" "coverage" && fast_find "." "*.spec.js" 10 "node_modules" ".git" "coverage" | sort -u)
     local test_count
-    test_count=$(echo "$test_files" | grep -c "test.js\|spec.js" || echo "0")
+    local language="${PRIMARY_LANGUAGE:-javascript}"
+    
+    # Get test file patterns based on language
+    case "$language" in
+        javascript|typescript)
+            test_files=$(fast_find "." "*.test.js" 10 "node_modules" ".git" "coverage" && \
+                        fast_find "." "*.spec.js" 10 "node_modules" ".git" "coverage" && \
+                        fast_find "." "*.test.ts" 10 "node_modules" ".git" "coverage" | sort -u)
+            test_count=$(echo "$test_files" | grep -c "test\|spec" || echo "0")
+            ;;
+        python)
+            test_files=$(fast_find "." "test_*.py" 10 "__pycache__" ".git" "coverage" && \
+                        fast_find "." "*_test.py" 10 "__pycache__" ".git" "coverage" | sort -u)
+            test_count=$(echo "$test_files" | grep -c "test.*\.py" || echo "0")
+            ;;
+        go)
+            test_files=$(fast_find "." "*_test.go" 10 "vendor" ".git" | sort -u)
+            test_count=$(echo "$test_files" | grep -c "_test\.go" || echo "0")
+            ;;
+        java)
+            test_files=$(fast_find "." "*Test.java" 10 "target" ".git" && \
+                        fast_find "." "*Tests.java" 10 "target" ".git" | sort -u)
+            test_count=$(echo "$test_files" | grep -c "Test.*\.java" || echo "0")
+            ;;
+        ruby)
+            test_files=$(fast_find "." "*_spec.rb" 10 "vendor" ".git" && \
+                        fast_find "." "*_test.rb" 10 "vendor" ".git" | sort -u)
+            test_count=$(echo "$test_files" | grep -c "spec\|test.*\.rb" || echo "0")
+            ;;
+        rust)
+            # Rust tests are in same files or tests/ directory
+            test_files=$(fast_find "tests" "*.rs" 10 "target" ".git" | sort -u)
+            test_count=$(echo "$test_files" | grep -c "\.rs" || echo "0")
+            ;;
+        cpp)
+            test_files=$(fast_find "." "*_test.cpp" 10 "build" ".git" && \
+                        fast_find "." "*_test.cc" 10 "build" ".git" | sort -u)
+            test_count=$(echo "$test_files" | grep -c "_test\." || echo "0")
+            ;;
+        bash)
+            test_files=$(fast_find "." "*.bats" 10 ".git" && \
+                        fast_find "tests" "test_*.sh" 10 ".git" | sort -u)
+            test_count=$(echo "$test_files" | grep -c "bats\|test.*\.sh" || echo "0")
+            ;;
+        *)
+            # Fallback to JavaScript
+            test_files=$(fast_find "." "*.test.js" 10 "node_modules" ".git" "coverage" && \
+                        fast_find "." "*.spec.js" 10 "node_modules" ".git" "coverage" | sort -u)
+            test_count=$(echo "$test_files" | grep -c "test.js\|spec.js" || echo "0")
+            ;;
+    esac
     
     if [[ $test_count -eq 0 ]]; then
         print_warning "No test files found!"

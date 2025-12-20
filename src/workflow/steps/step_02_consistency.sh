@@ -1,15 +1,17 @@
 #!/bin/bash
+set -euo pipefail
+
 ################################################################################
-# Step 2: AI-Powered Documentation Consistency Analysis
-# Purpose: Check documentation for broken references and consistency issues
-# Part of: Tests & Documentation Workflow Automation v2.0.0
-# Version: 2.0.0
+# Step 2: AI-Powered Documentation Consistency Analysis (Language-Aware)
+# Purpose: Check documentation for broken references and consistency issues (adaptive)
+# Part of: Tests & Documentation Workflow Automation v2.5.0
+# Version: 2.1.0 (Phase 5 - Language-aware consistency checks)
 ################################################################################
 
 # Module version information
-readonly STEP2_VERSION="2.0.0"
+readonly STEP2_VERSION="2.1.0"
 readonly STEP2_VERSION_MAJOR=2
-readonly STEP2_VERSION_MINOR=0
+readonly STEP2_VERSION_MINOR=1
 readonly STEP2_VERSION_PATCH=0
 
 # Validates semantic version format (MAJOR.MINOR.PATCH)
@@ -282,12 +284,27 @@ step2_check_consistency() {
     
     # Create comprehensive consistency prompt using AI helper function
     local copilot_prompt
+    # Build prompt (Phase 5: Use language-aware if available)
+    local copilot_prompt
     copilot_prompt=$(build_step2_consistency_prompt \
         "$doc_count" \
         "${CHANGE_SCOPE}" \
         "${ANALYSIS_MODIFIED}" \
         "$broken_refs_content" \
         "$doc_files")
+    
+    # Phase 5: Enhance with language-specific documentation standards
+    if should_use_language_aware_prompts && command -v get_language_documentation_conventions &>/dev/null; then
+        local lang_conventions=$(get_language_documentation_conventions)
+        if [[ -n "$lang_conventions" ]]; then
+            copilot_prompt+="
+
+**${PRIMARY_LANGUAGE^} Documentation Standards:**
+$lang_conventions
+"
+            print_info "Using language-aware consistency checks for ${PRIMARY_LANGUAGE}"
+        fi
+    fi
 
     echo ""
     echo -e "${CYAN}GitHub Copilot CLI Consistency Analysis Prompt:${NC}"

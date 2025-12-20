@@ -1,4 +1,6 @@
 #!/bin/bash
+set -euo pipefail
+
 ################################################################################
 # Example: Session Manager Integration
 # Purpose: Demonstrate session management best practices in workflow steps

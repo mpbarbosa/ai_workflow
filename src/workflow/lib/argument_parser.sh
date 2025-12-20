@@ -1,0 +1,231 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+################################################################################
+# Argument Parser Module
+# Purpose: Extract command-line argument parsing logic from main workflow script
+# Version: 1.0.0
+# Part of: Technical Debt Reduction Phase 1
+################################################################################
+
+# Parse command-line arguments for workflow execution
+# Sets global variables based on provided options
+# Usage: parse_workflow_arguments "$@"
+parse_workflow_arguments() {
+    while [[ $# -gt 0 ]]; do
+        case $1 in
+            --target)
+                if [[ -z "${2:-}" ]] || [[ "$2" == --* ]]; then
+                    print_error "--target requires a directory path argument"
+                    exit 1
+                fi
+                TARGET_PROJECT_ROOT="$2"
+                # Validate target directory exists
+                if [[ ! -d "$TARGET_PROJECT_ROOT" ]]; then
+                    print_error "Target directory does not exist: $TARGET_PROJECT_ROOT"
+                    exit 1
+                fi
+                # Convert to absolute path
+                TARGET_PROJECT_ROOT="$(cd "$TARGET_PROJECT_ROOT" && pwd)"
+                PROJECT_ROOT="$TARGET_PROJECT_ROOT"
+                SRC_DIR="${PROJECT_ROOT}/src"
+                print_info "Target project: $PROJECT_ROOT"
+                shift 2
+                ;;
+            --dry-run)
+                DRY_RUN=true
+                export DRY_RUN
+                print_info "Dry-run mode enabled"
+                shift
+                ;;
+            --auto)
+                AUTO_MODE=true
+                INTERACTIVE_MODE=false
+                export AUTO_MODE
+                export INTERACTIVE_MODE
+                print_info "Automatic mode enabled"
+                shift
+                ;;
+            --interactive)
+                INTERACTIVE_MODE=true
+                AUTO_MODE=false
+                export INTERACTIVE_MODE
+                export AUTO_MODE
+                shift
+                ;;
+            --verbose)
+                VERBOSE=true
+                print_info "Verbose mode enabled"
+                shift
+                ;;
+            --stop)
+                STOP_ON_COMPLETION=true
+                print_info "Continuation prompt enabled"
+                shift
+                ;;
+            --steps)
+                if [[ -z "${2:-}" ]] || [[ "$2" == --* ]]; then
+                    print_error "--steps requires an argument (e.g., '0,1,2' or 'all')"
+                    exit 1
+                fi
+                EXECUTE_STEPS="$2"
+                shift 2
+                ;;
+            --smart-execution)
+                SMART_EXECUTION=true
+                export SMART_EXECUTION
+                print_info "Smart execution enabled - steps will be skipped based on change detection"
+                shift
+                ;;
+            --show-graph)
+                SHOW_GRAPH=true
+                export SHOW_GRAPH
+                shift
+                ;;
+            --parallel)
+                PARALLEL_EXECUTION=true
+                export PARALLEL_EXECUTION
+                print_info "Parallel execution enabled - independent steps will run simultaneously"
+                shift
+                ;;
+            --no-ai-cache)
+                USE_AI_CACHE=false
+                export USE_AI_CACHE
+                print_warning "AI response caching disabled - this will increase token usage"
+                shift
+                ;;
+            --no-resume)
+                NO_RESUME=true
+                export NO_RESUME
+                print_info "Fresh start enabled - ignoring any checkpoints"
+                shift
+                ;;
+            --show-tech-stack)
+                SHOW_TECH_STACK=true
+                export SHOW_TECH_STACK
+                shift
+                ;;
+            --config-file)
+                if [[ -z "${2:-}" ]] || [[ "$2" == --* ]]; then
+                    print_error "--config-file requires a file path argument"
+                    exit 1
+                fi
+                TECH_STACK_CONFIG_FILE="$2"
+                export TECH_STACK_CONFIG_FILE
+                print_info "Using config file: $TECH_STACK_CONFIG_FILE"
+                shift 2
+                ;;
+            --init-config)
+                INIT_CONFIG_WIZARD=true
+                export INIT_CONFIG_WIZARD
+                shift
+                ;;
+            --help)
+                show_usage
+                exit 0
+                ;;
+            --version)
+                echo "${SCRIPT_NAME} v${SCRIPT_VERSION}"
+                exit 0
+                ;;
+            *)
+                print_error "Unknown option: $1"
+                show_usage
+                exit 1
+                ;;
+        esac
+    done
+}
+
+# Validate that required arguments are provided
+# Returns 0 if valid, 1 if invalid
+validate_parsed_arguments() {
+    local errors=0
+    
+    # Validate PROJECT_ROOT is set and exists
+    if [[ -z "${PROJECT_ROOT:-}" ]]; then
+        print_error "PROJECT_ROOT is not set"
+        ((errors++))
+    elif [[ ! -d "$PROJECT_ROOT" ]]; then
+        print_error "PROJECT_ROOT does not exist: $PROJECT_ROOT"
+        ((errors++))
+    fi
+    
+    # Validate EXECUTE_STEPS format
+    if [[ -n "${EXECUTE_STEPS:-}" ]] && [[ "$EXECUTE_STEPS" != "all" ]]; then
+        if ! [[ "$EXECUTE_STEPS" =~ ^[0-9,]+$ ]]; then
+            print_error "Invalid --steps format: must be 'all' or comma-separated numbers (e.g., '0,1,2')"
+            ((errors++))
+        fi
+    fi
+    
+    # Validate mutually exclusive modes
+    if [[ "${AUTO_MODE:-false}" == "true" ]] && [[ "${INTERACTIVE_MODE:-false}" == "true" ]]; then
+        print_error "Cannot use both --auto and --interactive modes"
+        ((errors++))
+    fi
+    
+    # Validate config file if specified
+    if [[ -n "${TECH_STACK_CONFIG_FILE:-}" ]] && [[ ! -f "$TECH_STACK_CONFIG_FILE" ]]; then
+        print_error "Config file does not exist: $TECH_STACK_CONFIG_FILE"
+        ((errors++))
+    fi
+    
+    return $errors
+}
+
+# Display usage information
+show_usage() {
+    cat << 'EOF'
+Usage: execute_tests_docs_workflow.sh [OPTIONS]
+
+AI Workflow Automation - Intelligent workflow system for documentation,
+code, and test validation with AI support.
+
+OPTIONS:
+  --target <dir>          Run workflow on specified project directory
+                         (default: current directory)
+  
+  --dry-run              Preview actions without making changes
+  --auto                 Run in automatic mode (no prompts)
+  --interactive          Run in interactive mode (default)
+  --verbose              Enable detailed logging output
+  
+  --steps <list>         Execute specific steps (e.g., '0,5,6' or 'all')
+  --smart-execution      Enable change-based step skipping
+  --parallel             Enable parallel execution of independent steps
+  --no-resume            Start fresh, ignore checkpoints
+  
+  --show-graph           Display dependency graph and exit
+  --show-tech-stack      Display tech stack configuration and exit
+  
+  --config-file <path>   Use specific configuration file
+  --init-config          Run interactive configuration wizard
+  
+  --no-ai-cache          Disable AI response caching
+  --stop                 Prompt for continuation after completion
+  
+  --help                 Display this help message
+  --version              Display script version
+
+EXAMPLES:
+  # Run on current directory with all optimizations
+  ./execute_tests_docs_workflow.sh --smart-execution --parallel --auto
+  
+  # Run on different project
+  ./execute_tests_docs_workflow.sh --target /path/to/project
+  
+  # Run specific steps only
+  ./execute_tests_docs_workflow.sh --steps 0,5,6,7
+  
+  # Initialize configuration
+  ./execute_tests_docs_workflow.sh --init-config
+
+For more information, see: docs/TARGET_PROJECT_FEATURE.md
+EOF
+}
+
+# Export functions for use in main script
+export -f parse_workflow_arguments
+export -f validate_parsed_arguments
+export -f show_usage

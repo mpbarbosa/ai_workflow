@@ -2,7 +2,7 @@
 
 ################################################################################
 # Pre-Flight Orchestrator
-# Version: 2.4.0
+# Version: 2.3.1
 # Purpose: Pre-flight checks, initialization, and configuration setup
 # Part of: Workflow Automation Modularization Phase 3
 ################################################################################

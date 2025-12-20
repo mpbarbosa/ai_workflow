@@ -1,15 +1,17 @@
 #!/bin/bash
+set -euo pipefail
+
 ################################################################################
 # Step 4: AI-Powered Directory Structure Validation
-# Purpose: Validate project directory structure and architectural organization
-# Part of: Tests & Documentation Workflow Automation v2.0.0
-# Version: 2.0.0
+# Purpose: Validate project directory structure and architectural organization (adaptive)
+# Part of: Tests & Documentation Workflow Automation v2.3.1
+# Version: 2.1.0 (Phase 3 - Adaptive exclude patterns)
 ################################################################################
 
 # Module version information
-readonly STEP4_VERSION="2.0.0"
+readonly STEP4_VERSION="2.1.0"
 readonly STEP4_VERSION_MAJOR=2
-readonly STEP4_VERSION_MINOR=0
+readonly STEP4_VERSION_MINOR=1
 readonly STEP4_VERSION_PATCH=0
 
 # Main step function - validates directory structure with AI assistance
@@ -24,17 +26,32 @@ step4_validate_directory_structure() {
     structure_issues_file=$(mktemp)
     TEMP_FILES+=("$structure_issues_file")
     
-    # PHASE 1: Automated directory structure detection
-    print_info "Phase 1: Automated directory structure detection..."
+    # PHASE 1: Automated directory structure detection (ADAPTIVE - Phase 3)
+    local language="${PRIMARY_LANGUAGE:-javascript}"
+    print_info "Phase 1: Automated directory structure detection (${language})..."
+    
+    # Get exclude patterns from tech stack
+    local exclude_patterns=""
+    if command -v get_exclude_patterns &>/dev/null; then
+        exclude_patterns=$(get_exclude_patterns | tr '\n' '|' | sed 's/|$//')
+    else
+        # Fallback exclude patterns
+        exclude_patterns="node_modules|.git|coverage|__pycache__|.venv"
+    fi
     
     # Check 1: Generate current directory structure
-    print_info "Generating directory inventory..."
+    print_info "Generating directory inventory (excluding: ${exclude_patterns})..."
     local dir_tree=""
     if command -v tree &> /dev/null; then
-        dir_tree=$(tree -d -L 3 -I 'node_modules|.git|coverage' --noreport 2>/dev/null || true)
+        dir_tree=$(tree -d -L 3 -I "${exclude_patterns}" --noreport 2>/dev/null || true)
     else
         # Fallback: use find if tree is not available
-        dir_tree=$(find . -maxdepth 3 -type d ! -path "*/node_modules/*" ! -path "*/.git/*" ! -path "*/coverage/*" | sort)
+        local exclude_find=""
+        IFS='|' read -ra PATTERNS <<< "$exclude_patterns"
+        for pattern in "${PATTERNS[@]}"; do
+            exclude_find+=" ! -path \"*/${pattern}/*\""
+        done
+        dir_tree=$(eval "find . -maxdepth 3 -type d ${exclude_find}" | sort)
     fi
     
     # Check 2: Validate expected critical directories exist

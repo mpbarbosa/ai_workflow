@@ -1,4 +1,6 @@
 #!/bin/bash
+set -euo pipefail
+
 ################################################################################
 # Utility Functions Module
 # Purpose: Common utility functions for workflow automation
@@ -36,6 +38,11 @@ print_step() {
     local step_num="$1"
     local step_name="$2"
     echo -e "\n${MAGENTA}▶ Step ${step_num}: ${step_name}${NC}"
+}
+
+print_section() {
+    local message="$1"
+    echo -e "\n${CYAN}── ${message} ──${NC}"
 }
 
 # ==============================================================================

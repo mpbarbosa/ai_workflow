@@ -17,25 +17,26 @@
 - **AI Caching**: 60-80% token usage reduction
 - **Combined**: Up to 90% faster for documentation-only changes
 
-**Latest Achievement**: ✅ **v2.3.1 Released** - Critical fixes and checkpoint control with `--no-resume` flag, fixed checkpoint file syntax errors, and enhanced metrics calculations. Phase 2 Integration & Parallel Execution fully implemented with 5 command-line flags, AI response caching module, and comprehensive metrics integration.
+**Latest Achievement**: ✅ **v2.3.1 Released** - Critical fixes and checkpoint control with `--no-resume` flag, fixed checkpoint file syntax errors, and enhanced metrics calculations. Automatic workflow resumption from last completed step with checkpoint persistence. Phase 2 Integration & Parallel Execution fully implemented with 6 command-line flags, AI response caching module, and comprehensive metrics integration.
 
 ---
 
 ## **1. WORKFLOW EFFECTIVENESS ASSESSMENT**
 
 ### **Key Achievements** ✅
-- **Complete Modularization**: 19,053 lines across 30 modules with single responsibility principle
+- **Complete Modularization**: 22,216 shell lines across 30 modules with single responsibility principle
 - **YAML Configuration System**: 762 lines of externalized AI prompt templates
 - **Enhanced Output Limits**: 100% increase in test output visibility (v2.0.0)
 - **Auto-Mode Issue Extraction**: Eliminates manual copy-paste in CI/CD workflows
 - **Professional Architecture**: Functional core/imperative shell patterns with dependency injection
-- **⭐ Phase 2 Integration Complete** (v2.3.0):
+- **⭐ Phase 2 Integration Complete** (v2.3.1):
   - **Smart Execution**: Change-based step skipping (40-85% faster)
   - **Parallel Execution**: Independent steps run simultaneously (33% faster)
   - **AI Response Caching**: 60-80% token reduction with automatic management
+  - **Checkpoint Resume**: Automatic continuation from last completed step
   - **Integrated Metrics**: Automatic performance tracking and historical analysis
   - **Dependency Visualization**: Interactive graph with Mermaid diagrams
-  - **4 New Flags**: --smart-execution, --parallel, --show-graph, --no-ai-cache
+  - **8 New Flags**: --smart-execution, --parallel, --show-graph, --no-ai-cache, --no-resume, --init-config, --show-tech-stack, --config-file
   - **New Module**: ai_cache.sh (10,639 bytes) for AI response optimization
 
 ### **Workflow Execution Pattern Analysis**
@@ -55,14 +56,16 @@ Execution Modes:
 
 ### **Recent Execution Metrics** (Dec 2025)
 
-**Version 2.3.1 Features** (Latest):
-- ✅ Checkpoint resume control (--no-resume flag)
+**Version 2.3.1 Features** (Latest - December 18, 2025):
+- ✅ Checkpoint resume control (--no-resume flag to force fresh start)
+- ✅ Automatic resume from last completed step (enabled by default)
 - ✅ Smart execution with change detection
 - ✅ Parallel execution of validation steps
 - ✅ AI response caching (enabled by default)
 - ✅ Integrated metrics collection
 - ✅ Dependency graph visualization
-- ✅ Fixed checkpoint file syntax errors
+- ✅ Fixed checkpoint file syntax errors (proper variable quoting)
+- ✅ Fixed metrics calculation arithmetic errors
 - ✅ Fixed metrics calculation arithmetic errors
 
 **Historical Executions**:
@@ -88,7 +91,7 @@ Execution Modes:
 2. ✅ **Comprehensive AI Integration** - 13 specialized personas with AI response caching
 3. ✅ **Automated CI/CD Support** - Auto-mode with issue extraction eliminates manual intervention
 4. ✅ **Robust Error Handling** - Graceful degradation with Copilot CLI authentication fallbacks
-5. ✅ **Complete Documentation** - All 20 library modules fully documented
+5. ✅ **Complete Documentation** - All 28 library modules fully documented
 6. ✅ **⭐ Smart Execution** - Intelligent step skipping based on change detection (40-85% faster)
 7. ✅ **⭐ Parallel Execution** - Independent steps run simultaneously (33% time savings)
 8. ✅ **⭐ AI Response Caching** - 60-80% token reduction with automatic management
@@ -179,7 +182,7 @@ Recent commits show excellent workflow integration:
 
 **Status: ALL PHASE 2 FEATURES DELIVERED AND INTEGRATED** ✅🚀
 
-**Version:** v2.3.0 (Released December 18, 2025)
+**Version:** v2.3.1 (Released December 18, 2025)
 
 1. ✅ **Integrated Metrics Collection** - Automatic throughout workflow
    - Initialized via `init_metrics()` at workflow start
@@ -244,7 +247,7 @@ Recent commits show excellent workflow integration:
    - Jenkins pipeline templates
    - Estimated effort: 1 week per platform
 
-### **🎯 Current Optimization Status (v2.3.0)**
+### **🎯 Current Optimization Status (v2.3.1)**
 
 **All Phase 2 Objectives Achieved:**
 
@@ -302,7 +305,7 @@ Recent commits show excellent workflow integration:
 | Workflow Reliability | ✅ Excellent | 100% recent success rate, Phase 2 optimizations working |
 | Code Quality | ✅ Excellent | 30 modular components, comprehensive documentation |
 | Maintainability | ✅ Strong | YAML config, single responsibility, AI caching |
-| Documentation | ✅ Complete | All 20 library modules documented, Phase 2 guide |
+| Documentation | ✅ Complete | All 28 library modules documented, Phase 2 guide |
 | Test Coverage | ✅ Excellent | 37 tests with 100% pass rate |
 | Performance | ✅ Optimized | Up to 90% faster with Phase 2 features |
 
@@ -332,11 +335,11 @@ Recent commits show excellent workflow integration:
 ## **6. STRATEGIC ROADMAP**
 
 ### **Phase 1: Foundation Complete** ✅ (Nov-Dec 2025)
-- ✅ Complete modularization - 30 modules with 19,053 lines
+- ✅ Complete modularization - 30 modules with 22,216 shell lines
 - ✅ YAML configuration system - 762 lines externalized
 - ✅ Enhanced output limits - 100% increase in visibility
 - ✅ Auto-mode issue extraction - CI/CD ready
-- ✅ Comprehensive documentation - All 20 library modules documented
+- ✅ Comprehensive documentation - All 28 library modules documented
 - ✅ **Performance optimization modules** (v2.1.0):
   - ✅ Metrics collection module (455 lines)
   - ✅ Change detection module (424 lines)
@@ -351,7 +354,7 @@ Recent commits show excellent workflow integration:
 - ✅ **Enhanced resume capability** - Improved checkpoint management
 - ✅ **AI response caching** - 60-80% token reduction
 - ✅ **New module**: ai_cache.sh (10,639 bytes)
-- ✅ **Version**: v2.3.0 released
+- ✅ **Version**: v2.3.1 released
 
 **Performance Achievement**: Up to **90% faster** for documentation-only changes
 
@@ -366,7 +369,7 @@ Recent commits show excellent workflow integration:
 
 ---
 
-## **7. WORKFLOW USAGE GUIDE (v2.3.0)**
+## **7. WORKFLOW USAGE GUIDE (v2.3.1)**
 
 ### **Standard Workflow Execution**
 
@@ -391,7 +394,7 @@ cd /home/mpb/Documents/GitHub/ai_workflow
 ./src/workflow/execute_tests_docs_workflow.sh --steps 11
 ```
 
-### **⚡ Optimized Execution (v2.3.0)**
+### **⚡ Optimized Execution (v2.3.1)**
 
 ```bash
 # Maximum performance mode (recommended for most cases)
@@ -420,6 +423,26 @@ cd /home/mpb/Documents/GitHub/ai_workflow
 ./src/workflow/execute_tests_docs_workflow.sh \
   --target /path/to/project \
   --no-ai-cache
+
+# Force fresh start (ignore checkpoints)
+./src/workflow/execute_tests_docs_workflow.sh \
+  --target /path/to/project \
+  --no-resume
+
+# Run interactive configuration wizard
+./src/workflow/execute_tests_docs_workflow.sh \
+  --target /path/to/project \
+  --init-config
+
+# Show detected tech stack configuration
+./src/workflow/execute_tests_docs_workflow.sh \
+  --target /path/to/project \
+  --show-tech-stack
+
+# Use custom configuration file
+./src/workflow/execute_tests_docs_workflow.sh \
+  --target /path/to/project \
+  --config-file .my-custom-config.yaml
 ```
 
 ### **Performance Comparison**
@@ -447,7 +470,7 @@ grep -r "ERROR\|FAILED" src/workflow/logs/ | tail -20
 # Validate workflow artifacts
 find src/workflow/backlog -name "*.md" -mtime -7
 
-# ⭐ View workflow metrics (v2.3.0)
+# ⭐ View workflow metrics (v2.3.1)
 cat src/workflow/metrics/summary.md
 
 # ⭐ Check AI cache statistics
@@ -464,6 +487,41 @@ cat src/workflow/logs/workflow_*/workflow_execution.log | tail -50
 cd src/workflow/lib
 source ai_cache.sh
 get_cache_stats
+```
+
+### **Complete Command-Line Reference (v2.3.1)**
+
+| Flag | Description | Default | Added In |
+|------|-------------|---------|----------|
+| `--target <path>` | Run workflow on specified project directory | Current directory | v2.3.0 |
+| `--smart-execution` | Skip unnecessary steps based on change detection | Disabled | v2.3.0 |
+| `--parallel` | Execute independent steps simultaneously | Disabled | v2.3.0 |
+| `--show-graph` | Display dependency graph and exit | N/A | v2.3.0 |
+| `--no-ai-cache` | Disable AI response caching | Enabled | v2.3.0 |
+| `--no-resume` | Force fresh start, ignore checkpoints | Resume enabled | v2.3.1 |
+| `--init-config` | Run interactive configuration wizard | N/A | v2.3.1 |
+| `--show-tech-stack` | Display detected tech stack and exit | N/A | v2.3.1 |
+| `--config-file <file>` | Use custom .workflow-config.yaml | `.workflow-config.yaml` | v2.3.1 |
+| `--auto` | Non-interactive mode (CI/CD friendly) | Interactive | v2.0.0 |
+| `--dry-run` | Preview execution without making changes | Execute | v2.0.0 |
+| `--steps <nums>` | Execute specific steps only (e.g., `0,5,7`) | All steps | v2.0.0 |
+| `--help` | Show usage information | N/A | v1.0.0 |
+| `--version` | Display version information | N/A | v1.0.0 |
+
+**Common Flag Combinations:**
+
+```bash
+# Production workflow (recommended)
+--smart-execution --parallel --auto
+
+# Debugging specific steps
+--steps 0,7 --no-resume --dry-run
+
+# Initial project setup
+--init-config
+
+# Performance analysis
+--show-tech-stack && --show-graph
 ```
 
 ### **Troubleshooting Common Issues**
@@ -486,7 +544,7 @@ ps aux | grep "execute_tests_docs_workflow"
 
 ---
 
-## **8. PHASE 2 FEATURES DEEP DIVE (v2.3.0)**
+## **8. PHASE 2 FEATURES DEEP DIVE (v2.3.1)**
 
 ### **🚀 Smart Execution (`--smart-execution`)**
 
@@ -655,7 +713,7 @@ get_average_step_duration 7  # Average for Step 7
 
 **Current State**: Workflow automation has achieved **exceptional operational excellence** ✅⭐⭐
 
-**v2.3.0 Milestone Achievements** (December 18, 2025):
+**v2.3.1 Milestone Achievements** (December 18, 2025):
 1. ✅ Complete modularization with 29 modules (8,264 lines, +18% growth)
 2. ✅ YAML configuration system for clean separation of concerns
 3. ✅ Enhanced output limits for better debugging (v2.0.0)

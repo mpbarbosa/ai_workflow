@@ -1,13 +1,14 @@
 #!/usr/bin/env bash
+set -euo pipefail
+
 #
 # tech_stack.sh - Tech Stack Detection and Configuration Management
 #
 # This module provides tech stack auto-detection, configuration file parsing,
 # and adaptive workflow behavior based on project technology stack.
 #
-# Version: 1.0.0 (Phase 1 - Core Infrastructure)
-# Supports: JavaScript, Python (Phase 1)
-# Future: Go, Java, Ruby, Rust, C/C++, Bash (Phase 2)
+# Version: 2.0.0 (Phase 3 - Workflow Integration)
+# Supports: JavaScript, Python, Go, Java, Ruby, Rust, C/C++, Bash
 #
 # Dependencies:
 #   - config.sh (YAML parsing)
@@ -18,6 +19,8 @@
 #   source lib/tech_stack.sh
 #   init_tech_stack
 #   echo "$PRIMARY_LANGUAGE"
+#   test_cmd=$(get_test_command)
+#   execute_language_command "$test_cmd"
 
 set -euo pipefail
 
@@ -1295,19 +1298,120 @@ get_language_command() {
     local cmd_type="$1"
     local language="${PRIMARY_LANGUAGE:-javascript}"
     
-    # Return cached command if available
+    # Try to return cached command if available
     case "$cmd_type" in
         install)
-            echo "${INSTALL_COMMAND}"
+            if [[ -n "${INSTALL_COMMAND:-}" ]]; then
+                echo "${INSTALL_COMMAND}"
+                return 0
+            fi
+            # Fallback: hardcoded commands by language
+            case "$language" in
+                javascript) echo "npm install" ;;
+                python) echo "pip install -r requirements.txt" ;;
+                go) echo "go mod download" ;;
+                java) echo "mvn install" ;;
+                ruby) echo "bundle install" ;;
+                rust) echo "cargo fetch" ;;
+                cpp) echo "cmake -B build && cmake --build build" ;;
+                bash) echo "echo 'No installation needed'" ;;
+                *) echo "" ;;
+            esac
             ;;
         test)
-            echo "${TEST_COMMAND}"
+            if [[ -n "${TEST_COMMAND:-}" ]]; then
+                echo "${TEST_COMMAND}"
+                return 0
+            fi
+            # Fallback: hardcoded commands by language
+            case "$language" in
+                javascript) echo "npm test" ;;
+                python) echo "pytest" ;;
+                go) echo "go test ./..." ;;
+                java) echo "mvn test" ;;
+                ruby) echo "bundle exec rspec" ;;
+                rust) echo "cargo test" ;;
+                cpp) echo "ctest --test-dir build" ;;
+                bash) echo "bats tests/" ;;
+                *) echo "" ;;
+            esac
+            ;;
+        test_verbose)
+            # Verbose test commands
+            case "$language" in
+                javascript) echo "npm test -- --verbose" ;;
+                python) echo "pytest -v" ;;
+                go) echo "go test -v ./..." ;;
+                java) echo "mvn test -X" ;;
+                ruby) echo "bundle exec rspec --format documentation" ;;
+                rust) echo "cargo test -- --nocapture" ;;
+                cpp) echo "ctest --test-dir build --verbose" ;;
+                bash) echo "bats -t tests/" ;;
+                *) echo "" ;;
+            esac
+            ;;
+        test_coverage)
+            # Test coverage commands
+            case "$language" in
+                javascript) echo "npm test -- --coverage" ;;
+                python) echo "pytest --cov" ;;
+                go) echo "go test -cover ./..." ;;
+                java) echo "mvn test jacoco:report" ;;
+                ruby) echo "bundle exec rspec --coverage" ;;
+                rust) echo "cargo tarpaulin" ;;
+                cpp) echo "ctest --test-dir build --coverage" ;;
+                bash) echo "echo 'Coverage not available for bash'" ;;
+                *) echo "" ;;
+            esac
             ;;
         lint)
-            echo "${LINT_COMMAND}"
+            if [[ -n "${LINT_COMMAND:-}" ]]; then
+                echo "${LINT_COMMAND}"
+                return 0
+            fi
+            # Fallback: hardcoded commands by language
+            case "$language" in
+                javascript) echo "npm run lint" ;;
+                python) echo "pylint src/" ;;
+                go) echo "golangci-lint run" ;;
+                java) echo "mvn checkstyle:check" ;;
+                ruby) echo "rubocop" ;;
+                rust) echo "cargo clippy" ;;
+                cpp) echo "clang-tidy src/*.cpp" ;;
+                bash) echo "shellcheck *.sh" ;;
+                *) echo "" ;;
+            esac
+            ;;
+        format)
+            # Code formatting commands
+            case "$language" in
+                javascript) echo "npm run format" ;;
+                python) echo "black src/" ;;
+                go) echo "go fmt ./..." ;;
+                java) echo "mvn formatter:format" ;;
+                ruby) echo "rubocop -a" ;;
+                rust) echo "cargo fmt" ;;
+                cpp) echo "clang-format -i src/*.cpp" ;;
+                bash) echo "shfmt -w *.sh" ;;
+                *) echo "" ;;
+            esac
+            ;;
+        type_check)
+            # Type checking commands
+            case "$language" in
+                javascript) echo "tsc --noEmit" ;;
+                python) echo "mypy src/" ;;
+                go) echo "go vet ./..." ;;
+                java) echo "echo 'Type checking built-in'" ;;
+                ruby) echo "sorbet tc" ;;
+                rust) echo "cargo check" ;;
+                cpp) echo "echo 'Type checking built-in'" ;;
+                bash) echo "echo 'No type checking for bash'" ;;
+                *) echo "" ;;
+            esac
             ;;
         build)
-            # Build commands from tech stack definitions
+            # Build commands
             case "$language" in
                 javascript) echo "npm run build" ;;
                 python) echo "python setup.py build" ;;
@@ -1321,6 +1425,7 @@ get_language_command() {
             esac
             ;;
         clean)
+            # Clean commands
             case "$language" in
                 javascript) echo "rm -rf node_modules dist build" ;;
                 python) echo "find . -type d -name __pycache__ -exec rm -rf {} + 2>/dev/null || true" ;;
@@ -1346,22 +1451,133 @@ get_language_command() {
 # Returns:
 #   0 on success, 1 on failure
 #######################################
-execute_language_command() {
-    local cmd="$1"
-    
-    if [[ -z "$cmd" ]]; then
-        print_warning "No command specified"
+# Get install command for current language
+# Globals:
+#   PRIMARY_LANGUAGE
+# Returns:
+#   Install command string
+#######################################
+get_install_command() {
+    get_language_command "install"
+}
+
+#######################################
+# Get test command for current language
+# Globals:
+#   PRIMARY_LANGUAGE
+#   TEST_COMMAND (if set manually)
+# Returns:
+#   Test command string
+#######################################
+get_test_command() {
+    # Use manually configured command if available
+    if [[ -n "${TEST_COMMAND:-}" ]]; then
+        echo "$TEST_COMMAND"
         return 0
     fi
     
-    print_info "Executing: $cmd"
+    get_language_command "test"
+}
+
+#######################################
+# Get test command with verbose output
+# Globals:
+#   PRIMARY_LANGUAGE
+# Returns:
+#   Verbose test command string
+#######################################
+get_test_verbose_command() {
+    get_language_command "test_verbose"
+}
+
+#######################################
+# Get test coverage command
+# Globals:
+#   PRIMARY_LANGUAGE
+# Returns:
+#   Test coverage command string
+#######################################
+get_test_coverage_command() {
+    get_language_command "test_coverage"
+}
+
+#######################################
+# Get lint command for current language
+# Globals:
+#   PRIMARY_LANGUAGE
+#   LINT_COMMAND (if set manually)
+# Returns:
+#   Lint command string
+#######################################
+get_lint_command() {
+    # Use manually configured command if available
+    if [[ -n "${LINT_COMMAND:-}" ]]; then
+        echo "$LINT_COMMAND"
+        return 0
+    fi
+    
+    get_language_command "lint"
+}
+
+#######################################
+# Get format command for current language
+# Globals:
+#   PRIMARY_LANGUAGE
+# Returns:
+#   Format command string
+#######################################
+get_format_command() {
+    get_language_command "format"
+}
+
+#######################################
+# Get build command for current language
+# Globals:
+#   PRIMARY_LANGUAGE
+# Returns:
+#   Build command string
+#######################################
+get_build_command() {
+    get_language_command "build"
+}
+
+#######################################
+# Get clean command for current language
+# Globals:
+#   PRIMARY_LANGUAGE
+# Returns:
+#   Clean command string
+#######################################
+get_clean_command() {
+    get_language_command "clean"
+}
+
+#######################################
+# Execute a language-specific command
+# Arguments:
+#   $1 - Command to execute
+#   $2 - Optional description for logging
+# Returns:
+#   0 on success, 1 on failure
+#######################################
+execute_language_command() {
+    local cmd="$1"
+    local description="${2:-Command}"
+    
+    if [[ -z "$cmd" ]]; then
+        print_warning "No command specified for: $description"
+        return 0
+    fi
+    
+    print_info "Executing $description: $cmd"
     
     if eval "$cmd"; then
-        print_success "Command completed successfully"
+        print_success "$description completed successfully"
         return 0
     else
-        print_error "Command failed: $cmd"
-        return 1
+        local exit_code=$?
+        print_error "$description failed (exit code: $exit_code)"
+        return $exit_code
     fi
 }
 
@@ -1379,4 +1595,12 @@ export -f get_exclude_patterns
 export -f find_source_files
 export -f find_test_files
 export -f get_language_command
+export -f get_install_command
+export -f get_test_command
+export -f get_test_verbose_command
+export -f get_test_coverage_command
+export -f get_lint_command
+export -f get_format_command
+export -f get_build_command
+export -f get_clean_command
 export -f execute_language_command

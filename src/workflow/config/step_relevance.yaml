@@ -1,0 +1,484 @@
+# Step Relevance Matrix - Project Kind Adaptive Framework
+# Defines which workflow steps are relevant for each project kind
+# Values: required | recommended | optional | skip
+
+step_relevance:
+  shell_script_automation:
+    step_00_analyze: required
+    step_01_documentation: required
+    step_02_consistency: required
+    step_03_script_refs: required        # Shell scripts need validation
+    step_04_directory: recommended
+    step_05_test_review: required
+    step_06_test_gen: recommended
+    step_07_test_exec: required
+    step_08_dependencies: optional       # May not have package.json
+    step_09_code_quality: required
+    step_10_context: recommended
+    step_11_git: required
+    step_12_markdown_lint: required
+
+  nodejs_api:
+    step_00_analyze: required
+    step_01_documentation: required
+    step_02_consistency: required
+    step_03_script_refs: skip            # No shell scripts typically
+    step_04_directory: required
+    step_05_test_review: required
+    step_06_test_gen: required
+    step_07_test_exec: required
+    step_08_dependencies: required       # Critical for Node.js
+    step_09_code_quality: required
+    step_10_context: recommended
+    step_11_git: required
+    step_12_markdown_lint: recommended
+
+  nodejs_cli:
+    step_00_analyze: required
+    step_01_documentation: required
+    step_02_consistency: required
+    step_03_script_refs: skip
+    step_04_directory: recommended
+    step_05_test_review: required
+    step_06_test_gen: required
+    step_07_test_exec: required
+    step_08_dependencies: required
+    step_09_code_quality: required
+    step_10_context: recommended
+    step_11_git: required
+    step_12_markdown_lint: recommended
+
+  nodejs_library:
+    step_00_analyze: required
+    step_01_documentation: required      # API docs critical
+    step_02_consistency: required
+    step_03_script_refs: skip
+    step_04_directory: recommended
+    step_05_test_review: required        # High test coverage expected
+    step_06_test_gen: required
+    step_07_test_exec: required
+    step_08_dependencies: required
+    step_09_code_quality: required
+    step_10_context: recommended
+    step_11_git: required
+    step_12_markdown_lint: required
+
+  static_website:
+    step_00_analyze: required
+    step_01_documentation: recommended   # User-facing content
+    step_02_consistency: recommended
+    step_03_script_refs: skip
+    step_04_directory: recommended
+    step_05_test_review: optional        # Limited code
+    step_06_test_gen: skip
+    step_07_test_exec: optional
+    step_08_dependencies: optional
+    step_09_code_quality: recommended    # HTML/CSS validation
+    step_10_context: recommended
+    step_11_git: required
+    step_12_markdown_lint: required      # Content quality
+
+  react_spa:
+    step_00_analyze: required
+    step_01_documentation: recommended   # User docs, not API docs
+    step_02_consistency: recommended
+    step_03_script_refs: skip
+    step_04_directory: recommended
+    step_05_test_review: required
+    step_06_test_gen: required
+    step_07_test_exec: required
+    step_08_dependencies: required
+    step_09_code_quality: required       # Includes accessibility
+    step_10_context: recommended
+    step_11_git: required
+    step_12_markdown_lint: optional
+
+  python_app:
+    step_00_analyze: required
+    step_01_documentation: required
+    step_02_consistency: required
+    step_03_script_refs: optional        # May have shell scripts
+    step_04_directory: recommended
+    step_05_test_review: required
+    step_06_test_gen: required
+    step_07_test_exec: required
+    step_08_dependencies: required       # requirements.txt, etc.
+    step_09_code_quality: required
+    step_10_context: recommended
+    step_11_git: required
+    step_12_markdown_lint: recommended
+
+  generic:
+    step_00_analyze: required
+    step_01_documentation: recommended
+    step_02_consistency: recommended
+    step_03_script_refs: optional
+    step_04_directory: recommended
+    step_05_test_review: recommended
+    step_06_test_gen: optional
+    step_07_test_exec: optional
+    step_08_dependencies: optional
+    step_09_code_quality: recommended
+    step_10_context: recommended
+    step_11_git: required
+    step_12_markdown_lint: recommended
+
+# Step-specific adaptations for each project kind
+step_adaptations:
+  step_05_test_review:
+    nodejs_api:
+      focus_areas:
+        - "API endpoint coverage"
+        - "Error handling tests"
+        - "Authentication tests"
+        - "Integration tests"
+        - "Database interaction tests"
+        - "Middleware tests"
+      minimum_coverage: 80
+      test_types:
+        - unit
+        - integration
+        - e2e
+
+    nodejs_cli:
+      focus_areas:
+        - "Command execution tests"
+        - "Argument parsing tests"
+        - "Help/version output tests"
+        - "Exit code validation"
+        - "Error message tests"
+        - "Interactive prompt tests"
+      minimum_coverage: 85
+      test_types:
+        - unit
+        - integration
+
+    nodejs_library:
+      focus_areas:
+        - "Public API coverage"
+        - "Edge case handling"
+        - "Backward compatibility tests"
+        - "Type checking tests"
+        - "Error handling"
+        - "Performance benchmarks"
+      minimum_coverage: 90
+      test_types:
+        - unit
+        - integration
+        - performance
+
+    react_spa:
+      focus_areas:
+        - "Component rendering tests"
+        - "User interaction tests"
+        - "Accessibility tests"
+        - "E2E critical paths"
+        - "State management tests"
+        - "Routing tests"
+      minimum_coverage: 75
+      test_types:
+        - unit
+        - integration
+        - e2e
+
+    shell_script_automation:
+      focus_areas:
+        - "Function unit tests"
+        - "Error handling tests"
+        - "Integration tests"
+        - "End-to-end workflow tests"
+        - "Edge case handling"
+        - "Exit code validation"
+      minimum_coverage: 85
+      test_types:
+        - unit
+        - integration
+        - e2e
+
+    python_app:
+      focus_areas:
+        - "Function coverage"
+        - "Class method tests"
+        - "Error handling"
+        - "Integration tests"
+        - "API endpoint tests"
+      minimum_coverage: 80
+      test_types:
+        - unit
+        - integration
+
+  step_06_test_gen:
+    nodejs_api:
+      test_frameworks:
+        - jest
+        - mocha
+        - supertest
+      test_patterns:
+        - "tests/api/*.test.js"
+        - "tests/integration/*.test.js"
+      generate_types:
+        - unit
+        - integration
+
+    nodejs_cli:
+      test_frameworks:
+        - jest
+        - mocha
+      test_patterns:
+        - "tests/commands/*.test.js"
+        - "tests/cli/*.test.js"
+      generate_types:
+        - unit
+        - integration
+
+    shell_script_automation:
+      test_frameworks:
+        - bats
+        - custom
+      test_patterns:
+        - "tests/**/*.sh"
+        - "tests/**/test_*.sh"
+      generate_types:
+        - unit
+        - integration
+
+  step_08_dependencies:
+    nodejs_api:
+      check_files:
+        - package.json
+        - package-lock.json
+        - yarn.lock
+      security_scan: true
+      outdated_check: true
+      license_check: true
+      focus_areas:
+        - "Security vulnerabilities"
+        - "Outdated dependencies"
+        - "License compatibility"
+        - "Dependency size/bloat"
+
+    nodejs_cli:
+      check_files:
+        - package.json
+        - package-lock.json
+      security_scan: true
+      outdated_check: true
+      license_check: true
+      focus_areas:
+        - "Binary size impact"
+        - "CLI-specific dependencies"
+        - "Security vulnerabilities"
+
+    nodejs_library:
+      check_files:
+        - package.json
+        - package-lock.json
+      security_scan: true
+      outdated_check: true
+      license_check: true
+      peer_dependencies_check: true
+      focus_areas:
+        - "Minimal dependencies"
+        - "Peer dependency conflicts"
+        - "Version compatibility"
+        - "License compatibility"
+
+    python_app:
+      check_files:
+        - requirements.txt
+        - Pipfile
+        - pyproject.toml
+      security_scan: true
+      outdated_check: true
+      focus_areas:
+        - "Security vulnerabilities"
+        - "Version pinning"
+        - "Dependency conflicts"
+
+    shell_script_automation:
+      check_files:
+        - package.json  # Optional, if Node.js used
+      security_scan: false
+      outdated_check: false
+      focus_areas:
+        - "External command availability"
+        - "Required system packages"
+        - "Version compatibility"
+
+  step_09_code_quality:
+    nodejs_api:
+      linters:
+        - eslint
+        - prettier
+      additional_checks:
+        - "Security vulnerability scanning"
+        - "SQL injection prevention"
+        - "XSS prevention"
+        - "Rate limiting implementation"
+        - "Input validation"
+        - "Authentication security"
+        - "API versioning"
+        - "Error handling patterns"
+      quality_gates:
+        eslint_max_warnings: 0
+        complexity_threshold: 15
+
+    nodejs_cli:
+      linters:
+        - eslint
+        - prettier
+      additional_checks:
+        - "Help text clarity"
+        - "Error message quality"
+        - "Exit code consistency"
+        - "Input validation"
+        - "Performance for large inputs"
+        - "Command naming conventions"
+        - "Option consistency"
+      quality_gates:
+        eslint_max_warnings: 0
+        complexity_threshold: 10
+
+    nodejs_library:
+      linters:
+        - eslint
+        - prettier
+        - typescript
+      additional_checks:
+        - "API surface area"
+        - "Breaking change detection"
+        - "Type definition quality"
+        - "Documentation completeness"
+        - "Backward compatibility"
+      quality_gates:
+        eslint_max_warnings: 0
+        complexity_threshold: 12
+        type_coverage: 90
+
+    react_spa:
+      linters:
+        - eslint
+        - prettier
+        - stylelint
+      additional_checks:
+        - "Accessibility (WCAG 2.1 AA)"
+        - "Performance (Lighthouse)"
+        - "SEO metadata"
+        - "Responsive design"
+        - "Browser compatibility"
+        - "Bundle size optimization"
+        - "Component complexity"
+      quality_gates:
+        eslint_max_warnings: 0
+        lighthouse_performance: 85
+        lighthouse_accessibility: 90
+        bundle_size_kb: 500
+
+    shell_script_automation:
+      linters:
+        - shellcheck
+        - shfmt
+      additional_checks:
+        - "POSIX compliance"
+        - "Error handling (set -euo pipefail)"
+        - "Function documentation"
+        - "Variable quoting"
+        - "Exit code management"
+        - "Trap handlers"
+      quality_gates:
+        shellcheck_severity: warning
+        max_function_lines: 100
+
+    python_app:
+      linters:
+        - pylint
+        - flake8
+        - black
+        - mypy
+      additional_checks:
+        - "Type hints coverage"
+        - "Docstring completeness"
+        - "Import organization"
+        - "Code complexity"
+      quality_gates:
+        pylint_min_score: 8.0
+        max_complexity: 10
+
+    static_website:
+      linters:
+        - htmlhint
+        - stylelint
+      additional_checks:
+        - "HTML validation"
+        - "CSS validation"
+        - "Link integrity"
+        - "Image optimization"
+        - "Accessibility"
+        - "Mobile responsiveness"
+      quality_gates:
+        html_errors: 0
+        accessibility_score: 85
+
+  step_10_context:
+    nodejs_api:
+      analysis_focus:
+        - "API design patterns"
+        - "RESTful principles"
+        - "Error handling strategy"
+        - "Authentication/Authorization"
+        - "Data validation approach"
+        - "Scalability considerations"
+
+    nodejs_cli:
+      analysis_focus:
+        - "User experience"
+        - "Command structure"
+        - "Help documentation"
+        - "Error messaging"
+        - "Configuration management"
+        - "Cross-platform compatibility"
+
+    nodejs_library:
+      analysis_focus:
+        - "API design"
+        - "Public interface"
+        - "Versioning strategy"
+        - "Backward compatibility"
+        - "Documentation quality"
+        - "Usage examples"
+
+    react_spa:
+      analysis_focus:
+        - "Component architecture"
+        - "State management"
+        - "Routing strategy"
+        - "Performance optimization"
+        - "User experience"
+        - "Accessibility"
+
+    shell_script_automation:
+      analysis_focus:
+        - "Workflow orchestration"
+        - "Error handling strategy"
+        - "Modularity and reusability"
+        - "Configuration management"
+        - "Portability"
+        - "Performance"
+
+    static_website:
+      analysis_focus:
+        - "Content structure"
+        - "Navigation hierarchy"
+        - "SEO optimization"
+        - "Performance"
+        - "Mobile experience"
+        - "Accessibility"
+
+    python_app:
+      analysis_focus:
+        - "Code organization"
+        - "Design patterns"
+        - "Error handling"
+        - "Configuration management"
+        - "Testing strategy"
+        - "Performance"

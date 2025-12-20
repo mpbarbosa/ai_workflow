@@ -1,29 +1,39 @@
 # AI Prompt Templates Configuration
 # Purpose: Centralized AI prompt strings for workflow automation
-# Version: 2.0.0
+# Version: 3.0.0 (Phase 4 - Language-Specific Templates)
+# Enhancement: Project-aware documentation_specialist persona (2025-12-19)
 
 # Documentation Analysis Prompt Template
 doc_analysis_prompt:
-  role: "You are a senior technical documentation specialist with expertise in software architecture documentation, API documentation, and developer experience (DX) optimization."
+  role: "You are a senior technical documentation specialist with expertise in software architecture documentation, API documentation, and developer experience (DX) optimization." 
   
   task_template: |
-    Based on the recent changes to the following files: {changed_files}
+    **YOUR TASK**: Analyze the changed files and make specific edits to update the documentation.
     
-    Please update all related documentation including:
-    1. .github/copilot-instructions.md - Update project overview, architecture patterns, key files
-    2. README.md - Update if public-facing features or setup instructions changed
-    3. /docs/ directory - Update technical documentation for architecture or feature changes
-    4. shell_scripts/README.md - Update if shell scripts were modified
-    5. Inline code comments - Add/update comments for complex logic
+    **Changed files**: {changed_files}
+    **Documentation to review**: {doc_files}
     
-    Documentation to review: {doc_files}
+    **REQUIRED ACTIONS**:
+    1. **Read the changes**: Examine what was modified in each changed file
+    2. **Identify documentation impact**: Determine which docs need updates:
+       - .github/copilot-instructions.md (project overview, architecture, key files)
+       - README.md (features, setup instructions, usage examples)
+       - Technical docs (architecture changes, new features)
+       - Module READMEs (if code in that module changed)
+       - Inline comments (for complex new logic)
+    3. **Make specific edits**: Provide exact text changes, not just descriptions
+    4. **Verify accuracy**: Ensure examples and references are still correct
+    
+    **OUTPUT FORMAT**: Use edit blocks showing before/after, or provide specific line-by-line changes.
   
   approach: |
-    - Analyze the git diff to understand what changed
-    - Update only the documentation sections affected by these changes
-    - Be surgical and precise - don't modify unrelated documentation
-    - Ensure consistency in terminology, formatting, and style
-    - Maintain professional technical writing standards
+    1. **Analyze**: Review git diff to understand scope of changes
+    2. **Prioritize**: Start with most critical docs (README, copilot-instructions)
+    3. **Edit surgically**: Change ONLY affected sections, preserve everything else
+    4. **Verify consistency**: Keep terminology, formatting, style uniform
+    5. **Provide specifics**: Give exact edits, not suggestions
+    
+    **CRITICAL**: Make concrete, actionable edits. Don't ask questions - make the changes.
 
 # Consistency Analysis Prompt Template
 consistency_prompt:
@@ -845,6 +855,7 @@ markdown_lint_prompt:
     - .mdlrc configuration documents disabled rules with rationale
     - .editorconfig provides automated formatting rules
 
+
 # Step 13: Prompt Engineer Analysis Prompt Template
 step13_prompt_engineer_prompt:
   role: "You are a senior prompt engineer and AI specialist with expertise in designing effective AI prompts, evaluating prompt quality, optimizing token usage, and improving AI-human interaction patterns."
@@ -968,3 +979,537 @@ step13_prompt_engineer_prompt:
     - Consider both AI model and human user perspectives
     
     Please analyze all persona prompts and provide a comprehensive report with prioritized improvement opportunities. Focus on changes that will have the most impact on output quality, token efficiency, and user experience.
+
+
+
+# ==============================================================================
+# PHASE 4: LANGUAGE-SPECIFIC PROMPT TEMPLATES
+# ==============================================================================
+
+# Language-Specific Instructions for Documentation
+language_specific_documentation:
+  javascript:
+    conventions: |
+      - Use JSDoc format for documentation
+      - Document async/await patterns clearly
+      - Include TypeScript types when applicable
+      - Reference npm packages with correct names and versions
+      - Use MDN Web Docs style for web APIs
+      - Document React/Vue/Angular patterns if applicable
+    
+    standards:
+      - "MDN JavaScript Style Guide"
+      - "Airbnb JavaScript Style Guide"
+      - "JSDoc 3 specification"
+      - "Node.js API documentation standards"
+    
+    examples: |
+      Good:
+      /**
+       * Fetches user data from the API
+       * @param {string} userId - The user's unique identifier
+       * @returns {Promise<User>} The user object
+       * @throws {Error} If the user is not found
+       */
+      async function getUser(userId) { ... }
+  
+  python:
+    conventions: |
+      - Follow PEP 257 docstring conventions
+      - Use type hints (PEP 484) consistently
+      - Document exceptions with raises sections
+      - Reference PyPI packages correctly
+      - Use Google or NumPy docstring format for complex functions
+      - Include examples in docstrings for public APIs
+    
+    standards:
+      - "PEP 8 Style Guide"
+      - "PEP 257 Docstring Conventions"
+      - "PEP 484 Type Hints"
+      - "NumPy docstring format"
+    
+    examples: |
+      Good:
+      def calculate_average(numbers: list[float]) -> float:
+          """Calculate the arithmetic mean of a list of numbers.
+          
+          Args:
+              numbers: A list of numeric values
+              
+          Returns:
+              The arithmetic mean of the input numbers
+              
+          Raises:
+              ValueError: If the list is empty
+          """
+  
+  go:
+    conventions: |
+      - Use godoc format for documentation
+      - Start comments with the function/type name
+      - Document exported functions and types
+      - Include examples in doc comments
+      - Follow Go proverbs for design patterns
+      - Document error return values
+    
+    standards:
+      - "Effective Go documentation"
+      - "Go Code Review Comments"
+      - "godoc format specification"
+    
+    examples: |
+      Good:
+      // ProcessData reads input from the reader and returns processed results.
+      // Returns an error if the input format is invalid.
+      func ProcessData(r io.Reader) ([]Result, error) { ... }
+  
+  java:
+    conventions: |
+      - Use Javadoc format for documentation
+      - Document public APIs thoroughly
+      - Include @param, @return, @throws tags
+      - Reference Maven dependencies correctly
+      - Follow Oracle Javadoc guidelines
+    
+    standards:
+      - "Oracle Javadoc Style Guide"
+      - "Google Java Style Guide"
+      - "Maven documentation standards"
+    
+    examples: |
+      Good:
+      /**
+       * Calculates the factorial of a number.
+       * 
+       * @param n the number to calculate factorial for
+       * @return the factorial of n
+       * @throws IllegalArgumentException if n is negative
+       */
+      public long factorial(int n) { ... }
+  
+  ruby:
+    conventions: |
+      - Use RDoc or YARD format for documentation
+      - Follow Ruby naming conventions
+      - Document public methods
+      - Reference gems correctly
+      - Use Ruby idioms in examples
+    
+    standards:
+      - "Ruby Style Guide"
+      - "YARD documentation format"
+      - "RuboCop style enforcement"
+    
+    examples: |
+      Good:
+      # Calculates the total price including tax
+      # @param base_price [Float] the price before tax
+      # @param tax_rate [Float] the tax rate as a decimal
+      # @return [Float] the total price with tax
+      def calculate_total(base_price, tax_rate)
+  
+  rust:
+    conventions: |
+      - Use Rust doc comments (///)
+      - Include examples that compile
+      - Document panics and safety
+      - Reference crates correctly
+      - Use markdown in doc comments
+    
+    standards:
+      - "Rust Documentation Guidelines"
+      - "The Rust Book documentation style"
+      - "cargo doc standards"
+    
+    examples: |
+      Good:
+      /// Calculates the sum of two numbers.
+      ///
+      /// # Examples
+      /// ```
+      /// assert_eq!(add(2, 3), 5);
+      /// ```
+      pub fn add(a: i32, b: i32) -> i32 { ... }
+  
+  cpp:
+    conventions: |
+      - Use Doxygen format for documentation
+      - Document header files thoroughly
+      - Include @brief, @param, @return tags
+      - Reference libraries correctly
+      - Document memory management
+    
+    standards:
+      - "Doxygen documentation format"
+      - "Google C++ Style Guide"
+      - "C++ Core Guidelines"
+    
+    examples: |
+      Good:
+      /**
+       * @brief Calculates the dot product of two vectors
+       * @param v1 First vector
+       * @param v2 Second vector
+       * @return The dot product
+       */
+      double dot_product(const Vector& v1, const Vector& v2);
+  
+  bash:
+    conventions: |
+      - Use clear header comments
+      - Document function parameters
+      - Explain complex regex or sed/awk usage
+      - Document exit codes
+      - Include usage examples
+    
+    standards:
+      - "Google Shell Style Guide"
+      - "ShellCheck recommendations"
+      - "POSIX shell compatibility notes"
+    
+    examples: |
+      Good:
+      #!/usr/bin/env bash
+      # Backup database to specified location
+      # Arguments:
+      #   $1 - Database name
+      #   $2 - Backup directory
+      # Returns:
+      #   0 on success, 1 on failure
+      backup_database() { ... }
+
+# Language-Specific Code Quality Standards
+language_specific_quality:
+  javascript:
+    focus_areas:
+      - "Async/await error handling"
+      - "Promise chain management"
+      - "Memory leaks in closures"
+      - "Event listener cleanup"
+      - "Bundle size optimization"
+    
+    antipatterns:
+      - "Callback hell"
+      - "Unhandled promise rejections"
+      - "Mutation of props in React"
+      - "Missing error boundaries"
+      - "Synchronous loops with async calls"
+    
+    best_practices:
+      - "Use const/let instead of var"
+      - "Prefer async/await over raw promises"
+      - "Use ESLint and Prettier"
+      - "Implement proper error handling"
+      - "Write testable, pure functions"
+  
+  python:
+    focus_areas:
+      - "Type hint coverage"
+      - "Exception handling patterns"
+      - "Generator and iterator usage"
+      - "Context manager usage"
+      - "PEP 8 compliance"
+    
+    antipatterns:
+      - "Bare except clauses"
+      - "Mutable default arguments"
+      - "Using global variables"
+      - "Not using context managers for resources"
+      - "String concatenation in loops"
+    
+    best_practices:
+      - "Use type hints (PEP 484)"
+      - "Follow PEP 8 style guide"
+      - "Use list comprehensions appropriately"
+      - "Prefer with statements for resources"
+      - "Use logging instead of print"
+  
+  go:
+    focus_areas:
+      - "Error handling patterns"
+      - "Goroutine leak detection"
+      - "Interface usage"
+      - "Panic/recover usage"
+      - "Testing with table-driven tests"
+    
+    antipatterns:
+      - "Ignoring errors (err == nil)"
+      - "Not closing resources"
+      - "Goroutines without context"
+      - "Over-using interfaces"
+      - "Not using defer for cleanup"
+    
+    best_practices:
+      - "Always check errors explicitly"
+      - "Use defer for cleanup"
+      - "Pass context for cancellation"
+      - "Keep interfaces small"
+      - "Use go vet and golangci-lint"
+  
+  java:
+    focus_areas:
+      - "Exception handling hierarchy"
+      - "Resource management (try-with-resources)"
+      - "Null safety patterns"
+      - "Immutability and thread safety"
+      - "Stream API usage"
+    
+    antipatterns:
+      - "Catching generic Exception"
+      - "Not closing resources"
+      - "Null pointer dereferences"
+      - "Excessive synchronization"
+      - "Using raw types"
+    
+    best_practices:
+      - "Use try-with-resources"
+      - "Prefer Optional over null"
+      - "Use streams for collections"
+      - "Follow SOLID principles"
+      - "Use static analysis tools"
+  
+  ruby:
+    focus_areas:
+      - "Block usage patterns"
+      - "Method naming conventions"
+      - "Duck typing practices"
+      - "Gem dependency management"
+      - "Testing with RSpec"
+    
+    antipatterns:
+      - "Long method chains"
+      - "Global variables ($var)"
+      - "Not using symbols for keys"
+      - "Rescue without specific exception"
+      - "Not following Ruby idioms"
+    
+    best_practices:
+      - "Use blocks and yield effectively"
+      - "Follow Ruby naming conventions"
+      - "Use symbols for hash keys"
+      - "Write idiomatic Ruby code"
+      - "Use RuboCop for linting"
+  
+  rust:
+    focus_areas:
+      - "Ownership and borrowing"
+      - "Error handling with Result"
+      - "Lifetime annotations"
+      - "Trait implementation"
+      - "Unsafe code justification"
+    
+    antipatterns:
+      - "Using unwrap() in production"
+      - "Unnecessary cloning"
+      - "Fighting the borrow checker"
+      - "Overusing unsafe"
+      - "Not handling errors properly"
+    
+    best_practices:
+      - "Use ? operator for error propagation"
+      - "Leverage the type system"
+      - "Use cargo clippy"
+      - "Write comprehensive tests"
+      - "Document unsafe code thoroughly"
+  
+  cpp:
+    focus_areas:
+      - "Memory management (RAII)"
+      - "Move semantics usage"
+      - "Smart pointer usage"
+      - "Template metaprogramming"
+      - "Undefined behavior detection"
+    
+    antipatterns:
+      - "Manual memory management"
+      - "Using new/delete directly"
+      - "Ignoring rule of five"
+      - "Not using const correctness"
+      - "Undefined behavior"
+    
+    best_practices:
+      - "Use RAII pattern"
+      - "Prefer smart pointers"
+      - "Follow rule of zero/five"
+      - "Use const correctness"
+      - "Run static analyzers"
+  
+  bash:
+    focus_areas:
+      - "Error handling (set -e)"
+      - "Variable quoting"
+      - "Command substitution"
+      - "Exit code checking"
+      - "ShellCheck compliance"
+    
+    antipatterns:
+      - "Unquoted variables"
+      - "Using $? without checking"
+      - "Not using local in functions"
+      - "Parsing ls output"
+      - "Using echo for complex output"
+    
+    best_practices:
+      - "Use set -euo pipefail"
+      - "Quote all variables"
+      - "Use [[ ]] over [ ]"
+      - "Check exit codes explicitly"
+      - "Run shellcheck regularly"
+
+# Language-Specific Test Patterns
+language_specific_testing:
+  javascript:
+    framework: "Jest"
+    patterns:
+      - "Use describe/it blocks"
+      - "Mock external dependencies"
+      - "Test async code with async/await"
+      - "Use snapshot testing for UI"
+      - "Test error boundaries"
+    
+    example: |
+      describe('UserService', () => {
+        it('should fetch user by ID', async () => {
+          const user = await UserService.getUser('123');
+          expect(user.id).toBe('123');
+        });
+      });
+  
+  python:
+    framework: "pytest"
+    patterns:
+      - "Use fixtures for setup"
+      - "Parametrize tests with @pytest.mark.parametrize"
+      - "Use mocking with unittest.mock"
+      - "Test exceptions with pytest.raises"
+      - "Use coverage reporting"
+    
+    example: |
+      @pytest.mark.parametrize("input,expected", [
+          (2, 4),
+          (3, 9),
+      ])
+      def test_square(input, expected):
+          assert square(input) == expected
+  
+  go:
+    framework: "testing"
+    patterns:
+      - "Use table-driven tests"
+      - "Test error cases explicitly"
+      - "Use subtests for organization"
+      - "Mock interfaces with testify"
+      - "Use test helpers"
+    
+    example: |
+      func TestAdd(t *testing.T) {
+          tests := []struct {
+              name string
+              a, b int
+              want int
+          }{
+              {"positive", 2, 3, 5},
+              {"negative", -1, -1, -2},
+          }
+          for _, tt := range tests {
+              t.Run(tt.name, func(t *testing.T) {
+                  if got := Add(tt.a, tt.b); got != tt.want {
+                      t.Errorf("got %d, want %d", got, tt.want)
+                  }
+              })
+          }
+      }
+  
+  java:
+    framework: "JUnit 5"
+    patterns:
+      - "Use @Test annotation"
+      - "Organize with @Nested classes"
+      - "Use @ParameterizedTest"
+      - "Mock with Mockito"
+      - "Use AssertJ for fluent assertions"
+    
+    example: |
+      @Test
+      void testCalculateTotal() {
+          BigDecimal result = calculator.add(
+              new BigDecimal("10.5"),
+              new BigDecimal("5.5")
+          );
+          assertThat(result).isEqualByComparingTo("16.0");
+      }
+  
+  ruby:
+    framework: "RSpec"
+    patterns:
+      - "Use describe/context/it blocks"
+      - "Use let for lazy evaluation"
+      - "Use factories (FactoryBot)"
+      - "Test with doubles and mocks"
+      - "Use shared examples"
+    
+    example: |
+      RSpec.describe Calculator do
+        describe '#add' do
+          it 'returns sum of two numbers' do
+            expect(Calculator.add(2, 3)).to eq(5)
+          end
+        end
+      end
+  
+  rust:
+    framework: "built-in"
+    patterns:
+      - "Use #[test] attribute"
+      - "Test panics with #[should_panic]"
+      - "Use Result<(), E> for fallible tests"
+      - "Integration tests in tests/"
+      - "Use assert! and assert_eq! macros"
+    
+    example: |
+      #[test]
+      fn test_add() {
+          assert_eq!(add(2, 3), 5);
+      }
+      
+      #[test]
+      #[should_panic(expected = "divide by zero")]
+      fn test_divide_by_zero() {
+          divide(10, 0);
+      }
+  
+  cpp:
+    framework: "Google Test"
+    patterns:
+      - "Use TEST and TEST_F macros"
+      - "Fixtures for setup/teardown"
+      - "Use EXPECT_* for non-fatal assertions"
+      - "Use ASSERT_* for fatal assertions"
+      - "Mock with Google Mock"
+    
+    example: |
+      TEST(MathTest, Addition) {
+          EXPECT_EQ(add(2, 3), 5);
+          EXPECT_EQ(add(-1, 1), 0);
+      }
+  
+  bash:
+    framework: "bats"
+    patterns:
+      - "Use @test for test cases"
+      - "Use setup/teardown hooks"
+      - "Test exit codes explicitly"
+      - "Capture and test output"
+      - "Use run for command execution"
+    
+    example: |
+      @test "addition works" {
+        result=$(add 2 3)
+        [ "$result" -eq 5 ]
+      }
+      
+      @test "script fails on invalid input" {
+        run myscript --invalid
+        [ "$status" -ne 0 ]
+      }
+

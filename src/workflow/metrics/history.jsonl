@@ -1,0 +1,17 @@
+{
+  "workflow_run_id": "workflow_20251218_151626",
+  "start_time": "2025-12-18T15:16:27-03:00",
+  "start_epoch": 1766081787,
+  "version": "2.3.0",
+  "mode": "auto",
+  "steps": {},
+  "status": "failed",
+  "end_time": "2025-12-18T15:16:27-03:00",
+  "end_epoch": 1766081787,
+  "duration_seconds": 0,
+  "steps_completed": 0,
+  "steps_failed": 0,
+  "steps_skipped": 0,
+  "success": false
+}
+

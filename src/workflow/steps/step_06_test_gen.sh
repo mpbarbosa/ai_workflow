@@ -1,15 +1,17 @@
 #!/bin/bash
+set -euo pipefail
+
 ################################################################################
-# Step 6: AI-Powered Test Generation
-# Purpose: Generate new test code for untested modules
-# Part of: Tests & Documentation Workflow Automation v2.0.0
-# Version: 2.0.0
+# Step 6: AI-Powered Test Generation (Language-Aware)
+# Purpose: Generate new test code for untested modules (adaptive)
+# Part of: Tests & Documentation Workflow Automation v2.5.0
+# Version: 2.1.0 (Phase 5 - Language-aware test generation)
 ################################################################################
 
 # Module version information
-readonly STEP6_VERSION="2.0.0"
+readonly STEP6_VERSION="2.1.0"
 readonly STEP6_VERSION_MAJOR=2
-readonly STEP6_VERSION_MINOR=0
+readonly STEP6_VERSION_MINOR=1
 readonly STEP6_VERSION_PATCH=0
 
 # Main step function - generates new tests with AI assistance
@@ -27,27 +29,100 @@ step6_generate_new_tests() {
     # PHASE 1: Automated gap analysis
     print_info "Phase 1: Automated test gap analysis..."
     
-    # Check 1: Identify code files without tests
+    # Check 1: Identify code files without tests (language-aware)
     print_info "Analyzing code coverage gaps..."
     local untested_files=()
+    local language="${PRIMARY_LANGUAGE:-javascript}"
+    local source_dir="."
     
-    # Find JavaScript/mjs files in scripts/
-    if [[ -d "scripts" ]]; then
-        while IFS= read -r code_file; do
-            [[ -z "$code_file" ]] && continue
-            
-            local file_name
-            file_name=$(basename "$code_file" .js)
-            local test_file_1="__tests__/${file_name}.test.js"
-            local test_file_2="__tests__/${file_name}.spec.js"
-            
-            # Check if corresponding test exists
-            if [[ ! -f "$test_file_1" ]] && [[ ! -f "$test_file_2" ]]; then
-                untested_files+=("$code_file")
-                echo "Untested: $code_file" >> "$generation_log_file"
+    # Find source files based on language
+    case "$language" in
+        javascript|typescript)
+            source_dir="scripts"
+            if [[ -d "$source_dir" ]]; then
+                while IFS= read -r code_file; do
+                    [[ -z "$code_file" ]] && continue
+                    
+                    local file_name
+                    file_name=$(basename "$code_file" .js)
+                    local test_file_1="__tests__/${file_name}.test.js"
+                    local test_file_2="__tests__/${file_name}.spec.js"
+                    
+                    if [[ ! -f "$test_file_1" ]] && [[ ! -f "$test_file_2" ]]; then
+                        untested_files+=("$code_file")
+                        echo "Untested: $code_file" >> "$generation_log_file"
+                    fi
+                done < <(fast_find "$source_dir" "*.js" 5 "node_modules" ".git" "coverage")
             fi
-        done < <(find scripts -name "*.js" -o -name "*.mjs" 2>/dev/null)
-    fi
+            ;;
+        python)
+            source_dir="src"
+            [[ ! -d "$source_dir" ]] && source_dir="."
+            while IFS= read -r code_file; do
+                [[ -z "$code_file" ]] && continue
+                [[ "$code_file" == *"__init__.py" ]] && continue
+                [[ "$code_file" == *"test_"* ]] && continue
+                [[ "$code_file" == *"_test.py" ]] && continue
+                
+                local file_dir file_name
+                file_dir=$(dirname "$code_file")
+                file_name=$(basename "$code_file" .py)
+                local test_file="${file_dir}/test_${file_name}.py"
+                
+                if [[ ! -f "$test_file" ]]; then
+                    untested_files+=("$code_file")
+                    echo "Untested: $code_file" >> "$generation_log_file"
+                fi
+            done < <(fast_find "$source_dir" "*.py" 10 "__pycache__" ".git")
+            ;;
+        go)
+            while IFS= read -r code_file; do
+                [[ -z "$code_file" ]] && continue
+                [[ "$code_file" == *"_test.go" ]] && continue
+                
+                local test_file="${code_file%.go}_test.go"
+                if [[ ! -f "$test_file" ]]; then
+                    untested_files+=("$code_file")
+                    echo "Untested: $code_file" >> "$generation_log_file"
+                fi
+            done < <(fast_find "." "*.go" 10 "vendor" ".git")
+            ;;
+        java)
+            source_dir="src/main/java"
+            [[ ! -d "$source_dir" ]] && source_dir="src"
+            while IFS= read -r code_file; do
+                [[ -z "$code_file" ]] && continue
+                
+                local class_name
+                class_name=$(basename "$code_file" .java)
+                local test_file="src/test/java/${class_name}Test.java"
+                
+                if [[ ! -f "$test_file" ]]; then
+                    untested_files+=("$code_file")
+                    echo "Untested: $code_file" >> "$generation_log_file"
+                fi
+            done < <(fast_find "$source_dir" "*.java" 10 "target" ".git")
+            ;;
+        *)
+            # Fallback to JavaScript
+            source_dir="scripts"
+            if [[ -d "$source_dir" ]]; then
+                while IFS= read -r code_file; do
+                    [[ -z "$code_file" ]] && continue
+                    
+                    local file_name
+                    file_name=$(basename "$code_file" .js)
+                    local test_file_1="__tests__/${file_name}.test.js"
+                    local test_file_2="__tests__/${file_name}.spec.js"
+                    
+                    if [[ ! -f "$test_file_1" ]] && [[ ! -f "$test_file_2" ]]; then
+                        untested_files+=("$code_file")
+                        echo "Untested: $code_file" >> "$generation_log_file"
+                    fi
+                done < <(find scripts -name "*.js" -o -name "*.mjs" 2>/dev/null)
+            fi
+            ;;
+    esac
     
     local untested_count=${#untested_files[@]}
     

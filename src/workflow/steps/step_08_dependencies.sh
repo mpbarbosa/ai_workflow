@@ -1,4 +1,6 @@
 #!/bin/bash
+set -euo pipefail
+
 ################################################################################
 # Step 8: AI-Powered Dependency Validation
 # Purpose: Validate dependencies and environment configuration (adaptive)
@@ -100,53 +102,53 @@ Validation focused on system tools and git repository health.
     print_info "Phase 1: Automated dependency analysis (${language})..."
     
     case "$language" in
-        javascript)
+        javascript|typescript|nodejs)
             # JavaScript/Node.js dependency validation
             print_info "Validating ${package_file}..."
             if [[ ! -f "$package_file" ]]; then
-            print_error "package.json not found!"
-            echo "CRITICAL: Missing package.json" >> "$dependency_report"
-            ((issues++))
-            
-            # Save error to backlog before returning
-            local step_issues="### Dependency Validation - CRITICAL ERROR
+                print_error "${package_file} not found!"
+                echo "CRITICAL: Missing ${package_file}" >> "$dependency_report"
+                ((issues++))
+                
+                # Save error to backlog before returning
+                local step_issues="### Dependency Validation - CRITICAL ERROR
 
 **Total Issues:** ${issues}
 **Status:** ❌ FAILED
 
-CRITICAL: Missing package.json file. Cannot validate dependencies.
+CRITICAL: Missing ${package_file} file. Cannot validate dependencies.
 "
-            save_step_issues "8" "Dependency_Validation" "$step_issues"
-            save_step_summary "8" "Dependency_Validation" "CRITICAL: Missing package.json file." "❌"
+                save_step_issues "8" "Dependency_Validation" "$step_issues"
+                save_step_summary "8" "Dependency_Validation" "CRITICAL: Missing ${package_file} file." "❌"
+                
+                cd "$PROJECT_ROOT" || return 1
+                update_workflow_status "step8" "❌"
+                return 1
+            fi
             
-            cd "$PROJECT_ROOT" || return 1
-            update_workflow_status "step8" "❌"
-            return 1
-        else
-        # Validate JSON syntax
-        if jq empty package.json &>/dev/null; then
-            print_success "package.json is valid JSON"
-        else
-            print_error "package.json contains invalid JSON"
-            echo "CRITICAL: Invalid package.json syntax" >> "$dependency_report"
-            ((issues++))
-            
-            # Save error to backlog before returning
-            local step_issues="### Dependency Validation - CRITICAL ERROR
+            # Validate JSON syntax
+            if jq empty "$package_file" &>/dev/null; then
+                print_success "${package_file} is valid JSON"
+            else
+                print_error "${package_file} contains invalid JSON"
+                echo "CRITICAL: Invalid ${package_file} syntax" >> "$dependency_report"
+                ((issues++))
+                
+                # Save error to backlog before returning
+                local step_issues="### Dependency Validation - CRITICAL ERROR
 
 **Total Issues:** ${issues}
 **Status:** ❌ FAILED
 
-CRITICAL: Invalid package.json syntax. Cannot validate dependencies.
+CRITICAL: Invalid ${package_file} syntax. Cannot validate dependencies.
 "
-            save_step_issues "8" "Dependency_Validation" "$step_issues"
-            save_step_summary "8" "Dependency_Validation" "CRITICAL: Invalid package.json syntax." "❌"
-            
-            cd "$PROJECT_ROOT" || return 1
-            update_workflow_status "step8" "❌"
-            return 1
-        fi
-    fi
+                save_step_issues "8" "Dependency_Validation" "$step_issues"
+                save_step_summary "8" "Dependency_Validation" "CRITICAL: Invalid ${package_file} syntax." "❌"
+                
+                cd "$PROJECT_ROOT" || return 1
+                update_workflow_status "step8" "❌"
+                return 1
+            fi
     # Check 2: Run npm audit for security vulnerabilities
     print_info "Running npm audit for security vulnerabilities..."
     local audit_output

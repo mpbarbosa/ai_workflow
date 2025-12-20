@@ -1,8 +1,11 @@
 #!/bin/bash
+set -euo pipefail
+
 ################################################################################
 # AI Helpers Module
 # Purpose: AI prompt templates and Copilot CLI integration helpers
 # Part of: Tests & Documentation Workflow Automation v2.0.0
+# Enhancement: Project-aware personas via project_kinds.yaml (2025-12-19)
 ################################################################################
 
 # ==============================================================================
@@ -86,25 +89,69 @@ build_doc_analysis_prompt() {
     local changed_files="$1"
     local doc_files="$2"
     local yaml_file="${SCRIPT_DIR}/lib/ai_helpers.yaml"
-    
+    local yaml_project_kind_file="${SCRIPT_DIR}/config/ai_prompts_project_kinds.yaml"
+
+    local role
+    local task_context
+    local approach
+    local task_template=""
+
+    print_info "Building documentation analysis prompt"
+    print_info "YAML Project Kind File: $yaml_project_kind_file"
+    # Read project kind from config if available
+    if [[ -f "$yaml_project_kind_file" ]]; then
+        print_info "Reading project kind from config"
+        local project_kind
+        project_kind=$(get_project_kind) || project_kind=$(detect_project_kind | jq -r '.kind')
+        role=$(get_project_kind_prompt "$project_kind" "documentation_specialist" "role")
+        local base_task_context
+        base_task_context=$(get_project_kind_prompt "$project_kind" "documentation_specialist" "task_context")
+        # Include changed files in task_context with proper formatting
+        task_context="Based on the recent changes to the following files:
+
+${changed_files}
+
+${base_task_context}"
+        approach=$(get_project_kind_prompt "$project_kind" "documentation_specialist" "approach")
+    fi
+
     # Read from YAML config if available
     if [[ -f "$yaml_file" ]]; then
-        local role
-        local task_template
-        local approach
+
+        #IF role is still empty, extract from doc_analysis_prompt section   
+        if [[ -z "$role" ]]; then
+            role=$(sed -n '/^doc_analysis_prompt:/,/^[a-z_]/p' "$yaml_file" | grep 'role:' | sed 's/^[[:space:]]*role:[[:space:]]*"\(.*\)"[[:space:]]*$/\1/')
+        fi
         
-        # Extract role (quoted string on same line)
-        role=$(grep 'role:' "$yaml_file" | sed 's/^[[:space:]]*role:[[:space:]]*"\(.*\)"[[:space:]]*$/\1/')
+        # If task_context is still empty, extract task_template from YAML
+        if [[ -z "$task_context" ]]; then
+            task_template=$(awk '/task_template: \|/{flag=1; next} /^[[:space:]]*approach:/{flag=0} flag && /^[[:space:]]{4}/' "$yaml_file" | sed 's/^[[:space:]]*//')
+        fi
         
-        # Extract task template (multiline after |)
-        task_template=$(awk '/task_template: \|/{flag=1; next} /^[[:space:]]*approach:/{flag=0} flag && /^[[:space:]]{4}/' "$yaml_file" | sed 's/^[[:space:]]*//')
+        # If approach is still empty, extract from doc_analysis_prompt section
+        if [[ -z "$approach" ]]; then
+            approach=$(awk '/approach: \|/{flag=1; next} /^$/{if(flag) exit} flag && /^[[:space:]]{4}/' "$yaml_file" | sed 's/^[[:space:]]*//')
+        fi
         
-        # Extract approach (multiline after |)
-        approach=$(awk '/approach: \|/{flag=1; next} /^$/{if(flag) exit} flag && /^[[:space:]]{4}/' "$yaml_file" | sed 's/^[[:space:]]*//')
-        
-        # Replace placeholders in task template
-        local task="${task_template//\{changed_files\}/$changed_files}"
-        task="${task//\{doc_files\}/$doc_files}"
+        # Build task from template or use task_context directly
+        local task
+        if [[ -n "$task_template" ]]; then
+            # Replace placeholders in task template
+            task="${task_template//\{changed_files\}/$changed_files}"
+            task="${task//\{doc_files\}/$doc_files}"
+        elif [[ -n "$task_context" ]]; then
+            # Use task_context from project kind (already includes changed files from lines 110-112)
+            task="${task_context}
+
+Documentation to review: ${doc_files}"
+        else
+            # Fallback task
+            task="Based on the recent changes to: ${changed_files}
+
+Please update all related documentation.
+
+Documentation to review: ${doc_files}"
+        fi
         
         build_ai_prompt "$role" "$task" "$approach"
     else
@@ -1187,6 +1234,7 @@ EOF
 
 # Build a code quality assessment prompt (Step 9)
 # Usage: build_step9_code_quality_prompt <total_files> <js_files> <html_files> <css_files> <quality_summary> <quality_report> <large_files> <sample_code>
+# Phase 4: Now includes language-aware enhancements
 build_step9_code_quality_prompt() {
     local total_files="$1"
     local js_files="$2"
@@ -1197,6 +1245,7 @@ build_step9_code_quality_prompt() {
     local large_files_list="$7"
     local sample_code="$8"
     local yaml_file="${SCRIPT_DIR}/lib/ai_helpers.yaml"
+    local language="${PRIMARY_LANGUAGE:-javascript}"
     
     # Read from YAML config if available
     if [[ -f "$yaml_file" ]]; then
@@ -1244,13 +1293,29 @@ build_step9_code_quality_prompt() {
         task="${task//\{large_files_list\}/$formatted_large_files}"
         task="${task//\{sample_code\}/$sample_code}"
         
-        cat << EOF
+        local base_prompt=$(cat << EOF
 **Role**: ${role}
 
 **Task**: ${task}
 
 **Approach**: ${approach}
 EOF
+)
+        
+        # Phase 4: Add language-specific quality standards
+        if should_use_language_aware_prompts && command -v get_language_quality_standards &>/dev/null; then
+            local quality_standards=$(get_language_quality_standards)
+            if [[ -n "$quality_standards" ]]; then
+                echo "$base_prompt"
+                echo ""
+                echo "**${language^} Quality Standards:**"
+                echo "$quality_standards"
+            else
+                echo "$base_prompt"
+            fi
+        else
+            echo "$base_prompt"
+        fi
     else
         # Fallback to hardcoded strings if YAML not available
         cat << EOF
@@ -1769,3 +1834,526 @@ extract_and_save_issues_from_log() {
 }
 
 export -f extract_and_save_issues_from_log
+
+################################################################################
+# PHASE 4: LANGUAGE-SPECIFIC PROMPT GENERATION
+# Version: 3.0.0
+# Added: 2025-12-18
+################################################################################
+
+#######################################
+# Load language-specific documentation conventions
+# Globals:
+#   PRIMARY_LANGUAGE
+# Arguments:
+#   None
+# Returns:
+#   Language-specific documentation conventions
+#######################################
+get_language_documentation_conventions() {
+    local language="${PRIMARY_LANGUAGE:-javascript}"
+    local yaml_file="${LIB_DIR}/ai_helpers.yaml"
+    
+    if [[ ! -f "$yaml_file" ]]; then
+        echo ""
+        return 1
+    fi
+    
+    # Extract conventions for the language
+    # Simple extraction - look for the language section under language_specific_documentation
+    awk -v lang="$language" '
+    /^  '"$language"':/ { found=1; next }
+    found && /^    conventions:/ { in_conv=1; next }
+    found && in_conv && /^    [a-z_]+:/ { exit }
+    found && in_conv && /^      - / { print; next }
+    found && in_conv && /^      [A-Za-z]/ { print "      " $0; next }
+    ' "$yaml_file" | sed 's/^      - //'
+}
+
+#######################################
+# Load language-specific quality standards
+# Globals:
+#   PRIMARY_LANGUAGE
+# Returns:
+#   Language-specific quality focus areas and best practices
+#######################################
+get_language_quality_standards() {
+    local language="${PRIMARY_LANGUAGE:-javascript}"
+    local yaml_file="${LIB_DIR}/ai_helpers.yaml"
+    
+    if [[ ! -f "$yaml_file" ]]; then
+        echo ""
+        return 1
+    fi
+    
+    # Extract quality standards from language_specific_quality section
+    awk -v lang="$language" '
+    BEGIN { in_section=0; in_lang=0 }
+    /^language_specific_quality:/ { in_section=1; next }
+    in_section && /^  '"$language"':/ { in_lang=1; next }
+    in_section && in_lang && /^    focus_areas:/ { print "**Focus Areas:**"; next }
+    in_section && in_lang && /^    best_practices:/ { print "\n**Best Practices:**"; next }
+    in_section && in_lang && /^  [a-z_]+:/ { exit }
+    in_section && in_lang && /^      - / { print "  " $0; next }
+    ' "$yaml_file" | sed 's/^      - /- /'
+}
+
+#######################################
+# Load language-specific testing patterns
+# Globals:
+#   PRIMARY_LANGUAGE
+# Returns:
+#   Language-specific test framework and patterns
+#######################################
+get_language_testing_patterns() {
+    local language="${PRIMARY_LANGUAGE:-javascript}"
+    local yaml_file="${LIB_DIR}/ai_helpers.yaml"
+    
+    if [[ ! -f "$yaml_file" ]]; then
+        echo ""
+        return 1
+    fi
+    
+    # Extract testing patterns from language_specific_testing section
+    awk -v lang="$language" '
+    BEGIN { in_section=0; in_lang=0 }
+    /^language_specific_testing:/ { in_section=1; next }
+    in_section && /^  '"$language"':/ { in_lang=1; next }
+    in_section && in_lang && /^    framework:/ { print; next }
+    in_section && in_lang && /^    patterns:/ { print "\nPatterns:"; next }
+    in_section && in_lang && /^  [a-z_]+:/ { exit }
+    in_section && in_lang && /^      - / { print "  " $0; next }
+    ' "$yaml_file"
+}
+
+#######################################
+# Generate language-aware AI prompt
+# Arguments:
+#   $1 - Base prompt (from existing functions)
+#   $2 - Prompt type (documentation|quality|testing)
+# Globals:
+#   PRIMARY_LANGUAGE
+#   BUILD_SYSTEM
+#   TEST_FRAMEWORK
+# Returns:
+#   Enhanced prompt with language-specific context
+#######################################
+generate_language_aware_prompt() {
+    local base_prompt="$1"
+    local prompt_type="$2"
+    local language="${PRIMARY_LANGUAGE:-javascript}"
+    local build_system="${BUILD_SYSTEM:-npm}"
+    local test_framework="${TEST_FRAMEWORK:-jest}"
+    
+    # Add language context header
+    local enhanced_prompt="$base_prompt
+
+**Project Technology Stack:**
+- Primary Language: ${language}
+- Build System: ${build_system}
+- Test Framework: ${test_framework}
+"
+    
+    # Add language-specific guidelines based on prompt type
+    case "$prompt_type" in
+        documentation)
+            local conventions=$(get_language_documentation_conventions)
+            if [[ -n "$conventions" ]]; then
+                enhanced_prompt+="
+**${language^} Documentation Guidelines:**
+${conventions}
+"
+            fi
+            ;;
+        
+        quality)
+            local standards=$(get_language_quality_standards)
+            if [[ -n "$standards" ]]; then
+                enhanced_prompt+="
+**${language^} Quality Standards:**
+${standards}
+"
+            fi
+            ;;
+        
+        testing)
+            local patterns=$(get_language_testing_patterns)
+            if [[ -n "$patterns" ]]; then
+                enhanced_prompt+="
+**${language^} Testing Framework:**
+${patterns}
+"
+            fi
+            ;;
+    esac
+    
+    # Add custom context from config if available
+    # Note: Using variable expansion instead of array syntax due to Bash limitations
+    local custom_context=""
+    if [[ -n "${TECH_STACK_CONFIG:-}" ]]; then
+        custom_context="${TECH_STACK_CONFIG[language_context]:-}"
+    fi
+    
+    if [[ -n "$custom_context" ]]; then
+        enhanced_prompt+="
+**Project-Specific Context:**
+$custom_context
+"
+    fi
+    
+    echo "$enhanced_prompt"
+}
+
+#######################################
+# Build language-aware documentation prompt
+# Enhanced version of build_doc_analysis_prompt
+# Arguments:
+#   $1 - changed_files
+#   $2 - doc_files
+# Returns:
+#   Language-aware documentation prompt
+#######################################
+build_language_aware_doc_prompt() {
+    local changed_files="$1"
+    local doc_files="$2"
+    
+    # Get base prompt
+    local base_prompt
+    base_prompt=$(build_doc_analysis_prompt "$changed_files" "$doc_files")
+    
+    # Enhance with language-specific context
+    generate_language_aware_prompt "$base_prompt" "documentation"
+}
+
+#######################################
+# Build language-aware quality prompt
+# Enhanced version of build_quality_prompt
+# Arguments:
+#   $1 - files_to_review
+# Returns:
+#   Language-aware quality prompt
+#######################################
+build_language_aware_quality_prompt() {
+    local files_to_review="$1"
+    
+    # Get base prompt
+    local base_prompt
+    base_prompt=$(build_quality_prompt "$files_to_review")
+    
+    # Enhance with language-specific context
+    generate_language_aware_prompt "$base_prompt" "quality"
+}
+
+#######################################
+# Build language-aware test strategy prompt
+# Enhanced version of build_test_strategy_prompt
+# Arguments:
+#   $1 - coverage_stats
+#   $2 - test_files
+# Returns:
+#   Language-aware test strategy prompt
+#######################################
+build_language_aware_test_prompt() {
+    local coverage_stats="$1"
+    local test_files="$2"
+    
+    # Get base prompt
+    local base_prompt
+    base_prompt=$(build_test_strategy_prompt "$coverage_stats" "$test_files")
+    
+    # Enhance with language-specific context
+    generate_language_aware_prompt "$base_prompt" "testing"
+}
+
+#######################################
+# Check if language-aware prompts should be used
+# Returns:
+#   0 if language-aware prompts should be used, 1 otherwise
+#######################################
+should_use_language_aware_prompts() {
+    # Use language-aware prompts if:
+    # 1. Tech stack is detected/configured
+    # 2. PRIMARY_LANGUAGE is set
+    # 3. Not explicitly disabled
+    
+    if [[ -z "${PRIMARY_LANGUAGE:-}" ]]; then
+        return 1
+    fi
+    
+    if [[ "${USE_LANGUAGE_AWARE_PROMPTS:-true}" == "false" ]]; then
+        return 1
+    fi
+    
+    return 0
+}
+
+# Export Phase 4 functions
+export -f get_language_documentation_conventions
+export -f get_language_quality_standards
+export -f get_language_testing_patterns
+export -f generate_language_aware_prompt
+export -f build_language_aware_doc_prompt
+export -f build_language_aware_quality_prompt
+export -f build_language_aware_test_prompt
+export -f should_use_language_aware_prompts
+
+################################################################################
+# PROJECT KIND-AWARE AI PROMPTS (Phase 4)
+# Purpose: Load and apply project kind-specific AI prompt templates
+################################################################################
+
+#######################################
+# Load project kind-specific prompt template
+# Arguments:
+#   $1 - project_kind (e.g., "shell_automation", "nodejs_api")
+#   $2 - persona (e.g., "documentation_specialist", "test_engineer", "code_reviewer")
+#   $3 - field (e.g., "role", "task_context", "approach")
+# Returns:
+#   Prompt template text
+#######################################
+get_project_kind_prompt() {
+    local project_kind="$1"
+    local persona="$2"
+    local field="$3"
+    local script_dir="${SCRIPT_DIR:-$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)}"
+    local yaml_file="${script_dir}/config/ai_prompts_project_kinds.yaml"
+    
+    if [[ ! -f "$yaml_file" ]]; then
+        return 1
+    fi
+    
+    # Use awk to extract the specific field
+    awk -v kind="$project_kind" -v pers="$persona" -v fld="$field" '
+        BEGIN { in_kind=0; in_persona=0; in_field=0 }
+        
+        # Match project kind section
+        $0 ~ "^" kind ":" { in_kind=1; next }
+        
+        # Reset on new top-level section
+        /^[a-z_]+:/ && NF==1 && in_kind { in_kind=0 }
+        
+        # Match persona within kind
+        in_kind && $0 ~ "^  " pers ":" { in_persona=1; next }
+        
+        # Reset on new persona
+        in_kind && /^  [a-z_]+:/ && in_persona { in_persona=0 }
+        
+        # Match field within persona
+        in_kind && in_persona && $0 ~ "^    " fld ":" {
+            in_field=1
+            # Check if single-line value
+            if ($0 ~ /"/) {
+                # Extract quoted value
+                match($0, /"([^"]*)"/, arr)
+                print arr[1]
+                in_field=0
+                next
+            }
+            # Multi-line value with |
+            next
+        }
+        
+        # Collect multi-line field content
+        in_field && /^      / {
+            sub(/^      /, "")
+            print
+            next
+        }
+        
+        # End of multi-line field
+        in_field && /^    [a-z_]+:/ { in_field=0 }
+    ' "$yaml_file"
+}
+
+#######################################
+# Build project kind-aware AI prompt
+# Arguments:
+#   $1 - project_kind
+#   $2 - persona
+#   $3 - task_description (specific task details to append)
+# Returns:
+#   Complete AI prompt
+#######################################
+build_project_kind_prompt() {
+    local project_kind="$1"
+    local persona="$2"
+    local task_description="$3"
+    
+    local role=$(get_project_kind_prompt "$project_kind" "$persona" "role")
+    local task_context=$(get_project_kind_prompt "$project_kind" "$persona" "task_context")
+    local approach=$(get_project_kind_prompt "$project_kind" "$persona" "approach")
+    
+    # If project kind not found, try default
+    if [[ -z "$role" ]]; then
+        role=$(get_project_kind_prompt "default" "$persona" "role")
+        task_context=$(get_project_kind_prompt "default" "$persona" "task_context")
+        approach=$(get_project_kind_prompt "default" "$persona" "approach")
+    fi
+    
+    # Build complete prompt
+    cat << EOF
+**Role**: ${role}
+
+**Project Context**: ${task_context}
+
+**Task**: ${task_description}
+
+**Approach**: ${approach}
+EOF
+}
+
+#######################################
+# Get project kind-aware documentation prompt
+# Arguments:
+#   $1 - changed_files
+#   $2 - doc_files
+# Returns:
+#   Project kind-aware documentation prompt
+#######################################
+build_project_kind_doc_prompt() {
+    local changed_files="$1"
+    local doc_files="$2"
+    
+    # Get project kind from detection
+    local project_kind="${PRIMARY_PROJECT_KIND:-default}"
+    
+    local task="Based on the recent changes to the following files: ${changed_files}
+
+Please update all related documentation including:
+1. Project README and setup instructions
+2. Architecture and design documentation
+3. API/interface documentation
+4. Usage examples and tutorials
+5. Inline code comments for complex logic
+
+Documentation to review: ${doc_files}"
+    
+    build_project_kind_prompt "$project_kind" "documentation_specialist" "$task"
+}
+
+#######################################
+# Get project kind-aware test prompt
+# Arguments:
+#   $1 - coverage_stats
+#   $2 - test_files
+# Returns:
+#   Project kind-aware test prompt
+#######################################
+build_project_kind_test_prompt() {
+    local coverage_stats="$1"
+    local test_files="$2"
+    
+    # Get project kind from detection
+    local project_kind="${PRIMARY_PROJECT_KIND:-default}"
+    
+    local task="Based on the current test coverage statistics: ${coverage_stats}
+
+And existing test files: ${test_files}
+
+Recommend:
+1. New tests to generate for untested code paths
+2. Improvements to existing tests
+3. Coverage gaps to address
+4. Test patterns and best practices for this project"
+    
+    build_project_kind_prompt "$project_kind" "test_engineer" "$task"
+}
+
+#######################################
+# Get project kind-aware code review prompt
+# Arguments:
+#   $1 - files_to_review
+#   $2 - review_focus (optional: "security", "performance", "maintainability")
+# Returns:
+#   Project kind-aware code review prompt
+#######################################
+build_project_kind_review_prompt() {
+    local files_to_review="$1"
+    local review_focus="${2:-general}"
+    
+    # Get project kind from detection
+    local project_kind="${PRIMARY_PROJECT_KIND:-default}"
+    
+    local task="Review the following files: ${files_to_review}
+
+Focus areas:
+1. Code quality and maintainability
+2. Best practices for this project type
+3. Error handling and edge cases
+4. Security considerations
+5. Performance optimization opportunities"
+    
+    if [[ "$review_focus" != "general" ]]; then
+        task="${task}
+
+Special focus: ${review_focus}"
+    fi
+    
+    build_project_kind_prompt "$project_kind" "code_reviewer" "$task"
+}
+
+#######################################
+# Check if project kind-aware prompts should be used
+# Returns:
+#   0 if should use, 1 otherwise
+#######################################
+should_use_project_kind_prompts() {
+    # Use project kind prompts if:
+    # 1. Project kind is detected
+    # 2. Not explicitly disabled
+    
+    if [[ -z "${PRIMARY_PROJECT_KIND:-}" ]]; then
+        return 1
+    fi
+    
+    if [[ "${USE_PROJECT_KIND_PROMPTS:-true}" == "false" ]]; then
+        return 1
+    fi
+    
+    return 0
+}
+
+#######################################
+# Get combined language and project kind-aware prompt
+# Arguments:
+#   $1 - base_prompt
+#   $2 - context_type ("documentation", "testing", "quality")
+# Returns:
+#   Enhanced prompt with both language and project kind awareness
+#######################################
+generate_adaptive_prompt() {
+    local base_prompt="$1"
+    local context_type="$2"
+    
+    local enhanced_prompt="$base_prompt"
+    
+    # Add language-specific context if available
+    if should_use_language_aware_prompts; then
+        enhanced_prompt=$(generate_language_aware_prompt "$enhanced_prompt" "$context_type")
+    fi
+    
+    # Add project kind context if available
+    if should_use_project_kind_prompts; then
+        local project_kind="${PRIMARY_PROJECT_KIND:-default}"
+        local kind_context=$(get_project_kind_prompt "$project_kind" "documentation_specialist" "task_context")
+        
+        if [[ -n "$kind_context" ]]; then
+            enhanced_prompt="${enhanced_prompt}
+
+**Project Kind Context**:
+${kind_context}"
+        fi
+    fi
+    
+    echo "$enhanced_prompt"
+}
+
+# Export Phase 4 project kind functions
+export -f get_project_kind_prompt
+export -f build_project_kind_prompt
+export -f build_project_kind_doc_prompt
+export -f build_project_kind_test_prompt
+export -f build_project_kind_review_prompt
+export -f should_use_project_kind_prompts
+export -f generate_adaptive_prompt
+

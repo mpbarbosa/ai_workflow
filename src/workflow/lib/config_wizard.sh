@@ -1,4 +1,6 @@
 #!/usr/bin/env bash
+set -euo pipefail
+
 #
 # config_wizard.sh - Interactive Configuration Wizard
 #

@@ -1,15 +1,17 @@
 #!/bin/bash
+set -euo pipefail
+
 ################################################################################
 # Step 9: AI-Powered Code Quality Validation
-# Purpose: Validate code quality, detect anti-patterns, assess maintainability
-# Part of: Tests & Documentation Workflow Automation v2.0.0
-# Version: 2.0.0
+# Purpose: Validate code quality, detect anti-patterns, assess maintainability (adaptive)
+# Part of: Tests & Documentation Workflow Automation v2.3.1
+# Version: 2.1.0 (Phase 3 - Adaptive)
 ################################################################################
 
 # Module version information
-readonly STEP9_VERSION="2.0.0"
+readonly STEP9_VERSION="2.1.0"
 readonly STEP9_VERSION_MAJOR=2
-readonly STEP9_VERSION_MINOR=0
+readonly STEP9_VERSION_MINOR=1
 readonly STEP9_VERSION_PATCH=0
 
 # Main step function - validates code quality with AI assistance
@@ -25,21 +27,39 @@ step9_code_quality_validation() {
     
     # PHASE 1: Automated code quality checks (ADAPTIVE - Phase 3)
     local language="${PRIMARY_LANGUAGE:-javascript}"
-    local lint_cmd="${LINT_COMMAND:-npm run lint}"
+    local lint_cmd=""
+    
+    # Get lint command from tech stack (Phase 3 integration)
+    if command -v get_lint_command &>/dev/null; then
+        lint_cmd=$(get_lint_command)
+    else
+        # Fallback to LINT_COMMAND variable
+        lint_cmd="${LINT_COMMAND:-npm run lint}"
+    fi
     
     print_info "Phase 1: Automated code quality analysis (${language})..."
-    print_info "Linter command: $lint_cmd"
+    if [[ -n "$lint_cmd" ]]; then
+        print_info "Linter command: $lint_cmd"
+    else
+        print_info "No linter configured for ${language}"
+    fi
     
     # Check 1: Enumerate code files (adaptive)
     print_info "Enumerating ${language} code files..."
-    local source_files_list=$(find_source_files 2>/dev/null || echo "")
+    local source_files_list=""
+    if command -v find_source_files &>/dev/null; then
+        source_files_list=$(find_source_files 2>/dev/null || echo "")
+    else
+        # Fallback to generic find
+        source_files_list=$(find . -type f -name "*.${language}" 2>/dev/null | grep -v node_modules | head -100 || echo "")
+    fi
     local source_file_count=$(echo "$source_files_list" | grep -v "^$" | wc -l)
     
     print_info "Source files: $source_file_count"
     echo "File count: $source_file_count ${language} files" >> "$quality_report"
     
     # Check 1.5: Run language-specific linter (ADAPTIVE)
-    if [[ -n "$lint_cmd" ]] && [[ "$lint_cmd" != *"npm run lint"* ]] || command -v npm &> /dev/null; then
+    if [[ -n "$lint_cmd" ]]; then
         print_info "Running ${language} linter..."
         local lint_output=$(mktemp)
         TEMP_FILES+=("$lint_output")
@@ -47,7 +67,15 @@ step9_code_quality_validation() {
         if [[ "$DRY_RUN" == true ]]; then
             print_info "[DRY RUN] Would execute: $lint_cmd"
         else
-            if eval "$lint_cmd" > "$lint_output" 2>&1; then
+            # Use execute_language_command if available (Phase 3)
+            local lint_result=0
+            if command -v execute_language_command &>/dev/null; then
+                execute_language_command "$lint_cmd" "Linting" > "$lint_output" 2>&1 || lint_result=$?
+            else
+                eval "$lint_cmd" > "$lint_output" 2>&1 || lint_result=$?
+            fi
+            
+            if [[ $lint_result -eq 0 ]]; then
                 print_success "Linter passed with no issues"
             else
                 print_warning "Linter found issues"
@@ -58,7 +86,7 @@ step9_code_quality_validation() {
             fi
         fi
     else
-        print_info "No linter configured for ${language}"
+        print_info "No linter configured for ${language} - skipping lint check"
     fi
     
     # Check 2: Analyze file sizes and complexity

@@ -2,7 +2,7 @@
 
 ################################################################################
 # Quality Orchestrator
-# Version: 2.4.0
+# Version: 2.3.1
 # Purpose: Orchestrate dependency and code quality checks (Steps 8-9)
 # Part of: Workflow Automation Modularization Phase 3
 ################################################################################

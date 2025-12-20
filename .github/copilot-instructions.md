@@ -11,7 +11,7 @@ AI Workflow Automation is an intelligent workflow system for validating and enha
 ### Key Capabilities
 
 - **13-Step Automated Pipeline**: Complete workflow from pre-analysis to git finalization
-- **20 Library Modules**: Modular architecture with single responsibility principle (5,548 lines: 19 .sh + 1 .yaml)
+- **28 Library Modules**: Modular architecture with single responsibility principle (27 .sh + 1 .yaml)
 - **AI Integration**: GitHub Copilot CLI with 13 specialized personas
 - **Smart Execution**: Change-based step skipping (40-85% faster)
 - **Parallel Execution**: Independent steps run simultaneously (33% faster)
@@ -23,10 +23,12 @@ AI Workflow Automation is an intelligent workflow system for validating and enha
 
 ### Project Statistics
 
-- **Total Lines**: 19,053 production code + 762 YAML configuration
-- **Modules**: 33 total (20 libraries + 13 steps)
+- **Total Lines**: 22,216 shell code + 4,067 YAML configuration = 26,283 total
+- **Modules**: 41 total (28 libraries + 13 steps)
 - **Configuration**: YAML-based externalized prompt templates
 - **Performance**: Up to 90% faster for documentation-only changes
+
+> 📊 See [PROJECT_STATISTICS.md](../PROJECT_STATISTICS.md) for detailed breakdown.
 
 ## Architecture Patterns
 
@@ -206,6 +208,11 @@ cd /path/to/project
 # Force fresh start (ignore checkpoints)
 ./execute_tests_docs_workflow.sh --no-resume
 
+# Tech stack configuration
+./execute_tests_docs_workflow.sh --init-config                     # Run configuration wizard
+./execute_tests_docs_workflow.sh --show-tech-stack                 # Display detected tech stack
+./execute_tests_docs_workflow.sh --config-file .my-config.yaml    # Use custom config file
+
 # Selective step execution
 ./execute_tests_docs_workflow.sh --steps 0,5,6,7
 
@@ -272,7 +279,7 @@ cd ../
 
 The system uses 13 specialized AI personas for different tasks:
 
-1. **documentation_specialist** - Documentation updates and validation
+1. **documentation_specialist** - Documentation updates and validation (context-aware: adapts based on project kind and language from `project_kinds.yaml` and `.workflow-config.yaml`)
 2. **consistency_analyst** - Cross-reference consistency checks
 3. **code_reviewer** - Code quality and architecture review
 4. **test_engineer** - Test generation and validation
@@ -286,7 +293,13 @@ The system uses 13 specialized AI personas for different tasks:
 12. **directory_validator** - Directory structure validation
 13. **test_execution_analyst** - Test execution analysis
 
-Each persona has specialized prompts in `ai_helpers.yaml`.
+Each persona has specialized prompts in `ai_helpers.yaml`. The documentation_specialist persona is project-aware and references:
+- **`src/workflow/config/project_kinds.yaml`** - Defines project types (shell_script_automation, nodejs_api, static_website, react_spa, python_app, generic) with quality standards, testing frameworks, and documentation requirements
+- **`.workflow-config.yaml`** - Project-specific configuration including:
+  - `project.kind` - Explicitly set project kind (shell_automation, nodejs_api, nodejs_cli, nodejs_library, static_website, react_spa, vue_spa, python_api, python_cli, python_library, documentation)
+  - `tech_stack.primary_language` - Primary programming language
+  - Test commands and framework configuration
+  - If `project.kind` is not specified, it will be auto-detected using the `detect_project_kind()` function
 
 ## Version History
 
@@ -294,16 +307,27 @@ Each persona has specialized prompts in `ai_helpers.yaml`.
 
 **New Features**:
 - ✅ `--no-resume` flag to bypass checkpoint resume functionality
+- ✅ `--init-config` flag to run interactive configuration wizard
+- ✅ `--show-tech-stack` flag to display detected technology stack
+- ✅ `--config-file FILE` option to use custom .workflow-config.yaml file
+- ✅ Tech stack initialization with auto-detection and configuration support
+- ✅ Adaptive test execution supporting Jest, BATS, and pytest frameworks
+- ✅ Adaptive directory validation based on project configuration
 - ✅ Force fresh workflow start from Step 0 when needed
 
 **Bug Fixes**:
 - ✅ Fixed checkpoint file Bash syntax errors (proper variable quoting)
 - ✅ Fixed metrics calculation arithmetic errors in historical stats
 - ✅ Resolved "command not found" errors in checkpoint files
+- ✅ Fixed Step 7 test execution directory navigation (now uses TARGET_DIR)
+- ✅ Added safe log file directory checks to prevent early execution errors
 
 **Improvements**:
 - Enhanced checkpoint file format with proper quoting
 - Improved error handling in metrics calculations
+- Added tech stack detection and configuration framework
+- Updated Step 4 to use config-based directory validation
+- Updated Step 7 to support multiple test frameworks adaptively
 - Added comprehensive project critical analysis documentation
 
 ### v2.3.0 (2025-12-18) - Phase 2 Integration Complete

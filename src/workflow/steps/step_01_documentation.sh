@@ -1,4 +1,6 @@
 #!/bin/bash
+set -euo pipefail
+
 ################################################################################
 # Step 1: AI-Powered Documentation Updates
 # Purpose: Update documentation based on code changes with AI assistance
@@ -636,9 +638,17 @@ step1_update_documentation() {
     local modified_files_list
     modified_files_list=$(echo "$changed_files" | tr '\n' ',' | sed 's/,$//')
     
-    # Build AI prompt using helper function
+    # Build AI prompt using helper function (Phase 4: Language-aware)
+    print_info "Building documentation analysis prompt..."
     local copilot_prompt
-    copilot_prompt=$(build_doc_analysis_prompt "$modified_files_list" "${docs_to_review[*]}")
+    if should_use_language_aware_prompts && command -v build_language_aware_doc_prompt &>/dev/null; then
+        print_info "Building language-aware documentation prompt..."
+        copilot_prompt=$(build_language_aware_doc_prompt "$modified_files_list" "${docs_to_review[*]}")
+        print_info "Using language-aware documentation prompt for ${PRIMARY_LANGUAGE}"
+    else
+        print_info "Building standard documentation prompt..."
+        copilot_prompt=$(build_doc_analysis_prompt "$modified_files_list" "${docs_to_review[*]}")
+    fi
     
     echo -e "\n${CYAN}GitHub Copilot CLI Prompt:${NC}"
     echo -e "${YELLOW}${copilot_prompt}${NC}\n"

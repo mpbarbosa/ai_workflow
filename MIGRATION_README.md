@@ -24,11 +24,11 @@ ai_workflow/
 └── src/
     └── workflow/                      # Workflow automation scripts
         ├── execute_tests_docs_workflow.sh  # Main orchestrator
-        ├── lib/                       # 20 library modules (19 .sh + 1 .yaml)
+        ├── lib/                       # 28 library modules (27 .sh + 1 .yaml)
         │   ├── metrics.sh
         │   ├── change_detection.sh
         │   ├── dependency_graph.sh
-        │   └── ... (16 more modules)
+        │   └── ... (24 more modules)
         └── steps/                     # 13 step modules
             ├── step_00_analyze.sh
             ├── step_01_documentation.sh
@@ -50,17 +50,19 @@ ai_workflow/
 - Version evolution tracking
 
 **Scripts** (src/workflow/):
-- Main workflow orchestrator (4,740 lines)
-- 20 library modules (5,548 lines total: 19 .sh + 1 .yaml)
-- 13 step modules (3,200 lines)
+- Main workflow orchestrator (4,817 lines)
+- 28 library modules (12,671 lines: 27 .sh + 1 .yaml)
+- 13 step modules (4,728 lines)
 - Test suites and utilities
 
 ### Key Features
 
 **Version:** v2.3.1 (Critical Fixes & Checkpoint Control)  
-**Total Modules:** 33 (20 libraries + 13 steps)  
-**Total Lines:** 19,053 lines of production code + 762 YAML config  
+**Total Modules:** 41 (28 libraries + 13 steps)  
+**Total Lines:** 26,283 total (22,216 shell + 4,067 YAML)  
 **Test Coverage:** 37 tests with 100% pass rate
+
+> 📊 See [PROJECT_STATISTICS.md](PROJECT_STATISTICS.md) for detailed breakdown.
 
 **Capabilities:**
 1. **Workflow Orchestration**: 13-step automated pipeline
@@ -143,7 +145,7 @@ Expected output: 37 tests, 100% pass rate ✅
 
 4. **src/workflow/README.md**
    - Module architecture documentation
-   - All 20 library modules documented
+   - All 28 library modules documented
    - Usage examples and API reference
 
 ## Architecture

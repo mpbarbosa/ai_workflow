@@ -2,7 +2,7 @@
 
 ################################################################################
 # Validation Orchestrator
-# Version: 2.4.0
+# Version: 2.3.1
 # Purpose: Orchestrate documentation and structure validation (Steps 0-4)
 # Part of: Workflow Automation Modularization Phase 3
 ################################################################################

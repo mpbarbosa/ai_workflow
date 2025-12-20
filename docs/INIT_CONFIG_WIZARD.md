@@ -180,6 +180,7 @@ Here's your configuration:
 project:
   name: "my-python-app"
   description: "A data processing application"
+  kind: "python_api"              # Detected project kind
 
 tech_stack:
   primary_language: "python"
@@ -243,6 +244,7 @@ The wizard creates a `.workflow-config.yaml` file with the following structure:
 project:
   name: "<project-name>"
   description: "<optional-description>"
+  kind: "<project-kind>"          # Optional: shell_automation, nodejs_api, nodejs_cli, static_website, etc.
 
 tech_stack:
   primary_language: "<language>"

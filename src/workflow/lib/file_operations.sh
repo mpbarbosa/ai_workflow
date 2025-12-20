@@ -1,4 +1,6 @@
 #!/bin/bash
+set -euo pipefail
+
 ################################################################################
 # File Operations Module with Resilience
 # Purpose: Safe file operations with pre-flight checks and fallback behavior

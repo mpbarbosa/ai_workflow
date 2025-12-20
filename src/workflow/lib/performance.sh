@@ -1,4 +1,6 @@
 #!/bin/bash
+set -euo pipefail
+
 ################################################################################
 # Performance Optimization Module
 # Purpose: Parallel execution, caching, and optimized operations

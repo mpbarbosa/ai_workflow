@@ -1,4 +1,6 @@
 #!/bin/bash
+set -euo pipefail
+
 ################################################################################
 # Backlog Management Module
 # Purpose: Workflow summary and backlog report generation
