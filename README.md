@@ -12,14 +12,15 @@ This repository provides a comprehensive, modular workflow automation system tha
 
 ### Key Features
 
-- **13-Step Automated Pipeline**: Complete workflow from analysis to finalization
+- **14-Step Automated Pipeline**: Complete workflow from analysis to finalization (added Step 13 in v2.3.1)
 - **20 Library Modules**: Modular architecture with AI caching and advanced optimization (19 .sh modules + 1 .yaml config)
-- **AI Integration**: GitHub Copilot CLI with 13 specialized personas
+- **AI Integration**: GitHub Copilot CLI with 14 specialized personas
 - **Smart Execution** (v2.3): Skip steps based on change detection (40-85% faster)
 - **Parallel Execution** (v2.3): Run independent steps simultaneously (33% faster)
 - **AI Response Caching** (v2.3): Reduce token usage by 60-80%
 - **Target Project Support** (v2.3): Run on any project with --target option
 - **Checkpoint Resume** (v2.3): Automatic workflow continuation (use --no-resume to disable)
+- **Prompt Engineering** (v2.3.1): Analyze and improve AI persona prompts (Step 13 - ai_workflow only)
 - **Metrics Collection**: Automatic performance tracking and historical analysis
 - **Dependency Visualization**: Interactive graph showing execution flow
 - **100% Test Coverage**: 37 automated tests ensure reliability
@@ -99,7 +100,7 @@ ai_workflow/
 ├── src/workflow/                  # Workflow automation system
 │   ├── execute_tests_docs_workflow.sh  # Main orchestrator (4,740 lines)
 │   ├── lib/                       # 20 library modules (5,548 lines: 19 .sh + 1 .yaml)
-│   ├── steps/                     # 13 step modules (3,200 lines)
+│   ├── steps/                     # 14 step modules (3,775 lines)
 │   ├── config/                    # YAML configuration
 │   └── backlog/                   # Execution history
 ├── tests/                         # Comprehensive test suite

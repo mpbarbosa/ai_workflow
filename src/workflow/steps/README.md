@@ -8,11 +8,11 @@ Each step module is a self-contained unit responsible for a specific phase of th
 
 ## Step Numbering Scheme
 
-Steps are numbered sequentially from 00 to 12, following this convention:
+Steps are numbered sequentially from 00 to 13, following this convention:
 - **00-03**: Pre-flight analysis and documentation validation
 - **04-07**: Testing and execution phases
 - **08-10**: Quality assurance and analysis
-- **11-12**: Finalization and cleanup
+- **11-13**: Finalization, linting, and meta-analysis
 
 The numbering allows for:
 - Clear execution order
@@ -94,7 +94,7 @@ The numbering allows for:
 - Integration verification
 - Uses `context_analyst` persona
 
-### Finalization (11-12)
+### Finalization (11-13)
 
 **step_11_git.sh** - Git Operations and Finalization
 - Git status checks
@@ -107,6 +107,14 @@ The numbering allows for:
 - Style consistency checks
 - Documentation quality assurance
 - Uses `markdown_linter` persona
+
+**step_13_prompt_engineer.sh** - Prompt Engineer Analysis ⭐ NEW v2.3.1
+- AI persona prompt quality analysis
+- Token efficiency optimization
+- Prompt improvement recommendations
+- GitHub issue generation for improvements
+- Uses `prompt_engineer` persona
+- **Scope**: Only runs on `bash-automation-framework` projects (ai_workflow itself)
 
 ## Step Module Structure
 
@@ -143,13 +151,14 @@ Steps have execution dependencies managed by the dependency graph:
 
 ```
 step_00 (analyze) → All other steps
-step_01-04       → Independent (can run in parallel)
+step_01-04,13    → Independent (can run in parallel)
 step_05          → step_04
 step_06          → step_05
 step_07          → step_06
 step_08-10       → Independent (can run in parallel)
 step_11          → All previous steps
 step_12          → step_01
+step_13          → step_00 (can run early in parallel with other validation steps)
 ```
 
 View the full dependency graph: `./execute_tests_docs_workflow.sh --show-graph`
@@ -186,7 +195,7 @@ Performance impact: 40-90% faster depending on change scope
 
 With `--parallel`, independent steps run simultaneously:
 
-- Steps 1-4 can run in parallel (if no dependencies blocked)
+- Steps 1-4,13 can run in parallel (if no dependencies blocked)
 - Steps 8-10 can run in parallel
 - Performance impact: ~33% faster
 

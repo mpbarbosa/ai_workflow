@@ -26,12 +26,13 @@ STEP_DEPENDENCIES=(
     [10]="1,2,3,4,7,8,9"  # Context Analysis depends on most steps
     [11]="10"             # Git Finalization depends on Context Analysis
     [12]="2"              # Markdown Linting depends on Consistency
+    [13]="0"              # Prompt Engineer Analysis depends on Pre-Analysis (can run early)
 )
 
 # Define parallelizable step groups (steps that can run simultaneously)
 declare -a PARALLEL_GROUPS
 PARALLEL_GROUPS=(
-    "1,3,4,5,8"           # Group 1: Can run after Pre-Analysis
+    "1,3,4,5,8,13"        # Group 1: Can run after Pre-Analysis
     "2,12"                # Group 2: Consistency checks
     "6"                   # Group 3: Test Generation
     "7,9"                 # Group 4: Test Execution and Code Quality
@@ -55,6 +56,7 @@ STEP_TIME_ESTIMATES=(
     [10]=120  # Context Analysis (with AI)
     [11]=90   # Git Finalization (with AI)
     [12]=45   # Markdown Linting
+    [13]=150  # Prompt Engineer Analysis (with AI)
 )
 
 # ==============================================================================
@@ -93,7 +95,7 @@ get_next_runnable_steps() {
     local completed_steps="$1"
     local runnable_steps=""
     
-    for i in {0..12}; do
+    for i in {0..13}; do
         # Skip if already completed
         if echo ",${completed_steps}," | grep -q ",${i},"; then
             continue
