@@ -1158,8 +1158,8 @@ validate_dependencies() {
 # ------------------------------------------------------------------------------
 validate_and_parse_steps() {
     if [[ "$EXECUTE_STEPS" == "all" ]]; then
-        SELECTED_STEPS=(0 1 2 3 4 5 6 7 8 9 10 11 12)
-        print_info "Step selection: All steps (0-12)"
+        SELECTED_STEPS=(0 1 2 3 4 5 6 7 8 9 10 11 12 13)
+        print_info "Step selection: All steps (0-13)"
         return 0
     fi
     
@@ -1168,8 +1168,8 @@ validate_and_parse_steps() {
     
     # Validate each step number
     for step in "${SELECTED_STEPS[@]}"; do
-        if ! [[ "$step" =~ ^[0-9]+$ ]] || [[ $step -lt 0 ]] || [[ $step -gt 12 ]]; then
-            print_error "Invalid step number: $step (valid range: 0-12)"
+        if ! [[ "$step" =~ ^[0-9]+$ ]] || [[ $step -lt 0 ]] || [[ $step -gt 13 ]]; then
+            print_error "Invalid step number: $step (valid range: 0-13)"
             exit 1
         fi
     done
@@ -1663,7 +1663,7 @@ DESCRIPTION:
     a different project directory.
 
 STEP EXECUTION:
-    By default, all steps (0-12) are executed. Use --steps to select specific steps:
+    By default, all steps (0-13) are executed. Use --steps to select specific steps:
     
     Step 0:  Pre-Analysis - Analyzing Recent Changes
     Step 1:  Update Related Documentation
@@ -1678,6 +1678,7 @@ STEP EXECUTION:
     Step 10: Context Analysis & Summary
     Step 11: Git Finalization
     Step 12: Markdown Linting
+    Step 13: Prompt Engineer Analysis (ai_workflow only)
 
 EXAMPLES:
     # Run on current directory (default behavior)
