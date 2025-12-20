@@ -9,7 +9,7 @@
 # AI ENHANCEMENTS APPLIED (v1.2.0):
 # ==================================
 # This script leverages GitHub Copilot CLI for intelligent documentation
-# analysis and validation. Eleven steps have been enhanced with specialized
+# analysis and validation. Twelve steps have been enhanced with specialized
 # AI personas using the modern 'copilot -p' command.
 #
 # Enhanced Steps with AI Personas:
@@ -25,6 +25,7 @@
 #   Step 10: Context Analysis (Technical Project Manager + Workflow Orchestration Specialist)
 #   Step 11: Git Finalization (Git Workflow Specialist + Technical Communication Expert) ⭐ ENHANCED
 #   Step 12: Markdown Linting (Technical Documentation Specialist) ⭐ NEW
+#   Step 13: Prompt Engineer Analysis (Prompt Engineer + AI Specialist) ⭐ NEW v2.3.1
 #
 # ARCHITECTURE PATTERN:
 #   All enhanced steps follow: Role → Task → Standards structure
@@ -115,7 +116,7 @@ set -euo pipefail
 # CONFIGURATION & CONSTANTS
 # ==============================================================================
 
-SCRIPT_VERSION="2.3.0"
+SCRIPT_VERSION="2.3.1"
 SCRIPT_NAME="Tests & Documentation Workflow Automation"
 WORKFLOW_HOME="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
 PROJECT_ROOT="$(pwd)"  # Default: current directory; can be overridden with --target option
@@ -4872,6 +4873,21 @@ execute_full_workflow() {
         ((skipped_steps++)) || true
     fi
     
+    # Step 13: Prompt Engineer Analysis (with checkpoint)
+    if [[ -z "$failed_step" && $resume_from -le 13 ]] && should_execute_step 13; then
+        log_step_start 13 "Prompt Engineer Analysis"
+        step13_prompt_engineer_analysis || { failed_step="Step 13"; }
+        ((executed_steps++)) || true
+        save_checkpoint 13
+    elif [[ -z "$failed_step" && $resume_from -le 13 ]]; then
+        print_info "Skipping Step 13 (not selected)"
+        log_to_workflow "INFO" "Skipping Step 13 (not selected)"
+        ((skipped_steps++)) || true
+    elif [[ $resume_from -gt 13 ]]; then
+        print_info "Skipping Step 13 (resuming from checkpoint)"
+        ((skipped_steps++)) || true
+    fi
+    
     # Final status
     echo ""
     print_header "Workflow Execution Summary"
@@ -4959,7 +4975,7 @@ EOF
     
     # Add step status
     local step_num=0
-    for step_num in {0..12}; do
+    for step_num in {0..13}; do
         local step_key="step${step_num}"
         local step_status="${WORKFLOW_STATUS[$step_key]:-⏭️}"
         echo "- **Step ${step_num}:** ${step_status}" >> "$summary_file"
