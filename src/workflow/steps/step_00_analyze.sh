@@ -54,7 +54,7 @@ step0_analyze_changes() {
     export ANALYSIS_MODIFIED=$modified_files
     
     if [[ "$INTERACTIVE_MODE" == true ]]; then
-        read -r -p "Enter scope of changes (e.g., 'shell_scripts', 'documentation', 'tests'): " CHANGE_SCOPE
+        read -r -p "Enter scope of changes (e.g., 'src/workflow', 'documentation', 'tests'): " CHANGE_SCOPE
     else
         CHANGE_SCOPE="automated-workflow"
     fi

@@ -57,12 +57,32 @@ step8_validate_dependencies() {
     local build_system="${BUILD_SYSTEM:-npm}"
     local package_file="${TECH_STACK_CONFIG[package_file]:-package.json}"
     
+    # If config file exists, read directly from it as fallback
+    if [[ -f "$PROJECT_ROOT/.workflow-config.yaml" ]]; then
+        local config_language=$(grep "primary_language:" "$PROJECT_ROOT/.workflow-config.yaml" | awk -F':' '{print $2}' | tr -d ' "' | head -1)
+        local config_build=$(grep "build_system:" "$PROJECT_ROOT/.workflow-config.yaml" | awk -F':' '{print $2}' | tr -d ' "' | head -1)
+        
+        # Override if found in config
+        if [[ -n "$config_language" ]]; then
+            language="$config_language"
+            print_info "Loaded language from config: ${language}"
+        fi
+        if [[ -n "$config_build" ]]; then
+            build_system="$config_build"
+            print_info "Loaded build system from config: ${build_system}"
+        fi
+    fi
+    
     print_info "Tech Stack: ${language}/${build_system}"
     print_info "Package file: ${package_file}"
     
-    # Skip dependency validation for languages without package managers
-    if [[ "$language" == "bash" ]] || [[ "$build_system" == "none" ]]; then
-        print_info "Bash/Shell project detected - no package dependencies to validate"
+    # DEBUG: Show actual values being checked
+    print_info "DEBUG: language='${language}' build_system='${build_system}'"
+    
+    # Skip dependency validation for shell/bash projects
+    # IMPORTANT: Check build_system FIRST as it's the most reliable indicator
+    if [[ "$build_system" == "none" ]] || [[ "$language" == "bash" ]] || [[ "$language" == "shell" ]] || [[ "$language" == "sh" ]]; then
+        print_info "Shell/Bash project detected - no package dependencies to validate"
         
         local step_summary="### Dependency Validation - Shell Project
 

@@ -164,7 +164,7 @@ Please update all related documentation including:
 1. .github/copilot-instructions.md - Update project overview, architecture patterns, key files
 2. README.md - Update if public-facing features or setup instructions changed
 3. /docs/ directory - Update technical documentation for architecture or feature changes
-4. shell_scripts/README.md - Update if shell scripts were modified
+4. src/workflow/README.md - Update if shell scripts were modified
 5. Inline code comments - Add/update comments for complex logic
 
 Documentation to review: ${doc_files}" \
@@ -507,7 +507,7 @@ EOF
 
 2. **Content Synchronization:**
    - Compare .github/copilot-instructions.md with README.md
-   - Check if shell_scripts/README.md matches actual scripts in shell_scripts/
+   - Check if src/workflow/README.md matches actual scripts in src/workflow/
    - Verify package.json scripts match documented commands
 
 3. **Architecture Consistency:**
@@ -605,7 +605,7 @@ EOF
 
 **Context:**
 - Project: MP Barbosa Personal Website
-- Shell Scripts Directory: shell_scripts/
+- Shell Scripts Directory: src/workflow/
 - Total Scripts: ${script_count}
 - Scope: ${change_scope}
 - Issues Found in Phase 1: ${issues}
@@ -619,7 +619,7 @@ ${all_scripts}
 **Validation Tasks:**
 
 1. **Script-to-Documentation Mapping:**
-   - Verify every script in shell_scripts/ is documented in shell_scripts/README.md
+   - Verify every script in src/workflow/ is documented in src/workflow/README.md
    - Check that documented scripts actually exist
    - Validate script descriptions match actual functionality
    - Ensure usage examples are accurate and complete
@@ -649,8 +649,8 @@ ${all_scripts}
    - Troubleshooting guidance available
 
 **Files to Analyze:**
-- shell_scripts/README.md
-- All .sh files in shell_scripts/
+- src/workflow/README.md
+- All .sh files in src/workflow/
 - .github/copilot-instructions.md (for shell script references)
 - Main README.md (for automation workflow mentions)
 

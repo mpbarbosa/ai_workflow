@@ -161,7 +161,7 @@ step2_consistency_prompt:
     
     2. **Content Synchronization:**
        - Compare .github/copilot-instructions.md with README.md
-       - Check if shell_scripts/README.md matches actual scripts in shell_scripts/
+       - Check if src/workflow/README.md matches actual scripts in src/workflow/
        - Verify package.json scripts match documented commands
     
     3. **Architecture Consistency:**
@@ -205,7 +205,7 @@ step3_script_refs_prompt:
     
     **Context:**
     - Project: MP Barbosa Personal Website
-    - Shell Scripts Directory: shell_scripts/
+    - Shell Scripts Directory: src/workflow/
     - Total Scripts: {script_count}
     - Scope: {change_scope}
     - Issues Found in Phase 1: {issues}
@@ -219,7 +219,7 @@ step3_script_refs_prompt:
     **Validation Tasks:**
     
     1. **Script-to-Documentation Mapping:**
-       - Verify every script in shell_scripts/ is documented in shell_scripts/README.md
+       - Verify every script in src/workflow/ is documented in src/workflow/README.md
        - Check that documented scripts actually exist
        - Validate script descriptions match actual functionality
        - Ensure usage examples are accurate and complete
@@ -249,8 +249,8 @@ step3_script_refs_prompt:
        - Troubleshooting guidance available
     
     **Files to Analyze:**
-    - shell_scripts/README.md
-    - All .sh files in shell_scripts/
+    - src/workflow/README.md
+    - All .sh files in src/workflow/
     - .github/copilot-instructions.md (for shell script references)
     - Main README.md (for automation workflow mentions)
   

@@ -31,7 +31,7 @@ FILE_PATTERNS=(
     ["docs"]="*.md|*.txt|*.rst|docs/*|README*|CHANGELOG*|LICENSE*"
     ["tests"]="*test*.js|*spec*.js|__tests__/*|*.test.mjs|*.spec.mjs"
     ["config"]="*.json|*.yaml|*.yml|*.toml|*.ini|.editorconfig|.gitignore|.nvmrc|.node-version|.mdlrc"
-    ["scripts"]="*.sh|shell_scripts/*|Makefile"
+    ["scripts"]="*.sh|src/workflow/*|Makefile"
     ["code"]="*.js|*.mjs|*.ts|*.tsx|*.jsx|*.css|*.html|*.php|*.py|*.go|*.rs"
     ["assets"]="*.png|*.jpg|*.jpeg|*.gif|*.svg|*.ico|*.woff|*.woff2|*.ttf|*.eot"
 )

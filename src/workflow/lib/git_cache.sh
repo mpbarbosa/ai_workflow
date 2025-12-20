@@ -122,6 +122,11 @@ get_git_code_modified() { echo "${GIT_CACHE[code_modified]:-0}"; }
 is_deps_modified() { [[ "${GIT_CACHE[deps_modified]:-false}" == "true" ]]; }
 is_git_repo() { [[ "${GIT_CACHE[is_git_repo]:-false}" == "true" ]]; }
 
+# Convenience aliases for backward compatibility
+get_cached_git_branch() { echo "${GIT_CACHE[current_branch]:-unknown}"; }
+get_cached_git_status() { echo "$GIT_STATUS_SHORT_OUTPUT"; }
+get_cached_git_diff() { echo "$GIT_DIFF_FILES_OUTPUT"; }
+
 # Export all accessor functions
 export -f init_git_cache
 export -f get_git_modified_count get_git_staged_count get_git_untracked_count get_git_deleted_count get_git_total_changes
@@ -129,3 +134,4 @@ export -f get_git_current_branch get_git_commits_ahead get_git_commits_behind
 export -f get_git_status_output get_git_status_short_output get_git_diff_stat_output get_git_diff_summary_output get_git_diff_files_output
 export -f get_git_docs_modified get_git_tests_modified get_git_scripts_modified get_git_code_modified
 export -f is_deps_modified is_git_repo
+export -f get_cached_git_branch get_cached_git_status get_cached_git_diff

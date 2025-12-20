@@ -1,12 +1,12 @@
 # Workflow Metrics Summary
 
-**Last Updated:** 2025-12-18 15:16:29
+**Last Updated:** 2025-12-20 18:06:39
 
-## Current Run: workflow_20251218_042919
+## Current Run: workflow_20251220_180458
 
 - **Status:** ❌ unknown
-- **Duration:** 0s
-- **Mode:** auto
+- **Duration:** 1m 39s
+- **Mode:** interactive
 - **Steps Completed:** 0
 - **Steps Failed:** 0
 - **Steps Skipped:** 0
@@ -19,10 +19,10 @@
 
 ## Historical Performance
 
-- **Total Runs:** 1
+- **Total Runs:** 2
 - **Successful Runs:** 0
 - **Success Rate:** 0%
-- **Average Duration:** 0s
+- **Average Duration:** 49s
 
 ### Recent Runs (Last 5)
 

@@ -56,7 +56,7 @@ get_script_directory() {
     
     case "$language" in
         bash)
-            echo "shell_scripts"
+            echo "src/workflow"
             ;;
         python)
             echo "scripts"
@@ -109,7 +109,7 @@ create_script_issue_report() {
             local script_path="${BASH_REMATCH[1]}"
             missing_refs_section+="⚠️  **BROKEN REFERENCE**: Documentation references non-existent script\n"
             missing_refs_section+="   - Reference: \`${script_path}\`\n"
-            missing_refs_section+="   - Source: \`shell_scripts/README.md\`\n"
+            missing_refs_section+="   - Source: \`src/workflow/README.md\`\n"
             missing_refs_section+="   - Action: Remove reference or restore missing script\n\n"
         elif [[ "$line" =~ ^Non-executable:\ (.+)$ ]]; then
             local script_path="${BASH_REMATCH[1]}"
@@ -120,7 +120,7 @@ create_script_issue_report() {
             local script_path="${BASH_REMATCH[1]}"
             undocumented_section+="⚠️  **MISSING DOCUMENTATION**: Script not documented in README\n"
             undocumented_section+="   - Script: \`${script_path}\`\n"
-            undocumented_section+="   - Action: Add documentation to \`shell_scripts/README.md\`\n\n"
+            undocumented_section+="   - Action: Add documentation to \`src/workflow/README.md\`\n\n"
         fi
     done < "$script_issues_file"
     
@@ -151,7 +151,7 @@ create_script_issue_report() {
         report+="2. **Fix Executable Permissions**: Run \`chmod +x [script_path]\` for each affected script\n"
     fi
     if [[ "$undocumented" -gt 0 ]]; then
-        report+="3. **Document Scripts**: Add descriptions to \`shell_scripts/README.md\`\n"
+        report+="3. **Document Scripts**: Add descriptions to \`src/workflow/README.md\`\n"
     fi
     report+="4. **Re-run Validation**: Verify all issues are resolved\n"
     
@@ -181,9 +181,9 @@ step3_validate_script_references() {
     print_info "Phase 1: Automated script reference validation..."
     
     # Check 1: Script reference checks - validate documented scripts exist
-    if [[ -f "shell_scripts/README.md" ]]; then
+    if [[ -f "src/workflow/README.md" ]]; then
         local script_refs
-        script_refs=$(grep -oP '(?<=`\./)shell_scripts/[^`]+\.sh' "shell_scripts/README.md" 2>/dev/null || true)
+        script_refs=$(grep -oP '(?<=`\./)src/workflow/[^`]+\.sh' "src/workflow/README.md" 2>/dev/null || true)
         
         while IFS= read -r script; do
             [[ -z "$script" ]] && continue
@@ -200,7 +200,7 @@ step3_validate_script_references() {
     # Check 2: Executable permission validation
     print_info "Checking executable permissions..."
     local non_executable
-    non_executable=$(fast_find "shell_scripts" "*.sh" 5 "node_modules" ".git" | while read -r f; do [[ ! -x "$f" ]] && echo "$f"; done)
+    non_executable=$(fast_find "src/workflow" "*.sh" 5 "node_modules" ".git" | while read -r f; do [[ ! -x "$f" ]] && echo "$f"; done)
     
     if [[ -n "$non_executable" ]]; then
         print_warning "Non-executable scripts found:"
@@ -216,7 +216,7 @@ step3_validate_script_references() {
     # Check 3: Script inventory gathering
     print_info "Gathering script inventory..."
     local all_scripts
-    all_scripts=$(fast_find "shell_scripts" "*.sh" 5 "node_modules" ".git" | sort)
+    all_scripts=$(fast_find "src/workflow" "*.sh" 5 "node_modules" ".git" | sort)
     local script_count
     script_count=$(echo "$all_scripts" | wc -l)
     
@@ -227,9 +227,9 @@ step3_validate_script_references() {
         local script_name
         script_name=$(basename "$script")
         
-        # Check if script is mentioned in shell_scripts/README.md
-        if [[ -f "shell_scripts/README.md" ]]; then
-            if ! grep -q "$script_name" "shell_scripts/README.md" 2>/dev/null; then
+        # Check if script is mentioned in src/workflow/README.md
+        if [[ -f "src/workflow/README.md" ]]; then
+            if ! grep -q "$script_name" "src/workflow/README.md" 2>/dev/null; then
                 print_warning "Undocumented script: $script"
                 echo "Undocumented: $script" >> "$script_issues_file"
                 ((undocumented++))

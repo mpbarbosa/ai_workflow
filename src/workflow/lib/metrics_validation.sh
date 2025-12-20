@@ -228,7 +228,7 @@ validate_all_documentation_metrics() {
     local doc_files=(
         ".github/copilot-instructions.md"
         "README.md"
-        "shell_scripts/README.md"
+        "src/workflow/README.md"
         "src/workflow/README.md"
     )
     

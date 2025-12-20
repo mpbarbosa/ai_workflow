@@ -99,7 +99,7 @@ step12_markdown_linting() {
     local critical_files=(
         "README.md"
         ".github/copilot-instructions.md"
-        "shell_scripts/README.md"
+        "src/workflow/README.md"
         "docs/MARKDOWN_BEST_PRACTICES.md"
     )
     

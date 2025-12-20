@@ -94,6 +94,12 @@ step9_code_quality_validation() {
     local large_files_count=0
     local large_files_list=""
     
+    # Count file types for summary
+    local js_files=$(find . -type f \( -name "*.js" -o -name "*.mjs" \) ! -path "*/node_modules/*" ! -path "*/.git/*" 2>/dev/null | wc -l)
+    local html_files=$(find . -type f -name "*.html" ! -path "*/node_modules/*" ! -path "*/.git/*" 2>/dev/null | wc -l)
+    local css_files=$(find . -type f -name "*.css" ! -path "*/node_modules/*" ! -path "*/.git/*" 2>/dev/null | wc -l)
+    local total_files=$((js_files + html_files + css_files))
+    
     # Find JavaScript files over 300 lines (cache results for reuse)
     local all_js_files=$(fast_find "." "*.js" 10 "node_modules" ".git" "coverage" && fast_find "." "*.mjs" 10 "node_modules" ".git" "coverage")
     while IFS= read -r file; do

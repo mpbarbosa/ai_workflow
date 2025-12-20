@@ -199,8 +199,8 @@ determine_doc_folder() {
     # Determine folder based on file path patterns
     if [[ "$doc_file" =~ ^docs/ ]]; then
         target_folder="$PROJECT_ROOT/docs"
-    elif [[ "$doc_file" =~ ^shell_scripts/ ]]; then
-        target_folder="$PROJECT_ROOT/shell_scripts"
+    elif [[ "$doc_file" =~ ^src/workflow/ ]]; then
+        target_folder="$PROJECT_ROOT/src/workflow"
     elif [[ "$doc_file" =~ ^src/ ]]; then
         target_folder="$PROJECT_ROOT/src"
     elif [[ "$doc_file" == "README.md" ]] || [[ "$doc_file" =~ ^\.github/ ]]; then
@@ -262,26 +262,26 @@ validate_documentation_file_counts() {
     
     # Parallel execution of both checks
     {
-        # Check shell_scripts documentation
-        if [[ -f "shell_scripts/README.md" ]]; then
+        # Check src/workflow documentation
+        if [[ -f "src/workflow/README.md" ]]; then
             # Use cached script count if available
             local actual_scripts
-            actual_scripts=$(get_or_cache "shell_scripts_count" fast_find "shell_scripts" "*.sh" 5 "node_modules" ".git" | wc -l)
+            actual_scripts=$(get_or_cache "workflow_scripts_count" fast_find "src/workflow" "*.sh" 5 "node_modules" ".git" | wc -l)
             
             # Single grep pass for both patterns
             local documented_counts
-            documented_counts=$(grep -oP '\d+\s+(shell\s+)?scripts?' "shell_scripts/README.md" 2>/dev/null | grep -oP '^\d+' || echo "0")
+            documented_counts=$(grep -oP '\d+\s+(shell\s+)?scripts?' "src/workflow/README.md" 2>/dev/null | grep -oP '^\d+' || echo "0")
             
             while IFS= read -r count; do
                 [[ -z "$count" || "$count" == "0" ]] && continue
                 if [[ "$count" != "$actual_scripts" ]]; then
-                    echo "MISMATCH:shell_scripts:${count}:${actual_scripts}"
+                    echo "MISMATCH:workflow_scripts:${count}:${actual_scripts}"
                     ((inconsistencies++))
                 fi
             done <<< "$documented_counts"
             
             if [[ $inconsistencies -eq 0 ]]; then
-                echo "SUCCESS:shell_scripts:${actual_scripts}"
+                echo "SUCCESS:workflow_scripts:${actual_scripts}"
             fi
         fi
     } &
@@ -318,8 +318,8 @@ validate_documentation_file_counts() {
     while IFS=: read -r type category documented actual; do
         case "$type" in
             MISMATCH)
-                if [[ "$category" == "shell_scripts" ]]; then
-                    print_warning "File count mismatch in shell_scripts/README.md: documented=${documented}, actual=${actual}"
+                if [[ "$category" == "src/workflow" ]]; then
+                    print_warning "File count mismatch in src/workflow/README.md: documented=${documented}, actual=${actual}"
                 else
                     print_warning "Submodule count mismatch in README.md: documented=${documented}, actual=${actual}"
                 fi
@@ -445,10 +445,10 @@ test_documentation_consistency() {
         print_info "Test 1: Verifying documented files exist..."
         local test1_failures=0
         
-        if [[ -f "shell_scripts/README.md" ]]; then
+        if [[ -f "src/workflow/README.md" ]]; then
             # Extract all script references
             local script_refs
-            script_refs=$(grep -oP '(?<=`\./)shell_scripts/[^`]+\.sh' "shell_scripts/README.md" 2>/dev/null || true)
+            script_refs=$(grep -oP '(?<=`\./)src/workflow/[^`]+\.sh' "src/workflow/README.md" 2>/dev/null || true)
             
             # Batch file check instead of sequential
             local missing_files
@@ -588,14 +588,14 @@ step1_update_documentation() {
     
     # PERFORMANCE OPTIMIZATION: Parallel grep for file pattern matching
     local docs_to_review=()
-    local has_shell_scripts=false
+    local has_workflow_scripts=false
     local has_src_scripts=false
     local has_docs=false
     
     # Use single grep pass for all patterns (parallel execution)
     {
-        if echo "$changed_files" | grep -q "shell_scripts/"; then
-            has_shell_scripts=true
+        if echo "$changed_files" | grep -q "src/workflow/"; then
+            has_workflow_scripts=true
         fi
     } &
     local pid_shell=$!
@@ -618,9 +618,9 @@ step1_update_documentation() {
     wait $pid_shell $pid_src $pid_docs
     
     # Build documentation review list based on results
-    if [[ "$has_shell_scripts" == true ]]; then
-        docs_to_review+=("shell_scripts/README.md")
-        print_info "→ shell_scripts modified - review shell_scripts/README.md"
+    if [[ "$has_workflow_scripts" == true ]]; then
+        docs_to_review+=("src/workflow/README.md")
+        print_info "→ workflow scripts modified - review src/workflow/README.md"
     fi
     
     if [[ "$has_src_scripts" == true ]]; then

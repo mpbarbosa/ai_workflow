@@ -359,7 +359,7 @@ $(git show --stat HEAD 2>/dev/null || echo "Latest commit details unavailable")
     
     # Set executable permissions on shell scripts
     print_info "Setting executable permissions on shell scripts..."
-    find shell_scripts -name "*.sh" -exec chmod +x {} \;
+    find src/workflow -name "*.sh" -exec chmod +x {} \;
     print_success "Permissions updated"
 }
 

@@ -12,7 +12,7 @@ directories:
   src: ${project.root}/src
   public: ${project.root}/public
   docs: ${project.root}/docs
-  shell_scripts: ${project.root}/shell_scripts
+  shell_scripts: ${project.root}/src/workflow
   config: ${project.root}/config
   
   # Target Projects (where workflow may be applied)

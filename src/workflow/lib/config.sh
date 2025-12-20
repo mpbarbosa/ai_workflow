@@ -23,7 +23,7 @@ BACKLOG_DIR="${PROJECT_ROOT}/src/workflow/backlog"
 SUMMARIES_DIR="${PROJECT_ROOT}/src/workflow/summaries"
 LOGS_DIR="${PROJECT_ROOT}/src/workflow/logs"
 DOCS_DIR="${PROJECT_ROOT}/docs"
-SHELL_SCRIPTS_DIR="${PROJECT_ROOT}/shell_scripts"
+SHELL_SCRIPTS_DIR="${PROJECT_ROOT}/src/workflow"
 
 # Temporary files tracking for cleanup
 # Used by AI-enhanced steps to store intermediate validation results

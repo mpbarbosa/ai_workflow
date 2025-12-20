@@ -1,0 +1,166 @@
+# Step 0: Pre_Analysis
+
+**Workflow Run ID:** workflow_20251220_184141
+**Timestamp:** 2025-12-20 18:41:41
+**Status:** Issues Found
+
+---
+
+## Issues and Findings
+
+### Repository Analysis
+
+**Commits Ahead:** 0
+**Modified Files:** 128
+**Change Scope:** automated-workflow
+
+### Tech Stack
+
+**Language:** bash
+**Build System:** none
+**Test Framework:** shell-script
+**Package File:** none
+
+### Project Kind
+
+**Type:** Static Website - HTML/CSS/JS website without build process
+**Confidence:** 100%
+**Identifier:** static_website
+
+
+### Modified Files List
+
+```
+A  CRITICAL_TEST_COVERAGE_COMPLETE.md
+A  DIRECTORY_ARCHITECTURAL_VALIDATION_REPORT_COMPREHENSIVE.md
+A  DIRECTORY_STRUCTURE_ARCHITECTURAL_VALIDATION_REPORT_PHASE2.md
+A  DIRECTORY_STRUCTURE_VALIDATION_REPORT_20251220.md
+A  SHELL_SCRIPT_REFERENCE_VALIDATION_REPORT_20251220.md
+A  SHELL_SCRIPT_VALIDATION_SUMMARY_20251220.md
+A  src/workflow/.checkpoints/workflow_20251220_152941.checkpoint
+A  src/workflow/.checkpoints/workflow_20251220_152952.checkpoint
+A  src/workflow/.checkpoints/workflow_20251220_154527.checkpoint
+A  src/workflow/.checkpoints/workflow_20251220_172904.checkpoint
+A  src/workflow/.checkpoints/workflow_20251220_175052.checkpoint
+A  src/workflow/.checkpoints/workflow_20251220_180458.checkpoint
+A  src/workflow/.checkpoints/workflow_20251220_181410.checkpoint
+A  src/workflow/backlog/workflow_20251220_152941/CHANGE_IMPACT_ANALYSIS.md
+A  src/workflow/backlog/workflow_20251220_152941/step0_Pre_Analysis.md
+A  src/workflow/backlog/workflow_20251220_152952/CHANGE_IMPACT_ANALYSIS.md
+A  src/workflow/backlog/workflow_20251220_152952/step0_Pre_Analysis.md
+A  src/workflow/backlog/workflow_20251220_152952/step1_Update_Documentation.md
+A  src/workflow/backlog/workflow_20251220_152952/step2_Consistency_Analysis.md
+A  src/workflow/backlog/workflow_20251220_152952/step4_Directory_Structure_Validation.md
+A  src/workflow/backlog/workflow_20251220_152952/step5_Test_Review.md
+A  src/workflow/backlog/workflow_20251220_152952/step7_Test_Execution.md
+A  src/workflow/backlog/workflow_20251220_154527/CHANGE_IMPACT_ANALYSIS.md
+A  src/workflow/backlog/workflow_20251220_154527/step0_Pre_Analysis.md
+A  src/workflow/backlog/workflow_20251220_154527/step1_Update_Documentation.md
+A  src/workflow/backlog/workflow_20251220_154527/step2_Consistency_Analysis.md
+A  src/workflow/backlog/workflow_20251220_154527/step4_Directory_Structure_Validation.md
+A  src/workflow/backlog/workflow_20251220_154527/step5_Test_Review.md
+A  src/workflow/backlog/workflow_20251220_154527/step7_Test_Execution.md
+A  src/workflow/backlog/workflow_20251220_172904/CHANGE_IMPACT_ANALYSIS.md
+A  src/workflow/backlog/workflow_20251220_172904/step0_Pre_Analysis.md
+A  src/workflow/backlog/workflow_20251220_172904/step1_Update_Documentation.md
+A  src/workflow/backlog/workflow_20251220_172904/step2_Consistency_Analysis.md
+A  src/workflow/backlog/workflow_20251220_172904/step4_Directory_Structure_Validation.md
+A  src/workflow/backlog/workflow_20251220_172904/step5_Test_Review.md
+A  src/workflow/backlog/workflow_20251220_172904/step7_Test_Execution.md
+A  src/workflow/backlog/workflow_20251220_175052/CHANGE_IMPACT_ANALYSIS.md
+A  src/workflow/backlog/workflow_20251220_175052/step0_Pre_Analysis.md
+A  src/workflow/backlog/workflow_20251220_175052/step1_Update_Documentation.md
+A  src/workflow/backlog/workflow_20251220_175052/step2_Consistency_Analysis.md
+A  src/workflow/backlog/workflow_20251220_175052/step4_Directory_Structure_Validation.md
+A  src/workflow/backlog/workflow_20251220_175052/step5_Test_Review.md
+A  src/workflow/backlog/workflow_20251220_175052/step7_Test_Execution.md
+A  src/workflow/backlog/workflow_20251220_180446/CHANGE_IMPACT_ANALYSIS.md
+A  src/workflow/backlog/workflow_20251220_180458/CHANGE_IMPACT_ANALYSIS.md
+A  src/workflow/backlog/workflow_20251220_180458/DOCUMENTATION_PLACEMENT_VALIDATION.md
+A  src/workflow/backlog/workflow_20251220_180458/ENHANCED_GIT_STATE_REPORT.md
+A  src/workflow/backlog/workflow_20251220_180458/WORKFLOW_HEALTH_CHECK.md
+A  src/workflow/backlog/workflow_20251220_180458/WORKFLOW_SUMMARY.md
+A  src/workflow/backlog/workflow_20251220_180458/step12_Markdown_Linting.md
+A  src/workflow/backlog/workflow_20251220_181410/CHANGE_IMPACT_ANALYSIS.md
+A  src/workflow/backlog/workflow_20251220_181410/step0_Pre_Analysis.md
+A  src/workflow/backlog/workflow_20251220_181410/step1_Update_Documentation.md
+A  src/workflow/backlog/workflow_20251220_181410/step2_Consistency_Analysis.md
+A  src/workflow/backlog/workflow_20251220_181410/step3_Script_Reference_Validation.md
+A  src/workflow/backlog/workflow_20251220_181410/step4_Directory_Structure_Validation.md
+A  src/workflow/backlog/workflow_20251220_181410/step5_Test_Review.md
+A  src/workflow/backlog/workflow_20251220_181410/step7_Test_Execution.md
+M  src/workflow/config/paths.yaml
+M  src/workflow/execute_tests_docs_workflow.sh
+M  src/workflow/lib/ai_helpers.sh
+M  src/workflow/lib/ai_helpers.yaml
+M  src/workflow/lib/change_detection.sh
+M  src/workflow/lib/config.sh
+M  src/workflow/lib/git_cache.sh
+M  src/workflow/lib/metrics_validation.sh
+A  src/workflow/lib/test_ai_cache.sh
+A  src/workflow/lib/test_workflow_optimization.sh
+A  src/workflow/logs/workflow_20251220_152941/workflow_execution.log
+A  src/workflow/logs/workflow_20251220_152951/workflow_execution.log
+A  src/workflow/logs/workflow_20251220_154527/workflow_execution.log
+A  src/workflow/logs/workflow_20251220_172904/workflow_execution.log
+A  src/workflow/logs/workflow_20251220_175052/workflow_execution.log
+A  src/workflow/logs/workflow_20251220_180446/workflow_execution.log
+A  src/workflow/logs/workflow_20251220_180458/workflow_execution.log
+A  src/workflow/logs/workflow_20251220_181410/workflow_execution.log
+AM src/workflow/logs/workflow_20251220_184141/workflow_execution.log
+M  src/workflow/metrics/current_run.json
+M  src/workflow/metrics/history.jsonl
+M  src/workflow/metrics/summary.md
+M  src/workflow/steps/step_00_analyze.sh
+M  src/workflow/steps/step_01_documentation.sh
+M  src/workflow/steps/step_03_script_refs.sh
+M  src/workflow/steps/step_08_dependencies.sh
+M  src/workflow/steps/step_11_git.sh
+M  src/workflow/steps/step_12_markdown_lint.sh
+A  src/workflow/summaries/workflow_20251220_152941/step0_Pre_Analysis_summary.md
+A  src/workflow/summaries/workflow_20251220_152952/step0_Pre_Analysis_summary.md
+A  src/workflow/summaries/workflow_20251220_152952/step1_Update_Documentation_summary.md
+A  src/workflow/summaries/workflow_20251220_152952/step2_Consistency_Analysis_summary.md
+A  src/workflow/summaries/workflow_20251220_152952/step3_Script_Reference_Validation_summary.md
+A  src/workflow/summaries/workflow_20251220_152952/step4_Directory_Structure_Validation_summary.md
+A  src/workflow/summaries/workflow_20251220_152952/step5_Test_Review_summary.md
+A  src/workflow/summaries/workflow_20251220_152952/step6_Test_Generation_summary.md
+A  src/workflow/summaries/workflow_20251220_152952/step7_Test_Execution_summary.md
+A  src/workflow/summaries/workflow_20251220_154527/step0_Pre_Analysis_summary.md
+A  src/workflow/summaries/workflow_20251220_154527/step1_Update_Documentation_summary.md
+A  src/workflow/summaries/workflow_20251220_154527/step2_Consistency_Analysis_summary.md
+A  src/workflow/summaries/workflow_20251220_154527/step3_Script_Reference_Validation_summary.md
+A  src/workflow/summaries/workflow_20251220_154527/step4_Directory_Structure_Validation_summary.md
+A  src/workflow/summaries/workflow_20251220_154527/step5_Test_Review_summary.md
+A  src/workflow/summaries/workflow_20251220_154527/step6_Test_Generation_summary.md
+A  src/workflow/summaries/workflow_20251220_154527/step7_Test_Execution_summary.md
+A  src/workflow/summaries/workflow_20251220_172904/step0_Pre_Analysis_summary.md
+A  src/workflow/summaries/workflow_20251220_172904/step1_Update_Documentation_summary.md
+A  src/workflow/summaries/workflow_20251220_172904/step2_Consistency_Analysis_summary.md
+A  src/workflow/summaries/workflow_20251220_172904/step3_Script_Reference_Validation_summary.md
+A  src/workflow/summaries/workflow_20251220_172904/step4_Directory_Structure_Validation_summary.md
+A  src/workflow/summaries/workflow_20251220_172904/step5_Test_Review_summary.md
+A  src/workflow/summaries/workflow_20251220_172904/step6_Test_Generation_summary.md
+A  src/workflow/summaries/workflow_20251220_172904/step7_Test_Execution_summary.md
+A  src/workflow/summaries/workflow_20251220_175052/step0_Pre_Analysis_summary.md
+A  src/workflow/summaries/workflow_20251220_175052/step1_Update_Documentation_summary.md
+A  src/workflow/summaries/workflow_20251220_175052/step2_Consistency_Analysis_summary.md
+A  src/workflow/summaries/workflow_20251220_175052/step3_Script_Reference_Validation_summary.md
+A  src/workflow/summaries/workflow_20251220_175052/step4_Directory_Structure_Validation_summary.md
+A  src/workflow/summaries/workflow_20251220_175052/step5_Test_Review_summary.md
+A  src/workflow/summaries/workflow_20251220_175052/step6_Test_Generation_summary.md
+A  src/workflow/summaries/workflow_20251220_175052/step7_Test_Execution_summary.md
+A  src/workflow/summaries/workflow_20251220_180458/step12_Markdown_Linting_summary.md
+A  src/workflow/summaries/workflow_20251220_181410/step0_Pre_Analysis_summary.md
+A  src/workflow/summaries/workflow_20251220_181410/step1_Update_Documentation_summary.md
+A  src/workflow/summaries/workflow_20251220_181410/step2_Consistency_Analysis_summary.md
+A  src/workflow/summaries/workflow_20251220_181410/step3_Script_Reference_Validation_summary.md
+A  src/workflow/summaries/workflow_20251220_181410/step4_Directory_Structure_Validation_summary.md
+A  src/workflow/summaries/workflow_20251220_181410/step5_Test_Review_summary.md
+A  src/workflow/summaries/workflow_20251220_181410/step6_Test_Generation_summary.md
+A  src/workflow/summaries/workflow_20251220_181410/step7_Test_Execution_summary.md
+```
+
+---
+
+**Generated by:** Tests & Documentation Workflow Automation v2.3.0
