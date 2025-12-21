@@ -607,3 +607,151 @@ export -f get_artifact_patterns
 export -f list_project_kinds
 export -f validate_project_kind
 export -f print_project_kind_config
+
+################################################################################
+# AI Guidance Functions
+################################################################################
+
+# Get language-specific testing standards for AI prompts
+# Usage: get_language_testing_standards <project_kind>
+# Returns: Newline-separated list of testing standards
+get_language_testing_standards() {
+    local project_kind="${1:-}"
+    
+    if [[ -z "${project_kind}" ]]; then
+        project_kind=$(get_project_kind 2>/dev/null || echo "generic")
+    fi
+    
+    local yq_version
+    yq_version=$(detect_yq_version)
+    
+    if [[ "${yq_version}" == "none" ]]; then
+        echo "- Follow language-appropriate testing framework conventions"
+        return
+    fi
+    
+    local standards
+    if [[ "${yq_version}" == "v4" ]]; then
+        standards=$(yq eval ".project_kinds.${project_kind}.ai_guidance.testing_standards[]" "${PROJECT_KIND_CONFIG_FILE}" 2>/dev/null || echo "")
+    elif [[ "${yq_version}" == "kislyuk" ]]; then
+        standards=$(yq ".project_kinds.${project_kind}.ai_guidance.testing_standards[]" "${PROJECT_KIND_CONFIG_FILE}" 2>/dev/null | sed 's/"//g' || echo "")
+    else
+        standards=$(yq r "${PROJECT_KIND_CONFIG_FILE}" "project_kinds.${project_kind}.ai_guidance.testing_standards[*]" 2>/dev/null || echo "")
+    fi
+    
+    if [[ -z "${standards}" ]]; then
+        echo "- Follow language-appropriate testing framework conventions"
+    else
+        echo "${standards}" | sed 's/^/- /'
+    fi
+}
+
+# Get language-specific style guides for AI prompts
+# Usage: get_language_style_guides <project_kind>
+# Returns: Newline-separated list of style guides
+get_language_style_guides() {
+    local project_kind="${1:-}"
+    
+    if [[ -z "${project_kind}" ]]; then
+        project_kind=$(get_project_kind 2>/dev/null || echo "generic")
+    fi
+    
+    local yq_version
+    yq_version=$(detect_yq_version)
+    
+    if [[ "${yq_version}" == "none" ]]; then
+        echo "- Follow language-specific style guides"
+        return
+    fi
+    
+    local guides
+    if [[ "${yq_version}" == "v4" ]]; then
+        guides=$(yq eval ".project_kinds.${project_kind}.ai_guidance.style_guides[]" "${PROJECT_KIND_CONFIG_FILE}" 2>/dev/null || echo "")
+    elif [[ "${yq_version}" == "kislyuk" ]]; then
+        guides=$(yq ".project_kinds.${project_kind}.ai_guidance.style_guides[]" "${PROJECT_KIND_CONFIG_FILE}" 2>/dev/null | sed 's/"//g' || echo "")
+    else
+        guides=$(yq r "${PROJECT_KIND_CONFIG_FILE}" "project_kinds.${project_kind}.ai_guidance.style_guides[*]" 2>/dev/null || echo "")
+    fi
+    
+    if [[ -z "${guides}" ]]; then
+        echo "- Follow language-specific style guides"
+    else
+        echo "${guides}" | sed 's/^/- /'
+    fi
+}
+
+# Get language-specific best practices for AI prompts
+# Usage: get_language_best_practices <project_kind>
+# Returns: Newline-separated list of best practices
+get_language_best_practices() {
+    local project_kind="${1:-}"
+    
+    if [[ -z "${project_kind}" ]]; then
+        project_kind=$(get_project_kind 2>/dev/null || echo "generic")
+    fi
+    
+    local yq_version
+    yq_version=$(detect_yq_version)
+    
+    if [[ "${yq_version}" == "none" ]]; then
+        echo "- Follow language-appropriate best practices"
+        return
+    fi
+    
+    local practices
+    if [[ "${yq_version}" == "v4" ]]; then
+        practices=$(yq eval ".project_kinds.${project_kind}.ai_guidance.best_practices[]" "${PROJECT_KIND_CONFIG_FILE}" 2>/dev/null || echo "")
+    elif [[ "${yq_version}" == "kislyuk" ]]; then
+        practices=$(yq ".project_kinds.${project_kind}.ai_guidance.best_practices[]" "${PROJECT_KIND_CONFIG_FILE}" 2>/dev/null | sed 's/"//g' || echo "")
+    else
+        practices=$(yq r "${PROJECT_KIND_CONFIG_FILE}" "project_kinds.${project_kind}.ai_guidance.best_practices[*]" 2>/dev/null || echo "")
+    fi
+    
+    if [[ -z "${practices}" ]]; then
+        echo "- Follow language-appropriate best practices"
+    else
+        echo "${practices}" | sed 's/^/- /'
+    fi
+}
+
+# Export AI guidance functions
+export -f get_language_testing_standards
+export -f get_language_style_guides
+export -f get_language_best_practices
+
+# Get language-specific directory structure standards for AI prompts
+# Usage: get_language_directory_standards <project_kind>
+# Returns: Newline-separated list of directory standards
+get_language_directory_standards() {
+    local project_kind="${1:-}"
+    
+    if [[ -z "${project_kind}" ]]; then
+        project_kind=$(get_project_kind 2>/dev/null || echo "generic")
+    fi
+    
+    local yq_version
+    yq_version=$(detect_yq_version)
+    
+    if [[ "${yq_version}" == "none" ]]; then
+        echo "- Follow language/framework conventional structure"
+        return
+    fi
+    
+    local standards
+    if [[ "${yq_version}" == "v4" ]]; then
+        standards=$(yq eval ".project_kinds.${project_kind}.ai_guidance.directory_standards[]" "${PROJECT_KIND_CONFIG_FILE}" 2>/dev/null || echo "")
+    elif [[ "${yq_version}" == "kislyuk" ]]; then
+        standards=$(yq ".project_kinds.${project_kind}.ai_guidance.directory_standards[]" "${PROJECT_KIND_CONFIG_FILE}" 2>/dev/null | sed 's/"//g' || echo "")
+    else
+        standards=$(yq r "${PROJECT_KIND_CONFIG_FILE}" "project_kinds.${project_kind}.ai_guidance.directory_standards[*]" 2>/dev/null || echo "")
+    fi
+    
+    if [[ -z "${standards}" ]]; then
+        echo "- Follow language/framework conventional structure"
+    else
+        echo "${standards}" | sed 's/^/- /'
+    fi
+}
+
+# Export directory standards function
+export -f get_language_directory_standards

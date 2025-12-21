@@ -2,17 +2,126 @@
 set -euo pipefail
 
 ################################################################################
-# Step 4: AI-Powered Directory Structure Validation
-# Purpose: Validate project directory structure and architectural organization (adaptive)
+# Step 4: AI-Powered Directory Structure Validation & Organization
+# Purpose: Validate project directory structure, organize misplaced docs, and verify architecture
 # Part of: Tests & Documentation Workflow Automation v2.3.1
-# Version: 2.1.0 (Phase 3 - Adaptive exclude patterns)
+# Version: 2.2.0 (Added automatic documentation organization)
 ################################################################################
 
 # Module version information
-readonly STEP4_VERSION="2.1.0"
+readonly STEP4_VERSION="2.2.0"
 readonly STEP4_VERSION_MAJOR=2
-readonly STEP4_VERSION_MINOR=1
+readonly STEP4_VERSION_MINOR=2
 readonly STEP4_VERSION_PATCH=0
+
+# Function to organize misplaced documentation files
+# Finds all documentation files outside the docs/ folder and categorizes them
+organize_misplaced_documentation() {
+    local misplaced_count=0
+    local organized_count=0
+    
+    # Ensure docs directory exists
+    [[ ! -d "docs" ]] && mkdir -p "docs"
+    
+    # Find all markdown files in project root (excluding certain patterns)
+    local doc_files=()
+    while IFS= read -r file; do
+        # Skip README.md, CHANGELOG.md, LICENSE.md, CONTRIBUTING.md in root
+        local basename
+        basename=$(basename "$file")
+        if [[ "$basename" =~ ^(README|CHANGELOG|LICENSE|CONTRIBUTING|CODE_OF_CONDUCT)\.md$ ]]; then
+            continue
+        fi
+        doc_files+=("$file")
+        ((misplaced_count++))
+    done < <(find . -maxdepth 1 -type f -name "*.md" 2>/dev/null)
+    
+    if [[ $misplaced_count -eq 0 ]]; then
+        print_success "No misplaced documentation files found in project root"
+        return 0
+    fi
+    
+    print_warning "Found ${misplaced_count} documentation files in project root"
+    
+    # Categorize files by analyzing their content and filename
+    declare -A categories=(
+        ["workflow"]="docs/workflow-automation"
+        ["test"]="docs/testing"
+        ["guide"]="docs/guides"
+        ["reference"]="docs/reference"
+        ["architecture"]="docs/architecture"
+        ["report"]="docs/reports"
+        ["bugfix"]="docs/reports/bugfixes"
+        ["implementation"]="docs/reports/implementation"
+        ["analysis"]="docs/reports/analysis"
+        ["uncategorized"]="docs/archive"
+    )
+    
+    # Create category directories
+    for dir in "${categories[@]}"; do
+        mkdir -p "$dir"
+    done
+    
+    # Categorize and move files
+    for file in "${doc_files[@]}"; do
+        local filename
+        filename=$(basename "$file")
+        local category="uncategorized"
+        
+        # Categorize by filename patterns
+        if [[ "$filename" =~ (WORKFLOW|EXECUTION|ORCHESTRAT|PIPELINE|AUTOMATION) ]]; then
+            category="workflow"
+        elif [[ "$filename" =~ (TEST|COVERAGE|SPEC) ]]; then
+            category="test"
+        elif [[ "$filename" =~ (BUGFIX|FIX|ISSUE|BUG) ]]; then
+            category="bugfix"
+        elif [[ "$filename" =~ (IMPLEMENTATION|COMPLETE|SUMMARY|MIGRATION|REFACTOR) ]]; then
+            category="implementation"
+        elif [[ "$filename" =~ (ANALYSIS|REPORT|VALIDATION|REVIEW|AUDIT) ]]; then
+            category="analysis"
+        elif [[ "$filename" =~ (GUIDE|HOWTO|TUTORIAL|QUICK|REFERENCE) ]]; then
+            category="guide"
+        elif [[ "$filename" =~ (ARCHITECTURE|DESIGN|PATTERN|STRUCTURE) ]]; then
+            category="architecture"
+        elif [[ "$filename" =~ (DELIVERABLE|CHECKLIST|PHASE|RECOMMENDATION) ]]; then
+            category="report"
+        fi
+        
+        # Determine target directory
+        local target_dir="${categories[$category]}"
+        local target_file="${target_dir}/${filename}"
+        
+        # Check if file already exists in target
+        if [[ -f "$target_file" ]]; then
+            print_warning "  Skipping ${filename} - already exists in ${target_dir}"
+            continue
+        fi
+        
+        # Move file
+        if [[ "$DRY_RUN" == true ]]; then
+            print_info "  [DRY RUN] Would move: ${filename} → ${target_dir}/"
+        else
+            if mv "$file" "$target_file" 2>/dev/null; then
+                print_success "  Moved: ${filename} → ${target_dir}/"
+                ((organized_count++))
+            else
+                print_error "  Failed to move: ${filename}"
+            fi
+        fi
+    done
+    
+    # Summary
+    if [[ $organized_count -gt 0 ]]; then
+        print_success "Organized ${organized_count} of ${misplaced_count} documentation files"
+        echo "Doc organization: ${organized_count} files moved" >> "$structure_issues_file"
+    elif [[ "$DRY_RUN" == true ]]; then
+        print_info "[DRY RUN] Would organize ${misplaced_count} documentation files"
+    else
+        print_warning "No files were organized (all may already exist in target locations)"
+    fi
+}
+
+export -f organize_misplaced_documentation
 
 # Main step function - validates directory structure with AI assistance
 # Returns: 0 for success, 1 for failure
@@ -160,6 +269,10 @@ step4_validate_directory_structure() {
             done
         fi
     fi
+    
+    # PHASE 1.5: Document Organization - Find and categorize misplaced documentation files
+    print_info "Phase 1.5: Organizing misplaced documentation files..."
+    organize_misplaced_documentation
     
     # PHASE 2: AI-powered architectural analysis
     print_info "Phase 2: Preparing AI-powered architectural analysis..."

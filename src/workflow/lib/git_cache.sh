@@ -42,7 +42,16 @@ init_git_cache() {
     # Single git diff call - capture stats, summary, and file list
     GIT_DIFF_STAT_OUTPUT=$(git diff --stat 2>/dev/null || echo "")
     GIT_DIFF_SUMMARY_OUTPUT=$(git diff --shortstat 2>/dev/null || echo "")
-    GIT_DIFF_FILES_OUTPUT=$(git diff --name-only HEAD~1 2>/dev/null || git ls-files --modified 2>/dev/null || echo "")
+    
+    # Get diff files and filter out workflow artifacts
+    local raw_diff_files=$(git diff --name-only HEAD~1 2>/dev/null || git ls-files --modified 2>/dev/null || echo "")
+    
+    # Apply artifact filtering if available
+    if command -v filter_workflow_artifacts &>/dev/null; then
+        GIT_DIFF_FILES_OUTPUT=$(filter_workflow_artifacts "$raw_diff_files")
+    else
+        GIT_DIFF_FILES_OUTPUT="$raw_diff_files"
+    fi
     
     # Single branch tracking call
     GIT_CACHE[current_branch]=$(git rev-parse --abbrev-ref HEAD 2>/dev/null || echo "unknown")

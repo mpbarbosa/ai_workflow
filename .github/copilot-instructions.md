@@ -10,7 +10,7 @@ AI Workflow Automation is an intelligent workflow system for validating and enha
 
 ### Key Capabilities
 
-- **13-Step Automated Pipeline**: Complete workflow from pre-analysis to git finalization
+- **14-Step Automated Pipeline**: Complete workflow from pre-analysis to git finalization
 - **28 Library Modules**: Modular architecture with single responsibility principle (27 .sh + 1 .yaml)
 - **AI Integration**: GitHub Copilot CLI with 13 specialized personas
 - **Smart Execution**: Change-based step skipping (40-85% faster)
@@ -23,8 +23,8 @@ AI Workflow Automation is an intelligent workflow system for validating and enha
 
 ### Project Statistics
 
-- **Total Lines**: 22,216 shell code + 4,067 YAML configuration = 26,283 total
-- **Modules**: 41 total (28 libraries + 13 steps)
+- **Total Lines**: 19,952 shell code + 4,194 YAML configuration = 24,146 total *[See PROJECT_STATISTICS.md]*
+- **Modules**: 48 total (28 libraries + 14 steps + 6 configs)
 - **Configuration**: YAML-based externalized prompt templates
 - **Performance**: Up to 90% faster for documentation-only changes
 

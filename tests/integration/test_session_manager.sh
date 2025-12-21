@@ -5,6 +5,9 @@
 # Part of: Tests & Documentation Workflow Automation v2.0.0
 ################################################################################
 
+# Set non-interactive mode to prevent blocking on stdin
+export AUTO_MODE=true
+
 # Source the module to test
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 WORKFLOW_LIB_DIR="${SCRIPT_DIR}/../../src/workflow/lib"

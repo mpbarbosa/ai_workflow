@@ -594,10 +594,10 @@ The system SHALL generate comprehensive broken reference reports.
 **Report Format:**
 
 ```text
-(Example output format)
+(Example output format - intentional test cases shown below)
 filename: /path/to/missing/file
-.github/copilot-instructions.md: /docs/MISSING.md
-README.md: /shell_scripts/DELETED.sh
+.github/copilot-instructions.md: /docs/MISSING.md  ← Example broken reference
+README.md: /shell_scripts/DELETED.sh  ← Example broken reference
 ```
 
 **Acceptance Criteria:**
@@ -925,7 +925,7 @@ v1           → Missing MINOR and PATCH
 ```markdown
 [Link text](/absolute/path/to/file.md)
 ![Image alt](/images/picture.png)
-[Reference](/docs/MISSING.md)
+[Reference](/docs/MISSING.md)  ← Intentional test case for broken reference detection
 ```
 
 **Not Detected (by design):**

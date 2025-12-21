@@ -292,7 +292,7 @@ Total changes: $total_changes files
     if [[ "$INTERACTIVE_MODE" == true ]]; then
         if ! confirm_action "Commit with this message?"; then
             print_warning "Commit cancelled - entering manual mode"
-            read -p "Enter custom commit message: " custom_msg
+            read -r -p "Enter custom commit message: " custom_msg
             if [[ -n "$custom_msg" ]]; then
                 commit_message="$custom_msg"
             else

@@ -5,6 +5,14 @@ shell_scripts/workflow/logs/
 shell_scripts/workflow/metrics/
 shell_scripts/workflow/.checkpoints/
 
+# New workflow paths (src/workflow)
+src/workflow/backlog/
+src/workflow/summaries/
+src/workflow/logs/
+src/workflow/metrics/
+src/workflow/.checkpoints/
+src/workflow/.ai_cache/
+
 # Temporary files
 *.tmp
 *.bak

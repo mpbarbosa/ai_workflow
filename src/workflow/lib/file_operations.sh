@@ -57,7 +57,7 @@ check_file_exists() {
                 echo "  2) Append timestamp"
                 echo "  3) Increment counter"
                 echo "  4) Abort"
-                read -p "Choose (1-4): " choice < /dev/tty
+                read -r -p "Choose (1-4): " choice < /dev/tty
                 
                 case "$choice" in
                     1) return 0 ;;           # Overwrite

@@ -632,6 +632,30 @@ step1_update_documentation() {
         print_info "→ Documentation files modified"
     fi
     
+    # Check if there are relevant files to document
+    if [[ -z "$changed_files" ]] && [[ ${#docs_to_review[@]} -eq 0 ]]; then
+        print_info "No relevant files to document - skipping AI documentation update"
+        print_success "Documentation review complete (no changes detected)"
+        
+        # Save step summary
+        local summary_text="No relevant files requiring documentation updates."
+        save_step_summary "1" "Update_Documentation" "$summary_text" "✅"
+        
+        # Save backlog
+        local step_backlog="### Documentation Update Summary
+
+**Files Reviewed:** 0
+**Change Scope:** ${CHANGE_SCOPE}
+**Modified Files:** ${ANALYSIS_MODIFIED}
+**Status:** ✅ Complete (no changes required)
+
+No relevant files requiring documentation updates based on recent changes.
+"
+        save_step_issues "1" "Update_Documentation" "$step_backlog"
+        update_workflow_status "step1" "✅"
+        return 0
+    fi
+    
     # Build comprehensive GitHub Copilot CLI prompt for documentation updates
     print_info "Preparing GitHub Copilot CLI prompt for documentation updates..."
     

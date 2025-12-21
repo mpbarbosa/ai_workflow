@@ -1,4 +1,6 @@
 #!/usr/bin/env bash
+set -euo pipefail
+
 # Project Kind Detection Module
 # Version: 1.0.0
 # Purpose: Detect project kind/type based on file structure and markers

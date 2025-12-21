@@ -146,7 +146,8 @@ step2_consistency_prompt:
     Perform a comprehensive documentation consistency analysis for this project.
     
     **Context:**
-    - Project: MP Barbosa Personal Website (static HTML with Material Design)
+    - Project: {project_name} ({project_description})
+    - Primary Language: {primary_language}
     - Documentation files: {doc_count} markdown files
     - Scope: {change_scope}
     - Recent changes: {modified_count} files modified
@@ -156,18 +157,18 @@ step2_consistency_prompt:
     1. **Cross-Reference Validation:**
        - Check if all referenced files/directories exist
        - Verify version numbers follow semantic versioning (MAJOR.MINOR.PATCH)
-       - Ensure version consistency across documentation and package.json
-       - Validate command examples match actual scripts
+       - Ensure version consistency across documentation and package manifests
+       - Validate command examples match actual scripts/executables
     
     2. **Content Synchronization:**
-       - Compare .github/copilot-instructions.md with README.md
-       - Check if src/workflow/README.md matches actual scripts in src/workflow/
-       - Verify package.json scripts match documented commands
+       - Compare primary documentation files (README, copilot-instructions)
+       - Check if module/component docs match actual code structure
+       - Verify build/package configuration matches documented commands
     
     3. **Architecture Consistency:**
        - Validate directory structure matches documented structure
-       - Check if deployment steps in docs match actual deployment scripts
-       - Verify submodule references are accurate
+       - Check if deployment/build steps match actual scripts
+       - Verify dependency references are accurate
     
     4. **Broken References Found:**
     {broken_refs_content}
@@ -219,40 +220,40 @@ step3_script_refs_prompt:
     **Validation Tasks:**
     
     1. **Script-to-Documentation Mapping:**
-       - Verify every script in src/workflow/ is documented in src/workflow/README.md
-       - Check that documented scripts actually exist
+       - Verify every executable script in the project is documented in project README or script documentation
+       - Check that documented scripts/executables actually exist at specified paths
        - Validate script descriptions match actual functionality
        - Ensure usage examples are accurate and complete
     
     2. **Reference Accuracy:**
-       - Validate command-line arguments in documentation match script implementation
-       - Check script version numbers are consistent
-       - Verify cross-references between scripts are accurate
-       - Validate file path references in script comments
+       - Validate command-line arguments in documentation match implementation
+       - Check version numbers are consistent across documentation
+       - Verify cross-references between scripts/modules are accurate
+       - Validate file path references in code comments and documentation
     
     3. **Documentation Completeness:**
-       - Missing purpose/description for any scripts
+       - Missing purpose/description for any scripts or executables
        - Missing usage examples or command syntax
        - Missing prerequisite or dependency information
        - Missing output/return value documentation
     
-    4. **Shell Script Best Practices:**
+    4. **Script Best Practices (Project-Specific):**
        - Executable permissions properly documented
-       - Shebang lines mentioned in documentation where relevant
+       - Entry points (shebangs, main functions) mentioned in documentation where relevant
        - Environment variable requirements documented
        - Error handling and exit codes documented
     
     5. **Integration Documentation:**
-       - Workflow relationships between scripts documented
+       - Workflow relationships between components documented
        - Execution order or dependencies clarified
        - Common use cases and examples provided
        - Troubleshooting guidance available
     
     **Files to Analyze:**
-    - src/workflow/README.md
-    - All .sh files in src/workflow/
-    - .github/copilot-instructions.md (for shell script references)
-    - Main README.md (for automation workflow mentions)
+    - Project README.md and any module/component README files
+    - All executable files (shell scripts, Python scripts, Node.js scripts, etc.)
+    - .github/copilot-instructions.md (for automation/script references)
+    - Configuration files that define entry points or commands
   
   approach: |
     **Expected Output:**
@@ -280,8 +281,9 @@ step4_directory_prompt:
     Perform comprehensive validation of directory structure and architectural organization for this project.
     
     **Context:**
-    - Project: MP Barbosa Personal Website (static HTML with Material Design + submodules)
-    - Total Directories: {dir_count} (excluding node_modules, .git, coverage)
+    - Project: {project_name} ({project_description})
+    - Primary Language: {primary_language}
+    - Total Directories: {dir_count} (excluding build artifacts, dependencies, coverage)
     - Scope: {change_scope}
     - Critical Directories Missing: {missing_critical}
     - Undocumented Directories: {undocumented_dirs}
@@ -297,15 +299,15 @@ step4_directory_prompt:
     
     1. **Structure-to-Documentation Mapping:**
        - Verify directory structure matches documented architecture
-       - Check that README.md and .github/copilot-instructions.md describe actual structure
+       - Check that primary documentation describes actual structure
        - Validate directory purposes are clearly documented
        - Ensure new directories have documentation explaining their role
     
     2. **Architectural Pattern Validation:**
-       - Assess if directory organization follows web development best practices
-       - Validate separation of concerns (src/, public/, docs/, etc.)
-       - Check for proper asset organization (images/, styles/, scripts/)
-       - Verify submodule structure is logical and documented
+       - Assess if directory organization follows language/framework best practices
+       - Validate separation of concerns (src/, lib/, tests/, docs/, etc.)
+       - Check for proper resource organization (assets, configs, data)
+       - Verify module/component structure is logical and documented
     
     3. **Naming Convention Consistency:**
        - Validate directory names follow consistent conventions
@@ -314,11 +316,11 @@ step4_directory_prompt:
        - Ensure directory names are descriptive and self-documenting
     
     4. **Best Practice Compliance:**
-       - Static site project structure conventions
-       - Source vs distribution directory separation (src/ vs public/)
+       {language_specific_directory_standards}
+       - Source vs build output directory separation
        - Documentation organization (docs/ location and structure)
-       - Configuration file locations (.github/, root config files)
-       - Build artifact locations (coverage/, node_modules/)
+       - Configuration file locations (conventional paths)
+       - Build artifact locations (proper gitignore coverage)
     
     5. **Scalability and Maintainability Assessment:**
        - Directory depth appropriate (not too deep or too flat)
@@ -342,13 +344,14 @@ step4_directory_prompt:
 
 # Step 5: Test Review and Recommendations Prompt Template
 step5_test_review_prompt:
-  role: "You are a senior QA engineer and test automation specialist with expertise in testing strategies, Jest framework, code coverage analysis, test-driven development (TDD), behavior-driven development (BDD), and continuous integration best practices."
+  role: "You are a senior QA engineer and test automation specialist with expertise in testing strategies, code coverage analysis, test-driven development (TDD), behavior-driven development (BDD), and continuous integration best practices."
   
   task_template: |
     Perform comprehensive review of existing tests and provide recommendations for test generation and coverage improvement.
     
     **Context:**
-    - Project: MP Barbosa Personal Website (static HTML + JavaScript with ES Modules)
+    - Project: {project_name} ({project_description})
+    - Primary Language: {primary_language}
     - Test Framework: {test_framework}
     - Test Environment: {test_env}
     - Total Test Files: {test_count}
@@ -363,38 +366,38 @@ step5_test_review_prompt:
     **Existing Test Files:**
     {test_files}
     
-    **Test Configuration (from package.json):**
-    - Test Command: npm test (with experimental VM modules for ES6)
-    - Test Environment: jsdom (for DOM testing)
-    - Coverage: Available via npm run test:coverage
-    - Watch Mode: Available for development
+    **Test Configuration:**
+    - Test Command: {test_command}
+    - Test Environment: {test_environment}
+    - Coverage Command: {coverage_command}
+    - Watch Mode: {watch_mode}
     
     **Analysis Tasks:**
     
     1. **Existing Test Quality Assessment:**
-       - Review test file naming conventions (should match *.test.js pattern)
-       - Assess test organization (__tests__/ directory vs co-located)
-       - Evaluate test structure (describe blocks, test cases, assertions)
-       - Check for proper use of Jest matchers and assertions
-       - Validate async/await handling in tests
+       - Review test file naming conventions (language-appropriate patterns)
+       - Assess test organization (test directory structure)
+       - Evaluate test structure (test blocks, cases, assertions)
+       - Check for proper use of test framework matchers and assertions
+       - Validate async/await handling in tests (if applicable)
     
     2. **Coverage Gap Identification:**
-       - Identify which JavaScript modules/functions lack tests
+       - Identify which modules/functions lack tests
        - Determine critical paths that need test coverage
        - Assess edge cases and error handling coverage
-       - Evaluate DOM manipulation test coverage
-       - Check for integration test coverage
+       - Evaluate component/integration test coverage
+       - Check for end-to-end test coverage
     
     3. **Test Case Generation Recommendations:**
        - Suggest specific test cases for untested code
        - Recommend unit tests for utility functions
        - Propose integration tests for workflows
-       - Suggest DOM manipulation tests for UI components
+       - Suggest component tests for UI/modules
        - Recommend edge case and error scenario tests
     
     4. **Testing Best Practices Validation:**
        - Test isolation and independence
-       - Proper setup/teardown (beforeEach, afterEach)
+       - Proper setup/teardown patterns
        - Mock usage for external dependencies
        - Assertion clarity and specificity
        - Test naming conventions (should describe behavior)
@@ -419,10 +422,10 @@ step5_test_review_prompt:
     - Coverage improvement action plan
     
     **Testing Standards to Apply:**
-    - Jest best practices for ES Modules
+    {language_specific_testing_standards}
     - AAA pattern (Arrange-Act-Assert)
     - Clear test descriptions (behavior-focused)
-    - Proper async/await handling
+    - Proper async handling (if applicable)
     - Mock isolation for unit tests
     - Integration test coverage for workflows
     - Minimum 80% code coverage target
@@ -437,9 +440,10 @@ step7_test_exec_prompt:
     Analyze test execution results, diagnose failures, and provide actionable recommendations for improving test suite quality and CI/CD integration.
     
     **Context:**
-    - Project: MP Barbosa Personal Website (static HTML + JavaScript with ES Modules)
-    - Test Framework: Jest with ES Modules (experimental-vm-modules)
-    - Test Command: npm run test:coverage
+    - Project: {project_name} ({project_description})
+    - Primary Language: {primary_language}
+    - Test Framework: {test_framework}
+    - Test Command: {test_command}
     - Exit Code: {test_exit_code}
     - Total Tests: {tests_total}
     - Passed: {tests_passed}
@@ -506,16 +510,16 @@ step7_test_exec_prompt:
 
 # Step 8: Dependency Management Analysis Prompt Template
 step8_dependencies_prompt:
-  role: "You are a senior DevOps engineer and package management specialist with expertise in npm/yarn ecosystem, security vulnerability assessment, version compatibility analysis, dependency tree optimization, and environment configuration best practices."
+  role: "You are a senior DevOps engineer and package management specialist with expertise in dependency management, security vulnerability assessment, version compatibility analysis, dependency tree optimization, and environment configuration best practices."
   
   task_template: |
     Analyze project dependencies, assess security risks, evaluate version compatibility, and provide recommendations for dependency management and environment setup.
     
     **Context:**
-    - Project: MP Barbosa Personal Website (static HTML + JavaScript with ES Modules)
-    - Package Manager: npm
-    - Node.js Version: {node_version}
-    - npm Version: {npm_version}
+    - Project: {project_name} ({project_description})
+    - Primary Language: {primary_language}
+    - Package Manager: {package_manager}
+    - Package Manager Version: {package_manager_version}
     - Production Dependencies: {dep_count}
     - Development Dependencies: {dev_dep_count}
     - Total Packages: {total_deps}
@@ -532,7 +536,7 @@ step8_dependencies_prompt:
     **Development Dependencies:**
     {dev_deps}
     
-    **npm Audit Summary:**
+    **Security Audit Summary:**
     {audit_summary}
     
     **Outdated Packages:**
@@ -541,7 +545,7 @@ step8_dependencies_prompt:
     **Analysis Tasks:**
     
     1. **Security Vulnerability Assessment:**
-       - Review npm audit results
+       - Review security audit results
        - Identify critical/high severity vulnerabilities
        - Assess exploitability and impact
        - Provide immediate remediation steps
@@ -551,7 +555,7 @@ step8_dependencies_prompt:
     2. **Version Compatibility Analysis:**
        - Check for breaking changes in outdated packages
        - Identify version conflicts
-       - Assess compatibility with Node.js version
+       - Assess compatibility with language/runtime version
        - Review semver ranges (^, ~, exact versions)
        - Recommend version pinning strategy
     
@@ -563,11 +567,11 @@ step8_dependencies_prompt:
        - Suggest peer dependency resolution
     
     4. **Environment Configuration Review:**
-       - Validate Node.js version compatibility
-       - Check npm version requirements
-       - Review engine specifications in package.json
+       - Validate language/runtime version compatibility
+       - Check package manager version requirements
+       - Review version specifications in package manifest
        - Assess development vs production dependencies
-       - Recommend .nvmrc or .node-version file
+       - Recommend version management configuration
     
     5. **Update Strategy Recommendations:**
        - Prioritize updates (security > bug fixes > features)
@@ -594,10 +598,11 @@ step9_code_quality_prompt:
     Perform comprehensive code quality review, identify anti-patterns, assess maintainability, and provide recommendations for improving code quality and reducing technical debt.
     
     **Context:**
-    - Project: MP Barbosa Personal Website (static HTML + JavaScript with ES Modules)
-    - Technology Stack: HTML5, CSS3, JavaScript ES6+, ES Modules
-    - Testing: Jest with jsdom
-    - Code Files: {total_files} total ({js_files} JavaScript, {html_files} HTML, {css_files} CSS)
+    - Project: {project_name} ({project_description})
+    - Primary Language: {primary_language}
+    - Technology Stack: {tech_stack_summary}
+    - Code Files: {total_files} total
+    - Language Breakdown: {language_breakdown}
     
     **Code Quality Analysis Results:**
     {quality_summary}
@@ -614,24 +619,24 @@ step9_code_quality_prompt:
     **Analysis Tasks:**
     
     1. **Code Standards Compliance Assessment:**
-       - Evaluate JavaScript coding standards (ES6+ features)
-       - Check HTML5 semantic markup usage
-       - Review CSS organization and naming (BEM, OOCSS, etc.)
+       - Evaluate language coding standards and best practices
+       - Check for consistent code formatting and style
+       - Review naming conventions (variables, functions, classes)
        - Assess consistent indentation and formatting
-       - Validate JSDoc/comment quality
+       - Validate documentation/comment quality
        - Check error handling patterns
     
     2. **Best Practices Validation:**
-       - Verify separation of concerns (HTML/CSS/JS)
-       - Check for proper event handling
-       - Assess DOM manipulation patterns
-       - Review async/await vs promises usage
-       - Validate proper use of const/let (no var)
+       - Verify separation of concerns
+       - Check for proper error handling
+       - Assess design patterns usage
+       - Review async patterns (if applicable)
+       - Validate proper variable declarations
        - Check for magic numbers/strings
     
     3. **Maintainability & Readability Analysis:**
        - Assess function complexity (cyclomatic complexity)
-       - Evaluate function length (should be < 50 lines)
+       - Evaluate function length (should be reasonable)
        - Check variable naming clarity
        - Review code organization and structure
        - Assess comment quality and documentation
@@ -639,8 +644,8 @@ step9_code_quality_prompt:
     
     4. **Anti-Pattern Detection:**
        - Identify code smells (duplicated code, long functions)
-       - Detect callback hell or promise anti-patterns
-       - Find global variable pollution
+       - Detect language-specific anti-patterns
+       - Find improper global usage
        - Spot tight coupling between modules
        - Identify monolithic functions
        - Detect violation of DRY principle
@@ -675,7 +680,7 @@ step11_git_commit_prompt:
     Generate a professional conventional commit message that clearly communicates the changes, follows best practices, and provides useful context for code reviewers and future maintainers.
     
     **Context:**
-    - Project: MP Barbosa Personal Website (static HTML + JavaScript with ES Modules)
+    - Project: {project_name} ({project_description})
     - Workflow: Tests & Documentation Automation v{script_version}
     - Change Scope: {change_scope}
     

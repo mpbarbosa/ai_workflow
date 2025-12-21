@@ -1,4 +1,6 @@
 #!/usr/bin/env bash
+set -euo pipefail
+
 # Step Adaptation Module - Project Kind Adaptive Framework
 # 
 # This module provides functions for adapting workflow step execution based on

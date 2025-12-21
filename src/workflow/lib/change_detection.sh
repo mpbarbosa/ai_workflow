@@ -9,6 +9,86 @@ set -euo pipefail
 ################################################################################
 
 # ==============================================================================
+# EPHEMERAL FILE FILTERING
+# ==============================================================================
+
+# Workflow artifact patterns to exclude from change detection
+# These are generated during workflow execution and should not trigger steps
+declare -a WORKFLOW_ARTIFACTS
+WORKFLOW_ARTIFACTS=(
+    "src/workflow/backlog/*"
+    "src/workflow/logs/*"
+    "src/workflow/summaries/*"
+    "src/workflow/metrics/*"
+    "src/workflow/.checkpoints/*"
+    "src/workflow/.ai_cache/*"
+    "shell_scripts/workflow/backlog/*"
+    "shell_scripts/workflow/logs/*"
+    "shell_scripts/workflow/summaries/*"
+    "shell_scripts/workflow/metrics/*"
+    "*.tmp"
+    "*.bak"
+    "*.swp"
+    "*~"
+    ".DS_Store"
+    "Thumbs.db"
+)
+
+# Filter out ephemeral workflow artifacts from file list
+# Usage: filter_workflow_artifacts <file_list>
+# Returns: Filtered file list (one file per line)
+filter_workflow_artifacts() {
+    local file_list="$1"
+    
+    # Return empty if input is empty
+    [[ -z "$file_list" ]] && return 0
+    
+    local filtered=""
+    
+    while IFS= read -r file; do
+        [[ -z "$file" ]] && continue
+        
+        local should_exclude=false
+        
+        # Check each artifact pattern
+        for pattern in "${WORKFLOW_ARTIFACTS[@]}"; do
+            # Convert glob pattern to regex for matching
+            local regex_pattern="${pattern//\*/.*}"
+            
+            if [[ "$file" =~ ^${regex_pattern}$ ]]; then
+                should_exclude=true
+                break
+            fi
+        done
+        
+        # Include file if not excluded
+        if [[ "$should_exclude" == false ]]; then
+            filtered+="${file}"$'\n'
+        fi
+    done <<< "$file_list"
+    
+    # Remove trailing newline and output
+    echo -n "$filtered"
+}
+
+# Check if a single file is a workflow artifact
+# Usage: is_workflow_artifact <file_path>
+# Returns: 0 (true) if artifact, 1 (false) otherwise
+is_workflow_artifact() {
+    local file="$1"
+    
+    for pattern in "${WORKFLOW_ARTIFACTS[@]}"; do
+        local regex_pattern="${pattern//\*/.*}"
+        
+        if [[ "$file" =~ ^${regex_pattern}$ ]]; then
+            return 0
+        fi
+    done
+    
+    return 1
+}
+
+# ==============================================================================
 # CHANGE CLASSIFICATION
 # ==============================================================================
 
@@ -61,6 +141,9 @@ detect_change_type() {
     
     # Combine all changed files
     local all_changes=$(echo -e "${modified_files}\n${staged_files}\n${untracked_files}" | sort -u | grep -v '^$')
+    
+    # Filter out workflow artifacts
+    all_changes=$(filter_workflow_artifacts "$all_changes")
     
     if [[ -z "${all_changes}" ]]; then
         echo "unknown"
@@ -159,17 +242,24 @@ analyze_changes() {
     
     local all_changes=$(echo -e "${modified_files}\n${staged_files}\n${untracked_files}" | sort -u | grep -v '^$')
     
+    # Filter out workflow artifacts
+    local filtered_changes=$(filter_workflow_artifacts "$all_changes")
+    local artifacts_filtered=$(($(echo "$all_changes" | wc -l) - $(echo "$filtered_changes" | wc -l)))
+    
     echo "## Change Analysis"
     echo ""
-    echo "**Total Files Changed:** $(echo "${all_changes}" | wc -l)"
+    echo "**Total Files Changed:** $(echo "${filtered_changes}" | wc -l)"
+    if [[ $artifacts_filtered -gt 0 ]]; then
+        echo "**Workflow Artifacts Filtered:** ${artifacts_filtered}"
+    fi
     echo ""
     
     # Count by category
-    local docs_files=$(echo "${all_changes}" | while read -r f; do matches_pattern "$f" "${FILE_PATTERNS[docs]}" && echo "$f"; done)
-    local tests_files=$(echo "${all_changes}" | while read -r f; do matches_pattern "$f" "${FILE_PATTERNS[tests]}" && echo "$f"; done)
-    local config_files=$(echo "${all_changes}" | while read -r f; do matches_pattern "$f" "${FILE_PATTERNS[config]}" && echo "$f"; done)
-    local scripts_files=$(echo "${all_changes}" | while read -r f; do matches_pattern "$f" "${FILE_PATTERNS[scripts]}" && echo "$f"; done)
-    local code_files=$(echo "${all_changes}" | while read -r f; do matches_pattern "$f" "${FILE_PATTERNS[code]}" && echo "$f"; done)
+    local docs_files=$(echo "${filtered_changes}" | while read -r f; do matches_pattern "$f" "${FILE_PATTERNS[docs]}" && echo "$f"; done)
+    local tests_files=$(echo "${filtered_changes}" | while read -r f; do matches_pattern "$f" "${FILE_PATTERNS[tests]}" && echo "$f"; done)
+    local config_files=$(echo "${filtered_changes}" | while read -r f; do matches_pattern "$f" "${FILE_PATTERNS[config]}" && echo "$f"; done)
+    local scripts_files=$(echo "${filtered_changes}" | while read -r f; do matches_pattern "$f" "${FILE_PATTERNS[scripts]}" && echo "$f"; done)
+    local code_files=$(echo "${filtered_changes}" | while read -r f; do matches_pattern "$f" "${FILE_PATTERNS[code]}" && echo "$f"; done)
     
     # Display breakdown
     echo "### By Category"
@@ -283,7 +373,9 @@ get_step_name_for_display() {
 # Returns: low, medium, high
 assess_change_impact() {
     local change_type=$(detect_change_type)
-    local total_files=$(git diff --name-only HEAD 2>/dev/null | wc -l)
+    local all_files=$(git diff --name-only HEAD 2>/dev/null)
+    local filtered_files=$(filter_workflow_artifacts "$all_files")
+    local total_files=$(echo "$filtered_files" | grep -v '^$' | wc -l)
     
     # Impact based on change type and file count
     case "${change_type}" in
@@ -350,6 +442,7 @@ EOF
 }
 
 # Export functions for use in workflow
+export -f filter_workflow_artifacts is_workflow_artifact
 export -f detect_change_type analyze_changes get_recommended_steps
 export -f should_execute_step display_execution_plan assess_change_impact
 export -f generate_change_report

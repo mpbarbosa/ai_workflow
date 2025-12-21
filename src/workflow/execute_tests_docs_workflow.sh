@@ -492,7 +492,7 @@ confirm_action() {
     fi
     
     echo -e "${CYAN}ℹ️  ${prompt}${NC}"
-    read -p "$(echo -e "${YELLOW}Enter to continue or Ctrl+C to exit...${NC}")" 
+    read -r -p "$(echo -e "${YELLOW}Enter to continue or Ctrl+C to exit...${NC}")" 
     
     return 0
 }

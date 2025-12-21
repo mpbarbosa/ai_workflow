@@ -149,7 +149,7 @@ confirm_action() {
     echo -e "${CYAN}ℹ️  ${prompt}${NC}"
     
     # Simple continuation prompt - read from /dev/tty to handle input redirection
-    read -p "$(echo -e "${YELLOW}Enter to continue or Ctrl+C to exit...${NC}")" < /dev/tty
+    read -r -p "$(echo -e "${YELLOW}Enter to continue or Ctrl+C to exit...${NC}")" < /dev/tty
     
     # Any response (including empty) continues
     return 0
@@ -182,7 +182,7 @@ collect_ai_output() {
     else
         # Single-line input mode
         local single_line_input
-        read -p "$(echo -e "${YELLOW}Paste AI-generated content (or press Enter to skip): ${NC}")" single_line_input
+        read -r -p "$(echo -e "${YELLOW}Paste AI-generated content (or press Enter to skip): ${NC}")" single_line_input
         echo "$single_line_input"
     fi
 }

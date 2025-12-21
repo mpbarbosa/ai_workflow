@@ -58,8 +58,8 @@ ai_workflow/
 ### Key Features
 
 **Version:** v2.3.1 (Critical Fixes & Checkpoint Control)  
-**Total Modules:** 41 (28 libraries + 13 steps)  
-**Total Lines:** 26,283 total (22,216 shell + 4,067 YAML)  
+**Total Modules:** 48 (28 libraries + 14 steps + 6 configs)  
+**Total Lines:** 24,146 total (19,952 shell + 4,194 YAML) *[See PROJECT_STATISTICS.md]*  
 **Test Coverage:** 37 tests with 100% pass rate
 
 > 📊 See [PROJECT_STATISTICS.md](PROJECT_STATISTICS.md) for detailed breakdown.

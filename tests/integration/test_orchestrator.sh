@@ -9,6 +9,9 @@
 
 set -euo pipefail
 
+# Set non-interactive mode to prevent blocking on stdin
+export AUTO_MODE=true
+
 # ==============================================================================
 # TEST PHASE EXECUTION
 # ==============================================================================

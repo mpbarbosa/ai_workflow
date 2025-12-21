@@ -9,6 +9,9 @@
 
 set -euo pipefail
 
+# Set non-interactive mode to prevent blocking on stdin
+export AUTO_MODE=true
+
 # Get script directory
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 cd "$SCRIPT_DIR"

@@ -1,0 +1,37 @@
+name: Documentation Validation
+
+on:
+  pull_request:
+    paths:
+      - '**.md'
+      - 'PROJECT_STATISTICS.md'
+      - 'scripts/validate_docs.sh'
+  push:
+    branches:
+      - main
+    paths:
+      - '**.md'
+
+jobs:
+  validate:
+    name: Validate Documentation Consistency
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Run Documentation Validation
+        id: validate
+        run: |
+          chmod +x scripts/validate_docs.sh
+          ./scripts/validate_docs.sh
+        continue-on-error: false
+      
+      - name: Report Failure
+        if: failure()
+        run: |
+          echo "::error::Documentation validation failed!"
+          echo "::error::Please run './scripts/validate_docs.sh' locally to see detailed errors"
+          echo "::error::Ensure PROJECT_STATISTICS.md is up to date and all documentation references it correctly"
+          exit 1

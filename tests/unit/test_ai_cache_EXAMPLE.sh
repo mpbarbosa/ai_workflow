@@ -13,6 +13,9 @@ set -uo pipefail
 # SETUP
 # ==============================================================================
 
+# Set non-interactive mode to prevent blocking on stdin
+export AUTO_MODE=true
+
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 WORKFLOW_LIB_DIR="${SCRIPT_DIR}/../../src/workflow/lib"
 WORKFLOW_HOME="${SCRIPT_DIR}/../.."

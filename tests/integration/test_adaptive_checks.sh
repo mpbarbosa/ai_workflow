@@ -6,6 +6,9 @@
 
 set -e
 
+# Set non-interactive mode to prevent blocking on stdin
+export AUTO_MODE=true
+
 # Colors for output
 GREEN='\033[0;32m'
 YELLOW='\033[1;33m'

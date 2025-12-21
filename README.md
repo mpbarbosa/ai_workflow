@@ -13,7 +13,7 @@ This repository provides a comprehensive, modular workflow automation system tha
 ### Key Features
 
 - **13-Step Automated Pipeline**: Complete workflow from analysis to finalization
-- **20 Library Modules**: Modular architecture with AI caching and advanced optimization (19 .sh modules + 1 .yaml config)
+- **28 Library Modules**: Modular architecture with AI caching and advanced optimization (27 .sh modules + 1 .yaml config)
 - **AI Integration**: GitHub Copilot CLI with 13 specialized personas
 - **Smart Execution** (v2.3): Skip steps based on change detection (40-85% faster)
 - **Parallel Execution** (v2.3): Run independent steps simultaneously (33% faster)
@@ -106,20 +106,29 @@ cd /path/to/target/project
 
 ```
 ai_workflow/
+├── .github/                       # GitHub configuration
+│   └── workflows/                 # CI/CD workflows
 ├── docs/                          # Comprehensive documentation
 │   ├── workflow-automation/       # Workflow system docs
 │   ├── TECH_STACK_ADAPTIVE_FRAMEWORK.md  # Tech stack detection
 │   └── PROJECT_KIND_ADAPTIVE_FRAMEWORK_PHASED_PLAN.md  # Project kind detection
+├── examples/                      # Usage examples and demonstrations
+│   └── using_new_features.sh      # Feature demonstration script
+├── scripts/                       # Utility scripts
+│   └── validate_line_counts.sh    # Documentation validation
 ├── src/workflow/                  # Workflow automation system
 │   ├── execute_tests_docs_workflow.sh  # Main orchestrator (4,740 lines)
-│   ├── lib/                       # 20 library modules (5,548 lines: 19 .sh + 1 .yaml)
+│   ├── lib/                       # 28 library modules (12,671 lines: 27 .sh + 1 .yaml)
 │   ├── steps/                     # 13 step modules (3,200 lines)
 │   ├── config/                    # YAML configuration
 │   └── backlog/                   # Execution history
+├── templates/                     # Reusable templates
+│   └── workflow_config/           # Workflow configuration templates
 ├── tests/                         # Comprehensive test suite
+│   ├── fixtures/                  # Test data and mock files
 │   ├── unit/                      # Unit tests (4 tests)
 │   ├── integration/               # Integration tests (5 tests)
-│   └── run_all_tests.sh          # Master test runner
+│   └── run_all_tests.sh           # Master test runner
 ├── MIGRATION_README.md            # Migration documentation
 └── README.md                      # This file
 ```
@@ -130,6 +139,30 @@ ai_workflow/
 - Git
 - Node.js v25.2.1+ (for test execution in target projects)
 - GitHub Copilot CLI (optional, for AI features)
+
+## CI/CD Integration
+
+The repository includes GitHub Actions workflows for automated testing and validation:
+
+### Workflows
+
+- **Test Suite** (`.github/workflows/test.yml`): Runs all unit and integration tests on push/PR
+- **Documentation Validation** (`.github/workflows/docs.yml`): Validates documentation consistency
+- **Line Count Validation** (`.github/workflows/validate-line-counts.yml`): Ensures README accuracy
+
+### Running Locally
+
+```bash
+# Run all tests (mirrors CI environment)
+./tests/run_all_tests.sh
+
+# Validate documentation
+./scripts/validate_line_counts.sh
+
+# Run specific test types
+./tests/run_all_tests.sh --unit          # Unit tests
+./tests/run_all_tests.sh --integration   # Integration tests
+```
 
 ## License
 

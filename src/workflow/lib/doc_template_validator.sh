@@ -351,7 +351,7 @@ audit_documentation() {
         
         if [[ "$fix_mode" == "fix" ]]; then
             print_info "Attempting to fix version inconsistencies..."
-            read -p "Enter correct version (e.g., v2.3.1): " correct_version
+            read -r -p "Enter correct version (e.g., v2.3.1): " correct_version
             update_all_versions "$correct_version" false
         fi
     fi
