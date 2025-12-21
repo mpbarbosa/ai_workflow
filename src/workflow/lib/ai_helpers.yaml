@@ -21,7 +21,7 @@ doc_analysis_prompt:
        - Technical docs (architecture changes, new features)
        - Module READMEs (if code in that module changed)
        - Inline comments (for complex new logic)
-    3. **Make specific edits**: Provide exact text changes, not just descriptions
+    3. **Determine changes**: Identify exact sections requiring updates
     4. **Verify accuracy**: Ensure examples and references are still correct
     
     **OUTPUT FORMAT**: Use edit blocks showing before/after, or provide specific line-by-line changes.
@@ -29,11 +29,10 @@ doc_analysis_prompt:
   approach: |
     1. **Analyze**: Review git diff to understand scope of changes
     2. **Prioritize**: Start with most critical docs (README, copilot-instructions)
-    3. **Edit surgically**: Change ONLY affected sections, preserve everything else
+    3. **Edit surgically**: Provide EXACT text changes (before/after blocks), not suggestions. Change ONLY affected sections, preserve everything else
     4. **Verify consistency**: Keep terminology, formatting, style uniform
-    5. **Provide specifics**: Give exact edits, not suggestions
     
-    **CRITICAL**: Make concrete, actionable edits. Don't ask questions - make the changes.
+    **CRITICAL**: Make concrete, actionable edits with exact before/after text. Don't ask questions - make the changes.
 
 # Consistency Analysis Prompt Template
 consistency_prompt:
@@ -172,6 +171,12 @@ step2_consistency_prompt:
     
     4. **Broken References Found:**
     {broken_refs_content}
+    
+       **For each broken reference**:
+       - Verify if the referenced file/path should exist
+       - Determine if the reference is outdated (renamed/moved file)
+       - Check if it's a documentation error (typo, wrong path)
+       - Recommend fix: update reference, create missing file, or remove obsolete reference
     
     5. **Quality Checks:**
        - Missing documentation for new features
@@ -367,10 +372,9 @@ step5_test_review_prompt:
     {test_files}
     
     **Test Configuration:**
-    - Test Command: {test_command}
-    - Test Environment: {test_environment}
-    - Coverage Command: {coverage_command}
-    - Watch Mode: {watch_mode}
+    Framework: {test_framework} | Environment: {test_env}
+    Files: {test_count} (in __tests__/: {tests_in_tests_dir}, co-located: {tests_colocated})
+    Commands: test={test_command}, coverage={coverage_command}, watch={watch_mode}
     
     **Analysis Tasks:**
     
@@ -481,12 +485,12 @@ step7_test_exec_prompt:
        - Recommend test execution optimizations
        - Suggest mocking strategies for faster tests
     
-    4. **Flaky Test Identification:**
-       - Detect non-deterministic test behavior
-       - Identify timing-dependent tests
-       - Find tests with external dependencies
-       - Recommend fixes for flaky tests
-       - Suggest test isolation improvements
+    4. **Flaky Test Analysis** (if multiple runs available):
+       - Review test output for timing-related errors (timeouts, race conditions)
+       - Identify tests that interact with external systems (filesystem, network, subprocesses)
+       - Flag tests with random data generation without seeding
+       - Note: True flaky test detection requires multiple runs; provide best-effort analysis from single execution
+       - Recommend fixes for identified potential flaky patterns
     
     5. **CI/CD Optimization Recommendations:**
        - Suggest test splitting strategies for CI
@@ -674,7 +678,7 @@ step9_code_quality_prompt:
 
 # Step 11: Git Commit Message Generation Prompt Template
 step11_git_commit_prompt:
-  role: "You are a senior git workflow specialist and technical communication expert with expertise in conventional commits, semantic versioning, git best practices, technical writing, and commit message optimization."
+  role: "You are a senior git workflow specialist and technical communication expert with expertise in conventional commits, semantic versioning, git best practices, technical writing, and commit message optimization. Use these conventional commit types: feat (new feature), fix (bug fix), docs (documentation), style (formatting), refactor (code restructuring), test (tests), chore (maintenance), perf (performance), ci (CI/CD)."
   
   task_template: |
     Generate a professional conventional commit message that clearly communicates the changes, follows best practices, and provides useful context for code reviewers and future maintainers.
@@ -754,26 +758,6 @@ step11_git_commit_prompt:
     [workflow-automation v{script_version}]
     ```
     
-    **Conventional Commit Types:**
-    - feat: New feature or functionality
-    - fix: Bug fix
-    - docs: Documentation changes
-    - style: Code style/formatting (no logic change)
-    - refactor: Code restructuring (no behavior change)
-    - test: Adding or updating tests
-    - chore: Maintenance tasks (build, tools, dependencies)
-    - perf: Performance improvements
-    - ci: CI/CD changes
-    
-    **Best Practices:**
-    - Subject line: imperative mood, lowercase, no period, <72 chars
-    - Body: explain WHAT and WHY, not HOW
-    - Footer: metadata, breaking changes, references
-    - Be specific but concise
-    - Focus on impact and intent
-    - Conventional commits enable automated changelogs
-    - Think about future maintainers reading this
-    
     Please generate a complete conventional commit message following these standards. Provide ONLY the commit message text (no explanations, no markdown code blocks, just the raw commit message).
 
 # Markdown Linting Analysis Prompt Template
@@ -837,11 +821,7 @@ markdown_lint_prompt:
        - Workflow automation improvements
   
   approach: |
-    **Important Filtering Rules:**
-    - IGNORE all violations of disabled rules (MD001, MD002, MD012, MD013, MD022, MD029, MD031, MD032)
-    - Focus ONLY on MD007, MD009, MD026, MD047
-    - Do not suggest "fixing" disabled rules - they are intentionally disabled
-    - Prioritize violations that affect rendering or user experience
+    **Scope**: Analyze only enabled rules (MD007, MD009, MD026, MD047). Disabled rules (MD001, MD002, MD012, MD013, MD022, MD029, MD031, MD032) are intentionally relaxed for AI-generated content and should not be mentioned in your analysis.
     
     **Output Format:**
     - Concise analysis (200-300 words)
@@ -994,193 +974,137 @@ step13_prompt_engineer_prompt:
 # Language-Specific Instructions for Documentation
 language_specific_documentation:
   javascript:
-    conventions: |
-      - Use JSDoc format for documentation
-      - Document async/await patterns clearly
-      - Include TypeScript types when applicable
-      - Reference npm packages with correct names and versions
-      - Use MDN Web Docs style for web APIs
-      - Document React/Vue/Angular patterns if applicable
-    
-    standards:
-      - "MDN JavaScript Style Guide"
-      - "Airbnb JavaScript Style Guide"
-      - "JSDoc 3 specification"
-      - "Node.js API documentation standards"
-    
-    examples: |
-      Good:
+    key_points: |
+      • Use JSDoc format with @param, @returns, @throws tags
+      • Document async/await patterns and promise chains
+      • Include TypeScript types when applicable
+      • Reference npm packages with correct versions
+      • Follow MDN Web Docs style for web APIs
+    doc_format: "JSDoc 3"
+    example_snippet: |
       /**
        * Fetches user data from the API
-       * @param {string} userId - The user's unique identifier
-       * @returns {Promise<User>} The user object
-       * @throws {Error} If the user is not found
+       * @param {string} userId - User identifier
+       * @returns {Promise<User>} User object
+       * @throws {Error} If user not found
        */
       async function getUser(userId) { ... }
   
   python:
-    conventions: |
-      - Follow PEP 257 docstring conventions
-      - Use type hints (PEP 484) consistently
-      - Document exceptions with raises sections
-      - Reference PyPI packages correctly
-      - Use Google or NumPy docstring format for complex functions
-      - Include examples in docstrings for public APIs
-    
-    standards:
-      - "PEP 8 Style Guide"
-      - "PEP 257 Docstring Conventions"
-      - "PEP 484 Type Hints"
-      - "NumPy docstring format"
-    
-    examples: |
-      Good:
+    key_points: |
+      • Follow PEP 257 docstring conventions
+      • Use type hints (PEP 484) consistently
+      • Document exceptions with raises sections
+      • Use Google/NumPy format for complex functions
+      • Include examples in public API docstrings
+    doc_format: "PEP 257 (Google/NumPy style)"
+    example_snippet: |
       def calculate_average(numbers: list[float]) -> float:
-          """Calculate the arithmetic mean of a list of numbers.
-          
+          """Calculate arithmetic mean of numbers.
           Args:
-              numbers: A list of numeric values
-              
+              numbers: List of numeric values
           Returns:
-              The arithmetic mean of the input numbers
-              
+              Arithmetic mean
           Raises:
-              ValueError: If the list is empty
+              ValueError: If list is empty
           """
   
   go:
-    conventions: |
-      - Use godoc format for documentation
-      - Start comments with the function/type name
-      - Document exported functions and types
-      - Include examples in doc comments
-      - Follow Go proverbs for design patterns
-      - Document error return values
-    
-    standards:
-      - "Effective Go documentation"
-      - "Go Code Review Comments"
-      - "godoc format specification"
-    
-    examples: |
-      Good:
-      // ProcessData reads input from the reader and returns processed results.
+    key_points: |
+      • Use godoc format, start with function/type name
+      • Document all exported functions and types
+      • Include examples in doc comments
+      • Document error return values explicitly
+      • Follow Go proverbs for design patterns
+    doc_format: "godoc"
+    example_snippet: |
+      // ProcessData reads input and returns processed results.
       // Returns an error if the input format is invalid.
-      func ProcessData(r io.Reader) ([]Result, error) { ... }
+      //
+      // Example:
+      //   results, err := ProcessData(reader)
+      func ProcessData(r io.Reader) ([]Result, error)
   
   java:
-    conventions: |
-      - Use Javadoc format for documentation
-      - Document public APIs thoroughly
-      - Include @param, @return, @throws tags
-      - Reference Maven dependencies correctly
-      - Follow Oracle Javadoc guidelines
-    
-    standards:
-      - "Oracle Javadoc Style Guide"
-      - "Google Java Style Guide"
-      - "Maven documentation standards"
-    
-    examples: |
-      Good:
+    key_points: |
+      • Use Javadoc with @param, @return, @throws tags
+      • Document all public APIs thoroughly
+      • Reference Maven dependencies correctly
+      • Follow Oracle Javadoc guidelines
+      • Include @since tags for versioning
+    doc_format: "Javadoc"
+    example_snippet: |
       /**
        * Calculates the factorial of a number.
-       * 
-       * @param n the number to calculate factorial for
+       * @param n the number to calculate
        * @return the factorial of n
-       * @throws IllegalArgumentException if n is negative
+       * @throws IllegalArgumentException if n < 0
        */
-      public long factorial(int n) { ... }
+      public long factorial(int n)
   
   ruby:
-    conventions: |
-      - Use RDoc or YARD format for documentation
-      - Follow Ruby naming conventions
-      - Document public methods
-      - Reference gems correctly
-      - Use Ruby idioms in examples
-    
-    standards:
-      - "Ruby Style Guide"
-      - "YARD documentation format"
-      - "RuboCop style enforcement"
-    
-    examples: |
-      Good:
+    key_points: |
+      • Use RDoc or YARD format
+      • Follow Ruby naming conventions
+      • Document public methods with @param, @return
+      • Reference gems correctly
+      • Use Ruby idioms in examples
+    doc_format: "YARD"
+    example_snippet: |
       # Calculates the total price including tax
-      # @param base_price [Float] the price before tax
-      # @param tax_rate [Float] the tax rate as a decimal
-      # @return [Float] the total price with tax
+      # @param base_price [Float] price before tax
+      # @param tax_rate [Float] tax rate as decimal
+      # @return [Float] total price with tax
       def calculate_total(base_price, tax_rate)
   
   rust:
-    conventions: |
-      - Use Rust doc comments (///)
-      - Include examples that compile
-      - Document panics and safety
-      - Reference crates correctly
-      - Use markdown in doc comments
-    
-    standards:
-      - "Rust Documentation Guidelines"
-      - "The Rust Book documentation style"
-      - "cargo doc standards"
-    
-    examples: |
-      Good:
+    key_points: |
+      • Use Rust doc comments (///)
+      • Include compilable examples in docs
+      • Document panics and safety concerns
+      • Reference crates correctly (crate::module)
+      • Use markdown in doc comments
+    doc_format: "rustdoc"
+    example_snippet: |
       /// Calculates the sum of two numbers.
       ///
       /// # Examples
       /// ```
       /// assert_eq!(add(2, 3), 5);
       /// ```
-      pub fn add(a: i32, b: i32) -> i32 { ... }
+      pub fn add(a: i32, b: i32) -> i32
   
   cpp:
-    conventions: |
-      - Use Doxygen format for documentation
-      - Document header files thoroughly
-      - Include @brief, @param, @return tags
-      - Reference libraries correctly
-      - Document memory management
-    
-    standards:
-      - "Doxygen documentation format"
-      - "Google C++ Style Guide"
-      - "C++ Core Guidelines"
-    
-    examples: |
-      Good:
+    key_points: |
+      • Use Doxygen format (@brief, @param, @return)
+      • Document header files thoroughly
+      • Include memory management details
+      • Reference libraries with proper namespaces
+      • Document template parameters
+    doc_format: "Doxygen"
+    example_snippet: |
       /**
-       * @brief Calculates the dot product of two vectors
+       * @brief Calculates dot product of vectors
        * @param v1 First vector
        * @param v2 Second vector
        * @return The dot product
        */
-      double dot_product(const Vector& v1, const Vector& v2);
+      double dot_product(const Vector& v1, const Vector& v2)
   
   bash:
-    conventions: |
-      - Use clear header comments
-      - Document function parameters
-      - Explain complex regex or sed/awk usage
-      - Document exit codes
-      - Include usage examples
-    
-    standards:
-      - "Google Shell Style Guide"
-      - "ShellCheck recommendations"
-      - "POSIX shell compatibility notes"
-    
-    examples: |
-      Good:
+    key_points: |
+      • Use clear header comments with purpose
+      • Document function parameters and exit codes
+      • Explain complex regex/sed/awk usage
+      • Include usage examples
+      • Note POSIX compatibility when relevant
+    doc_format: "ShellDoc"
+    example_snippet: |
       #!/usr/bin/env bash
       # Backup database to specified location
-      # Arguments:
-      #   $1 - Database name
-      #   $2 - Backup directory
-      # Returns:
-      #   0 on success, 1 on failure
+      # Arguments: $1 - DB name, $2 - Backup dir
+      # Returns: 0 on success, 1 on failure
+      # Example: backup_database "mydb" "/backup"
       backup_database() { ... }
 
 # Language-Specific Code Quality Standards
@@ -1374,9 +1298,8 @@ language_specific_testing:
     
     example: |
       describe('UserService', () => {
-        it('should fetch user by ID', async () => {
-          const user = await UserService.getUser('123');
-          expect(user.id).toBe('123');
+        it('fetches user by ID', async () => {
+          expect((await UserService.getUser('123')).id).toBe('123');
         });
       });
   
@@ -1390,10 +1313,7 @@ language_specific_testing:
       - "Use coverage reporting"
     
     example: |
-      @pytest.mark.parametrize("input,expected", [
-          (2, 4),
-          (3, 9),
-      ])
+      @pytest.mark.parametrize("input,expected", [(2, 4), (3, 9)])
       def test_square(input, expected):
           assert square(input) == expected
   
@@ -1408,22 +1328,12 @@ language_specific_testing:
     
     example: |
       func TestAdd(t *testing.T) {
-          tests := []struct {
-              name string
-              a, b int
-              want int
-          }{
-              {"positive", 2, 3, 5},
-              {"negative", -1, -1, -2},
-          }
+          tests := []struct{name string; a, b, want int}{
+              {"positive", 2, 3, 5}, {"negative", -1, -1, -2}}
           for _, tt := range tests {
               t.Run(tt.name, func(t *testing.T) {
                   if got := Add(tt.a, tt.b); got != tt.want {
-                      t.Errorf("got %d, want %d", got, tt.want)
-                  }
-              })
-          }
-      }
+                      t.Errorf("got %d, want %d", got, tt.want) }})}}
   
   java:
     framework: "JUnit 5"
@@ -1437,11 +1347,8 @@ language_specific_testing:
     example: |
       @Test
       void testCalculateTotal() {
-          BigDecimal result = calculator.add(
-              new BigDecimal("10.5"),
-              new BigDecimal("5.5")
-          );
-          assertThat(result).isEqualByComparingTo("16.0");
+          assertThat(calculator.add(new BigDecimal("10.5"),
+              new BigDecimal("5.5"))).isEqualByComparingTo("16.0");
       }
   
   ruby:
@@ -1455,10 +1362,8 @@ language_specific_testing:
     
     example: |
       RSpec.describe Calculator do
-        describe '#add' do
-          it 'returns sum of two numbers' do
-            expect(Calculator.add(2, 3)).to eq(5)
-          end
+        it 'adds two numbers' do
+          expect(Calculator.add(2, 3)).to eq(5)
         end
       end
   
@@ -1473,15 +1378,10 @@ language_specific_testing:
     
     example: |
       #[test]
-      fn test_add() {
-          assert_eq!(add(2, 3), 5);
-      }
-      
+      fn test_add() { assert_eq!(add(2, 3), 5); }
       #[test]
       #[should_panic(expected = "divide by zero")]
-      fn test_divide_by_zero() {
-          divide(10, 0);
-      }
+      fn test_divide_by_zero() { divide(10, 0); }
   
   cpp:
     framework: "Google Test"
@@ -1509,12 +1409,9 @@ language_specific_testing:
     
     example: |
       @test "addition works" {
-        result=$(add 2 3)
-        [ "$result" -eq 5 ]
+        [ "$(add 2 3)" -eq 5 ]
       }
-      
       @test "script fails on invalid input" {
-        run myscript --invalid
-        [ "$status" -ne 0 ]
+        run myscript --invalid; [ "$status" -ne 0 ]
       }
 
