@@ -186,6 +186,14 @@ step6_generate_new_tests() {
     local generation_log_content
     generation_log_content=$(cat "$generation_log_file" 2>/dev/null || echo "   No gaps detected - all code has tests")
     
+    # Get project metadata for dynamic context
+    local metadata
+    metadata=$(get_project_metadata)
+    local project_name="${metadata%%|*}"
+    local temp="${metadata#*|}"
+    local project_description="${temp%%|*}"
+    local primary_language="${temp#*|}"
+    
     # Build comprehensive test generation prompt
     local copilot_prompt
     copilot_prompt="**Role**: You are a senior test-driven development (TDD) expert and code generation specialist with expertise in Jest testing framework, test pattern generation, edge case analysis, mock creation, and automated test scaffolding.
@@ -193,7 +201,8 @@ step6_generate_new_tests() {
 **Task**: Generate comprehensive test code for untested modules based on analysis from Step 5 (Test Review).
 
 **Context:**
-- Project: MP Barbosa Personal Website (static HTML + JavaScript with ES Modules)
+- Project: ${project_name} (${project_description})
+- Primary Language: ${primary_language}
 - Test Framework: Jest with ES Modules (experimental-vm-modules)
 - Test Environment: jsdom (for DOM testing)
 - Untested Files: $untested_count

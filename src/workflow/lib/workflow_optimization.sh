@@ -445,6 +445,14 @@ load_checkpoint() {
     # Load checkpoint
     source "$latest_checkpoint"
     
+    # Reconstruct WORKFLOW_STATUS array from checkpoint variables
+    for step_num in {0..13}; do
+        local step_var="STEP_${step_num}_STATUS"
+        if [[ -n "${!step_var:-}" ]]; then
+            WORKFLOW_STATUS[$step_num]="${!step_var}"
+        fi
+    done
+    
     local checkpoint_age=$(($(date +%s) - $(stat -c %Y "$latest_checkpoint" 2>/dev/null || echo 0)))
     local checkpoint_hours=$((checkpoint_age / 3600))
     

@@ -150,7 +150,13 @@ generate_adaptive_prompt() {
 # Get language-specific documentation conventions
 # Usage: get_language_documentation_conventions <language>
 get_language_documentation_conventions() {
-    local language="$1"
+    local language="${1:-}"
+    
+    # Return empty if no language provided
+    if [[ -z "$language" ]]; then
+        echo "No language specified"
+        return 1
+    fi
     
     case "${language,,}" in
         javascript|typescript|node)

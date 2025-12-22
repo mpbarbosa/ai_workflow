@@ -295,8 +295,8 @@ step2_check_consistency() {
     
     # Phase 5: Enhance with language-specific documentation standards
     if should_use_language_aware_prompts && command -v get_language_documentation_conventions &>/dev/null; then
-        local lang_conventions=$(get_language_documentation_conventions)
-        if [[ -n "$lang_conventions" ]]; then
+        local lang_conventions=$(get_language_documentation_conventions "${PRIMARY_LANGUAGE:-bash}")
+        if [[ -n "$lang_conventions" ]] && [[ "$lang_conventions" != "No language specified" ]]; then
             copilot_prompt+="
 
 **${PRIMARY_LANGUAGE^} Documentation Standards:**

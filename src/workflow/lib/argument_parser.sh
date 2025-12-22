@@ -29,6 +29,13 @@ parse_workflow_arguments() {
                 TARGET_PROJECT_ROOT="$(cd "$TARGET_PROJECT_ROOT" && pwd)"
                 PROJECT_ROOT="$TARGET_PROJECT_ROOT"
                 SRC_DIR="${PROJECT_ROOT}/src"
+                
+                # Set artifact directories to target project's .ai_workflow directory
+                # This prevents permission issues when accessing logs from different directories
+                BACKLOG_DIR="${PROJECT_ROOT}/.ai_workflow/backlog"
+                SUMMARIES_DIR="${PROJECT_ROOT}/.ai_workflow/summaries"
+                LOGS_DIR="${PROJECT_ROOT}/.ai_workflow/logs"
+                
                 print_info "Target project: $PROJECT_ROOT"
                 shift 2
                 ;;
@@ -44,6 +51,12 @@ parse_workflow_arguments() {
                 export AUTO_MODE
                 export INTERACTIVE_MODE
                 print_info "Automatic mode enabled"
+                shift
+                ;;
+            --ai-batch)
+                AI_BATCH_MODE=true
+                export AI_BATCH_MODE
+                print_info "AI batch mode enabled - AI prompts will run non-interactively"
                 shift
                 ;;
             --interactive)
@@ -170,6 +183,29 @@ validate_parsed_arguments() {
         print_error "Config file does not exist: $TECH_STACK_CONFIG_FILE"
         ((errors++))
     fi
+    
+    # Set default artifact directories if not already set (no --target option used)
+    if [[ -z "${BACKLOG_DIR:-}" ]]; then
+        BACKLOG_DIR="${WORKFLOW_HOME}/src/workflow/backlog"
+        SUMMARIES_DIR="${WORKFLOW_HOME}/src/workflow/summaries"
+        LOGS_DIR="${WORKFLOW_HOME}/src/workflow/logs"
+    fi
+    
+    # Export artifact directory variables
+    export BACKLOG_DIR
+    export SUMMARIES_DIR
+    export LOGS_DIR
+    
+    # Set run-specific directories now that base directories are known
+    BACKLOG_RUN_DIR="${BACKLOG_DIR}/${WORKFLOW_RUN_ID}"
+    SUMMARIES_RUN_DIR="${SUMMARIES_DIR}/${WORKFLOW_RUN_ID}"
+    LOGS_RUN_DIR="${LOGS_DIR}/${WORKFLOW_RUN_ID}"
+    WORKFLOW_LOG_FILE="${LOGS_RUN_DIR}/workflow_execution.log"
+    
+    export BACKLOG_RUN_DIR
+    export SUMMARIES_RUN_DIR
+    export LOGS_RUN_DIR
+    export WORKFLOW_LOG_FILE
     
     return $errors
 }

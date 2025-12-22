@@ -124,9 +124,13 @@ WORKFLOW_HOME="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
 PROJECT_ROOT="$(pwd)"  # Default: current directory; can be overridden with --target option
 TARGET_PROJECT_ROOT=""  # Set via --target option when specified
 SRC_DIR="${PROJECT_ROOT}/src"
-BACKLOG_DIR="${WORKFLOW_HOME}/src/workflow/backlog"
-SUMMARIES_DIR="${WORKFLOW_HOME}/src/workflow/summaries"
-LOGS_DIR="${WORKFLOW_HOME}/src/workflow/logs"
+
+# Artifact directories - will be updated after --target option is processed
+# These store workflow execution artifacts (logs, backlog, summaries)
+# By default, stored in workflow home; with --target, stored in target project
+BACKLOG_DIR=""
+SUMMARIES_DIR=""
+LOGS_DIR=""
 
 # Temporary files tracking for cleanup
 # Used by AI-enhanced steps to store intermediate validation results
@@ -135,10 +139,13 @@ TEMP_FILES=()
 
 # Backlog tracking
 WORKFLOW_RUN_ID="workflow_$(date +%Y%m%d_%H%M%S)"
-BACKLOG_RUN_DIR="${BACKLOG_DIR}/${WORKFLOW_RUN_ID}"
-SUMMARIES_RUN_DIR="${SUMMARIES_DIR}/${WORKFLOW_RUN_ID}"
-LOGS_RUN_DIR="${LOGS_DIR}/${WORKFLOW_RUN_ID}"
-WORKFLOW_LOG_FILE="${LOGS_RUN_DIR}/workflow_execution.log"
+export WORKFLOW_RUN_ID
+# Note: BACKLOG_RUN_DIR, SUMMARIES_RUN_DIR, LOGS_RUN_DIR are set after argument parsing
+# because BACKLOG_DIR, SUMMARIES_DIR, LOGS_DIR depend on --target option
+BACKLOG_RUN_DIR=""
+SUMMARIES_RUN_DIR=""
+LOGS_RUN_DIR=""
+WORKFLOW_LOG_FILE=""
 
 # Color codes (matching existing scripts)
 RED='\033[0;31m'
@@ -155,6 +162,7 @@ TOTAL_STEPS=14
 DRY_RUN=false
 INTERACTIVE_MODE=true
 AUTO_MODE=false
+AI_BATCH_MODE=false  # Hybrid mode: run AI non-interactively
 VERBOSE=false
 STOP_ON_COMPLETION=false
 WORKFLOW_START_TIME=$(date +%s)
@@ -1631,22 +1639,38 @@ USAGE:
 
 OPTIONS:
     --target PATH       Target project root directory (default: current directory)
-    --dry-run           Preview all actions without executing
-    --auto              Run in automatic mode (no confirmations)
-    --interactive       Run in interactive mode (default)
-    --verbose           Enable verbose output
-    --steps STEPS       Execute specific steps (comma-separated, e.g., "0,1,2" or "all")
-    --stop              Enable continuation prompt on completion
-    --smart-execution   Enable smart execution (skip steps based on change detection)
-    --show-graph        Display dependency graph and parallelization opportunities
-    --parallel          Enable parallel execution for independent steps (33% faster)
-    --no-ai-cache       Disable AI response caching (increases token usage)
-    --no-resume         Start from step 0, ignore any checkpoints
-    --show-tech-stack   Display detected tech stack configuration
-    --config-file FILE  Use specific .workflow-config.yaml file
-    --init-config       Run interactive configuration wizard
-    --help              Show this help message
-    --version           Show script version
+                        Analyzes any project from anywhere
+    
+    --dry-run          Preview all actions without executing
+    
+    --auto             Run in automatic mode (no confirmations, skip AI)
+    --ai-batch         Run AI prompts non-interactively (hybrid auto mode)
+    --interactive      Run in interactive mode (default)
+    
+    --verbose          Enable verbose output
+    --steps STEPS      Execute specific steps (comma-separated, e.g., "0,1,2" or "all")
+    --stop             Enable continuation prompt on completion
+    
+    --smart-execution  Enable smart execution (skip steps based on change detection)
+                       Performance: 40-85% faster for incremental changes
+    
+    --show-graph       Display dependency graph and parallelization opportunities
+    
+    --parallel         Enable parallel execution for independent steps
+                       Performance: 33% faster execution time
+    
+    --no-ai-cache      Disable AI response caching (increases token usage)
+                       Default: Enabled (60-80% token savings)
+    
+    --no-resume        Start from step 0, ignore any checkpoints
+                       Default: Resume from last completed step
+    
+    --show-tech-stack  Display detected tech stack configuration
+    --config-file FILE Use specific .workflow-config.yaml file
+    --init-config      Run interactive configuration wizard
+    
+    --help             Show this help message
+    --version          Show script version
 
 DESCRIPTION:
     Automates the complete tests and documentation update workflow including:
@@ -1658,13 +1682,12 @@ DESCRIPTION:
     - Context analysis (Step 10)
     - Git finalization (Step 11)
     - Markdown linting (Step 12)
+    - Prompt engineering analysis (Step 13, ai_workflow only)
     
     By default, the workflow runs on the current directory. Use --target to specify
     a different project directory.
 
-STEP EXECUTION:
-    By default, all steps (0-13) are executed. Use --steps to select specific steps:
-    
+WORKFLOW STEPS:
     Step 0:  Pre-Analysis - Analyzing Recent Changes
     Step 1:  Update Related Documentation
     Step 2:  Check Documentation Consistency
@@ -1681,22 +1704,25 @@ STEP EXECUTION:
     Step 13: Prompt Engineer Analysis (ai_workflow only)
 
 EXAMPLES:
-    # Run on current directory (default behavior)
+    # Basic: Run on current directory (default behavior)
     cd /path/to/your/project
     $0
     
     # Preview workflow without execution
     $0 --dry-run
     
-    # Run in automatic mode (no confirmations)
+    # Run in automatic mode (no confirmations, skip AI)
     $0 --auto
     
-    # Run workflow on a different project using --target
-    $0 --target /home/mpb/Documents/GitHub/mpbarbosa_site
+    # Hybrid mode: Auto + AI batch analysis (RECOMMENDED for CI/CD)
+    $0 --auto --ai-batch
     
-    # Run from workflow repository on target project
+    # Run on different project using --target
+    $0 --target /home/user/my-project
+    
+    # From workflow repo on target project with AI
     cd /path/to/ai_workflow
-    $0 --target /home/mpb/Documents/GitHub/monitora_vagas --auto
+    $0 --target /home/user/nodejs-api --auto --ai-batch
     
     # Execute only documentation steps (0-4)
     $0 --steps 0,1,2,3,4
@@ -1707,24 +1733,89 @@ EXAMPLES:
     # Execute only git finalization (11)
     $0 --steps 11
     
-    # Enable smart execution for faster workflow
+    # Smart execution for faster workflow (40-85% faster)
     $0 --smart-execution --parallel
     
     # Show dependency graph before execution
     $0 --show-graph
     
-    # Maximum performance (smart + parallel + AI cache)
+    # Maximum performance: Smart + Parallel + AI Batch + Caching (RECOMMENDED)
     cd /path/to/project
-    /path/to/ai_workflow/src/workflow/execute_tests_docs_workflow.sh \
-      --smart-execution --parallel --auto
+    /path/to/ai_workflow/src/workflow/execute_tests_docs_workflow.sh \\
+      --smart-execution --parallel --auto --ai-batch
     
     # Force fresh start (ignore checkpoints)
     $0 --no-resume --auto
+    
+    # Interactive configuration wizard
+    $0 --init-config
+    
+    # Show detected technology stack
+    $0 --show-tech-stack
 
-For more information, see:
-    - /prompts/tests_documentation_update_enhanced.txt
-    - /docs/TESTS_DOCS_WORKFLOW_AUTOMATION_PLAN.md
+PERFORMANCE OPTIMIZATION:
+    
+    Change Type         | Baseline | --smart-execution | --parallel | Combined
+    --------------------|----------|-------------------|------------|----------
+    Documentation Only  | 23 min   | 3.5 min (85%)    | 15.5 min   | 2.3 min (90%)
+    Code Changes        | 23 min   | 14 min (40%)     | 15.5 min   | 10 min (57%)
+    Full Changes        | 23 min   | 23 min           | 15.5 min   | 15.5 min (33%)
+    
+    AI Response Caching: 60-80% token usage reduction (enabled by default)
+    Checkpoint Resume: Automatic continuation from last completed step
 
+MODES COMPARISON:
+    
+    Feature             | Interactive | --auto | --auto --ai-batch
+    --------------------|-------------|--------|-------------------
+    User Prompts        | ✅ Required | ❌ Skip | ❌ Skip
+    AI Analysis         | ✅ Interactive | ❌ Skip | ✅ Automated
+    CI/CD Compatible    | ❌ No       | ✅ Yes  | ✅ Yes
+    AI Insights         | ✅ Full     | ❌ None | ✅ Full
+    AI Caching          | ✅ Yes      | N/A     | ✅ Yes
+    Timeout Protection  | N/A         | N/A     | ✅ 5min
+
+PROJECT KINDS SUPPORTED:
+    - shell_script_automation (BATS tests, ShellCheck)
+    - nodejs_api (Jest, ESLint, OpenAPI)
+    - nodejs_cli (Jest CLI testing)
+    - react_spa (Jest + RTL, accessibility)
+    - static_website (HTML validation, performance)
+    - python_app (pytest, PEP 8)
+    - generic (universal fallback)
+
+CONFIGURATION:
+    Create .workflow-config.yaml in project root:
+    
+    project:
+      kind: nodejs_api              # Override auto-detection
+      name: "My API Project"
+    
+    tech_stack:
+      primary_language: javascript
+      framework: express
+      build_system: npm
+    
+    testing:
+      framework: jest
+      coverage_target: 90
+      test_command: "npm test"
+
+PREREQUISITES:
+    - Bash 4.0+
+    - Git
+    - Node.js v25.2.1+ (for Node.js projects)
+    - GitHub Copilot CLI (optional, for AI features)
+
+DOCUMENTATION:
+    - Main Guide: MIGRATION_README.md
+    - Module Reference: src/workflow/README.md
+    - Tech Stack Guide: docs/TECH_STACK_ADAPTIVE_FRAMEWORK.md
+    - Project Kinds: docs/PROJECT_KIND_FRAMEWORK.md
+    - Target Feature: docs/TARGET_PROJECT_FEATURE.md
+    - AI Batch Mode: docs/AI_BATCH_MODE.md
+
+VERSION: ${SCRIPT_VERSION}
 EOF
 }
 
@@ -1769,6 +1860,7 @@ main() {
     if [[ -n "$TARGET_PROJECT_ROOT" ]]; then
         print_info "Running workflow on target project: ${PROJECT_ROOT}"
         print_info "Workflow home: ${WORKFLOW_HOME}"
+        print_info "Artifacts will be stored in: ${PROJECT_ROOT}/.ai_workflow/"
     else
         print_info "Running workflow on: ${PROJECT_ROOT}"
     fi

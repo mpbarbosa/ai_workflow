@@ -64,6 +64,61 @@ validate_copilot_cli() {
 # AI PROMPT BUILDING
 # ==============================================================================
 
+# Get project metadata from configuration
+# Returns: pipe-delimited string with project_name|project_description|primary_language
+get_project_metadata() {
+    local project_name=""
+    local project_description=""
+    local primary_language=""
+    local config_file=""
+    
+    # Determine which directory to check (prioritize PROJECT_ROOT, then TARGET_DIR, then current dir)
+    local check_dir="${PROJECT_ROOT:-${TARGET_DIR:-.}}"
+    config_file="${check_dir}/.workflow-config.yaml"
+    
+    # Try to load from tech stack config first
+    if command -v get_config_value &> /dev/null; then
+        project_name=$(get_config_value "project.name" "")
+        project_description=$(get_config_value "project.description" "")
+        primary_language=$(get_config_value "tech_stack.primary_language" "")
+    fi
+    
+    # Fallback to manual YAML parsing if get_config_value not available or returned empty
+    if [[ -z "$project_name" ]] && [[ -f "$config_file" ]]; then
+        project_name=$(awk '/^project:/{flag=1} flag && /^  name:/{sub(/^[^:]+:[[:space:]]*/, ""); gsub(/"/, ""); print; exit}' "$config_file")
+        project_description=$(awk '/^project:/{flag=1} flag && /^  description:/{sub(/^[^:]+:[[:space:]]*/, ""); gsub(/"/, ""); print; exit}' "$config_file")
+        primary_language=$(awk '/^tech_stack:/{flag=1} flag && /^  primary_language:/{sub(/^[^:]+:[[:space:]]*/, ""); gsub(/"/, ""); print; exit}' "$config_file")
+    fi
+    
+    # If still empty, try to detect from package.json or other indicators
+    if [[ -z "$project_name" ]] && [[ -f "${check_dir}/package.json" ]]; then
+        project_name=$(grep -m1 '"name":' "${check_dir}/package.json" | sed 's/.*"name":[[:space:]]*"\([^"]*\)".*/\1/')
+        project_description=$(grep -m1 '"description":' "${check_dir}/package.json" | sed 's/.*"description":[[:space:]]*"\([^"]*\)".*/\1/')
+    fi
+    
+    # Detect primary language if not set
+    if [[ -z "$primary_language" ]]; then
+        if [[ -f "${check_dir}/package.json" ]]; then
+            primary_language="javascript"
+        elif [[ -f "${check_dir}/requirements.txt" ]] || [[ -f "${check_dir}/setup.py" ]]; then
+            primary_language="python"
+        elif [[ -f "${check_dir}/go.mod" ]]; then
+            primary_language="go"
+        elif [[ -f "${check_dir}/Cargo.toml" ]]; then
+            primary_language="rust"
+        elif ls "${check_dir}"/*.sh &>/dev/null; then
+            primary_language="bash"
+        fi
+    fi
+    
+    # Use defaults if still empty
+    project_name="${project_name:-Unknown Project}"
+    project_description="${project_description:-No description available}"
+    primary_language="${primary_language:-Unknown}"
+    
+    echo "$project_name|$project_description|$primary_language"
+}
+
 # Build a structured AI prompt with role, task, and standards
 # Usage: build_ai_prompt <role> <task> <standards>
 build_ai_prompt() {
@@ -95,24 +150,83 @@ build_doc_analysis_prompt() {
     local task_context
     local approach
     local task_template=""
+    local prompt_type="generic"  # Track which type of prompt is being used
 
     print_info "Building documentation analysis prompt"
     print_info "YAML Project Kind File: $yaml_project_kind_file"
+    
+    # Validate inputs - provide clear guidance if empty
+    if [[ -z "$changed_files" || "$changed_files" == " " ]]; then
+        print_warning "No changed files detected - using generic documentation review prompt"
+        changed_files="(No specific file changes detected - performing general documentation review)"
+    fi
+    
+    if [[ -z "$doc_files" || "$doc_files" == " " ]]; then
+        print_warning "No documentation files specified - using all common docs"
+        doc_files="README.md, docs/, .github/copilot-instructions.md"
+    fi
+    
+    # Count changed files and provide summary if too many
+    local file_count
+    file_count=$(echo "$changed_files" | wc -w)
+    if [[ $file_count -gt 20 ]]; then
+        print_info "Large number of changes detected ($file_count files)"
+        # Provide summary instead of full list
+        local file_summary="$file_count files changed across multiple directories"
+        local dir_summary
+        dir_summary=$(echo "$changed_files" | tr ' ' '\n' | xargs -I {} dirname {} | sort -u | head -10 | tr '\n' ', ')
+        changed_files="**Change Summary**: ${file_summary}
+**Affected directories**: ${dir_summary}
+**Action Required**: Review documentation for consistency with these widespread changes.
+
+For detailed file list, check git status or workflow logs."
+    fi
+    
     # Read project kind from config if available
     if [[ -f "$yaml_project_kind_file" ]]; then
         print_info "Reading project kind from config"
-        local project_kind
-        project_kind=$(get_project_kind) || project_kind=$(detect_project_kind | jq -r '.kind')
-        role=$(get_project_kind_prompt "$project_kind" "documentation_specialist" "role")
-        local base_task_context
-        base_task_context=$(get_project_kind_prompt "$project_kind" "documentation_specialist" "task_context")
-        # Include changed files in task_context with proper formatting
-        task_context="Based on the recent changes to the following files:
+        local project_kind=""
+        
+        # Try to get project kind, with proper error handling
+        if command -v get_project_kind &>/dev/null; then
+            project_kind=$(get_project_kind 2>/dev/null || echo "")
+        fi
+        
+        # Fallback to detection if get_project_kind failed
+        if [[ -z "$project_kind" ]] && command -v detect_project_kind &>/dev/null; then
+            project_kind=$(detect_project_kind 2>/dev/null | jq -r '.kind' 2>/dev/null || echo "generic")
+        fi
+        
+        # Final fallback
+        if [[ -z "$project_kind" ]]; then
+            project_kind="generic"
+        fi
+        
+        print_info "Detected project kind: $project_kind"
+        
+        if [[ -n "$project_kind" && "$project_kind" != "generic" && "$project_kind" != "null" ]]; then
+            print_success "Using PROJECT KIND-SPECIFIC prompt for: $project_kind"
+            prompt_type="project_kind_specialized ($project_kind)"
+            
+            role=$(get_project_kind_prompt "$project_kind" "documentation_specialist" "role")
+            local base_task_context
+            base_task_context=$(get_project_kind_prompt "$project_kind" "documentation_specialist" "task_context")
+            # Include changed files in task_context with proper formatting
+            task_context="**Task**: Update documentation based on recent code changes
 
+**Changes Detected**:
 ${changed_files}
 
+**Specific Instructions**:
 ${base_task_context}"
-        approach=$(get_project_kind_prompt "$project_kind" "documentation_specialist" "approach")
+            approach=$(get_project_kind_prompt "$project_kind" "documentation_specialist" "approach")
+        else
+            print_info "Project kind is generic - using standard prompt"
+            prompt_type="generic"
+        fi
+    else
+        print_info "Project kind config not found - using generic prompt"
+        prompt_type="generic"
     fi
 
     # Read from YAML config if available
@@ -120,7 +234,21 @@ ${base_task_context}"
 
         #IF role is still empty, extract from doc_analysis_prompt section   
         if [[ -z "$role" ]]; then
-            role=$(sed -n '/^doc_analysis_prompt:/,/^[a-z_]/p' "$yaml_file" | grep 'role:' | sed 's/^[[:space:]]*role:[[:space:]]*"\(.*\)"[[:space:]]*$/\1/')
+            # Extract multi-line role (supports both | format and quoted format)
+            role=$(awk '/^doc_analysis_prompt:/,/^  task/ {
+                if (/role: \|/) { in_role=1; next }
+                if (in_role && /^  [a-z]/) { exit }
+                if (in_role && /^    /) { 
+                    sub(/^    /, ""); 
+                    if (NR > 1) printf "\n";
+                    printf "%s", $0
+                }
+            }' "$yaml_file")
+            
+            # Fallback: try quoted format if multi-line extraction failed
+            if [[ -z "$role" ]]; then
+                role=$(sed -n '/^doc_analysis_prompt:/,/^[a-z_]/p' "$yaml_file" | grep 'role:' | sed 's/^[[:space:]]*role:[[:space:]]*"\(.*\)"[[:space:]]*$/\1/')
+            fi
         fi
         
         # If task_context is still empty, extract task_template from YAML
@@ -134,28 +262,91 @@ ${base_task_context}"
         fi
         
         # Build task from template or use task_context directly
+        # Priority: task_context (project-kind aware + enhanced) > task_template > fallback
         local task
-        if [[ -n "$task_template" ]]; then
-            # Replace placeholders in task template
-            task="${task_template//\{changed_files\}/$changed_files}"
-            task="${task//\{doc_files\}/$doc_files}"
-        elif [[ -n "$task_context" ]]; then
-            # Use task_context from project kind (already includes changed files from lines 110-112)
+        if [[ -n "$task_context" ]]; then
+            # Use task_context from project kind (already includes changed files + enhancements)
             task="${task_context}
 
-Documentation to review: ${doc_files}"
+**Documentation Files to Review**:
+${doc_files}
+
+**Required Actions** (Complete ALL steps):
+1. Review each documentation file for accuracy against code changes
+2. Update any outdated sections, examples, or references
+3. Ensure consistency across all documentation
+4. Verify cross-references and links are still valid
+5. Update version numbers if applicable
+6. Maintain existing style and formatting
+
+**Default Action**: If changes are widespread and not specifically code-related, focus on:
+- Validating all documentation is still accurate
+- Checking for broken references or outdated information
+- Ensuring consistency in terminology and formatting
+- NO changes are needed if documentation is already accurate
+
+**Output Format**: Provide specific changes as unified diffs or describe what needs updating."
+        elif [[ -n "$task_template" ]]; then
+            # Use task_template from YAML (legacy support)
+            task="${task_template//\{changed_files\}/$changed_files}"
+            task="${task//\{doc_files\}/$doc_files}"
         else
-            # Fallback task
-            task="Based on the recent changes to: ${changed_files}
+            # Enhanced fallback task with clearer instructions and default action
+            task="**Documentation Update Request**
 
-Please update all related documentation.
+**Changed Files**:
+${changed_files}
 
-Documentation to review: ${doc_files}"
+**Documentation to Review and Update**:
+${doc_files}
+
+**PRIMARY TASK**: 
+Review the listed documentation files and determine if they need updates based on the changed files above.
+
+**Step-by-Step Instructions**:
+1. **Analyze Changes**: Review what changed in the code/documentation files
+2. **Identify Impact**: Determine which documentation sections are affected
+3. **Make Updates**: Update ONLY the specific sections that are outdated or incorrect
+4. **Validate References**: Ensure all cross-references, examples, and links remain valid
+5. **Maintain Style**: Keep consistent terminology, formatting, and writing style
+
+**When to Update vs. Not Update**:
+- ✅ UPDATE if: Code behavior changed, APIs modified, new features added, examples are outdated
+- ❌ DON'T UPDATE if: Documentation is already accurate and complete
+- ⚠️  NOTE: Many file changes doesn't always mean documentation needs changes
+
+**Default Action for Widespread Changes**:
+If the changeset is large and documentation-focused (not code changes):
+1. Validate existing documentation is still accurate
+2. Check for consistency across all docs
+3. Report \"No updates needed\" if documentation is already correct
+4. Only update if you find actual inaccuracies
+
+**Output Format Required**:
+Provide one of:
+- Specific documentation updates as unified diffs
+- List of files with descriptions of needed changes
+- Statement \"No documentation updates needed\" with brief explanation
+
+**Important**: Be specific and surgical - don't suggest changes just because files were modified. Only update if documentation is actually incorrect or incomplete."
         fi
         
         build_ai_prompt "$role" "$task" "$approach"
+        
+        # Display prompt type indicator
+        echo ""
+        print_info "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+        if [[ "$prompt_type" == "generic" ]]; then
+            print_warning "📋 Prompt Type: GENERIC (no project kind customization)"
+        else
+            print_success "🎯 Prompt Type: ${prompt_type^^}"
+        fi
+        print_info "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+        echo ""
     else
         # Fallback to hardcoded strings if YAML not available
+        prompt_type="generic (yaml not found)"
+        print_warning "YAML config not available - using hardcoded generic prompt"
         build_ai_prompt \
             "You are a senior technical documentation specialist with expertise in software architecture documentation, API documentation, and developer experience (DX) optimization." \
             "Based on the recent changes to the following files: ${changed_files}
@@ -173,6 +364,13 @@ Documentation to review: ${doc_files}" \
 - Be surgical and precise - don't modify unrelated documentation
 - Ensure consistency in terminology, formatting, and style
 - Maintain professional technical writing standards"
+        
+        # Display prompt type for hardcoded fallback
+        echo ""
+        print_info "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+        print_warning "📋 Prompt Type: ${prompt_type^^}"
+        print_info "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+        echo ""
     fi
 }
 
@@ -470,12 +668,23 @@ build_step2_consistency_prompt() {
             }
         ')
         
+        # Get project metadata
+        local metadata
+        metadata=$(get_project_metadata)
+        local project_name="${metadata%%|*}"
+        local temp="${metadata#*|}"
+        local project_description="${temp%%|*}"
+        local primary_language="${temp#*|}"
+        
         # Replace placeholders in task template
         local task="${task_template//\{doc_count\}/$doc_count}"
         task="${task//\{change_scope\}/$change_scope}"
         task="${task//\{modified_count\}/$modified_count}"
         task="${task//\{broken_refs_content\}/$broken_refs_content}"
         task="${task//\{doc_files\}/$doc_files}"
+        task="${task//\{project_name\}/$project_name}"
+        task="${task//\{project_description\}/$project_description}"
+        task="${task//\{primary_language\}/$primary_language}"
         
         cat << EOF
 **Role**: ${role}
@@ -486,13 +695,22 @@ build_step2_consistency_prompt() {
 EOF
     else
         # Fallback to hardcoded strings if YAML not available
+        # Get project metadata for dynamic context
+        local metadata
+        metadata=$(get_project_metadata)
+        local project_name="${metadata%%|*}"
+        local temp="${metadata#*|}"
+        local project_description="${temp%%|*}"
+        local primary_language="${temp#*|}"
+        
         cat << EOF
 **Role**: You are a senior technical documentation specialist and information architect with expertise in documentation quality assurance, technical writing standards, and cross-reference validation.
 
 **Task**: Perform a comprehensive documentation consistency analysis for this project.
 
 **Context:**
-- Project: MP Barbosa Personal Website (static HTML with Material Design)
+- Project: ${project_name} (${project_description})
+- Primary Language: ${primary_language}
 - Documentation files: ${doc_count} markdown files
 - Scope: ${change_scope}
 - Recent changes: ${modified_count} files modified
@@ -582,12 +800,23 @@ build_step3_script_refs_prompt() {
             }
         ')
         
+        # Get project metadata
+        local metadata
+        metadata=$(get_project_metadata)
+        local project_name="${metadata%%|*}"
+        local temp="${metadata#*|}"
+        local project_description="${temp%%|*}"
+        local primary_language="${temp#*|}"
+        
         # Replace placeholders in task template
         local task="${task_template//\{script_count\}/$script_count}"
         task="${task//\{change_scope\}/$change_scope}"
         task="${task//\{issues\}/$issues}"
         task="${task//\{script_issues_content\}/$script_issues_content}"
         task="${task//\{all_scripts\}/$all_scripts}"
+        task="${task//\{project_name\}/$project_name}"
+        task="${task//\{project_description\}/$project_description}"
+        task="${task//\{primary_language\}/$primary_language}"
         
         cat << EOF
 **Role**: ${role}
@@ -598,13 +827,22 @@ build_step3_script_refs_prompt() {
 EOF
     else
         # Fallback to hardcoded strings if YAML not available
+        # Get project metadata for dynamic context
+        local metadata
+        metadata=$(get_project_metadata)
+        local project_name="${metadata%%|*}"
+        local temp="${metadata#*|}"
+        local project_description="${temp%%|*}"
+        local primary_language="${temp#*|}"
+        
         cat << EOF
 **Role**: You are a senior technical documentation specialist and DevOps documentation expert with expertise in shell script documentation, automation workflow documentation, and command-line tool reference guides.
 
 **Task**: Perform comprehensive validation of shell script references and documentation quality for this project's automation scripts.
 
 **Context:**
-- Project: MP Barbosa Personal Website
+- Project: ${project_name} (${project_description})
+- Primary Language: ${primary_language}
 - Shell Scripts Directory: src/workflow/
 - Total Scripts: ${script_count}
 - Scope: ${change_scope}
@@ -714,6 +952,14 @@ build_step4_directory_prompt() {
             }
         ')
         
+        # Get project metadata
+        local metadata
+        metadata=$(get_project_metadata)
+        local project_name="${metadata%%|*}"
+        local temp="${metadata#*|}"
+        local project_description="${temp%%|*}"
+        local primary_language="${temp#*|}"
+        
         # Replace placeholders in task template
         local task="${task_template//\{dir_count\}/$dir_count}"
         task="${task//\{change_scope\}/$change_scope}"
@@ -722,6 +968,9 @@ build_step4_directory_prompt() {
         task="${task//\{doc_structure_mismatch\}/$doc_structure_mismatch}"
         task="${task//\{structure_issues_content\}/$structure_issues_content}"
         task="${task//\{dir_tree\}/$dir_tree}"
+        task="${task//\{project_name\}/$project_name}"
+        task="${task//\{project_description\}/$project_description}"
+        task="${task//\{primary_language\}/$primary_language}"
         
         cat << EOF
 **Role**: ${role}
@@ -732,13 +981,22 @@ build_step4_directory_prompt() {
 EOF
     else
         # Fallback to hardcoded strings if YAML not available
+        # Get project metadata for dynamic context
+        local metadata
+        metadata=$(get_project_metadata)
+        local project_name="${metadata%%|*}"
+        local temp="${metadata#*|}"
+        local project_description="${temp%%|*}"
+        local primary_language="${temp#*|}"
+        
         cat << EOF
 **Role**: You are a senior software architect and technical documentation specialist with expertise in project structure conventions, architectural patterns, code organization best practices, and documentation alignment.
 
 **Task**: Perform comprehensive validation of directory structure and architectural organization for this project.
 
 **Context:**
-- Project: MP Barbosa Personal Website (static HTML with Material Design + submodules)
+- Project: ${project_name} (${project_description})
+- Primary Language: ${primary_language}
 - Total Directories: ${dir_count} (excluding node_modules, .git, coverage)
 - Scope: ${change_scope}
 - Critical Directories Missing: ${missing_critical}
@@ -842,6 +1100,14 @@ build_step5_test_review_prompt() {
             }
         ')
         
+        # Get project metadata
+        local metadata
+        metadata=$(get_project_metadata)
+        local project_name="${metadata%%|*}"
+        local temp="${metadata#*|}"
+        local project_description="${temp%%|*}"
+        local primary_language="${temp#*|}"
+        
         # Replace placeholders in task template
         local task="${task_template//\{test_framework\}/$test_framework}"
         task="${task//\{test_env\}/$test_env}"
@@ -852,6 +1118,9 @@ build_step5_test_review_prompt() {
         task="${task//\{coverage_exists\}/$coverage_exists}"
         task="${task//\{test_issues_content\}/$test_issues_content}"
         task="${task//\{test_files\}/$test_files}"
+        task="${task//\{project_name\}/$project_name}"
+        task="${task//\{project_description\}/$project_description}"
+        task="${task//\{primary_language\}/$primary_language}"
         
         cat << EOF
 **Role**: ${role}
@@ -862,13 +1131,22 @@ build_step5_test_review_prompt() {
 EOF
     else
         # Fallback to hardcoded strings if YAML not available
+        # Get project metadata for dynamic context
+        local metadata
+        metadata=$(get_project_metadata)
+        local project_name="${metadata%%|*}"
+        local temp="${metadata#*|}"
+        local project_description="${temp%%|*}"
+        local primary_language="${temp#*|}"
+        
         cat << EOF
 **Role**: You are a senior QA engineer and test automation specialist with expertise in testing strategies, Jest framework, code coverage analysis, test-driven development (TDD), behavior-driven development (BDD), and continuous integration best practices.
 
 **Task**: Perform comprehensive review of existing tests and provide recommendations for test generation and coverage improvement.
 
 **Context:**
-- Project: MP Barbosa Personal Website (static HTML + JavaScript with ES Modules)
+- Project: ${project_name} (${project_description})
+- Primary Language: ${primary_language}
 - Test Framework: ${test_framework}
 - Test Environment: ${test_env}
 - Total Test Files: ${test_count}
@@ -991,6 +1269,14 @@ build_step7_test_exec_prompt() {
             }
         ')
         
+        # Get project metadata
+        local metadata
+        metadata=$(get_project_metadata)
+        local project_name="${metadata%%|*}"
+        local temp="${metadata#*|}"
+        local project_description="${temp%%|*}"
+        local primary_language="${temp#*|}"
+        
         # Replace placeholders in task template
         local task="${task_template//\{test_exit_code\}/$test_exit_code}"
         task="${task//\{tests_total\}/$tests_total}"
@@ -999,6 +1285,9 @@ build_step7_test_exec_prompt() {
         task="${task//\{execution_summary\}/$execution_summary}"
         task="${task//\{test_output\}/$test_output}"
         task="${task//\{failed_test_list\}/$failed_test_list}"
+        task="${task//\{project_name\}/$project_name}"
+        task="${task//\{project_description\}/$project_description}"
+        task="${task//\{primary_language\}/$primary_language}"
         
         cat << EOF
 **Role**: ${role}
@@ -1009,13 +1298,22 @@ build_step7_test_exec_prompt() {
 EOF
     else
         # Fallback to hardcoded strings if YAML not available
+        # Get project metadata for dynamic context
+        local metadata
+        metadata=$(get_project_metadata)
+        local project_name="${metadata%%|*}"
+        local temp="${metadata#*|}"
+        local project_description="${temp%%|*}"
+        local primary_language="${temp#*|}"
+        
         cat << EOF
 **Role**: You are a senior CI/CD engineer and test results analyst with expertise in test execution diagnostics, failure root cause analysis, code coverage interpretation, performance optimization, and continuous integration best practices.
 
 **Task**: Analyze test execution results, diagnose failures, and provide actionable recommendations for improving test suite quality and CI/CD integration.
 
 **Context:**
-- Project: MP Barbosa Personal Website (static HTML + JavaScript with ES Modules)
+- Project: ${project_name} (${project_description})
+- Primary Language: ${primary_language}
 - Test Framework: Jest with ES Modules (experimental-vm-modules)
 - Test Command: npm run test:coverage
 - Exit Code: ${test_exit_code}
@@ -1128,6 +1426,14 @@ build_step8_dependencies_prompt() {
             }
         ')
         
+        # Get project metadata
+        local metadata
+        metadata=$(get_project_metadata)
+        local project_name="${metadata%%|*}"
+        local temp="${metadata#*|}"
+        local project_description="${temp%%|*}"
+        local primary_language="${temp#*|}"
+        
         # Replace placeholders in task template
         local task="${task_template//\{node_version\}/$node_version}"
         task="${task//\{npm_version\}/$npm_version}"
@@ -1139,6 +1445,9 @@ build_step8_dependencies_prompt() {
         task="${task//\{prod_deps\}/$prod_deps}"
         task="${task//\{dev_deps\}/$dev_deps}"
         task="${task//\{audit_summary\}/$audit_summary}"
+        task="${task//\{project_name\}/$project_name}"
+        task="${task//\{project_description\}/$project_description}"
+        task="${task//\{primary_language\}/$primary_language}"
         task="${task//\{outdated_list\}/$outdated_list}"
         
         cat << EOF
@@ -1150,13 +1459,22 @@ build_step8_dependencies_prompt() {
 EOF
     else
         # Fallback to hardcoded strings if YAML not available
+        # Get project metadata for dynamic context
+        local metadata
+        metadata=$(get_project_metadata)
+        local project_name="${metadata%%|*}"
+        local temp="${metadata#*|}"
+        local project_description="${temp%%|*}"
+        local primary_language="${temp#*|}"
+        
         cat << EOF
 **Role**: You are a senior DevOps engineer and package management specialist with expertise in npm/yarn ecosystem, security vulnerability assessment, version compatibility analysis, dependency tree optimization, and environment configuration best practices.
 
 **Task**: Analyze project dependencies, assess security risks, evaluate version compatibility, and provide recommendations for dependency management and environment setup.
 
 **Context:**
-- Project: MP Barbosa Personal Website (static HTML + JavaScript with ES Modules)
+- Project: ${project_name} (${project_description})
+- Primary Language: ${primary_language}
 - Package Manager: npm
 - Node.js Version: ${node_version}
 - npm Version: ${npm_version}
@@ -1283,6 +1601,14 @@ build_step9_code_quality_prompt() {
             formatted_large_files="None"
         fi
         
+        # Get project metadata
+        local metadata
+        metadata=$(get_project_metadata)
+        local project_name="${metadata%%|*}"
+        local temp="${metadata#*|}"
+        local project_description="${temp%%|*}"
+        local primary_language="${temp#*|}"
+        
         # Replace placeholders in task template
         local task="${task_template//\{total_files\}/$total_files}"
         task="${task//\{js_files\}/$js_files}"
@@ -1292,6 +1618,9 @@ build_step9_code_quality_prompt() {
         task="${task//\{quality_report_content\}/$quality_report_content}"
         task="${task//\{large_files_list\}/$formatted_large_files}"
         task="${task//\{sample_code\}/$sample_code}"
+        task="${task//\{project_name\}/$project_name}"
+        task="${task//\{project_description\}/$project_description}"
+        task="${task//\{primary_language\}/$primary_language}"
         
         local base_prompt=$(cat << EOF
 **Role**: ${role}
@@ -1304,7 +1633,7 @@ EOF
         
         # Phase 4: Add language-specific quality standards
         if should_use_language_aware_prompts && command -v get_language_quality_standards &>/dev/null; then
-            local quality_standards=$(get_language_quality_standards)
+            local quality_standards=$(get_language_quality_standards "${PRIMARY_LANGUAGE:-bash}")
             if [[ -n "$quality_standards" ]]; then
                 echo "$base_prompt"
                 echo ""
@@ -1318,13 +1647,22 @@ EOF
         fi
     else
         # Fallback to hardcoded strings if YAML not available
+        # Get project metadata for dynamic context
+        local metadata
+        metadata=$(get_project_metadata)
+        local project_name="${metadata%%|*}"
+        local temp="${metadata#*|}"
+        local project_description="${temp%%|*}"
+        local primary_language="${temp#*|}"
+        
         cat << EOF
 **Role**: You are a senior software quality engineer and code review specialist with expertise in code quality standards, static analysis, linting best practices, design patterns, maintainability assessment, and technical debt identification.
 
 **Task**: Perform comprehensive code quality review, identify anti-patterns, assess maintainability, and provide recommendations for improving code quality and reducing technical debt.
 
 **Context:**
-- Project: MP Barbosa Personal Website (static HTML + JavaScript with ES Modules)
+- Project: ${project_name} (${project_description})
+- Primary Language: ${primary_language}
 - Technology Stack: HTML5, CSS3, JavaScript ES6+, ES Modules
 - Testing: Jest with jsdom
 - Code Files: ${total_files} total (${js_files} JavaScript, ${html_files} HTML, ${css_files} CSS)
@@ -1440,6 +1778,14 @@ build_step11_git_commit_prompt() {
             }
         }' "$yaml_file")
         
+        # Get project metadata
+        local metadata
+        metadata=$(get_project_metadata)
+        local project_name="${metadata%%|*}"
+        local temp="${metadata#*|}"
+        local project_description="${temp%%|*}"
+        local primary_language="${temp#*|}"
+        
         # Replace placeholders in task template
         local task="${task_template//\{script_version\}/$script_version}"
         task="${task//\{change_scope\}/${change_scope:-General updates}}"
@@ -1448,6 +1794,9 @@ build_step11_git_commit_prompt() {
         task="${task//\{diff_summary\}/$diff_summary}"
         task="${task//\{git_analysis_content\}/$git_analysis_content}"
         task="${task//\{diff_sample\}/$diff_sample}"
+        task="${task//\{project_name\}/$project_name}"
+        task="${task//\{project_description\}/$project_description}"
+        task="${task//\{primary_language\}/$primary_language}"
         
         # Replace placeholders in approach
         local final_approach="${approach//\{script_version\}/$script_version}"
@@ -1461,13 +1810,22 @@ build_step11_git_commit_prompt() {
 EOF
     else
         # Fallback to hardcoded strings if YAML not available
+        # Get project metadata for dynamic context
+        local metadata
+        metadata=$(get_project_metadata)
+        local project_name="${metadata%%|*}"
+        local temp="${metadata#*|}"
+        local project_description="${temp%%|*}"
+        local primary_language="${temp#*|}"
+        
         cat << EOF
 **Role**: You are a senior git workflow specialist and technical communication expert with expertise in conventional commits, semantic versioning, git best practices, technical writing, and commit message optimization.
 
 **Task**: Generate a professional conventional commit message that clearly communicates the changes, follows best practices, and provides useful context for code reviewers and future maintainers.
 
 **Context:**
-- Project: MP Barbosa Personal Website (static HTML + JavaScript with ES Modules)
+- Project: ${project_name} (${project_description})
+- Primary Language: ${primary_language}
 - Workflow: Tests & Documentation Automation v${script_version}
 - Change Scope: ${change_scope:-General updates}
 
@@ -1570,13 +1928,85 @@ EOF
 # ==============================================================================
 
 # Execute a Copilot CLI prompt with proper error handling
+# ==============================================================================
+# BATCH AI EXECUTION
+# ==============================================================================
+
+# Execute Copilot prompt in batch (non-interactive) mode
+# This function runs AI analysis without user interaction, capturing the full response
+# Usage: execute_copilot_batch <prompt_text> <log_file> [timeout_seconds]
+execute_copilot_batch() {
+    local prompt_text="$1"
+    local log_file="$2"
+    local timeout="${3:-300}"  # Default 5 minute timeout
+    
+    if ! is_copilot_available; then
+        print_warning "Copilot CLI not available, skipping AI analysis"
+        return 1
+    fi
+    
+    if ! is_copilot_authenticated; then
+        print_error "Copilot CLI is not authenticated"
+        return 1
+    fi
+    
+    print_info "Executing AI analysis in batch mode (timeout: ${timeout}s)..."
+    
+    # Ensure log directory exists
+    mkdir -p "$(dirname "$log_file")"
+    
+    # Write prompt to temporary file
+    local temp_prompt_file
+    temp_prompt_file=$(mktemp)
+    echo "$prompt_text" > "$temp_prompt_file"
+    
+    # Execute with timeout and non-interactive flags
+    local exit_code=0
+    if timeout "${timeout}s" bash -c "cat '$temp_prompt_file' | copilot --allow-all-tools --allow-all-paths 2>&1 | tee '$log_file'"; then
+        print_success "AI batch analysis completed"
+        exit_code=0
+    else
+        local timeout_exit=$?
+        if [[ $timeout_exit -eq 124 ]]; then
+            print_warning "AI batch analysis timed out after ${timeout}s"
+            echo "# TIMEOUT: Analysis exceeded ${timeout}s" >> "$log_file"
+        else
+            print_error "AI batch analysis failed (exit code: $timeout_exit)"
+        fi
+        exit_code=1
+    fi
+    
+    # Clean up
+    rm -f "$temp_prompt_file"
+    
+    return $exit_code
+}
+
+# Enhanced execute_copilot_prompt with batch mode support
 # Usage: execute_copilot_prompt <prompt_text> [log_file]
 execute_copilot_prompt() {
     local prompt_text="$1"
     local log_file="${2:-}"
     
+    # Check for batch mode (hybrid auto mode)
+    if [[ "${AI_BATCH_MODE:-false}" == "true" ]]; then
+        if [[ -n "$log_file" ]]; then
+            execute_copilot_batch "$prompt_text" "$log_file"
+            return $?
+        else
+            print_warning "Batch mode requires log file - skipping AI analysis"
+            return 1
+        fi
+    fi
+    
     if [[ "$AUTO_MODE" == true ]]; then
         print_info "Auto mode: Skipping AI prompt execution"
+        # Create empty log file to prevent downstream errors
+        if [[ -n "$log_file" ]]; then
+            mkdir -p "$(dirname "$log_file")"
+            echo "# Auto mode - AI prompt execution skipped" > "$log_file"
+            echo "# Timestamp: $(date '+%Y-%m-%d %H:%M:%S')" >> "$log_file"
+        fi
         return 0
     fi
     
@@ -1608,9 +2038,10 @@ execute_copilot_prompt() {
         mkdir -p "$log_dir"
         
         # Use stdin to avoid ARG_MAX: read prompt from file and pipe to copilot
-        cat "$temp_prompt_file" | copilot --allow-all-tools 2>&1 | tee "$log_file"
+        # Use --allow-all-paths to enable access to target project files
+        cat "$temp_prompt_file" | copilot --allow-all-tools --allow-all-paths 2>&1 | tee "$log_file"
     else
-        cat "$temp_prompt_file" | copilot --allow-all-tools
+        cat "$temp_prompt_file" | copilot --allow-all-tools --allow-all-paths
     fi
     
     local exit_code=$?
@@ -1626,6 +2057,8 @@ execute_copilot_prompt() {
         return 1
     fi
 }
+
+export -f execute_copilot_batch
 
 # Trigger an AI-enhanced step with confirmation
 # Usage: trigger_ai_step <step_name> <prompt_builder_function> <args...>
@@ -1813,7 +2246,8 @@ extract_and_save_issues_from_log() {
         if confirm_action "Run GitHub Copilot CLI to extract and organize issues from the log?" "y"; then
             sleep 1
             print_info "Starting Copilot CLI session for issue extraction..."
-            copilot -p "$extract_prompt" --allow-all-tools
+            # Use --allow-all-paths to enable access to target project files
+            copilot -p "$extract_prompt" --allow-all-tools --allow-all-paths
             
             # Collect organized issues using reusable function
             local organized_issues
@@ -1977,7 +2411,7 @@ ${standards}
             ;;
         
         testing)
-            local patterns=$(get_language_testing_patterns)
+            local patterns=$(get_language_testing_patterns "${PRIMARY_LANGUAGE:-bash}")
             if [[ -n "$patterns" ]]; then
                 enhanced_prompt+="
 **${language^} Testing Framework:**

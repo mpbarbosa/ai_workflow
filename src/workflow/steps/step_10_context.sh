@@ -169,6 +169,14 @@ step10_context_analysis() {
     local context_report_content
     context_report_content=$(cat "$context_report" 2>/dev/null || echo "   No additional context")
     
+    # Get project metadata for dynamic context
+    local metadata
+    metadata=$(get_project_metadata)
+    local project_name="${metadata%%|*}"
+    local temp="${metadata#*|}"
+    local project_description="${temp%%|*}"
+    local primary_language="${temp#*|}"
+    
     # Build comprehensive strategic analysis prompt
     local copilot_prompt
     copilot_prompt="**Role**: You are a senior technical project manager and workflow orchestration specialist with expertise in software development workflows, continuous integration strategies, change impact assessment, risk management, and adaptive process optimization.
@@ -176,7 +184,8 @@ step10_context_analysis() {
 **Task**: Analyze the complete workflow execution context, assess effectiveness, identify risks and opportunities, and provide strategic recommendations for workflow optimization and next steps.
 
 **Context:**
-- Project: MP Barbosa Personal Website (static HTML + JavaScript with ES Modules)
+- Project: ${project_name} (${project_description})
+- Primary Language: ${primary_language}
 - Workflow: Tests & Documentation Automation v${SCRIPT_VERSION}
 - Execution Mode: ${INTERACTIVE_MODE:+Interactive}${AUTO_MODE:+Automatic}${DRY_RUN:+Dry-Run}
 - Total Steps: $total_steps

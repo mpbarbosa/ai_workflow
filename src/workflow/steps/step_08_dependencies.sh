@@ -100,18 +100,27 @@ Validation focused on system tools and git repository health.
         return 0
     fi
     
-    # For Node.js projects, validate npm dependencies
-    if [[ " ${tech_stack[*]} " =~ " nodejs " ]]; then
-        # Determine package.json location
-        local pkg_dir="$SRC_DIR"
-        if [[ ! -f "$SRC_DIR/package.json" ]] && [[ -f "$PROJECT_ROOT/package.json" ]]; then
-            pkg_dir="$PROJECT_ROOT"
+    # Determine working directory based on tech stack
+    # For JavaScript/Node.js projects, check PROJECT_ROOT (set by --target)
+    local work_dir="$PROJECT_ROOT"
+    
+    # Verify package.json exists before proceeding
+    if [[ "$language" =~ ^(javascript|typescript|nodejs)$ ]]; then
+        if [[ ! -f "${work_dir}/package.json" ]]; then
+            # Try SRC_DIR as fallback
+            if [[ -f "${SRC_DIR}/package.json" ]]; then
+                work_dir="$SRC_DIR"
+            fi
         fi
-        
-        cd "$pkg_dir" || return 1
-    else
-        cd "$SRC_DIR" || return 1
     fi
+    
+    print_info "Working directory: $work_dir"
+    print_info "DEBUG: Checking for package.json at: ${work_dir}/${package_file}"
+    
+    cd "$work_dir" || {
+        print_error "Cannot navigate to working directory: $work_dir"
+        return 1
+    }
     
     local issues=0
     local dependency_report
