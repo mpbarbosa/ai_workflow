@@ -153,7 +153,7 @@ WORKFLOW_SCRIPTS_DIR="${PROJECT_ROOT}/src/workflow"  # ✅ CORRECT PATH
 
 **Line 939-941** (Documentation Check):
 ```bash
-# ❌ CURRENT (BROKEN)
+# ❌ CURRENT (BROKEN) - Intentional example showing incorrect path
 if [[ ! -f "shell_scripts/README.md" ]]; then
     echo "Warning: shell_scripts/README.md not found"
 fi
@@ -361,7 +361,7 @@ sed -i 's|shell_scripts/|src/workflow/|g' src/workflow/lib/ai_helpers.yaml
 
 **Current State**:
 ```markdown
-<!-- ❌ BROKEN LINKS -->
+<!-- ❌ BROKEN LINKS - Intentional examples showing incorrect paths -->
 - [Shell Scripts Documentation](/shell_scripts/README.md)
 - [Shell Scripts Changelog](/shell_scripts/CHANGELOG.md)
 ```
@@ -370,7 +370,7 @@ sed -i 's|shell_scripts/|src/workflow/|g' src/workflow/lib/ai_helpers.yaml
 ```markdown
 <!-- ✅ CORRECTED LINKS -->
 - [Workflow Scripts Documentation](/src/workflow/README.md)
-- [Workflow Version History](../../MIGRATION_README.md#version-history)
+- [Workflow Version Evolution](../../workflow-automation/WORKFLOW_AUTOMATION_VERSION_EVOLUTION.md)
 ```
 
 ---
@@ -382,6 +382,7 @@ sed -i 's|shell_scripts/|src/workflow/|g' src/workflow/lib/ai_helpers.yaml
 
 **Current State**:
 ```markdown
+<!-- Intentional example showing broken link -->
 See [Shell Scripts README](/shell_scripts/README.md) for details.
 ```
 

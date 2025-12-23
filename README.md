@@ -3,7 +3,7 @@
 Intelligent workflow automation system for validating and enhancing documentation, code, and tests with AI support.
 
 **Migrated from**: mpbarbosa_site repository (2025-12-18)  
-**Version**: v2.3.1  
+**Version**: v2.4.0  
 **Repository**: [github.com/mpbarbosa/ai_workflow](https://github.com/mpbarbosa/ai_workflow)
 
 ## Overview
@@ -12,9 +12,10 @@ This repository provides a comprehensive, modular workflow automation system tha
 
 ### Key Features
 
-- **13-Step Automated Pipeline**: Complete workflow from analysis to finalization
+- **15-Step Automated Pipeline**: Complete workflow from analysis to finalization
 - **28 Library Modules**: Modular architecture with AI caching and advanced optimization (27 .sh modules + 1 .yaml config)
-- **AI Integration**: GitHub Copilot CLI with 13 specialized personas
+- **AI Integration**: GitHub Copilot CLI with 14 specialized personas
+- **UX Analysis** (v2.4.0): AI-powered UI/UX analysis with accessibility checking (Step 14)
 - **Smart Execution** (v2.3): Skip steps based on change detection (40-85% faster)
 - **Parallel Execution** (v2.3): Run independent steps simultaneously (33% faster)
 - **AI Response Caching** (v2.3): Reduce token usage by 60-80%
@@ -98,7 +99,7 @@ cd /path/to/target/project
 
 ## Documentation
 
-- **[MIGRATION_README.md](MIGRATION_README.md)**: Migration details and architecture overview
+- **[MIGRATION_README.md](docs/reports/implementation/MIGRATION_README.md)**: Migration details and architecture overview
 - **[docs/workflow-automation/](docs/workflow-automation/)**: Comprehensive documentation
 - **[src/workflow/README.md](src/workflow/README.md)**: Module API reference
 
@@ -119,7 +120,7 @@ ai_workflow/
 ├── src/workflow/                  # Workflow automation system
 │   ├── execute_tests_docs_workflow.sh  # Main orchestrator (4,740 lines)
 │   ├── lib/                       # 28 library modules (12,671 lines: 27 .sh + 1 .yaml)
-│   ├── steps/                     # 13 step modules (3,200 lines)
+│   ├── steps/                     # 15 step modules (3,786 lines)
 │   ├── config/                    # YAML configuration
 │   └── backlog/                   # Execution history
 ├── templates/                     # Reusable templates
@@ -129,7 +130,8 @@ ai_workflow/
 │   ├── unit/                      # Unit tests (4 tests)
 │   ├── integration/               # Integration tests (5 tests)
 │   └── run_all_tests.sh           # Master test runner
-├── MIGRATION_README.md            # Migration documentation
+├── docs/reports/implementation/
+│   └── MIGRATION_README.md        # Migration documentation
 └── README.md                      # This file
 ```
 
@@ -170,4 +172,4 @@ The repository includes GitHub Actions workflows for automated testing and valid
 
 ---
 
-For detailed information, see [MIGRATION_README.md](MIGRATION_README.md)
+For detailed information, see [MIGRATION_README.md](docs/reports/implementation/MIGRATION_README.md)

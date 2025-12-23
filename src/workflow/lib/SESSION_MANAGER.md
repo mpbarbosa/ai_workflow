@@ -257,7 +257,7 @@ main "$@"
 
 ## Testing
 
-Comprehensive test suite: `test_session_manager.sh`
+Comprehensive test suite: `tests/integration/test_session_manager.sh`
 
 **Test Coverage:**
 - ✅ Session ID generation and uniqueness
@@ -271,7 +271,7 @@ Comprehensive test suite: `test_session_manager.sh`
 **Run Tests:**
 ```bash
 cd src/workflow
-bash test_session_manager.sh
+bash tests/integration/test_session_manager.sh
 ```
 
 **Test Results:**
@@ -406,4 +406,4 @@ wait_for_session "$session_id" 300
 - [Workflow Automation README](../README.md)
 - [Configuration Module](config.sh)
 - [Utilities Module](utils.sh)
-- [Test Suite](test_session_manager.sh)
+- [Test Suite](../../../tests/integration/test_session_manager.sh)

@@ -19,8 +19,8 @@
 
    - Script version: v2.0.0
    - Found in copilot-instructions.md:
-     Line 971:- **[Workflow Automation Version Evolution](../docs/workflow-automation/WORKFLOW_AUTOMATION_VERSION_EVOLUTION.md)** - Version history v1.0.0 through v2.0.0 (current with output limits enhancement and auto-mode)
-     Line 973:- **[Workflow Automation Phase 2 Completion](../docs/workflow-automation/WORKFLOW_AUTOMATION_PHASE2_COMPLETION.md)** - Implementation completion report for v1.0.0 (HISTORICAL)
+     Line 971:- **[Workflow Automation Version Evolution](../../../docs/workflow-automation/WORKFLOW_AUTOMATION_VERSION_EVOLUTION.md)** - Version history v1.0.0 through v2.0.0 (current with output limits enhancement and auto-mode)
+     Line 973:- **[Workflow Automation Phase 2 Completion](../../../docs/workflow-automation/WORKFLOW_AUTOMATION_PHASE2_COMPLETION.md)** - Implementation completion report for v1.0.0 (HISTORICAL)
    - Update all references to v2.0.0
 
 

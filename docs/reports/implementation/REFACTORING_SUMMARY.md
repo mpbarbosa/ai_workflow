@@ -577,10 +577,10 @@ The refactoring establishes a scalable foundation for future enhancements while 
 
 ## References
 
-- [Modularization Phase 3 Completion Report](/MODULARIZATION_PHASE3_COMPLETION.md)
-- [Orchestrator Architecture Guide](/docs/ORCHESTRATOR_ARCHITECTURE.md)
-- [Orchestrators README](/src/workflow/orchestrators/README.md)
-- [Main Coordinator Script](/src/workflow/execute_tests_docs_workflow_v2.4.sh)
+- [Modularization Phase 3 Completion Report](../MODULARIZATION_PHASE3_COMPLETION.md)
+- [Orchestrator Architecture Guide](../../ORCHESTRATOR_ARCHITECTURE.md)
+- [Orchestrators README](../../../src/workflow/orchestrators/README.md)
+- [Main Coordinator Script](../../../src/workflow/execute_tests_docs_workflow_v2.4.sh)
 
 ---
 

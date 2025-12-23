@@ -174,6 +174,6 @@ Step 8: Validate Dependencies & Environment
 ---
 
 **Related Documentation:**
-- [Validation Module](../src/workflow/lib/validation.sh)
-- [Step 8: Dependency Validation](../src/workflow/steps/step_08_dependencies.sh)
-- [Main Workflow](../src/workflow/execute_tests_docs_workflow.sh)
+- [Validation Module](../../src/workflow/lib/validation.sh)
+- [Step 8: Dependency Validation](../../src/workflow/steps/step_08_dependencies.sh)
+- [Main Workflow](../../src/workflow/execute_tests_docs_workflow.sh)

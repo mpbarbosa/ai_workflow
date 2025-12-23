@@ -427,8 +427,8 @@ grep -r "20 Library Modules\|28 Library Modules" --include="*.md" -l
 **Recommendation**: Add comment indicating intentional test case:
 
 ```markdown
-**Example Broken Reference** (intentional test case):
-[Reference](/docs/MISSING.md)
+**Example Broken Reference** (intentional test case - demonstrates validation detection):
+<!-- [Reference](/docs/MISSING.md) --> [Reference to non-existent file - intentional example]
 ```
 
 #### Issue 5.4: Historical Version Document Headers

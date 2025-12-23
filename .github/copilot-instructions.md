@@ -1,18 +1,18 @@
 # GitHub Copilot Instructions - AI Workflow Automation
 
 **Repository**: ai_workflow  
-**Version**: v2.3.1  
-**Last Updated**: 2025-12-18
+**Version**: v2.4.0  
+**Last Updated**: 2025-12-23
 
 ## Project Overview
 
-AI Workflow Automation is an intelligent workflow system for validating and enhancing documentation, code, and tests with AI support. It provides a comprehensive 13-step automated pipeline with advanced optimization features including smart execution, parallel processing, and AI response caching.
+AI Workflow Automation is an intelligent workflow system for validating and enhancing documentation, code, and tests with AI support. It provides a comprehensive 15-step automated pipeline with advanced optimization features including smart execution, parallel processing, AI response caching, and UX/accessibility analysis.
 
 ### Key Capabilities
 
-- **14-Step Automated Pipeline**: Complete workflow from pre-analysis to git finalization
+- **15-Step Automated Pipeline**: Complete workflow from pre-analysis to git finalization
 - **28 Library Modules**: Modular architecture with single responsibility principle (27 .sh + 1 .yaml)
-- **AI Integration**: GitHub Copilot CLI with 13 specialized personas
+- **AI Integration**: GitHub Copilot CLI with 14 specialized personas
 - **Smart Execution**: Change-based step skipping (40-85% faster)
 - **Parallel Execution**: Independent steps run simultaneously (33% faster)
 - **AI Response Caching**: 60-80% token usage reduction with automatic TTL management
@@ -24,11 +24,11 @@ AI Workflow Automation is an intelligent workflow system for validating and enha
 ### Project Statistics
 
 - **Total Lines**: 19,952 shell code + 4,194 YAML configuration = 24,146 total *[See PROJECT_STATISTICS.md]*
-- **Modules**: 48 total (28 libraries + 14 steps + 6 configs)
+- **Modules**: 49 total (28 libraries + 15 steps + 6 configs)
 - **Configuration**: YAML-based externalized prompt templates
 - **Performance**: Up to 90% faster for documentation-only changes
 
-> 📊 See [PROJECT_STATISTICS.md](../PROJECT_STATISTICS.md) for detailed breakdown.
+> 📊 See [PROJECT_STATISTICS.md](../docs/archive/PROJECT_STATISTICS.md) for detailed breakdown.
 
 ## Architecture Patterns
 
@@ -57,7 +57,7 @@ AI Workflow Automation is an intelligent workflow system for validating and enha
 - `workflow_optimization.sh` - Smart execution and parallel processing
 
 #### AI Integration
-- `ai_helpers.sh` - GitHub Copilot CLI integration with 13 personas
+- `ai_helpers.sh` - GitHub Copilot CLI integration with 14 personas
 - `ai_cache.sh` - AI response caching system (NEW in v2.3.0)
 - `ai_helpers.yaml` - Prompt templates (762 lines)
 
@@ -89,7 +89,7 @@ AI Workflow Automation is an intelligent workflow system for validating and enha
 src/workflow/execute_tests_docs_workflow.sh
 ├── Main orchestrator script (4,740 lines)
 ├── Handles all command-line options
-├── Coordinates 13-step workflow execution
+├── Coordinates 15-step workflow execution
 └── Manages parallel execution and metrics
 ```
 
@@ -182,7 +182,7 @@ src/workflow/
 
 ## Development Workflow
 
-### Command-Line Options (v2.3.1)
+### Command-Line Options (v2.4.0)
 
 ```bash
 # Basic usage - runs on current directory by default
@@ -222,7 +222,7 @@ cd /path/to/project
 ./execute_tests_docs_workflow.sh --dry-run
 ```
 
-### Performance Characteristics (v2.3.1)
+### Performance Characteristics (v2.4.0)
 
 | Change Type | Baseline | Smart | Parallel | Combined |
 |-------------|----------|-------|----------|----------|
@@ -306,6 +306,43 @@ Each persona has specialized prompts in `ai_helpers.yaml`. The documentation_spe
 
 ## Version History
 
+### v2.4.0 (2025-12-23) - UX Designer Persona & Step 14
+
+**Major Features**:
+- ✅ Step 14: UX Analysis - AI-powered UI/UX analysis with accessibility checking
+- ✅ UX Designer AI persona with WCAG 2.1 expertise
+- ✅ Intelligent UI detection (React, Vue, Static, TUI)
+- ✅ Smart skipping for non-UI projects (APIs, libraries, CLI tools)
+- ✅ Comprehensive accessibility analysis with automated fallback
+- ✅ Parallel execution support (runs in Group 1 with steps 1, 3, 4, 5, 8, 13)
+
+**New Files**:
+- `src/workflow/steps/step_14_ux_analysis.sh` (605 lines) - UX analysis implementation
+- `tests/unit/test_step_14_ux_analysis.sh` (425 lines) - Comprehensive test suite
+- `tests/unit/test_step_14_ui_detection.sh` (30 lines) - UI detection validation
+- `docs/workflow-automation/UX_DESIGNER_PERSONA_REQUIREMENTS.md` - Functional requirements
+- `docs/workflow-automation/STEP_14_UX_ANALYSIS.md` - Feature documentation
+- `docs/RELEASE_NOTES_v2.4.0.md` - Complete release notes
+
+**Configuration Updates**:
+- Updated `ai_prompts_project_kinds.yaml` - Added UX Designer persona for web_application and documentation_site
+- Updated `step_relevance.yaml` - Step 14 relevance matrix for all project kinds
+- Updated `dependency_graph.sh` - Step 14 dependencies and parallel grouping
+- Updated `execute_tests_docs_workflow.sh` - Step 14 execution with checkpoint support
+
+**Performance Impact**:
+- Execution Time: ~3 minutes (180 seconds)
+- Parallel with: Steps 1, 3, 4, 5, 8, 13 (Group 1)
+- Smart execution: Skips when no UI code changes
+- AI caching: 60-80% token reduction
+
+**Test Coverage**:
+- ✅ UI detection for React/Vue/Static projects
+- ✅ Skip behavior for APIs/libraries
+- ✅ Project kind classification
+- ✅ Automated UX checks fallback
+- ✅ Integration with workflow
+
 ### v2.3.1 (2025-12-18) - Critical Fixes & Checkpoint Control
 
 **New Features**:
@@ -360,7 +397,7 @@ Each persona has specialized prompts in `ai_helpers.yaml`. The documentation_spe
 
 ### v2.0.0 (2025-12-14)
 - Initial modular architecture
-- 13-step workflow pipeline
+- 14-step workflow pipeline (expanded to 15 in v2.4.0)
 - AI integration framework
 
 ## Common Patterns

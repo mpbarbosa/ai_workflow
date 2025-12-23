@@ -62,7 +62,7 @@ ai_workflow/
 **Total Lines:** 24,146 total (19,952 shell + 4,194 YAML) *[See PROJECT_STATISTICS.md]*  
 **Test Coverage:** 37 tests with 100% pass rate
 
-> 📊 See [PROJECT_STATISTICS.md](PROJECT_STATISTICS.md) for detailed breakdown.
+> 📊 See [PROJECT_STATISTICS.md](../../archive/PROJECT_STATISTICS.md) for detailed breakdown.
 
 **Capabilities:**
 1. **Workflow Orchestration**: 13-step automated pipeline

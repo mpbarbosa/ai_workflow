@@ -122,8 +122,9 @@ filename: /path/to/missing/file
 
 **Line 928 - Detection Examples Section**:
 ```diff
-[Link text](/absolute/path/to/file.md)
-![Image alt](/images/picture.png)
+<!-- INTENTIONAL EXAMPLES showing patterns detected by validation -->
+[Link text](/absolute/path/to/file.md)  ← Example absolute path
+![Image alt](/images/picture.png)  ← Example image reference
 - [Reference](/docs/MISSING.md)
 + [Reference](/docs/MISSING.md)  ← Intentional test case for broken reference detection
 ```

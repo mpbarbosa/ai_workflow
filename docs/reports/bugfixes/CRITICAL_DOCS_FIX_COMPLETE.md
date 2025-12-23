@@ -166,7 +166,7 @@ In documentation:
 The project contains 28 library modules and 13 step modules (41 total).
 Total codebase: 26,283 lines (22,216 shell + 4,067 YAML).
 
-See [PROJECT_STATISTICS.md](../PROJECT_STATISTICS.md) for detailed breakdown.
+See [PROJECT_STATISTICS.md](../../archive/PROJECT_STATISTICS.md) for detailed breakdown.
 ```
 
 ## Maintenance Process

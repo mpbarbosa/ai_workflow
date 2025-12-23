@@ -9,7 +9,7 @@
 **Tests:** 50 total tests (37 unit + 13 integration), 100% pass rate ✅
 **Performance:** Up to 90% faster with optimization flags
 
-> 📊 See [PROJECT_STATISTICS.md](../../PROJECT_STATISTICS.md) for official counts.
+> 📊 See [PROJECT_STATISTICS.md](../../docs/archive/PROJECT_STATISTICS.md) for official counts.
 
 ---
 

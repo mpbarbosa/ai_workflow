@@ -170,7 +170,7 @@ find src/workflow -name "*.yaml" -type f -exec wc -l {} + | tail -1
 All documentation should cite this file as the authoritative source:
 
 ```markdown
-See [PROJECT_STATISTICS.md](../PROJECT_STATISTICS.md) for official counts.
+See [PROJECT_STATISTICS.md](PROJECT_STATISTICS.md) for official counts.
 ```
 
 ### Key Files That Reference Statistics

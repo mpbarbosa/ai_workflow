@@ -118,6 +118,7 @@ Documentation claims vary significantly regarding module counts:
 Line numbers with example placeholder paths:
 
 ```markdown
+<!-- INTENTIONAL EXAMPLES BELOW - These demonstrate broken link patterns for validation testing -->
 155: [text](/path/to/file.md)  # Example placeholder
 156: ![alt](/images/pic.png)    # Example placeholder
 269: /path/to/missing/file      # Example path

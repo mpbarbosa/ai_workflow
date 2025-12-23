@@ -18,8 +18,8 @@
 ⚠️  **VERSION MISMATCH**: .github/copilot-instructions.md contains outdated version references
    - Script version: v2.0.0
    - Found in copilot-instructions.md:
-     Line 898:- **[Workflow Automation Version Evolution](../docs/workflow-automation/WORKFLOW_AUTOMATION_VERSION_EVOLUTION.md)** - Version history v1.0.0 through v1.5.0 (current script: v2.0.0 with complete modularization)
-     Line 900:- **[Workflow Automation Phase 2 Completion](../docs/workflow-automation/WORKFLOW_AUTOMATION_PHASE2_COMPLETION.md)** - Implementation completion report for v1.0.0 (HISTORICAL)
+     Line 898:- **[Workflow Automation Version Evolution](../../../docs/workflow-automation/WORKFLOW_AUTOMATION_VERSION_EVOLUTION.md)** - Version history v1.0.0 through v1.5.0 (current script: v2.0.0 with complete modularization)
+     Line 900:- **[Workflow Automation Phase 2 Completion](../../../docs/workflow-automation/WORKFLOW_AUTOMATION_PHASE2_COMPLETION.md)** - Implementation completion report for v1.0.0 (HISTORICAL)
    - Update all references to v2.0.0
 
 

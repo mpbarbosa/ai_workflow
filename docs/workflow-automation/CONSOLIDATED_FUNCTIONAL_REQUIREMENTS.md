@@ -1787,10 +1787,10 @@ JSON:    {"version":"1.5.0","major":1,"minor":5,"patch":0}
 # Absolute path in markdown links
 (?<=\()(/[^)]+)(?=\))
 
-# Examples:
-✅ [text](/path/to/file.md)
-✅ ![alt](/images/pic.png)
-❌ [text](../file.md)  # Relative path (not detected)
+# Examples of regex pattern matches (NOT actual links):
+✅ [text](/path/to/file.md)  <!-- Example pattern, not a real link -->
+✅ ![alt](/images/pic.png)  <!-- Example pattern, not a real link -->
+❌ [text](../file.md)  # Relative path (not detected by this pattern)
 ```
 
 **Step 3 Script Reference Detection:**

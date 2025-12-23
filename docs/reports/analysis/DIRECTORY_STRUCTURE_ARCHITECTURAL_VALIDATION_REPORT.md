@@ -529,14 +529,14 @@ mv src/workflow/backlog/DIRECTORY_STRUCTURE_ARCHITECTURAL_VALIDATION_20251218.md
 
 ## For Developers
 - **Quick Start**: See section below
-- **Architecture Details**: See [.github/copilot-instructions.md](.github/copilot-instructions.md)
-- **Module API Reference**: See [src/workflow/README.md](src/workflow/README.md)
-- **Testing Guide**: See [tests/README.md](tests/README.md)
+- **Architecture Details**: See [.github/copilot-instructions.md](../../../.github/copilot-instructions.md)
+- **Module API Reference**: See [src/workflow/README.md](../../../src/workflow/README.md)
+- **Testing Guide**: See [tests/README.md](../../../tests/README.md)
 
 ## For Users
 - **Basic Usage**: See Quick Start section
-- **Advanced Features**: See [MIGRATION_README.md](MIGRATION_README.md)
-- **Target Project Guide**: See [docs/TARGET_PROJECT_FEATURE.md](docs/TARGET_PROJECT_FEATURE.md)
+- **Advanced Features**: See [MIGRATION_README.md](../implementation/MIGRATION_README.md)
+- **Target Project Guide**: See [docs/TARGET_PROJECT_FEATURE.md](../../TARGET_PROJECT_FEATURE.md)
 ```
 
 **Rationale**:

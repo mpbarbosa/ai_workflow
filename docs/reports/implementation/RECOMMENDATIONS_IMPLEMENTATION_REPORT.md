@@ -178,8 +178,8 @@ Created `docs/DOCUMENTATION_UPDATE_PROCESS.md` with:
 
 **Cross-References**:
 - ✅ Use descriptive link text
-- ✅ Example: `[See PROJECT_STATISTICS.md](PROJECT_STATISTICS.md)`
-- ✅ Not: `[click here](PROJECT_STATISTICS.md)`
+- ✅ Example: `[See PROJECT_STATISTICS.md](../../archive/PROJECT_STATISTICS.md)` <!-- Example showing proper link format -->
+- ✅ Not: `[click here](../../archive/PROJECT_STATISTICS.md)` <!-- Example showing what NOT to do -->
 
 **Intentional Examples**:
 - ✅ Mark with annotations: `← Intentional test case`

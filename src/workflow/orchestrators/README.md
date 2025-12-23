@@ -386,9 +386,9 @@ tail -f ../logs/workflow_*/workflow_execution.log
 
 ## References
 
-- [Orchestrator Architecture Guide](/docs/ORCHESTRATOR_ARCHITECTURE.md)
-- [Modularization Phase 3 Report](/MODULARIZATION_PHASE3_COMPLETION.md)
-- [Main Coordinator](/src/workflow/execute_tests_docs_workflow_v2.4.sh)
+- [Orchestrator Architecture Guide](../../docs/ORCHESTRATOR_ARCHITECTURE.md)
+- [Modularization Phase 3 Report](../../docs/reports/MODULARIZATION_PHASE3_COMPLETION.md)
+- [Main Coordinator](../execute_tests_docs_workflow_v2.4.sh)
 
 ---
 

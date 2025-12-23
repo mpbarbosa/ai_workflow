@@ -226,9 +226,9 @@ new file:   ADAPTIVE_CHECKS_IMPLEMENTATION.md
 
 ## Documentation
 
-- [Adaptive Pre-Flight Checks Guide](docs/workflow-automation/adaptive-preflight-checks.md)
-- [Test Script](test_adaptive_checks.sh)
-- [Validation Module](src/workflow/lib/validation.sh)
+- [Adaptive Pre-Flight Checks Guide](../../workflow-automation/adaptive-preflight-checks.md)
+- [Test Script](../../../tests/integration/test_adaptive_checks.sh)
+- [Validation Module](../../../src/workflow/lib/validation.sh)
 
 ---
 
