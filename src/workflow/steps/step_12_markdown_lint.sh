@@ -191,17 +191,20 @@ EOF
         fi
     fi
     
-    # Generate step backlog report
-    generate_step_backlog "12" "Markdown Linting" "$lint_report" "$lint_issues"
+    # Save step issues if any were found
+    if [[ $lint_issues -gt 0 ]]; then
+        save_step_issues "12" "Markdown_Linting" "$lint_report"
+    fi
     
     # Generate step summary
     local summary_status="✅ PASS"
     [[ $lint_issues -gt 0 ]] && summary_status="⚠️ WARNINGS"
     
-    generate_step_summary "12" "Markdown Linting" "$summary_status" \
-        "Linted $md_files_count files" \
-        "Found $lint_issues issue categories" \
-        "markdownlint integration complete"
+    local summary_content="Linted $md_files_count markdown files
+Found $lint_issues issue categories
+markdownlint integration complete"
+    
+    save_step_summary "12" "Markdown_Linting" "$summary_content" "$summary_status"
     
     # Update workflow status
     if [[ $lint_issues -eq 0 ]]; then

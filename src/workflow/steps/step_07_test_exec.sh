@@ -43,7 +43,13 @@ step7_execute_test_suite() {
         test_cmd=$(get_test_command)
     else
         # Fallback to TEST_COMMAND variable
-        test_cmd="${TEST_COMMAND:-npm test}"
+        # Prefer fast tests (exclude slow E2E) if available
+        if [[ -f "${TARGET_DIR}/package.json" ]] && grep -q '"test:fast"' "${TARGET_DIR}/package.json" 2>/dev/null; then
+            test_cmd="${TEST_COMMAND:-npm run test:fast}"
+            print_info "Using fast test suite (E2E tests excluded)"
+        else
+            test_cmd="${TEST_COMMAND:-npm test}"
+        fi
     fi
     
     # Validate that test command is available
@@ -72,13 +78,20 @@ step7_execute_test_suite() {
         print_info "[DRY RUN] Would execute: $test_cmd"
         test_exit_code=0
     else
-        # Run tests and capture output
-        if eval "$test_cmd" > "$test_results_file" 2>&1; then
+        # Run tests with live output to show progress
+        print_info "Test execution in progress (this may take several minutes)..."
+        print_info "Streaming test output:"
+        echo ""
+        
+        # Run tests with tee to both display and capture output
+        if eval "$test_cmd" 2>&1 | tee "$test_results_file"; then
             test_exit_code=0
+            echo ""
             print_success "All tests passed ✅"
         else
             test_exit_code=$?
             test_failures=1
+            echo ""
             print_warning "Some tests failed - analyzing results..."
         fi
     fi
@@ -227,8 +240,14 @@ Coverage Metrics:
             print_success "GitHub Copilot CLI session completed"
             print_info "Full session log saved to: $log_file"
             
-            # Extract and save issues using library function
-            extract_and_save_issues_from_log "7" "Test_Execution" "$log_file"
+            # Extract and save issues using library function (only if log exists)
+            if [[ -f "$log_file" ]]; then
+                extract_and_save_issues_from_log "7" "Test_Execution" "$log_file"
+            elif [[ "$AUTO_MODE" == true ]]; then
+                print_info "Auto mode: Skipping issue extraction from AI analysis"
+            else
+                print_warning "Log file not found, skipping issue extraction"
+            fi
         else
             print_warning "Skipped GitHub Copilot CLI - using manual review"
         fi

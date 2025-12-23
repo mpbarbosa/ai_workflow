@@ -42,11 +42,11 @@ fi
 
 # Project kind definitions with detection patterns
 declare -gA PROJECT_KIND_PATTERNS=(
-    ["shell_automation"]="src/workflow lib/*.sh bin/*.sh scripts/*.sh"
-    ["nodejs_api"]="src/routes src/controllers src/models package.json server.js app.js index.js"
+    ["shell_automation"]="lib/*.sh scripts/*.sh tests/*.sh *.sh src/*.sh"
+    ["nodejs_api"]="src/routes src/controllers src/models src/services src/middlewares package.json server.js src/server.js app.js src/app.js"
     ["nodejs_cli"]="bin/ package.json cli.js index.js"
     ["nodejs_library"]="src/ lib/ package.json index.js"
-    ["static_website"]="index.html css/ js/ assets/ images/"
+    ["static_website"]="index.html style.css styles.css main.css"
     ["react_spa"]="src/App.jsx src/App.tsx package.json public/index.html"
     ["vue_spa"]="src/App.vue package.json public/index.html"
     ["python_api"]="app.py main.py requirements.txt src/ api/"

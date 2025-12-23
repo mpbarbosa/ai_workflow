@@ -57,11 +57,18 @@ readonly CONFIDENCE_LOW=40
 init_tech_stack() {
     print_info "Initializing tech stack detection..."
     
+    # Save current directory and change to PROJECT_ROOT for detection
+    local original_dir="$(pwd)"
+    if [[ -n "${PROJECT_ROOT:-}" ]] && [[ -d "$PROJECT_ROOT" ]]; then
+        cd "$PROJECT_ROOT" || return 1
+    fi
+    
     # Use custom config file if specified via --config-file
     if [[ -n "${TECH_STACK_CONFIG_FILE:-}" ]]; then
         if [[ -f "$TECH_STACK_CONFIG_FILE" ]]; then
             print_info "Using specified config file: $TECH_STACK_CONFIG_FILE"
             if load_tech_stack_config "$TECH_STACK_CONFIG_FILE"; then
+                cd "$original_dir" || true
                 print_success "Loaded configuration from $TECH_STACK_CONFIG_FILE"
                 print_tech_stack_summary
                 return 0
@@ -69,6 +76,7 @@ init_tech_stack() {
                 print_warning "Failed to load config, falling back to auto-detection"
             fi
         else
+            cd "$original_dir" || true
             print_error "Specified config file not found: $TECH_STACK_CONFIG_FILE"
             return 1
         fi
@@ -78,6 +86,7 @@ init_tech_stack() {
     if [[ -f ".workflow-config.yaml" ]]; then
         print_info "Found .workflow-config.yaml"
         if load_tech_stack_config ".workflow-config.yaml"; then
+            cd "$original_dir" || true
             print_success "Loaded configuration from .workflow-config.yaml"
             print_tech_stack_summary
             return 0
@@ -87,6 +96,7 @@ init_tech_stack() {
     elif [[ -f ".workflow-config.yml" ]]; then
         print_info "Found .workflow-config.yml"
         if load_tech_stack_config ".workflow-config.yml"; then
+            cd "$original_dir" || true
             print_success "Loaded configuration from .workflow-config.yml"
             print_tech_stack_summary
             return 0
@@ -99,6 +109,7 @@ init_tech_stack() {
     print_info "No configuration found, auto-detecting tech stack..."
     if detect_tech_stack; then
         local confidence=$(get_confidence_score "$PRIMARY_LANGUAGE")
+        cd "$original_dir" || true
         print_success "Auto-detected: $PRIMARY_LANGUAGE (${confidence}% confidence)"
         print_tech_stack_summary
         
@@ -111,6 +122,7 @@ init_tech_stack() {
         
         return 0
     else
+        cd "$original_dir" || true
         print_error "Tech stack detection failed"
         print_info "Falling back to default: JavaScript/Node.js"
         load_default_tech_stack

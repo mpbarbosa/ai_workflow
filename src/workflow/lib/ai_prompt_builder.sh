@@ -36,9 +36,9 @@ build_doc_analysis_prompt() {
     local yaml_file="${SCRIPT_DIR}/lib/ai_helpers.yaml"
     local yaml_project_kind_file="${SCRIPT_DIR}/config/ai_prompts_project_kinds.yaml"
 
-    local role
-    local task_context
-    local approach
+    local role=""
+    local task_context=""
+    local approach=""
     local task_template=""
 
     print_info "Building documentation analysis prompt"
@@ -77,9 +77,9 @@ build_consistency_prompt() {
     local doc_directory="$1"
     local yaml_file="${SCRIPT_DIR}/lib/ai_helpers.yaml"
     
-    local role
-    local task
-    local approach
+    local role=""
+    local task=""
+    local approach=""
     
     # Load from YAML
     if [[ -f "$yaml_file" ]]; then
@@ -115,9 +115,9 @@ build_test_strategy_prompt() {
     local test_framework="${2:-}"
     local yaml_file="${SCRIPT_DIR}/lib/ai_helpers.yaml"
     
-    local role
-    local task
-    local approach
+    local role=""
+    local task=""
+    local approach=""
     
     # Load from YAML
     if [[ -f "$yaml_file" ]]; then
@@ -160,9 +160,9 @@ build_quality_prompt() {
     local language="${2:-}"
     local yaml_file="${SCRIPT_DIR}/lib/ai_helpers.yaml"
     
-    local role
-    local task
-    local approach
+    local role=""
+    local task=""
+    local approach=""
     
     # Load from YAML
     if [[ -f "$yaml_file" ]]; then
@@ -204,9 +204,9 @@ build_issue_extraction_prompt() {
     local log_file="$1"
     local yaml_file="${SCRIPT_DIR}/lib/ai_helpers.yaml"
     
-    local role
-    local task
-    local approach
+    local role=""
+    local task=""
+    local approach=""
     
     # Load from YAML
     if [[ -f "$yaml_file" ]]; then

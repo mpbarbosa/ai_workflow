@@ -159,7 +159,7 @@ extract_and_save_issues() {
     if confirm_action "Run GitHub Copilot CLI to extract and organize issues from the log?" "y"; then
         sleep 1
         print_info "Starting Copilot CLI session for issue extraction..."
-        copilot -p "$extract_prompt" --allow-all-tools
+        copilot -p "$extract_prompt" --allow-all-tools --allow-all-paths --enable-all-github-mcp-tools
         
         # Collect organized issues using reusable function
         local organized_issues
