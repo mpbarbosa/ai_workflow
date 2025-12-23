@@ -297,7 +297,158 @@ Recent commits show excellent workflow integration:
 
 ---
 
-## **5. RISK & OPPORTUNITY ASSESSMENT**
+## **5. WORKFLOW STEP DEPENDENCIES AND EXECUTION ORDER**
+
+### **🔴 Critical Requirement (v2.4.0): Step 10 → Step 11 Dependency**
+
+**MANDATORY**: Git Finalization (Step 11) MUST depend on Context Analysis (Step 10) and MUST always be the last step in workflow execution.
+
+#### **Rationale**
+
+Context Analysis (Step 10) provides critical workflow assessment before finalization:
+- Evaluates overall workflow success and completion status
+- Identifies critical issues that should block finalization
+- Assesses change impact and deployment readiness  
+- Aggregates results from all previous validation steps
+- Provides strategic recommendations before committing
+
+Git Finalization (Step 11) performs irreversible operations:
+- Stages all changes with `git add`
+- Commits with conventional commit message
+- Pushes to remote repository
+- Updates file permissions
+
+**Risk if violated**: Committing and pushing without context analysis could result in:
+- Deploying code with undetected critical issues
+- Missing validation failures from earlier steps
+- Bypassing deployment readiness checks
+- Incomplete workflow execution being finalized
+
+#### **Implementation Status**
+
+✅ **Dependency Definition** - `src/workflow/lib/dependency_graph.sh`:
+```bash
+STEP_DEPENDENCIES=(
+    ...
+    [10]="1,2,3,4,7,8,9"  # Context Analysis depends on most steps
+    [11]="10"             # Git Finalization depends on Context Analysis (MANDATORY)
+    ...
+)
+```
+
+✅ **Parallel Group Isolation** - Step 11 is in its own group:
+```bash
+PARALLEL_GROUPS=(
+    "1,3,4,5,8,13,14"     # Group 1: Independent validation
+    "2,12"                # Group 2: Consistency checks
+    "6"                   # Group 3: Test Generation
+    "7,9"                 # Group 4: Test Execution and Code Quality
+    "10"                  # Group 5: Context Analysis
+    "11"                  # Group 6: Git Finalization (ISOLATED - ALWAYS LAST)
+)
+```
+
+✅ **Runtime Validation** - `src/workflow/steps/step_11_git.sh`:
+- Checks Step 10 status is "✅" before executing
+- Returns error with detailed explanation if prerequisite not met
+- Logs validation result to workflow log
+- Saves error report to backlog if validation fails
+
+✅ **Documentation** - `docs/workflow-automation/CONSOLIDATED_FUNCTIONAL_REQUIREMENTS.md`:
+- FR-WF-1: Git Finalization Dependency on Context Analysis
+- FR-WF-2: Workflow Step Sequence
+- FR-WF-3: Execution Mode Requirements
+- FR-WF-4: Validation and Testing Requirements
+- FR-WF-5: Documentation Requirements
+
+✅ **Testing** - `tests/unit/lib/test_step_dependency_enforcement.sh`:
+- 25 comprehensive tests, 100% pass rate
+- Tests dependency definition in STEP_DEPENDENCIES array
+- Tests Step 11 isolation in parallel groups
+- Tests dependency logic with check_dependencies()
+- Tests execution order constraints
+- Tests documentation alignment
+- Tests critical path analysis
+
+#### **Enforcement Across Execution Modes**
+
+**Sequential Execution** (default):
+- Steps execute in order: 0 → 1 → ... → 10 → 11
+- Natural enforcement through sequential order
+- Step 11 only executes after Step 10 completes
+
+**Parallel Execution** (`--parallel`):
+- Group 5 (Step 10) executes before Group 6 (Step 11)
+- Step 11 isolated in its own parallel group
+- Dependency constraints enforced by group ordering
+
+**Smart Execution** (`--smart-execution`):
+- Step 10 NEVER skipped (always executes)
+- Step 11 NEVER skipped (always executes)
+- If Step 10 skipped for any reason, Step 11 also skipped
+- Change impact analysis does not affect Step 10 or 11
+
+**Selective Step Execution** (`--steps`):
+- If Step 11 selected without Step 10: error or auto-include Step 10
+- Dependency validation occurs before execution begins
+- User notified of dependency requirements
+
+**Checkpoint Resume** (default, or `--no-resume` to disable):
+- Checkpoint saved after Step 10 completion
+- Step 11 can only resume if Step 10 checkpoint exists
+- Checkpoint validates prerequisite completion
+
+#### **Complete Step Dependency Map**
+
+```
+Step 0: Pre-Analysis (Entry Point)
+├─→ Step 1: Documentation Updates
+│   ├─→ Step 2: Consistency Analysis
+│   │   ├─→ Step 12: Markdown Linting (optional)
+│   │   └─→ Step 10: Context Analysis*
+│   └─→ Step 10: Context Analysis*
+│   └─→ Step 14: UX Analysis (optional)
+├─→ Step 3: Script Reference Validation
+│   └─→ Step 10: Context Analysis*
+├─→ Step 4: Directory Structure Validation
+│   └─→ Step 10: Context Analysis*
+├─→ Step 5: Test Review
+│   └─→ Step 6: Test Generation
+│       └─→ Step 7: Test Execution
+│           ├─→ Step 9: Code Quality Checks
+│           │   └─→ Step 10: Context Analysis*
+│           └─→ Step 10: Context Analysis*
+├─→ Step 8: Dependency Validation
+│   └─→ Step 10: Context Analysis*
+└─→ Step 13: Prompt Engineer Analysis (optional, independent)
+
+Step 10: Context Analysis* (Aggregates all results)
+└─→ Step 11: Git Finalization 🔴 MANDATORY DEPENDENCY - ALWAYS LAST
+
+* Step 10 depends on: 1, 2, 3, 4, 7, 8, 9
+🔴 Step 11 MUST depend on Step 10 (CRITICAL REQUIREMENT)
+```
+
+#### **Verification Commands**
+
+View dependency graph visualization:
+```bash
+./execute_tests_docs_workflow.sh --show-graph
+```
+
+Run dependency enforcement tests:
+```bash
+./tests/unit/lib/test_step_dependency_enforcement.sh
+```
+
+Check documentation:
+```bash
+cat docs/workflow-automation/CONSOLIDATED_FUNCTIONAL_REQUIREMENTS.md | grep -A20 "FR-WF-1"
+```
+
+---
+
+## **6. RISK & OPPORTUNITY ASSESSMENT**
 
 ### **🟢 Current State - Minimal Risk Profile**
 | Risk Category | Status | Mitigation |
@@ -332,7 +483,7 @@ Recent commits show excellent workflow integration:
 
 ---
 
-## **6. STRATEGIC ROADMAP**
+## **7. STRATEGIC ROADMAP**
 
 ### **Phase 1: Foundation Complete** ✅ (Nov-Dec 2025)
 - ✅ Complete modularization - 30 modules with 22,216 shell lines
