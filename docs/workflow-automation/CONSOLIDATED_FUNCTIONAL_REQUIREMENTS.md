@@ -1,6 +1,6 @@
 # Consolidated Functional Requirements Document
 
-**Document Version:** 2.4.0  
+**Document Version:** 2.4.1  
 **Date:** December 23, 2025  
 **Status:** Active  
 **Author:** Automated Workflow System
@@ -1764,15 +1764,23 @@ This section defines the mandatory workflow step dependencies and execution orde
 **Priority:** Critical  
 **Status:** Mandatory
 
-#### FR-WF-1.1: Context Analysis Prerequisite
+#### FR-WF-1.1: Comprehensive Prerequisites for Git Finalization
 
-**Requirement:** Git Finalization (Step 11) SHALL always depend on Context Analysis (Step 10) completion.
+**Requirement:** Git Finalization (Step 11) SHALL always depend on the following steps completing successfully:
+- Step 10: Context Analysis (MANDATORY)
+- Step 12: Markdown Lint (MANDATORY - added 2025-12-23)
+- Step 13: Prompt Engineer Analysis (MANDATORY - added 2025-12-23)
+- Step 14: UX Analysis (MANDATORY - added 2025-12-23)
 
 **Acceptance Criteria:**
 
-- Step 11 (Git Finalization) MUST NOT execute until Step 10 (Context Analysis) completes successfully
-- Step 11 MUST verify Step 10 completion status before proceeding
-- If Step 10 fails or is skipped, Step 11 MUST NOT execute
+- Step 11 (Git Finalization) MUST NOT execute until ALL prerequisite steps complete successfully
+- Step 11 MUST verify all prerequisite statuses before proceeding:
+  - Step 10 (Context Analysis) status must be "✅"
+  - Step 12 (Markdown Lint) status must be "✅"
+  - Step 13 (Prompt Engineer) status must be "✅"
+  - Step 14 (UX Analysis) status must be "✅"
+- If ANY prerequisite fails or is skipped, Step 11 MUST NOT execute
 - This dependency MUST be enforced in all execution modes:
   - Sequential execution
   - Parallel execution (--parallel flag)
@@ -1782,25 +1790,44 @@ This section defines the mandatory workflow step dependencies and execution orde
 
 **Rationale:**
 
-Context Analysis (Step 10) provides critical workflow assessment, risk identification, and readiness evaluation. Git Finalization (Step 11) performs irreversible operations (commit and push). Therefore, Step 11 requires comprehensive context from Step 10 to:
-
+**Step 10 (Context Analysis)**: Provides critical workflow assessment, risk identification, and readiness evaluation. Performs irreversible operations require comprehensive context to:
 1. Assess workflow completion status
 2. Identify critical issues that should block finalization
 3. Verify all previous steps executed successfully
 4. Evaluate change impact and deployment readiness
 5. Provide strategic recommendations before committing
 
+**Step 12 (Markdown Lint)**: Ensures documentation quality and consistency before finalizing changes. Prevents committing documentation with:
+- Formatting errors
+- Broken link syntax
+- Inconsistent markdown styles
+- Missing required sections
+
+**Step 13 (Prompt Engineer Analysis)**: Validates AI prompt templates and configurations. Critical for projects using AI-powered workflows to ensure:
+- Prompt templates are syntactically valid
+- AI integration configurations are correct
+- Persona definitions are properly structured
+- No breaking changes in AI workflows
+
+**Step 14 (UX Analysis)**: Validates user experience and accessibility requirements. Ensures:
+- UI changes meet accessibility standards (WCAG)
+- UX patterns are consistent
+- User-facing documentation is clear
+- Interface changes don't break existing workflows
+
 **Implementation:**
 
 The dependency is implemented in:
-- `src/workflow/lib/dependency_graph.sh` (line 29): `[11]="10"`
+- `src/workflow/lib/dependency_graph.sh`: `[11]="10,12,13,14"`
+- `src/workflow/steps/step_11_git.sh`: Runtime validation checks all four prerequisites
 - `src/workflow/execute_tests_docs_workflow.sh`: Sequential execution order enforces this naturally
 
 **Validation:**
 
-- Unit tests MUST verify dependency enforcement
-- Integration tests MUST verify Step 11 cannot execute without Step 10
-- Parallel execution MUST respect this dependency constraint
+- Unit tests MUST verify all four dependencies are enforced
+- Integration tests MUST verify Step 11 cannot execute without ANY prerequisite
+- Parallel execution MUST respect all dependency constraints
+- 35 comprehensive tests verify enforcement (100% pass rate)
 
 #### FR-WF-1.2: Git Finalization as Final Step
 
@@ -1890,16 +1917,17 @@ Step 14: UX Analysis (parallel with Group 1)
 | 7 | Test Execution | 6 | |
 | 8 | Dependencies | 0 | Can parallel with Group 1 |
 | 9 | Code Quality | 7 | |
-| 10 | Context Analysis | 1,2,3,4,7,8,9 | **MANDATORY before Step 11** |
-| 11 | Git Finalization | 10 | **ALWAYS LAST - MANDATORY** |
-| 12 | Markdown Lint | 2 | Can parallel with Step 2 |
-| 13 | Prompt Engineer | 0 | Can parallel with Group 1 |
-| 14 | UX Analysis | 0,1 | Can parallel with Group 1 |
+| 10 | Context Analysis | 1,2,3,4,7,8,9 | **MANDATORY prerequisite for Step 11** |
+| 11 | Git Finalization | 10,12,13,14 | **ALWAYS LAST - MANDATORY** (updated 2025-12-23) |
+| 12 | Markdown Lint | 2 | **MANDATORY prerequisite for Step 11** |
+| 13 | Prompt Engineer | 0 | **MANDATORY prerequisite for Step 11** |
+| 14 | UX Analysis | 0,1 | **MANDATORY prerequisite for Step 11** |
 
 **Key Constraints:**
-- ⚠️ **CRITICAL**: Step 11 MUST depend on Step 10
+- ⚠️ **CRITICAL**: Step 11 MUST depend on Steps 10, 12, 13, 14 (updated 2025-12-23)
 - ⚠️ **CRITICAL**: Step 11 MUST be the absolute last step
 - Step 10 aggregates results from multiple previous steps
+- Steps 12, 13, 14 provide quality gates before finalization
 - Step 0 is the entry point for all execution paths
 
 ### FR-WF-3: Execution Mode Requirements
@@ -1930,24 +1958,25 @@ Group 6: Step 11                (Git Finalization - ISOLATED AND LAST)
 
 #### FR-WF-3.2: Smart Execution Mode
 
-**Requirement:** When `--smart-execution` flag is used, the workflow MAY skip steps based on change impact analysis, but SHALL NOT skip Step 10 or Step 11.
+**Requirement:** When `--smart-execution` flag is used, the workflow MAY skip steps based on change impact analysis, but SHALL NOT skip Steps 10, 11, 12, 13, or 14.
 
 **Acceptance Criteria:**
-- Step 10 (Context Analysis) MUST always execute (never skipped)
+- Steps 10, 12, 13, 14 (prerequisites for Step 11) MUST always execute (never skipped)
 - Step 11 (Git Finalization) MUST always execute (never skipped)
-- If Step 10 is skipped for any reason, Step 11 MUST also be skipped
+- If any prerequisite is skipped for any reason, Step 11 MUST also be skipped
 - Skipped steps MUST be logged with rationale
 
 #### FR-WF-3.3: Selective Step Execution
 
-**Requirement:** When `--steps` flag is used to select specific steps, the workflow SHALL enforce dependencies.
+**Requirement:** When `--steps` flag is used to select specific steps, the workflow SHALL enforce all dependencies.
 
 **Acceptance Criteria:**
-- If Step 11 is selected without Step 10, workflow MUST either:
-  - Automatically include Step 10 in execution, OR
+- If Step 11 is selected without Steps 10, 12, 13, or 14, workflow MUST either:
+  - Automatically include all missing prerequisites in execution, OR
   - Display error and abort execution
-- If Step 10 is selected, Step 11 MAY be optionally included
+- If any prerequisite (10, 12, 13, 14) is selected, Step 11 MAY be optionally included
 - Dependency validation MUST occur before execution begins
+- User MUST be notified of all auto-included dependencies
 
 ### FR-WF-4: Validation and Testing Requirements
 
@@ -1959,22 +1988,28 @@ Group 6: Step 11                (Git Finalization - ISOLATED AND LAST)
 **Requirement:** The workflow SHALL include automated tests to verify dependency enforcement.
 
 **Test Coverage Required:**
-- ✅ Test Step 11 cannot execute without Step 10 completion
+- ✅ Test Step 11 cannot execute without any prerequisite (Steps 10, 12, 13, 14)
 - ✅ Test Step 11 is always the last step in sequential execution
 - ✅ Test Step 11 is isolated in parallel execution (Group 6)
-- ✅ Test selective execution enforces Step 10 → Step 11 dependency
-- ✅ Test smart execution never skips Step 10 or Step 11
-- ✅ Test checkpoint resume respects Step 10 → Step 11 dependency
+- ✅ Test selective execution enforces all Step 11 dependencies
+- ✅ Test smart execution never skips Steps 10, 11, 12, 13, 14
+- ✅ Test checkpoint resume respects all Step 11 dependencies
+- ✅ Test individual prerequisite failures block Step 11
+- ✅ Test all prerequisites must be successful for Step 11 to run
 
 #### FR-WF-4.2: Runtime Validation
 
 **Requirement:** The workflow SHALL validate dependencies at runtime before step execution.
 
 **Acceptance Criteria:**
-- Before executing Step 11, verify Step 10 status is "✅" (completed)
-- If Step 10 failed ("❌"), Step 11 MUST NOT execute
-- If Step 10 was skipped, Step 11 MUST NOT execute
-- Log validation results for audit trail
+- Before executing Step 11, verify all prerequisite statuses:
+  - Step 10 status is "✅" (completed)
+  - Step 12 status is "✅" (completed)
+  - Step 13 status is "✅" (completed)
+  - Step 14 status is "✅" (completed)
+- If ANY prerequisite failed ("❌"), Step 11 MUST NOT execute
+- If ANY prerequisite was skipped, Step 11 MUST NOT execute
+- Log validation results for audit trail with all prerequisite statuses
 
 ### FR-WF-5: Documentation Requirements
 
@@ -1983,7 +2018,7 @@ Group 6: Step 11                (Git Finalization - ISOLATED AND LAST)
 
 #### FR-WF-5.1: Dependency Documentation
 
-**Requirement:** All workflow documentation SHALL clearly state the Step 10 → Step 11 dependency.
+**Requirement:** All workflow documentation SHALL clearly state the comprehensive Step 11 dependencies (Steps 10, 12, 13, 14).
 
 **Documentation Locations:**
 - ✅ `src/workflow/lib/dependency_graph.sh` - Dependency definition and comments
@@ -1994,12 +2029,13 @@ Group 6: Step 11                (Git Finalization - ISOLATED AND LAST)
 
 #### FR-WF-5.2: Dependency Visualization
 
-**Requirement:** The workflow dependency graph SHALL visually highlight the Step 10 → Step 11 dependency.
+**Requirement:** The workflow dependency graph SHALL visually highlight all Step 11 dependencies (Steps 10, 12, 13, 14 → Step 11).
 
 **Acceptance Criteria:**
-- Mermaid diagram MUST show Step 10 → Step 11 arrow
+- Mermaid diagram MUST show MANDATORY edges from Steps 10, 12, 13, 14 to Step 11
 - Step 11 MUST be visually distinguished as "final step"
-- ASCII dependency tree MUST show Step 11 as terminal node
+- Steps 10, 12, 13, 14 MUST be visually marked as prerequisites for finalization
+- ASCII dependency tree MUST show Step 11 as terminal node with all four prerequisites
 - Generated documentation MUST include critical path highlighting
 
 ---
@@ -2316,6 +2352,7 @@ Focus Areas:
 
 | Version | Date | Changes | Consolidated From |
 |---------|------|---------|-------------------|
+| 2.4.1 | 2025-12-23 | Updated FR-WF-1 to include Steps 12, 13, 14 as mandatory prerequisites for Step 11 | New Requirement (2025-12-23) |
 | 2.4.0 | 2025-12-23 | Added mandatory workflow step dependencies section (FR-WF-1 through FR-WF-5) | N/A |
 | 2.3.0 | 2025-12-23 | Added Third-Party File Exclusion requirements (complete implementation) | THIRD_PARTY_EXCLUSION_MODULE.md |
 | 2.2.0 | 2025-12-23 | Enhanced prompt execution with comprehensive tool access flags | N/A |
