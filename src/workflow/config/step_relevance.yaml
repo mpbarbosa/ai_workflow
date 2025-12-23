@@ -17,6 +17,7 @@ step_relevance:
     step_10_context: recommended
     step_11_git: required
     step_12_markdown_lint: required
+    step_14_ux_analysis: skip            # No UI components
 
   nodejs_api:
     step_00_analyze: required
@@ -32,6 +33,7 @@ step_relevance:
     step_10_context: recommended
     step_11_git: required
     step_12_markdown_lint: recommended
+    step_14_ux_analysis: optional        # May have admin UI
 
   nodejs_cli:
     step_00_analyze: required
@@ -47,6 +49,7 @@ step_relevance:
     step_10_context: recommended
     step_11_git: required
     step_12_markdown_lint: recommended
+    step_14_ux_analysis: optional        # May have TUI components
 
   nodejs_library:
     step_00_analyze: required
@@ -62,6 +65,7 @@ step_relevance:
     step_10_context: recommended
     step_11_git: required
     step_12_markdown_lint: required
+    step_14_ux_analysis: skip            # No UI components
 
   static_website:
     step_00_analyze: required
@@ -77,6 +81,7 @@ step_relevance:
     step_10_context: recommended
     step_11_git: required
     step_12_markdown_lint: required      # Content quality
+    step_14_ux_analysis: required        # Static website has UI
 
   react_spa:
     step_00_analyze: required
@@ -92,6 +97,7 @@ step_relevance:
     step_10_context: recommended
     step_11_git: required
     step_12_markdown_lint: optional
+    step_14_ux_analysis: required        # React SPA has UI
 
   python_app:
     step_00_analyze: required
@@ -107,6 +113,7 @@ step_relevance:
     step_10_context: recommended
     step_11_git: required
     step_12_markdown_lint: recommended
+    step_14_ux_analysis: optional        # May have web UI
 
   generic:
     step_00_analyze: required
@@ -122,6 +129,7 @@ step_relevance:
     step_10_context: recommended
     step_11_git: required
     step_12_markdown_lint: recommended
+    step_14_ux_analysis: optional        # Unknown if UI exists
 
 # Step-specific adaptations for each project kind
 step_adaptations:
@@ -482,3 +490,70 @@ step_adaptations:
         - "Configuration management"
         - "Testing strategy"
         - "Performance"
+
+  step_14_ux_analysis:
+    react_spa:
+      focus_areas:
+        - "Component accessibility (ARIA, semantic HTML)"
+        - "Responsive design and mobile experience"
+        - "User interaction states (hover, focus, disabled)"
+        - "Component design patterns and reusability"
+        - "Color contrast and visual hierarchy"
+        - "Form validation and error messaging"
+        - "Loading states and user feedback"
+        - "Navigation clarity and consistency"
+      analysis_types:
+        - accessibility
+        - usability
+        - visual_design
+        - interaction_design
+        - performance_perception
+      
+    static_website:
+      focus_areas:
+        - "HTML semantic structure"
+        - "Content hierarchy and readability"
+        - "Mobile responsiveness"
+        - "Link accessibility and clarity"
+        - "Image optimization and alt text"
+        - "Navigation simplicity"
+        - "Page load perception"
+        - "Cross-browser compatibility"
+      analysis_types:
+        - accessibility
+        - content_structure
+        - visual_design
+        - performance_perception
+    
+    documentation_site:
+      focus_areas:
+        - "Information architecture"
+        - "Search functionality"
+        - "Code example presentation"
+        - "Navigation and discoverability"
+        - "Mobile documentation reading"
+        - "Dark mode support"
+        - "Keyboard navigation"
+        - "Content organization"
+      analysis_types:
+        - information_architecture
+        - accessibility
+        - content_usability
+        - developer_experience
+    
+    web_application:
+      focus_areas:
+        - "User flow and task completion"
+        - "Accessibility compliance (WCAG 2.1 AA)"
+        - "Responsive design patterns"
+        - "Interactive element feedback"
+        - "Error prevention and recovery"
+        - "Visual consistency"
+        - "Performance perception"
+        - "User onboarding clarity"
+      analysis_types:
+        - accessibility
+        - usability
+        - visual_design
+        - interaction_design
+        - user_flow
