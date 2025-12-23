@@ -130,12 +130,12 @@ assert_true() {
 # TEST SUITE 1: Dependency Definition Tests
 # ==============================================================================
 
-test_step11_depends_on_step10() {
+test_step11_depends_on_required_steps() {
     print_test_section "Test Suite 1: Dependency Definition"
     
-    # Test that Step 11 depends on Step 10 in STEP_DEPENDENCIES array
+    # Test that Step 11 depends on Steps 10, 12, 13, 14 in STEP_DEPENDENCIES array
     local step11_deps="${STEP_DEPENDENCIES[11]}"
-    assert_equals "10" "$step11_deps" "Step 11 dependencies should be '10'"
+    assert_equals "10,12,13,14" "$step11_deps" "Step 11 dependencies should be '10,12,13,14'"
     
     # Verify dependency is explicitly defined (not empty)
     if [[ -n "$step11_deps" ]]; then
@@ -143,6 +143,12 @@ test_step11_depends_on_step10() {
     else
         assert_true "false" "Step 11 has non-empty dependency definition"
     fi
+    
+    # Verify all four dependencies are present
+    assert_contains "$step11_deps" "10" "Step 11 depends on Step 10 (Context Analysis)"
+    assert_contains "$step11_deps" "12" "Step 11 depends on Step 12 (Markdown Lint)"
+    assert_contains "$step11_deps" "13" "Step 11 depends on Step 13 (Prompt Engineer)"
+    assert_contains "$step11_deps" "14" "Step 11 depends on Step 14 (UX Analysis)"
 }
 
 test_step11_isolated_in_parallel_groups() {
@@ -201,29 +207,73 @@ test_step10_precedes_step11_in_groups() {
 # TEST SUITE 2: Dependency Logic Tests
 # ==============================================================================
 
-test_check_dependencies_step11_requires_step10() {
+test_check_dependencies_step11_requires_all_prerequisites() {
     print_test_section "Test Suite 2: Dependency Logic"
     
-    # Test that Step 11 cannot run without Step 10
-    # Completed steps: 0,1,2,3,4,5,6,7,8,9 (missing 10)
-    local completed="0,1,2,3,4,5,6,7,8,9"
+    # Test that Step 11 cannot run without all prerequisites
+    # Completed steps: 0,1,2,3,4,5,6,7,8,9,10 (missing 12, 13, 14)
+    local completed="0,1,2,3,4,5,6,7,8,9,10"
     
     if check_dependencies 11 "$completed"; then
-        assert_true "false" "Step 11 should NOT be runnable without Step 10"
+        assert_true "false" "Step 11 should NOT be runnable without Steps 12, 13, 14"
+    else
+        assert_true "true" "Step 11 is correctly blocked without all prerequisites"
+    fi
+}
+
+test_check_dependencies_step11_can_run_with_all_prerequisites() {
+    # Test that Step 11 CAN run when all prerequisites are completed
+    # Completed steps: 0,1,2,3,4,5,6,7,8,9,10,12,13,14 (all prerequisites)
+    local completed="0,1,2,3,4,5,6,7,8,9,10,12,13,14"
+    
+    if check_dependencies 11 "$completed"; then
+        assert_true "true" "Step 11 can run when all prerequisites (10, 12, 13, 14) are completed"
+    else
+        assert_true "false" "Step 11 can run when all prerequisites (10, 12, 13, 14) are completed"
+    fi
+}
+
+test_check_dependencies_step11_blocked_without_step10() {
+    # Test that Step 11 is blocked if Step 10 is missing (even if 12, 13, 14 are present)
+    local completed="0,1,2,3,4,5,6,7,8,9,12,13,14"  # Missing Step 10
+    
+    if check_dependencies 11 "$completed"; then
+        assert_true "false" "Step 11 should be blocked without Step 10"
     else
         assert_true "true" "Step 11 is correctly blocked without Step 10"
     fi
 }
 
-test_check_dependencies_step11_can_run_with_step10() {
-    # Test that Step 11 CAN run when Step 10 is completed
-    # Completed steps: 0,1,2,3,4,5,6,7,8,9,10 (including 10)
-    local completed="0,1,2,3,4,5,6,7,8,9,10"
+test_check_dependencies_step11_blocked_without_step12() {
+    # Test that Step 11 is blocked if Step 12 is missing
+    local completed="0,1,2,3,4,5,6,7,8,9,10,13,14"  # Missing Step 12
     
     if check_dependencies 11 "$completed"; then
-        assert_true "true" "Step 11 can run when Step 10 is completed"
+        assert_true "false" "Step 11 should be blocked without Step 12"
     else
-        assert_true "false" "Step 11 can run when Step 10 is completed"
+        assert_true "true" "Step 11 is correctly blocked without Step 12"
+    fi
+}
+
+test_check_dependencies_step11_blocked_without_step13() {
+    # Test that Step 11 is blocked if Step 13 is missing
+    local completed="0,1,2,3,4,5,6,7,8,9,10,12,14"  # Missing Step 13
+    
+    if check_dependencies 11 "$completed"; then
+        assert_true "false" "Step 11 should be blocked without Step 13"
+    else
+        assert_true "true" "Step 11 is correctly blocked without Step 13"
+    fi
+}
+
+test_check_dependencies_step11_blocked_without_step14() {
+    # Test that Step 11 is blocked if Step 14 is missing
+    local completed="0,1,2,3,4,5,6,7,8,9,10,12,13"  # Missing Step 14
+    
+    if check_dependencies 11 "$completed"; then
+        assert_true "false" "Step 11 should be blocked without Step 14"
+    else
+        assert_true "true" "Step 11 is correctly blocked without Step 14"
     fi
 }
 
@@ -246,23 +296,22 @@ test_step10_dependencies_subset_of_step11() {
 # TEST SUITE 3: Execution Order Tests
 # ==============================================================================
 
-test_get_next_runnable_steps_excludes_step11_without_step10() {
+test_get_next_runnable_steps_excludes_step11_without_all_prerequisites() {
     print_test_section "Test Suite 3: Execution Order"
     
-    # When steps 0-9 are completed but not 10, Step 11 should not be runnable
-    local completed="0,1,2,3,4,5,6,7,8,9"
-    local runnable=$(get_next_runnable_steps "$completed")
-    
-    assert_contains "$runnable" "10" "Step 10 should be runnable after steps 0-9"
-    assert_not_contains "$runnable" "11" "Step 11 should NOT be runnable without Step 10"
-}
-
-test_get_next_runnable_steps_includes_step11_with_step10() {
-    # When steps 0-10 are completed, Step 11 should be runnable
+    # When steps 0-10 are completed but not 12, 13, 14, Step 11 should not be runnable
     local completed="0,1,2,3,4,5,6,7,8,9,10"
     local runnable=$(get_next_runnable_steps "$completed")
     
-    assert_contains "$runnable" "11" "Step 11 should be runnable after Step 10"
+    assert_not_contains "$runnable" "11" "Step 11 should NOT be runnable without Steps 12, 13, 14"
+}
+
+test_get_next_runnable_steps_includes_step11_with_all_prerequisites() {
+    # When steps 0-10, 12, 13, 14 are completed, Step 11 should be runnable
+    local completed="0,1,2,3,4,5,6,7,8,9,10,12,13,14"
+    local runnable=$(get_next_runnable_steps "$completed")
+    
+    assert_contains "$runnable" "11" "Step 11 should be runnable after all prerequisites (10, 12, 13, 14)"
 }
 
 test_step11_is_last_core_step() {
@@ -339,7 +388,7 @@ test_dependency_graph_has_comments() {
         
         assert_contains "$graph_content" "MANDATORY" "dependency_graph.sh contains MANDATORY notation"
         assert_contains "$graph_content" "CRITICAL" "dependency_graph.sh contains CRITICAL notation"
-        assert_contains "$graph_content" "[11]=\"10\"" "dependency_graph.sh defines Step 11 dependency"
+        assert_contains "$graph_content" '[11]="10,12,13,14"' "dependency_graph.sh defines Step 11 dependencies (10,12,13,14)"
     else
         echo -e "${YELLOW}⚠${NC} SKIP: dependency_graph.sh not found"
         ((TESTS_TOTAL++)) || true
@@ -350,19 +399,21 @@ test_dependency_graph_has_comments() {
 # TEST SUITE 5: Critical Path Tests
 # ==============================================================================
 
-test_critical_path_includes_step10_and_step11() {
+test_critical_path_includes_all_prerequisites() {
     print_test_section "Test Suite 5: Critical Path Analysis"
     
-    # The critical path should include Step 10 → Step 11 at the end
-    # Critical path is typically: 0 → 5 → 6 → 7 → 10 → 11
+    # The critical path should include Steps 10, 12, 13, 14 → Step 11 at the end
     
     # Verify Step 10 is in critical path (depends on Step 7)
     local step10_deps="${STEP_DEPENDENCIES[10]}"
     assert_contains "$step10_deps" "7" "Step 10 depends on Step 7 (part of critical path)"
     
-    # Verify Step 11 is in critical path (depends on Step 10)
+    # Verify Step 11 depends on all four prerequisites
     local step11_deps="${STEP_DEPENDENCIES[11]}"
-    assert_equals "10" "$step11_deps" "Step 11 depends only on Step 10 (final critical path step)"
+    assert_contains "$step11_deps" "10" "Step 11 depends on Step 10 (Context Analysis)"
+    assert_contains "$step11_deps" "12" "Step 11 depends on Step 12 (Markdown Lint)"
+    assert_contains "$step11_deps" "13" "Step 11 depends on Step 13 (Prompt Engineer)"
+    assert_contains "$step11_deps" "14" "Step 11 depends on Step 14 (UX Analysis)"
 }
 
 # ==============================================================================
@@ -371,28 +422,33 @@ test_critical_path_includes_step10_and_step11() {
 
 main() {
     print_test_header "$TEST_NAME"
-    echo "Testing mandatory Step 10 → Step 11 dependency enforcement"
+    echo "Testing mandatory Step 10, 12, 13, 14 → Step 11 dependency enforcement"
     echo "Reference: FR-WF-1 in CONSOLIDATED_FUNCTIONAL_REQUIREMENTS.md"
+    echo "NEW REQUIREMENT (2025-12-23): Steps 12, 13, 14 added as mandatory prerequisites"
     echo ""
     
     # Run all test suites
-    test_step11_depends_on_step10
+    test_step11_depends_on_required_steps
     test_step11_isolated_in_parallel_groups
     test_step10_precedes_step11_in_groups
     
-    test_check_dependencies_step11_requires_step10
-    test_check_dependencies_step11_can_run_with_step10
+    test_check_dependencies_step11_requires_all_prerequisites
+    test_check_dependencies_step11_can_run_with_all_prerequisites
+    test_check_dependencies_step11_blocked_without_step10
+    test_check_dependencies_step11_blocked_without_step12
+    test_check_dependencies_step11_blocked_without_step13
+    test_check_dependencies_step11_blocked_without_step14
     test_step10_dependencies_subset_of_step11
     
-    test_get_next_runnable_steps_excludes_step11_without_step10
-    test_get_next_runnable_steps_includes_step11_with_step10
+    test_get_next_runnable_steps_excludes_step11_without_all_prerequisites
+    test_get_next_runnable_steps_includes_step11_with_all_prerequisites
     test_step11_is_last_core_step
     test_no_steps_depend_on_step11
     
     test_documentation_contains_requirement
     test_dependency_graph_has_comments
     
-    test_critical_path_includes_step10_and_step11
+    test_critical_path_includes_all_prerequisites
     
     # Print summary
     print_test_header "TEST SUMMARY"
@@ -404,9 +460,10 @@ main() {
         echo ""
         echo -e "${GREEN}✓ ALL TESTS PASSED${NC}"
         echo ""
-        echo "✅ Step 10 → Step 11 dependency is correctly enforced"
+        echo "✅ Step 11 dependencies correctly enforced: Steps 10, 12, 13, 14 required"
         echo "✅ Step 11 is correctly isolated as the final step"
         echo "✅ Documentation and implementation are aligned"
+        echo "✅ NEW REQUIREMENT (2025-12-23): Steps 12, 13, 14 successfully integrated"
         return 0
     else
         echo ""
