@@ -7,7 +7,10 @@
 # Scope: Only runs for projects with UI components (web apps, SPAs, static sites)
 ################################################################################
 
-set -euo pipefail
+# Only set strict error handling if not in test mode
+if [[ "${BASH_SOURCE[0]}" != *"test"* ]] && [[ -z "${TEST_MODE:-}" ]]; then
+    set -euo pipefail
+fi
 
 # Module version information
 readonly STEP14_VERSION="1.0.0"
