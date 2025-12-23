@@ -5,7 +5,19 @@ set -euo pipefail
 # Step 11: AI-Powered Git Finalization & Commit Message Generation
 # Purpose: Stage changes, generate conventional commit messages, push to remote
 # Part of: Tests & Documentation Workflow Automation v2.0.0
-# Version: 2.0.0
+# Version: 2.1.0
+#
+# CRITICAL REQUIREMENT (v2.4.0):
+# - This step MUST depend on the following steps completing successfully:
+#   * Step 10 (Context Analysis) - MANDATORY
+#   * Step 12 (Markdown Lint) - MANDATORY (added 2025-12-23)
+#   * Step 13 (Prompt Engineer) - MANDATORY (added 2025-12-23)
+#   * Step 14 (UX Analysis) - MANDATORY (added 2025-12-23)
+# - This step MUST always be the LAST step in workflow execution
+# - These requirements are MANDATORY in all execution modes
+#
+# See: docs/workflow-automation/CONSOLIDATED_FUNCTIONAL_REQUIREMENTS.md
+#      FR-WF-1: Git Finalization Dependency on Context Analysis
 ################################################################################
 
 # Module version information
@@ -20,6 +32,75 @@ step11_git_finalization() {
     print_step "11" "Git Finalization"
     
     cd "$PROJECT_ROOT"
+    
+    # CRITICAL: Validate prerequisites before proceeding
+    # This is a MANDATORY requirement as per FR-WF-1.1
+    # NEW REQUIREMENT (2025-12-23): Steps 10, 12, 13, 14 must all complete before Step 11
+    print_info "Validating prerequisites..."
+    
+    local step10_status="${WORKFLOW_STATUS[step10]:-}"
+    local step12_status="${WORKFLOW_STATUS[step12]:-}"
+    local step13_status="${WORKFLOW_STATUS[step13]:-}"
+    local step14_status="${WORKFLOW_STATUS[step14]:-}"
+    
+    local prerequisite_failed=false
+    local failed_steps=""
+    
+    # Check each required prerequisite
+    if [[ "$step10_status" != "✅" ]]; then
+        prerequisite_failed=true
+        failed_steps="Step 10 (Context Analysis): ${step10_status:-NOT EXECUTED}\n"
+    fi
+    
+    if [[ "$step12_status" != "✅" ]]; then
+        prerequisite_failed=true
+        failed_steps+="Step 12 (Markdown Lint): ${step12_status:-NOT EXECUTED}\n"
+    fi
+    
+    if [[ "$step13_status" != "✅" ]]; then
+        prerequisite_failed=true
+        failed_steps+="Step 13 (Prompt Engineer): ${step13_status:-NOT EXECUTED}\n"
+    fi
+    
+    if [[ "$step14_status" != "✅" ]]; then
+        prerequisite_failed=true
+        failed_steps+="Step 14 (UX Analysis): ${step14_status:-NOT EXECUTED}\n"
+    fi
+    
+    if [[ "$prerequisite_failed" == true ]]; then
+        print_error "PREREQUISITE FAILURE: The following steps must complete successfully before Git Finalization:"
+        echo -e "${RED}${failed_steps}${NC}"
+        print_error "This is a MANDATORY requirement - see docs/workflow-automation/CONSOLIDATED_FUNCTIONAL_REQUIREMENTS.md FR-WF-1.1"
+        
+        # Save error to backlog
+        local step_issues="### Git Finalization - Prerequisite Failure
+
+**Status:** ❌ FAILED
+
+**Reason:** Required prerequisites not met
+
+Step 11 (Git Finalization) has MANDATORY dependencies on Steps 10, 12, 13, and 14.
+This requirement is enforced as per FR-WF-1.1 in CONSOLIDATED_FUNCTIONAL_REQUIREMENTS.md.
+
+**NEW REQUIREMENT (2025-12-23):** Steps 12, 13, 14 added as mandatory prerequisites.
+
+**Failed Prerequisites:**
+${failed_steps}
+
+**Required Action:** Execute all prerequisite steps successfully before attempting Step 11.
+
+**Reference:** docs/workflow-automation/CONSOLIDATED_FUNCTIONAL_REQUIREMENTS.md
+              Section: FR-WF-1: Git Finalization Dependency on Context Analysis
+"
+        save_step_issues "11" "Git_Finalization" "$step_issues"
+        save_step_summary "11" "Git_Finalization" "FAILED: Prerequisites not met. Required: Steps 10, 12, 13, 14. ${failed_steps}" "❌"
+        update_workflow_status "step11" "❌"
+        
+        return 1
+    fi
+    
+    print_success "✅ All prerequisites validated: Steps 10, 12, 13, 14 completed successfully"
+    log_to_workflow "INFO" "Step 11 prerequisites validated: Step10=${step10_status}, Step12=${step12_status}, Step13=${step13_status}, Step14=${step14_status}"
     
     local git_analysis=$(mktemp)
     TEMP_FILES+=("$git_analysis")
