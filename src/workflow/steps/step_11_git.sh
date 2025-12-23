@@ -5,7 +5,15 @@ set -euo pipefail
 # Step 11: AI-Powered Git Finalization & Commit Message Generation
 # Purpose: Stage changes, generate conventional commit messages, push to remote
 # Part of: Tests & Documentation Workflow Automation v2.0.0
-# Version: 2.0.0
+# Version: 2.1.0
+#
+# CRITICAL REQUIREMENT (v2.4.0):
+# - This step MUST depend on Step 10 (Context Analysis) completion
+# - This step MUST always be the LAST step in workflow execution
+# - These requirements are MANDATORY in all execution modes
+#
+# See: docs/workflow-automation/CONSOLIDATED_FUNCTIONAL_REQUIREMENTS.md
+#      FR-WF-1: Git Finalization Dependency on Context Analysis
 ################################################################################
 
 # Module version information
@@ -20,6 +28,43 @@ step11_git_finalization() {
     print_step "11" "Git Finalization"
     
     cd "$PROJECT_ROOT"
+    
+    # CRITICAL: Validate Step 10 (Context Analysis) completion before proceeding
+    # This is a MANDATORY requirement as per FR-WF-1.1
+    print_info "Validating prerequisites..."
+    local step10_status="${WORKFLOW_STATUS[step10]:-}"
+    
+    if [[ "$step10_status" != "✅" ]]; then
+        print_error "PREREQUISITE FAILURE: Step 10 (Context Analysis) must complete successfully before Git Finalization"
+        print_error "Current Step 10 status: ${step10_status:-NOT EXECUTED}"
+        print_error "This is a MANDATORY requirement - see docs/workflow-automation/CONSOLIDATED_FUNCTIONAL_REQUIREMENTS.md FR-WF-1.1"
+        
+        # Save error to backlog
+        local step_issues="### Git Finalization - Prerequisite Failure
+
+**Status:** ❌ FAILED
+
+**Reason:** Step 10 (Context Analysis) prerequisite not met
+
+Step 11 (Git Finalization) has a MANDATORY dependency on Step 10 (Context Analysis).
+This requirement is enforced as per FR-WF-1.1 in CONSOLIDATED_FUNCTIONAL_REQUIREMENTS.md.
+
+**Current Step 10 Status:** ${step10_status:-NOT EXECUTED}
+
+**Required Action:** Execute Step 10 successfully before attempting Step 11.
+
+**Reference:** docs/workflow-automation/CONSOLIDATED_FUNCTIONAL_REQUIREMENTS.md
+              Section: FR-WF-1: Git Finalization Dependency on Context Analysis
+"
+        save_step_issues "11" "Git_Finalization" "$step_issues"
+        save_step_summary "11" "Git_Finalization" "FAILED: Step 10 (Context Analysis) prerequisite not met. Step 10 status: ${step10_status:-NOT EXECUTED}." "❌"
+        update_workflow_status "step11" "❌"
+        
+        return 1
+    fi
+    
+    print_success "✅ Prerequisite validation passed: Step 10 completed successfully"
+    log_to_workflow "INFO" "Step 11 prerequisite validated: Step 10 status = ${step10_status}"
     
     local git_analysis=$(mktemp)
     TEMP_FILES+=("$git_analysis")

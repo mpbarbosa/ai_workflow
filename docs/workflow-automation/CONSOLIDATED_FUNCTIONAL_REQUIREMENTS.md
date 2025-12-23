@@ -1,6 +1,6 @@
 # Consolidated Functional Requirements Document
 
-**Document Version:** 2.3.0  
+**Document Version:** 2.4.0  
 **Date:** December 23, 2025  
 **Status:** Active  
 **Author:** Automated Workflow System
@@ -15,6 +15,12 @@
 - [Step 3: Script Reference Validation](#step-3-script-reference-validation)
 - [Client SPA Project Kind](#client-spa-project-kind)
 - [Shell Automation Documentation Specialist Persona](#shell-automation-documentation-specialist-persona)
+- [Workflow Step Dependencies and Execution Order](#workflow-step-dependencies-and-execution-order)
+  - [FR-WF-1: Git Finalization Dependency on Context Analysis](#fr-wf-1-git-finalization-dependency-on-context-analysis)
+  - [FR-WF-2: Workflow Step Sequence](#fr-wf-2-workflow-step-sequence)
+  - [FR-WF-3: Execution Mode Requirements](#fr-wf-3-execution-mode-requirements)
+  - [FR-WF-4: Validation and Testing Requirements](#fr-wf-4-validation-and-testing-requirements)
+  - [FR-WF-5: Documentation Requirements](#fr-wf-5-documentation-requirements)
 - [Cross-Cutting Concerns](#cross-cutting-concerns)
   - [Execution Modes](#execution-modes)
   - [Error Handling and Graceful Degradation](#error-handling-and-graceful-degradation)
@@ -1743,6 +1749,261 @@ All steps require:
 
 ---
 
+## Workflow Step Dependencies and Execution Order
+
+**Version:** 2.4.0  
+**Date:** December 23, 2025  
+**Status:** Mandatory
+
+### Overview
+
+This section defines the mandatory workflow step dependencies and execution order requirements that must be enforced in all execution modes (sequential, parallel, smart execution, and checkpoint resume).
+
+### FR-WF-1: Git Finalization Dependency on Context Analysis
+
+**Priority:** Critical  
+**Status:** Mandatory
+
+#### FR-WF-1.1: Context Analysis Prerequisite
+
+**Requirement:** Git Finalization (Step 11) SHALL always depend on Context Analysis (Step 10) completion.
+
+**Acceptance Criteria:**
+
+- Step 11 (Git Finalization) MUST NOT execute until Step 10 (Context Analysis) completes successfully
+- Step 11 MUST verify Step 10 completion status before proceeding
+- If Step 10 fails or is skipped, Step 11 MUST NOT execute
+- This dependency MUST be enforced in all execution modes:
+  - Sequential execution
+  - Parallel execution (--parallel flag)
+  - Smart execution (--smart-execution flag)
+  - Checkpoint resume (default and --no-resume modes)
+  - Selective step execution (--steps flag)
+
+**Rationale:**
+
+Context Analysis (Step 10) provides critical workflow assessment, risk identification, and readiness evaluation. Git Finalization (Step 11) performs irreversible operations (commit and push). Therefore, Step 11 requires comprehensive context from Step 10 to:
+
+1. Assess workflow completion status
+2. Identify critical issues that should block finalization
+3. Verify all previous steps executed successfully
+4. Evaluate change impact and deployment readiness
+5. Provide strategic recommendations before committing
+
+**Implementation:**
+
+The dependency is implemented in:
+- `src/workflow/lib/dependency_graph.sh` (line 29): `[11]="10"`
+- `src/workflow/execute_tests_docs_workflow.sh`: Sequential execution order enforces this naturally
+
+**Validation:**
+
+- Unit tests MUST verify dependency enforcement
+- Integration tests MUST verify Step 11 cannot execute without Step 10
+- Parallel execution MUST respect this dependency constraint
+
+#### FR-WF-1.2: Git Finalization as Final Step
+
+**Requirement:** Git Finalization (Step 11) SHALL always be the last step in workflow execution.
+
+**Acceptance Criteria:**
+
+- No workflow step SHALL execute after Step 11
+- Step 11 MUST be positioned as the final step in all execution sequences
+- Parallel execution groups MUST NOT contain Step 11 with other steps
+- Step 11 MUST run in its own execution phase as the final phase
+- After Step 11 completion, the workflow MUST terminate
+
+**Rationale:**
+
+Git Finalization performs irreversible git operations (commit and push to remote). No workflow step should execute after these operations because:
+
+1. All validation and analysis must complete before committing
+2. Modifications after commit would leave repository in inconsistent state
+3. Git operations represent the workflow's completion and finalization
+4. Step 11 includes cleanup and permission updates as final actions
+
+**Implementation:**
+
+Current implementation in `src/workflow/lib/dependency_graph.sh`:
+```bash
+PARALLEL_GROUPS=(
+    "1,3,4,5,8,13,14"     # Group 1: Can run after Pre-Analysis
+    "2,12"                # Group 2: Consistency checks
+    "6"                   # Group 3: Test Generation
+    "7,9"                 # Group 4: Test Execution and Code Quality
+    "10"                  # Group 5: Context Analysis
+    "11"                  # Group 6: Git Finalization (ISOLATED - ALWAYS LAST)
+)
+```
+
+**Validation:**
+
+- Step 11 MUST be in its own parallel group
+- No step SHALL be added to Group 6 with Step 11
+- New workflow steps MUST be inserted before Step 11
+
+### FR-WF-2: Workflow Step Sequence
+
+**Priority:** High  
+**Status:** Mandatory
+
+#### FR-WF-2.1: Standard Execution Order
+
+**Requirement:** The workflow SHALL execute steps in the following standard sequence when no optimization flags are used:
+
+```
+Step 0:  Pre-Analysis
+Step 1:  Documentation Updates
+Step 2:  Consistency Analysis
+Step 3:  Script Reference Validation
+Step 4:  Directory Structure Validation
+Step 5:  Test Review
+Step 6:  Test Generation
+Step 7:  Test Execution
+Step 8:  Dependency Validation
+Step 9:  Code Quality Checks
+Step 10: Context Analysis
+Step 11: Git Finalization (ALWAYS LAST)
+```
+
+**Additional Steps (Optional):**
+```
+Step 12: Markdown Linting (parallel with Step 2)
+Step 13: Prompt Engineer Analysis (parallel with Group 1)
+Step 14: UX Analysis (parallel with Group 1)
+```
+
+#### FR-WF-2.2: Dependency Enforcement
+
+**Requirement:** The workflow SHALL enforce the following dependency relationships:
+
+| Step | Name | Dependencies | Notes |
+|------|------|--------------|-------|
+| 0 | Pre-Analysis | None | Entry point |
+| 1 | Documentation | 0 | |
+| 2 | Consistency | 1 | |
+| 3 | Script Refs | 0 | Can parallel with Group 1 |
+| 4 | Directory | 0 | Can parallel with Group 1 |
+| 5 | Test Review | 0 | Can parallel with Group 1 |
+| 6 | Test Generation | 5 | |
+| 7 | Test Execution | 6 | |
+| 8 | Dependencies | 0 | Can parallel with Group 1 |
+| 9 | Code Quality | 7 | |
+| 10 | Context Analysis | 1,2,3,4,7,8,9 | **MANDATORY before Step 11** |
+| 11 | Git Finalization | 10 | **ALWAYS LAST - MANDATORY** |
+| 12 | Markdown Lint | 2 | Can parallel with Step 2 |
+| 13 | Prompt Engineer | 0 | Can parallel with Group 1 |
+| 14 | UX Analysis | 0,1 | Can parallel with Group 1 |
+
+**Key Constraints:**
+- ⚠️ **CRITICAL**: Step 11 MUST depend on Step 10
+- ⚠️ **CRITICAL**: Step 11 MUST be the absolute last step
+- Step 10 aggregates results from multiple previous steps
+- Step 0 is the entry point for all execution paths
+
+### FR-WF-3: Execution Mode Requirements
+
+**Priority:** High  
+**Status:** Mandatory
+
+#### FR-WF-3.1: Parallel Execution Mode
+
+**Requirement:** When `--parallel` flag is used, the workflow SHALL execute steps in parallel groups while maintaining all dependency constraints.
+
+**Parallel Groups Definition:**
+
+```bash
+Group 1: Steps 1,3,4,5,8,13,14  (Independent validation after Step 0)
+Group 2: Steps 2,12             (Consistency checks)
+Group 3: Step 6                 (Test Generation)
+Group 4: Steps 7,9              (Test Execution and Code Quality)
+Group 5: Step 10                (Context Analysis - waits for all dependencies)
+Group 6: Step 11                (Git Finalization - ISOLATED AND LAST)
+```
+
+**Acceptance Criteria:**
+- Each group executes sequentially after its dependencies complete
+- Within a group, steps execute in parallel
+- Group 6 (Step 11) MUST execute after Group 5 (Step 10)
+- No other steps SHALL be added to Group 6
+
+#### FR-WF-3.2: Smart Execution Mode
+
+**Requirement:** When `--smart-execution` flag is used, the workflow MAY skip steps based on change impact analysis, but SHALL NOT skip Step 10 or Step 11.
+
+**Acceptance Criteria:**
+- Step 10 (Context Analysis) MUST always execute (never skipped)
+- Step 11 (Git Finalization) MUST always execute (never skipped)
+- If Step 10 is skipped for any reason, Step 11 MUST also be skipped
+- Skipped steps MUST be logged with rationale
+
+#### FR-WF-3.3: Selective Step Execution
+
+**Requirement:** When `--steps` flag is used to select specific steps, the workflow SHALL enforce dependencies.
+
+**Acceptance Criteria:**
+- If Step 11 is selected without Step 10, workflow MUST either:
+  - Automatically include Step 10 in execution, OR
+  - Display error and abort execution
+- If Step 10 is selected, Step 11 MAY be optionally included
+- Dependency validation MUST occur before execution begins
+
+### FR-WF-4: Validation and Testing Requirements
+
+**Priority:** High  
+**Status:** Mandatory
+
+#### FR-WF-4.1: Dependency Validation Tests
+
+**Requirement:** The workflow SHALL include automated tests to verify dependency enforcement.
+
+**Test Coverage Required:**
+- ✅ Test Step 11 cannot execute without Step 10 completion
+- ✅ Test Step 11 is always the last step in sequential execution
+- ✅ Test Step 11 is isolated in parallel execution (Group 6)
+- ✅ Test selective execution enforces Step 10 → Step 11 dependency
+- ✅ Test smart execution never skips Step 10 or Step 11
+- ✅ Test checkpoint resume respects Step 10 → Step 11 dependency
+
+#### FR-WF-4.2: Runtime Validation
+
+**Requirement:** The workflow SHALL validate dependencies at runtime before step execution.
+
+**Acceptance Criteria:**
+- Before executing Step 11, verify Step 10 status is "✅" (completed)
+- If Step 10 failed ("❌"), Step 11 MUST NOT execute
+- If Step 10 was skipped, Step 11 MUST NOT execute
+- Log validation results for audit trail
+
+### FR-WF-5: Documentation Requirements
+
+**Priority:** Medium  
+**Status:** Mandatory
+
+#### FR-WF-5.1: Dependency Documentation
+
+**Requirement:** All workflow documentation SHALL clearly state the Step 10 → Step 11 dependency.
+
+**Documentation Locations:**
+- ✅ `src/workflow/lib/dependency_graph.sh` - Dependency definition and comments
+- ✅ `docs/workflow-automation/CONSOLIDATED_FUNCTIONAL_REQUIREMENTS.md` - This document
+- ✅ `docs/workflow-automation/COMPREHENSIVE_WORKFLOW_EXECUTION_ANALYSIS.md` - Workflow analysis
+- ✅ `.github/copilot-instructions.md` - AI assistant guidelines
+- ✅ `README.md` - Project overview (if applicable)
+
+#### FR-WF-5.2: Dependency Visualization
+
+**Requirement:** The workflow dependency graph SHALL visually highlight the Step 10 → Step 11 dependency.
+
+**Acceptance Criteria:**
+- Mermaid diagram MUST show Step 10 → Step 11 arrow
+- Step 11 MUST be visually distinguished as "final step"
+- ASCII dependency tree MUST show Step 11 as terminal node
+- Generated documentation MUST include critical path highlighting
+
+---
+
 ## Appendix
 
 ### A. Version Format Examples
@@ -2055,6 +2316,8 @@ Focus Areas:
 
 | Version | Date | Changes | Consolidated From |
 |---------|------|---------|-------------------|
+| 2.4.0 | 2025-12-23 | Added mandatory workflow step dependencies section (FR-WF-1 through FR-WF-5) | N/A |
+| 2.3.0 | 2025-12-23 | Added Third-Party File Exclusion requirements (complete implementation) | THIRD_PARTY_EXCLUSION_MODULE.md |
 | 2.2.0 | 2025-12-23 | Enhanced prompt execution with comprehensive tool access flags | N/A |
 | 2.1.1 | 2025-12-23 | Added Shell Automation Persona Quick Reference (Appendix I) | SHELL_AUTOMATION_PERSONA_SUMMARY.md |
 | 2.1.0 | 2025-12-23 | Added Shell Automation Documentation Specialist Persona | SHELL_AUTOMATION_DOCUMENTATION_SPECIALIST_PERSONA.md |

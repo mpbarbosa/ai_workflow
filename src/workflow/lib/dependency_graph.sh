@@ -13,6 +13,15 @@ set -euo pipefail
 # ==============================================================================
 
 # Define dependencies for each step (which steps must complete before this one)
+# 
+# CRITICAL REQUIREMENTS (v2.4.0):
+# - Step 11 (Git Finalization) MUST depend on Step 10 (Context Analysis)
+# - Step 11 MUST always be the LAST step in workflow execution
+# - These requirements are MANDATORY and must be enforced in all execution modes
+#
+# See: docs/workflow-automation/CONSOLIDATED_FUNCTIONAL_REQUIREMENTS.md
+#      Section: "Workflow Step Dependencies and Execution Order"
+#
 declare -A STEP_DEPENDENCIES
 STEP_DEPENDENCIES=(
     [0]=""                # Pre-Analysis has no dependencies
@@ -26,14 +35,23 @@ STEP_DEPENDENCIES=(
     [8]="0"               # Dependencies depends on Pre-Analysis
     [9]="7"               # Code Quality depends on Test Execution
     [10]="1,2,3,4,7,8,9"  # Context Analysis depends on most steps
-    [11]="10"             # Git Finalization depends on Context Analysis
+    [11]="10"             # Git Finalization depends on Context Analysis (MANDATORY)
     [12]="2"              # Markdown Linting depends on Consistency
     [13]="0"              # Prompt Engineer Analysis depends on Pre-Analysis (can run early)
     [14]="0,1"            # UX Analysis depends on Pre-Analysis and Documentation
 )
 
 # Define parallelizable step groups (steps that can run simultaneously)
-# Updated v2.3.1: 3-Track Parallelization
+# Updated v2.4.0: Step 11 MUST remain isolated as the final step (MANDATORY)
+#
+# CRITICAL: Group 6 contains ONLY Step 11 (Git Finalization)
+# - Step 11 MUST execute after all other steps complete
+# - Step 11 MUST NOT be combined with any other steps
+# - Step 11 represents the workflow's final, irreversible operation
+#
+# See: docs/workflow-automation/CONSOLIDATED_FUNCTIONAL_REQUIREMENTS.md
+#      FR-WF-1.2: Git Finalization as Final Step
+#
 declare -a PARALLEL_GROUPS
 PARALLEL_GROUPS=(
     "1,3,4,5,8,13,14"     # Group 1: Can run after Pre-Analysis
@@ -41,7 +59,7 @@ PARALLEL_GROUPS=(
     "6"                   # Group 3: Test Generation
     "7,9"                 # Group 4: Test Execution and Code Quality
     "10"                  # Group 5: Context Analysis
-    "11"                  # Group 6: Git Finalization
+    "11"                  # Group 6: Git Finalization (ISOLATED - ALWAYS LAST - MANDATORY)
 )
 
 # 3-Track Parallel Execution Structure (v2.3.1)
@@ -164,6 +182,8 @@ EOF
 
 This graph shows the dependencies between workflow steps and identifies parallelization opportunities.
 
+**CRITICAL REQUIREMENT (v2.4.0):** Step 11 (Git Finalization) MUST depend on Step 10 (Context Analysis) and MUST always be the last step in workflow execution. This is a MANDATORY requirement enforced in all execution modes.
+
 ```mermaid
 graph TD
     Step0[Step 0: Pre-Analysis<br/>~30s]
@@ -177,7 +197,7 @@ graph TD
     Step8[Step 8: Dependencies<br/>~60s]
     Step9[Step 9: Code Quality<br/>~150s]
     Step10[Step 10: Context<br/>~120s]
-    Step11[Step 11: Git Final<br/>~90s]
+    Step11[Step 11: Git Final<br/>~90s<br/>⚠️ ALWAYS LAST]
     Step12[Step 12: Markdown<br/>~45s]
     
     Step0 --> Step1
@@ -201,12 +221,20 @@ graph TD
     Step8 --> Step10
     Step9 --> Step10
     
-    Step10 --> Step11
+    Step10 --> |MANDATORY| Step11
     
     style Step0 fill:#e1f5e1
     style Step7 fill:#ffe1e1
-    style Step11 fill:#e1e5ff
+    style Step10 fill:#fff5e1
+    style Step11 fill:#e1e5ff,stroke:#ff0000,stroke-width:3px
 ```
+
+**Legend:**
+- 🟢 Green (Step 0): Entry point
+- 🔴 Red border (Step 11): Final step - MANDATORY last position
+- 🟡 Yellow (Step 10): Context aggregation before finalization
+- 🔴 Pink (Step 7): Primary bottleneck
+
 
 ## Parallelization Opportunities
 
@@ -282,6 +310,11 @@ generate_dependency_tree() {
 Workflow Step Dependency Tree
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
+⚠️  CRITICAL REQUIREMENT (v2.4.0):
+    Step 11 (Git Finalization) MUST depend on Step 10 (Context Analysis)
+    Step 11 MUST always be the LAST step in workflow execution
+    See: docs/workflow-automation/CONSOLIDATED_FUNCTIONAL_REQUIREMENTS.md
+
 Step 0: Pre-Analysis (30s)
 ├─→ Step 1: Documentation (120s)
 │   ├─→ Step 2: Consistency (90s)
@@ -302,10 +335,11 @@ Step 0: Pre-Analysis (30s)
     └─→ Step 10: Context Analysis (120s)*
 
 Step 10: Context Analysis (120s)*
-└─→ Step 11: Git Finalization (90s)
+└─→ Step 11: Git Finalization (90s) 🔴 MANDATORY DEPENDENCY - ALWAYS LAST
 
 * Step 10 has multiple dependencies (marked with asterisks)
 ⚠️ Step 7 is the primary bottleneck
+🔴 Step 11 is the FINAL step - must execute AFTER Step 10 (MANDATORY)
 EOF
 }
 
