@@ -29,18 +29,19 @@ STEP_DEPENDENCIES=(
     [11]="10"             # Git Finalization depends on Context Analysis
     [12]="2"              # Markdown Linting depends on Consistency
     [13]="0"              # Prompt Engineer Analysis depends on Pre-Analysis (can run early)
+    [14]="0,1"            # UX Analysis depends on Pre-Analysis and Documentation
 )
 
 # Define parallelizable step groups (steps that can run simultaneously)
 # Updated v2.3.1: 3-Track Parallelization
 declare -a PARALLEL_GROUPS
 PARALLEL_GROUPS=(
-    "1,3,4,5,8,13"        # Group 1: Can run after Pre-Analysis (across all 3 tracks)
-    "2,12"                # Group 2: Consistency checks (Track 3)
-    "6"                   # Group 3: Test Generation (Track 2)
-    "7,9"                 # Group 4: Test Execution and Code Quality (Track 2)
-    "10"                  # Group 5: Context Analysis (Track 1, waits for 2 & 3)
-    "11"                  # Group 6: Git Finalization (Track 1)
+    "1,3,4,5,8,13,14"     # Group 1: Can run after Pre-Analysis
+    "2,12"                # Group 2: Consistency checks
+    "6"                   # Group 3: Test Generation
+    "7,9"                 # Group 4: Test Execution and Code Quality
+    "10"                  # Group 5: Context Analysis
+    "11"                  # Group 6: Git Finalization
 )
 
 # 3-Track Parallel Execution Structure (v2.3.1)
@@ -70,6 +71,7 @@ STEP_TIME_ESTIMATES=(
     [11]=90   # Git Finalization (with AI)
     [12]=45   # Markdown Linting
     [13]=150  # Prompt Engineer Analysis (with AI)
+    [14]=180  # UX Analysis (with AI)
 )
 
 # ==============================================================================
@@ -108,7 +110,7 @@ get_next_runnable_steps() {
     local completed_steps="$1"
     local runnable_steps=""
     
-    for i in {0..13}; do
+    for i in {0..14}; do
         # Skip if already completed
         if echo ",${completed_steps}," | grep -q ",${i},"; then
             continue

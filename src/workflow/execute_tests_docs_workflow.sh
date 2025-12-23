@@ -4,14 +4,14 @@ set -euo pipefail
 
 ################################################################################
 # Tests & Documentation Workflow Automation Script
-# Version: 2.3.1
+# Version: 2.4.0
 # Purpose: Automate the complete tests and documentation update workflow
 # Related: /prompts/tests_documentation_update_enhanced.txt
 #
 # AI ENHANCEMENTS APPLIED (v1.2.0):
 # ==================================
 # This script leverages GitHub Copilot CLI for intelligent documentation
-# analysis and validation. Twelve steps have been enhanced with specialized
+# analysis and validation. Fourteen steps have been enhanced with specialized
 # AI personas using the modern 'copilot -p' command.
 #
 # Enhanced Steps with AI Personas:
@@ -28,6 +28,7 @@ set -euo pipefail
 #   Step 11: Git Finalization (Git Workflow Specialist + Technical Communication Expert) ⭐ ENHANCED
 #   Step 12: Markdown Linting (Technical Documentation Specialist) ⭐ NEW
 #   Step 13: Prompt Engineer Analysis (Prompt Engineer + AI Specialist) ⭐ NEW v2.3.1
+#   Step 14: UX Analysis (UX Designer + Frontend Specialist) ⭐ NEW v2.4.0
 #
 # ARCHITECTURE PATTERN:
 #   All enhanced steps follow: Role → Task → Standards structure
@@ -158,7 +159,7 @@ NC='\033[0m' # No Color
 
 # Workflow tracking
 declare -A WORKFLOW_STATUS
-TOTAL_STEPS=14
+TOTAL_STEPS=15
 DRY_RUN=false
 INTERACTIVE_MODE=true
 AUTO_MODE=false
@@ -1506,6 +1507,21 @@ execute_full_workflow() {
         ((skipped_steps++)) || true
     elif [[ $resume_from -gt 13 ]]; then
         print_info "Skipping Step 13 (resuming from checkpoint)"
+        ((skipped_steps++)) || true
+    fi
+    
+    # Step 14: UX Analysis (with checkpoint) - NEW
+    if [[ -z "$failed_step" && $resume_from -le 14 ]] && should_execute_step 14; then
+        log_step_start 14 "UX Analysis"
+        step14_ux_analysis || { failed_step="Step 14"; }
+        ((executed_steps++)) || true
+        save_checkpoint 14
+    elif [[ -z "$failed_step" && $resume_from -le 14 ]]; then
+        print_info "Skipping Step 14 (not selected)"
+        log_to_workflow "INFO" "Skipping Step 14 (not selected)"
+        ((skipped_steps++)) || true
+    elif [[ $resume_from -gt 14 ]]; then
+        print_info "Skipping Step 14 (resuming from checkpoint)"
         ((skipped_steps++)) || true
     fi
     

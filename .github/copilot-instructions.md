@@ -140,6 +140,8 @@ src/workflow/config/
 11. `step_10_context.sh` - Context analysis
 12. `step_11_git.sh` - Git operations and finalization
 13. `step_12_markdown_lint.sh` - Markdown linting
+14. `step_13_prompt_engineer.sh` - Prompt engineering analysis
+15. `step_14_ux_analysis.sh` - UX/UI analysis (NEW in v2.4.0)
 
 ### Documentation Structure
 
@@ -277,7 +279,7 @@ cd ../
 
 ### AI Personas
 
-The system uses 13 specialized AI personas for different tasks:
+The system uses 14 specialized AI personas for different tasks:
 
 1. **documentation_specialist** - Documentation updates and validation (context-aware: adapts based on project kind and language from `project_kinds.yaml` and `.workflow-config.yaml`)
 2. **consistency_analyst** - Cross-reference consistency checks
@@ -292,6 +294,7 @@ The system uses 13 specialized AI personas for different tasks:
 11. **script_validator** - Shell script validation
 12. **directory_validator** - Directory structure validation
 13. **test_execution_analyst** - Test execution analysis
+14. **ux_designer** - UX/UI analysis and accessibility (NEW in v2.4.0)
 
 Each persona has specialized prompts in `ai_helpers.yaml`. The documentation_specialist persona is project-aware and references:
 - **`src/workflow/config/project_kinds.yaml`** - Defines project types (shell_script_automation, nodejs_api, static_website, client_spa, react_spa, python_app, generic) with quality standards, testing frameworks, and documentation requirements
