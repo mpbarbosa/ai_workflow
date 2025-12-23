@@ -32,15 +32,26 @@ STEP_DEPENDENCIES=(
 )
 
 # Define parallelizable step groups (steps that can run simultaneously)
+# Updated v2.3.1: 3-Track Parallelization
 declare -a PARALLEL_GROUPS
 PARALLEL_GROUPS=(
-    "1,3,4,5,8,13"        # Group 1: Can run after Pre-Analysis
-    "2,12"                # Group 2: Consistency checks
-    "6"                   # Group 3: Test Generation
-    "7,9"                 # Group 4: Test Execution and Code Quality
-    "10"                  # Group 5: Context Analysis
-    "11"                  # Group 6: Git Finalization
+    "1,3,4,5,8,13"        # Group 1: Can run after Pre-Analysis (across all 3 tracks)
+    "2,12"                # Group 2: Consistency checks (Track 3)
+    "6"                   # Group 3: Test Generation (Track 2)
+    "7,9"                 # Group 4: Test Execution and Code Quality (Track 2)
+    "10"                  # Group 5: Context Analysis (Track 1, waits for 2 & 3)
+    "11"                  # Group 6: Git Finalization (Track 1)
 )
+
+# 3-Track Parallel Execution Structure (v2.3.1)
+# Track 1 (Analysis):       0 → (3,4,13 parallel) → 10 → 11
+# Track 2 (Validation):     5 → 6 → 7 → 9 (+ 8 parallel with 5)
+# Track 3 (Documentation):  1 → 2 → 12
+#
+# Synchronization Points:
+# - All tracks wait for Step 0 completion
+# - Step 10 waits for Track 2 & 3 critical steps
+# - Estimated 60-70% time reduction vs sequential execution
 
 # Step execution time estimates (in seconds, based on historical data)
 declare -A STEP_TIME_ESTIMATES

@@ -15,6 +15,17 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+      
+      - name: Cache ShellCheck results
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/shellcheck
+          key: shellcheck-${{ hashFiles('src/**/*.sh') }}
+          restore-keys: |
+            shellcheck-
+      
+      - name: Track step timing
+        run: echo "STEP_START=$(date +%s)" >> $GITHUB_ENV
         
       - name: Run ShellCheck
         uses: ludeeus/action-shellcheck@master
@@ -27,6 +38,12 @@ jobs:
         if: failure()
         run: |
           echo "::error::ShellCheck found issues. Please fix them before merging."
+      
+      - name: Report timing
+        if: always()
+        run: |
+          DURATION=$(($(date +%s) - STEP_START))
+          echo "::notice::ShellCheck duration: ${DURATION}s"
           
   markdown-lint:
     name: Markdown Linting
@@ -35,6 +52,17 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+      
+      - name: Cache npm dependencies
+        uses: actions/cache@v4
+        with:
+          path: ~/.npm
+          key: npm-markdownlint-${{ hashFiles('package*.json') }}
+          restore-keys: |
+            npm-markdownlint-
+      
+      - name: Track step timing
+        run: echo "STEP_START=$(date +%s)" >> $GITHUB_ENV
         
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -52,6 +80,12 @@ jobs:
             --ignore src/workflow/logs \
             --ignore src/workflow/summaries \
             --config .markdownlint.json || true
+      
+      - name: Report timing
+        if: always()
+        run: |
+          DURATION=$(($(date +%s) - STEP_START))
+          echo "::notice::Markdown lint duration: ${DURATION}s"
             
   yaml-lint:
     name: YAML Validation
@@ -60,6 +94,17 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+      
+      - name: Cache pip dependencies
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/pip
+          key: pip-yamllint-${{ hashFiles('requirements*.txt') }}
+          restore-keys: |
+            pip-yamllint-
+      
+      - name: Track step timing
+        run: echo "STEP_START=$(date +%s)" >> $GITHUB_ENV
         
       - name: Setup Python
         uses: actions/setup-python@v5
@@ -74,6 +119,12 @@ jobs:
           yamllint src/workflow/config/*.yaml \
             src/workflow/lib/*.yaml \
             .github/workflows/*.yml
+      
+      - name: Report timing
+        if: always()
+        run: |
+          DURATION=$(($(date +%s) - STEP_START))
+          echo "::notice::YAML lint duration: ${DURATION}s"
             
   test-execution:
     name: Run Tests
@@ -82,6 +133,19 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+      
+      - name: Cache test results
+        uses: actions/cache@v4
+        with:
+          path: |
+            test-results
+            src/workflow/lib/.test-cache
+          key: tests-${{ hashFiles('src/**/*.sh', 'tests/**') }}
+          restore-keys: |
+            tests-
+      
+      - name: Track step timing
+        run: echo "STEP_START=$(date +%s)" >> $GITHUB_ENV
         
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -103,6 +167,12 @@ jobs:
               timeout 60s bash "$test_file" || echo "Test $test_file failed or timed out"
             fi
           done
+      
+      - name: Report timing
+        if: always()
+        run: |
+          DURATION=$(($(date +%s) - STEP_START))
+          echo "::notice::Test execution duration: ${DURATION}s"
           
   documentation-validation:
     name: Documentation Validation
@@ -111,6 +181,17 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+      
+      - name: Cache validation results
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/doc-validation
+          key: doc-validation-${{ hashFiles('docs/**', 'scripts/validate_docs.sh') }}
+          restore-keys: |
+            doc-validation-
+      
+      - name: Track step timing
+        run: echo "STEP_START=$(date +%s)" >> $GITHUB_ENV
         
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -134,3 +215,9 @@ jobs:
           find docs -name "*.md" -type f -exec grep -H "\[.*\](.*)" {} \; | \
             grep -v "http" | \
             grep -v "^#" || true
+      
+      - name: Report timing
+        if: always()
+        run: |
+          DURATION=$(($(date +%s) - STEP_START))
+          echo "::notice::Documentation validation duration: ${DURATION}s"

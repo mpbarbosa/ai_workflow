@@ -188,8 +188,9 @@ wizard_detect_project() {
     echo "Analyzing project structure..."
     echo ""
     
-    # Run detection
-    detect_tech_stack
+    # Run detection (suppress internal print_info/print_success messages for cleaner wizard output)
+    # The wizard provides its own user-friendly status messages
+    detect_tech_stack >/dev/null 2>&1
     
     local detected_lang="${PRIMARY_LANGUAGE:-javascript}"
     local confidence=$(get_confidence_score "$detected_lang")

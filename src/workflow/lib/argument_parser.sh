@@ -101,6 +101,13 @@ parse_workflow_arguments() {
                 print_info "Parallel execution enabled - independent steps will run simultaneously"
                 shift
                 ;;
+            --parallel-tracks)
+                PARALLEL_TRACKS=true
+                PARALLEL_EXECUTION=true  # Implies parallel execution
+                export PARALLEL_TRACKS PARALLEL_EXECUTION
+                print_info "3-Track parallel execution enabled - optimal performance mode"
+                shift
+                ;;
             --no-ai-cache)
                 USE_AI_CACHE=false
                 export USE_AI_CACHE
@@ -230,6 +237,7 @@ OPTIONS:
   --steps <list>         Execute specific steps (e.g., '0,5,6' or 'all')
   --smart-execution      Enable change-based step skipping
   --parallel             Enable parallel execution of independent steps
+  --parallel-tracks      Enable 3-track parallel execution (optimal mode)
   --no-resume            Start fresh, ignore checkpoints
   
   --show-graph           Display dependency graph and exit

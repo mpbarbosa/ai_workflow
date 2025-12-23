@@ -291,6 +291,169 @@ project_kinds:
         - "Documentation in docs/ directory"
 
   # ----------------------------------------------------------------------------
+  # Client-Side SPA Project (Vanilla JS/Bootstrap)
+  # ----------------------------------------------------------------------------
+  client_spa:
+    name: "Client-Side SPA"
+    description: "Vanilla JavaScript Single Page Application with Bootstrap/CSS frameworks (no React/Vue/Angular)"
+    
+    # Validation rules
+    validation:
+      required_files:
+        - "index.html|public/index.html"
+        - "package.json"
+        - "src/**/*.js"
+      required_directories:
+        - "src"
+        - "public|dist"
+      optional_files:
+        - "README.md"
+        - "vite.config.js|webpack.config.js"
+        - "jest.config.js"
+        - "eslint.config.js"
+        - "sw.js|service-worker.js"
+        - ".env.example"
+      file_patterns:
+        - "*.html"
+        - "*.css"
+        - "*.js"
+        - "*.mjs"
+      excluded_patterns:
+        - "*.jsx"
+        - "*.tsx"
+        - "*.vue"
+        - "angular.json"
+    
+    # Test execution configuration
+    testing:
+      test_framework: "jest|playwright|selenium"
+      test_directory: "tests"
+      test_file_pattern: "*.test.js|*.spec.js|*.e2e.test.js|test_*.py"
+      test_command: "npm test"
+      e2e_command: "npm run test:e2e"
+      coverage_required: true
+      coverage_threshold: 70
+      
+    # Quality standards
+    quality:
+      linters:
+        - name: "eslint"
+          enabled: true
+          command: "npx eslint"
+          args: ["src/**/*.js"]
+          file_pattern: "*.js|*.mjs"
+        - name: "htmlhint"
+          enabled: true
+          command: "npx htmlhint"
+          args: ["**/*.html"]
+          file_pattern: "*.html"
+        - name: "stylelint"
+          enabled: true
+          command: "npx stylelint"
+          args: ["src/styles/**/*.css"]
+          file_pattern: "*.css"
+      
+      documentation_required: true
+      inline_comments_recommended: true
+      readme_required: true
+      api_documentation_required: true
+      accessibility_required: true
+      wcag_level: "AA"
+    
+    # Dependencies configuration
+    dependencies:
+      package_files: ["package.json"]
+      lock_files: ["package-lock.json", "yarn.lock", "pnpm-lock.yaml"]
+      validation_required: true
+      security_audit_required: true
+      audit_command: "npm audit"
+    
+    # Build configuration
+    build:
+      required: false  # Optional - supports both static serving and build tools
+      build_command: "npm run build"
+      output_directory: "dist|build|public"
+      dev_server: "npm run dev|python3 -m http.server"
+    
+    # Deployment configuration  
+    deployment:
+      type: "static"
+      requires_build: false
+      artifact_patterns:
+        - "public/**/*"
+        - "dist/**/*"
+        - "index.html"
+        - "src/**/*.js"
+        - "src/**/*.css"
+      cdn_compatible: true
+    
+    # Language-specific best practices and standards
+    ai_guidance:
+      testing_standards:
+        - "Jest for unit testing with jsdom environment"
+        - "Playwright/Selenium for E2E browser testing"
+        - "Test API client with mock responses and fetch mocks"
+        - "Test state management and localStorage interactions"
+        - "Validate DOM manipulation and event handlers"
+        - "Test responsive design breakpoints"
+        - "Mock external API calls consistently"
+      
+      style_guides:
+        - "Airbnb JavaScript Style Guide (ES6+)"
+        - "Bootstrap 5 Best Practices"
+        - "Vanilla JS Best Practices (avoiding jQuery where possible)"
+        - "HTML5 semantic markup guidelines"
+        - "CSS BEM methodology for custom styles"
+      
+      best_practices:
+        - "Use ES6+ modules (import/export) for code organization"
+        - "Implement client-side routing with History API if SPA navigation needed"
+        - "Use fetch() API with proper error handling and timeouts"
+        - "Implement caching strategy (localStorage/sessionStorage) with TTL"
+        - "Use async/await for asynchronous operations"
+        - "Implement proper state management (avoid global variables)"
+        - "Use Bootstrap utilities before custom CSS"
+        - "Optimize bundle size with tree-shaking and code splitting"
+        - "Implement proper CORS handling for API consumption"
+        - "Use semantic HTML5 elements (nav, main, article, section)"
+        - "Follow mobile-first responsive design principles"
+        - "Implement proper accessibility (ARIA labels, keyboard navigation)"
+        - "Use Service Worker for PWA features (optional)"
+        - "Validate forms with HTML5 attributes + JavaScript"
+        - "Implement proper error boundaries for API failures"
+      
+      directory_standards:
+        - "HTML entry point in root or public/ directory"
+        - "JavaScript modules in src/js/ or src/ directory"
+        - "API clients and services in src/services/ directory"
+        - "Utility functions in src/utils/ or src/lib/ directory"
+        - "Stylesheets in src/styles/ or public/css/ directory"
+        - "Static assets in public/ or assets/ directory"
+        - "Tests in tests/ directory (unit, integration, e2e)"
+        - "Configuration files in root directory"
+        - "Build output in dist/ or build/ directory"
+        - "Documentation in docs/ directory"
+      
+      api_integration_patterns:
+        - "Create dedicated apiClient.js module for all HTTP requests"
+        - "Implement referential transparency (pure functions with dependency injection)"
+        - "Use configuration objects for API endpoints and timeouts"
+        - "Implement retry logic with exponential backoff"
+        - "Handle network errors gracefully with user-friendly messages"
+        - "Cache API responses with appropriate TTL strategies"
+        - "Use AbortController for request cancellation"
+        - "Validate API responses before processing"
+      
+      state_management_patterns:
+        - "Use localStorage for persistent client-side data (with TTL)"
+        - "Use sessionStorage for temporary session data"
+        - "Implement centralized state management module (e.g., stateManager.js)"
+        - "Use event-driven architecture for state change notifications"
+        - "Avoid global variables - encapsulate state in modules"
+        - "Implement state validation and sanitization"
+        - "Clear stale cache data on version updates"
+
+  # ----------------------------------------------------------------------------
   # React/SPA Application
   # ----------------------------------------------------------------------------
   react_spa:
@@ -555,6 +718,13 @@ project_kinds:
 # ============================================================================
 
 metadata:
-  schema_version: "1.0.0"
-  last_updated: "2025-12-18"
+  schema_version: "1.1.0"
+  last_updated: "2025-12-22"
   compatible_workflow_version: "2.3.1"
+  changelog:
+    - version: "1.1.0"
+      date: "2025-12-22"
+      changes: "Added client_spa project kind for vanilla JS SPAs with Bootstrap"
+    - version: "1.0.0"
+      date: "2025-12-18"
+      changes: "Initial project kinds configuration"

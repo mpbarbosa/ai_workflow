@@ -1234,6 +1234,7 @@ execute_full_workflow() {
     if [[ $resume_from -le 0 ]] && should_execute_step 0; then
         log_step_start 0 "Pre-Analysis"
         step0_analyze_changes || { failed_step="Step 0"; }
+        [[ -z "$failed_step" ]] && update_workflow_status 0 "✅"
         ((executed_steps++)) || true
         save_checkpoint 0
     elif [[ $resume_from -le 0 ]]; then
@@ -1260,6 +1261,10 @@ execute_full_workflow() {
         print_info "⚡ Parallel execution enabled for validation steps (1-4)"
         print_info "Expected time savings: ~270 seconds"
         if execute_parallel_validation; then
+            update_workflow_status 1 "✅"
+            update_workflow_status 2 "✅"
+            update_workflow_status 3 "✅"
+            update_workflow_status 4 "✅"
             ((executed_steps+=4)) || true
             save_checkpoint 4
         else
@@ -1273,6 +1278,7 @@ execute_full_workflow() {
         if [[ -z "$failed_step" && $resume_from -le 1 ]] && should_execute_step 1; then
             log_step_start 1 "Documentation Updates"
             step1_update_documentation || { failed_step="Step 1"; }
+            [[ -z "$failed_step" ]] && update_workflow_status 1 "✅"
             ((executed_steps++)) || true
             save_checkpoint 1
         elif [[ -z "$failed_step" && $resume_from -le 1 ]]; then
@@ -1287,6 +1293,7 @@ execute_full_workflow() {
         if [[ -z "$failed_step" && $resume_from -le 2 ]] && should_execute_step 2; then
             log_step_start 2 "Consistency Analysis"
             step2_check_consistency || { failed_step="Step 2"; }
+            [[ -z "$failed_step" ]] && update_workflow_status 2 "✅"
             ((executed_steps++)) || true
             save_checkpoint 2
         elif [[ -z "$failed_step" && $resume_from -le 2 ]]; then
@@ -1301,6 +1308,7 @@ execute_full_workflow() {
         if [[ -z "$failed_step" && $resume_from -le 3 ]] && should_execute_step 3; then
             log_step_start 3 "Script Reference Validation"
             step3_validate_script_references || { failed_step="Step 3"; }
+            [[ -z "$failed_step" ]] && update_workflow_status 3 "✅"
             ((executed_steps++)) || true
             save_checkpoint 3
         elif [[ -z "$failed_step" && $resume_from -le 3 ]]; then
@@ -1315,6 +1323,7 @@ execute_full_workflow() {
         if [[ -z "$failed_step" && $resume_from -le 4 ]] && should_execute_step 4; then
             log_step_start 4 "Directory Structure Validation"
             step4_validate_directory_structure || { failed_step="Step 4"; }
+            [[ -z "$failed_step" ]] && update_workflow_status 4 "✅"
             ((executed_steps++)) || true
             save_checkpoint 4
         elif [[ -z "$failed_step" && $resume_from -le 4 ]]; then
@@ -1336,6 +1345,7 @@ execute_full_workflow() {
         else
             log_step_start 5 "Test Review"
             step5_review_existing_tests || { failed_step="Step 5"; }
+            [[ -z "$failed_step" ]] && update_workflow_status 5 "✅"
             ((executed_steps++)) || true
             save_checkpoint 5
         fi
@@ -1357,6 +1367,7 @@ execute_full_workflow() {
         else
             log_step_start 6 "Test Generation"
             step6_generate_new_tests || { failed_step="Step 6"; }
+            [[ -z "$failed_step" ]] && update_workflow_status 6 "✅"
             ((executed_steps++)) || true
             save_checkpoint 6
         fi
@@ -1378,6 +1389,7 @@ execute_full_workflow() {
         else
             log_step_start 7 "Test Execution"
             step7_execute_test_suite || { failed_step="Step 7"; }
+            [[ -z "$failed_step" ]] && update_workflow_status 7 "✅"
             ((executed_steps++)) || true
             save_checkpoint 7
         fi
@@ -1399,6 +1411,7 @@ execute_full_workflow() {
         else
             log_step_start 8 "Dependency Validation"
             step8_validate_dependencies || { failed_step="Step 8"; }
+            [[ -z "$failed_step" ]] && update_workflow_status 8 "✅"
             ((executed_steps++)) || true
             save_checkpoint 8
         fi
@@ -1420,6 +1433,7 @@ execute_full_workflow() {
         else
             log_step_start 9 "Code Quality Validation"
             step9_code_quality_validation || { failed_step="Step 9"; }
+            [[ -z "$failed_step" ]] && update_workflow_status 9 "✅"
             ((executed_steps++)) || true
             save_checkpoint 9
         fi
@@ -1436,6 +1450,7 @@ execute_full_workflow() {
     if [[ -z "$failed_step" && $resume_from -le 10 ]] && should_execute_step 10; then
         log_step_start 10 "Context Analysis"
         step10_context_analysis || { failed_step="Step 10"; }
+        [[ -z "$failed_step" ]] && update_workflow_status 10 "✅"
         ((executed_steps++)) || true
         save_checkpoint 10
     elif [[ -z "$failed_step" && $resume_from -le 10 ]]; then
@@ -1451,6 +1466,7 @@ execute_full_workflow() {
     if [[ -z "$failed_step" && $resume_from -le 11 ]] && should_execute_step 11; then
         log_step_start 11 "Git Finalization"
         step11_git_finalization || { failed_step="Step 11"; }
+        [[ -z "$failed_step" ]] && update_workflow_status 11 "✅"
         ((executed_steps++)) || true
         save_checkpoint 11
     elif [[ -z "$failed_step" && $resume_from -le 11 ]]; then
@@ -1466,6 +1482,7 @@ execute_full_workflow() {
     if [[ -z "$failed_step" && $resume_from -le 12 ]] && should_execute_step 12; then
         log_step_start 12 "Markdown Linting"
         step12_markdown_linting || { failed_step="Step 12"; }
+        [[ -z "$failed_step" ]] && update_workflow_status 12 "✅"
         ((executed_steps++)) || true
         save_checkpoint 12
     elif [[ -z "$failed_step" && $resume_from -le 12 ]]; then

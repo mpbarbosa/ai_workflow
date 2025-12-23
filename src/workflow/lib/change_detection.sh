@@ -377,12 +377,34 @@ assess_change_impact() {
     local filtered_files=$(filter_workflow_artifacts "$all_files")
     local total_files=$(echo "$filtered_files" | grep -v '^$' | wc -l)
     
+    # Count code files specifically
+    local code_count=0
+    local doc_count=0
+    while IFS= read -r file; do
+        [[ -z "$file" ]] && continue
+        if matches_pattern "$file" "${FILE_PATTERNS[code]}"; then
+            ((code_count++))
+        elif matches_pattern "$file" "${FILE_PATTERNS[docs]}"; then
+            ((doc_count++))
+        fi
+    done <<< "$filtered_files"
+    
     # Impact based on change type and file count
+    # Calibrated thresholds (v2.3.1):
+    # - Low: docs/config only with <= 50 files
+    # - Medium: 1-5 code files OR 10+ test/script files
+    # - High: 6+ code files OR 50+ total files with code OR breaking changes
     case "${change_type}" in
         docs-only|config-only)
-            echo "low"
+            # Pure documentation/config changes
+            if [[ ${doc_count} -gt 50 ]]; then
+                echo "medium"
+            else
+                echo "low"
+            fi
             ;;
         tests-only|scripts-only)
+            # Test or script changes
             if [[ ${total_files} -gt 10 ]]; then
                 echo "medium"
             else
@@ -390,12 +412,15 @@ assess_change_impact() {
             fi
             ;;
         code-only|mixed)
-            if [[ ${total_files} -gt 20 ]]; then
+            # Code changes: any code = medium minimum
+            if [[ ${code_count} -gt 5 ]] || [[ ${total_files} -gt 50 ]]; then
                 echo "high"
-            elif [[ ${total_files} -gt 10 ]]; then
+            elif [[ ${code_count} -gt 0 ]]; then
+                # 1-5 code files = medium impact
                 echo "medium"
             else
-                echo "low"
+                # Fallback (shouldn't happen for code-only/mixed)
+                echo "medium"
             fi
             ;;
         full-stack)

@@ -294,9 +294,9 @@ The system uses 13 specialized AI personas for different tasks:
 13. **test_execution_analyst** - Test execution analysis
 
 Each persona has specialized prompts in `ai_helpers.yaml`. The documentation_specialist persona is project-aware and references:
-- **`src/workflow/config/project_kinds.yaml`** - Defines project types (shell_script_automation, nodejs_api, static_website, react_spa, python_app, generic) with quality standards, testing frameworks, and documentation requirements
+- **`src/workflow/config/project_kinds.yaml`** - Defines project types (shell_script_automation, nodejs_api, static_website, client_spa, react_spa, python_app, generic) with quality standards, testing frameworks, and documentation requirements
 - **`.workflow-config.yaml`** - Project-specific configuration including:
-  - `project.kind` - Explicitly set project kind (shell_automation, nodejs_api, nodejs_cli, nodejs_library, static_website, react_spa, vue_spa, python_api, python_cli, python_library, documentation)
+  - `project.kind` - Explicitly set project kind (shell_automation, nodejs_api, nodejs_cli, nodejs_library, static_website, client_spa, react_spa, vue_spa, python_api, python_cli, python_library, documentation)
   - `tech_stack.primary_language` - Primary programming language
   - Test commands and framework configuration
   - If `project.kind` is not specified, it will be auto-detected using the `detect_project_kind()` function

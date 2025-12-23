@@ -1962,7 +1962,7 @@ execute_copilot_batch() {
     
     # Execute with timeout and non-interactive flags
     local exit_code=0
-    if timeout "${timeout}s" bash -c "cat '$temp_prompt_file' | copilot --allow-all-tools --allow-all-paths 2>&1 | tee '$log_file'"; then
+    if timeout "${timeout}s" bash -c "cat '$temp_prompt_file' | copilot --allow-all-tools --allow-all-paths --enable-all-github-mcp-tools 2>&1 | tee '$log_file'"; then
         print_success "AI batch analysis completed"
         exit_code=0
     else
@@ -2039,9 +2039,10 @@ execute_copilot_prompt() {
         
         # Use stdin to avoid ARG_MAX: read prompt from file and pipe to copilot
         # Use --allow-all-paths to enable access to target project files
-        cat "$temp_prompt_file" | copilot --allow-all-tools --allow-all-paths 2>&1 | tee "$log_file"
+        # Use --enable-all-github-mcp-tools for repository analysis capabilities
+        cat "$temp_prompt_file" | copilot --allow-all-tools --allow-all-paths --enable-all-github-mcp-tools 2>&1 | tee "$log_file"
     else
-        cat "$temp_prompt_file" | copilot --allow-all-tools --allow-all-paths
+        cat "$temp_prompt_file" | copilot --allow-all-tools --allow-all-paths --enable-all-github-mcp-tools
     fi
     
     local exit_code=$?
@@ -2247,7 +2248,8 @@ extract_and_save_issues_from_log() {
             sleep 1
             print_info "Starting Copilot CLI session for issue extraction..."
             # Use --allow-all-paths to enable access to target project files
-            copilot -p "$extract_prompt" --allow-all-tools --allow-all-paths
+            # Use --enable-all-github-mcp-tools for repository analysis capabilities
+            copilot -p "$extract_prompt" --allow-all-tools --allow-all-paths --enable-all-github-mcp-tools
             
             # Collect organized issues using reusable function
             local organized_issues
