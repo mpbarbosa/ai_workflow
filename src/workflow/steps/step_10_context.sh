@@ -290,7 +290,7 @@ Please provide a comprehensive strategic analysis with specific, prioritized rec
             print_info "Logging output to: $log_file"
             
             # Execute Copilot prompt
-            execute_copilot_prompt "$copilot_prompt" "$log_file"
+            execute_copilot_prompt "$copilot_prompt" "$log_file" "step10" "context_analyst"
             
             print_success "GitHub Copilot CLI session completed"
             print_info "Full session log saved to: $log_file"

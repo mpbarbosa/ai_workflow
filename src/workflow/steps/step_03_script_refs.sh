@@ -280,8 +280,8 @@ step3_validate_script_references() {
             local log_file="${LOGS_RUN_DIR}/step3_copilot_script_validation_${log_timestamp}.log"
             print_info "Logging output to: $log_file"
             
-            # Execute Copilot prompt
-            execute_copilot_prompt "$copilot_prompt" "$log_file"
+            # Execute Copilot prompt with proper step and persona identification
+            execute_copilot_prompt "$copilot_prompt" "$log_file" "step03" "script_reference_specialist"
             
             print_success "GitHub Copilot CLI session completed"
             print_info "Full session log saved to: $log_file"

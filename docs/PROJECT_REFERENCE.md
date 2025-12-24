@@ -100,6 +100,8 @@
 
 ### Step Modules (15 total in src/workflow/steps/)
 
+**Execution Order** (Step 11 MUST be last):
+
 1. `step_00_analyze.sh` - Pre-flight analysis
 2. `step_01_documentation.sh` - Documentation updates
 3. `step_02_consistency.sh` - Cross-reference validation
@@ -111,10 +113,10 @@
 9. `step_08_dependencies.sh` - Dependency validation
 10. `step_09_code_quality.sh` - Code quality checks
 11. `step_10_context.sh` - Context analysis
-12. `step_11_git.sh` - Git operations
-13. `step_12_markdown_lint.sh` - Markdown linting
-14. `step_13_prompt_engineer.sh` - Prompt engineering (ai_workflow only)
-15. `step_14_ux_analysis.sh` - UX/UI analysis (NEW v2.4.0)
+12. `step_12_markdown_lint.sh` - Markdown linting
+13. `step_13_prompt_engineer.sh` - Prompt engineering (ai_workflow only)
+14. `step_14_ux_analysis.sh` - UX/UI analysis (NEW v2.4.0)
+15. `step_11_git.sh` - **Git operations [FINAL STEP - commits all changes]**
 
 ### Configuration Files (6 total in src/workflow/config/)
 

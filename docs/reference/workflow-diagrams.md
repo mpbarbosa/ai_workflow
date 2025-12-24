@@ -38,15 +38,16 @@ graph TD
     Step7 --> Step8[Step 8: Dependency Validation<br/>60s]
     Step8 --> Step9[Step 9: Code Quality<br/>150s]
     Step9 --> Step10[Step 10: Context Analysis<br/>120s]
-    Step10 --> Step11[Step 11: Git Finalization<br/>90s]
-    Step11 --> Step12[Step 12: Markdown Linting<br/>45s]
+    Step10 --> Step12[Step 12: Markdown Linting<br/>45s]
     Step12 --> Step13[Step 13: Prompt Engineering<br/>150s]
     Step13 --> Step14[Step 14: UX Analysis<br/>180s]
-    Step14 --> End([Workflow Complete])
+    Step14 --> Step11[Step 11: Git Finalization FINAL<br/>90s]
+    Step11 --> End([Workflow Complete])
     
     style Start fill:#90EE90
     style End fill:#87CEEB
     style Step7 fill:#FFB6C1
+    style Step11 fill:#FFD700
     style Step14 fill:#FFE4B5
     
     classDef aiStep fill:#E6E6FA
@@ -106,8 +107,18 @@ graph TD
     Step8 --> Step10
     Step9 --> Step10
     
-    %% Finalization
+    %% Validation and analysis steps before finalization
+    Step1 --> Step14
+    Step2 --> Step12
+    Step10 --> Step12
+    Step12 --> Step13
+    Step13 --> Step14
+    
+    %% Git Finalization - MUST BE LAST
     Step10 --> Step11
+    Step12 --> Step11
+    Step13 --> Step11
+    Step14 --> Step11
     
     style Step0 fill:#90EE90
     style Step7 fill:#FFB6C1
@@ -128,13 +139,17 @@ graph LR
     Step5 --> Step6[Test Gen<br/>180s]
     Step6 --> Step7[Test Exec<br/>240s]
     Step7 --> Step10[Context<br/>120s]
-    Step10 --> Step11[Git Final<br/>90s]
+    Step10 --> Step12[Markdown<br/>45s]
+    Step12 --> Step13[Prompt Eng<br/>150s]
+    Step13 --> Step14[UX Analysis<br/>180s]
+    Step14 --> Step11[Git Final<br/>90s]
     
     style Step7 fill:#FFB6C1
     style Step6 fill:#FFE4B5
+    style Step11 fill:#FFD700
 ```
 
-**Critical Path Duration**: ~780 seconds (~13 minutes)
+**Critical Path Duration**: ~1,155 seconds (~19 minutes)
 
 ---
 
@@ -165,13 +180,14 @@ graph TD
     Track3 --> Group3A[Steps 1, 14<br/>Parallel: 180s]
     Group3A --> Step2[Step 2: Consistency<br/>90s]
     Step2 --> Step12[Step 12: Markdown<br/>45s]
-    Step12 --> Sync3[Sync Point]
+    Step12 --> Step13[Step 13: Prompt Eng<br/>150s]
+    Step13 --> Sync3[Sync Point]
     
     %% Final synchronization
     Step10 --> FinalSync[Final Sync]
     Sync2 --> FinalSync
     Sync3 --> FinalSync
-    FinalSync --> Step11[Step 11: Git Final<br/>90s]
+    FinalSync --> Step11[Step 11: Git Final FINAL<br/>90s]
     Step11 --> End([Complete])
     
     style Start fill:#90EE90

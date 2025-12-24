@@ -253,7 +253,7 @@ $(head -50 "$file" 2>/dev/null)  # Increased from 30 lines (Dec 15, 2025) for be
             print_info "Logging output to: $log_file"
             
             # Execute Copilot prompt
-            execute_copilot_prompt "$copilot_prompt" "$log_file"
+            execute_copilot_prompt "$copilot_prompt" "$log_file" "step09" "code_quality_engineer"
             
             print_success "GitHub Copilot CLI session completed"
             print_info "Full session log saved to: $log_file"

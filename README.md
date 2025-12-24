@@ -196,6 +196,30 @@ The repository includes GitHub Actions workflows for automated testing and valid
 ./tests/run_all_tests.sh --integration   # Integration tests
 ```
 
+### Development Testing
+
+The workflow includes dedicated test scripts for validation:
+
+```bash
+# Test Step 1 refactoring
+./src/workflow/test_step01_refactoring.sh
+
+# Test Step 1 simple scenarios
+./src/workflow/test_step01_simple.sh
+
+# Run all step-specific tests
+for test in src/workflow/test_step*.sh; do
+    echo "Running $test..."
+    bash "$test"
+done
+```
+
+**Available Test Suites**:
+- `test_step01_refactoring.sh` - Validates Step 1 modular architecture
+- `test_step01_simple.sh` - Basic Step 1 functionality tests
+
+See [Testing Guide](docs/developer-guide/testing.md) for comprehensive test documentation.
+
 ## License
 
 This project is licensed under the **MIT License** - see the [LICENSE](LICENSE) file for details.

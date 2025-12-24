@@ -84,6 +84,169 @@ git checkout -b feature/your-feature-name
 
 ---
 
+## Workflow Usage Patterns
+
+### Optimized Development Workflow (v2.5.0+)
+
+The workflow now runs in **optimized mode by default** with smart execution and parallel processing enabled. This provides the best experience for most users.
+
+#### Default Behavior (Phase 2 Complete)
+
+```bash
+# Run with all optimizations enabled (default)
+./src/workflow/execute_tests_docs_workflow.sh
+
+# What's enabled by default:
+#  ✅ Smart Execution - Skips unnecessary steps (40-85% faster)
+#  ✅ Parallel Execution - Runs independent steps simultaneously (33% faster)
+#  ✅ AI Response Caching - Reduces token usage (60-80% savings)
+#  ✅ Checkpoint Resume - Continues from last completed step
+```
+
+#### Override Defaults
+
+```bash
+# Disable smart execution (run all steps)
+./src/workflow/execute_tests_docs_workflow.sh --no-smart-execution
+
+# Disable parallel execution (sequential mode)
+./src/workflow/execute_tests_docs_workflow.sh --no-parallel
+
+# Disable both optimizations
+./src/workflow/execute_tests_docs_workflow.sh --no-smart-execution --no-parallel
+
+# Fresh start (ignore checkpoints)
+./src/workflow/execute_tests_docs_workflow.sh --no-resume
+```
+
+### Common Usage Patterns
+
+#### 1. Quick Documentation Update
+
+For documentation-only changes:
+
+```bash
+# Smart execution automatically detects doc-only changes
+# and skips test/code quality steps (85% faster)
+./src/workflow/execute_tests_docs_workflow.sh
+
+# Steps automatically skipped:
+#   - Step 5: Test Review
+#   - Step 6: Test Generation
+#   - Step 7: Test Execution
+#   - Step 9: Code Quality
+```
+
+#### 2. Code Changes
+
+For code modifications:
+
+```bash
+# All relevant steps run automatically
+./src/workflow/execute_tests_docs_workflow.sh
+
+# Steps included:
+#   - All documentation steps
+#   - Test review and generation
+#   - Test execution
+#   - Dependency validation
+#   - Code quality checks
+```
+
+#### 3. Automated CI/CD Pipeline
+
+```bash
+# Non-interactive mode for CI/CD
+./src/workflow/execute_tests_docs_workflow.sh \
+  --auto \
+  --ai-batch
+
+# Optimizations:
+#  • No user prompts
+#  • AI runs non-interactively with 5min timeout
+#  • Smart execution enabled
+#  • Parallel processing enabled
+```
+
+#### 4. Selective Step Execution
+
+```bash
+# Run specific steps only
+./src/workflow/execute_tests_docs_workflow.sh --steps 0,5,6,7
+
+# Run just validation steps (1-4)
+./src/workflow/execute_tests_docs_workflow.sh --steps 1,2,3,4
+```
+
+#### 5. Target External Project
+
+```bash
+# Run workflow on different project
+./src/workflow/execute_tests_docs_workflow.sh --target /path/to/project
+
+# Artifacts stored in target project's .ai_workflow/ directory
+```
+
+#### 6. View Performance Metrics
+
+```bash
+# View metrics dashboard
+./tools/metrics_dashboard.sh
+
+# Shows:
+#  • Optimization status
+#  • Performance gains
+#  • Usage recommendations
+```
+
+### Performance Expectations (v2.5.0)
+
+| Change Type | Duration (Baseline) | Duration (Optimized) | Improvement |
+|-------------|---------------------|----------------------|-------------|
+| Documentation Only | 23 minutes | 3.5 minutes | **85% faster** |
+| Code Changes | 23 minutes | 10 minutes | **57% faster** |
+| Full Changes | 23 minutes | 15.5 minutes | **33% faster** |
+
+### Troubleshooting Common Issues
+
+#### Issue: Steps Taking Too Long
+
+```bash
+# Check if optimizations are enabled
+./src/workflow/execute_tests_docs_workflow.sh --help | grep "ENABLED BY DEFAULT"
+
+# Should see:
+#   --smart-execution  ✅ ENABLED BY DEFAULT
+#   --parallel         ✅ ENABLED BY DEFAULT
+```
+
+#### Issue: Tests Failing Unexpectedly
+
+```bash
+# Run in sequential mode for easier debugging
+./src/workflow/execute_tests_docs_workflow.sh --no-parallel
+
+# Run specific failing step
+./src/workflow/execute_tests_docs_workflow.sh --steps 7
+```
+
+#### Issue: Want to Force Full Execution
+
+```bash
+# Disable smart execution to run all steps
+./src/workflow/execute_tests_docs_workflow.sh --no-smart-execution
+```
+
+### Best Practices
+
+1. **Use Defaults**: The optimizations are well-tested and safe for most use cases
+2. **Check Metrics**: Run `./tools/metrics_dashboard.sh` to monitor performance
+3. **CI/CD**: Use `--auto --ai-batch` for automation
+4. **Debugging**: Use `--no-parallel` if you need sequential execution for debugging
+5. **Documentation**: Keep README.md updated as workflow runs
+
+---
+
 ## Development Setup
 
 ### Run Tests

@@ -26,14 +26,14 @@ STEP_DEPENDENCIES=(
     [8]="0"               # Dependencies depends on Pre-Analysis
     [9]="7"               # Code Quality depends on Test Execution
     [10]="1,2,3,4,7,8,9"  # Context Analysis depends on most steps
-    [11]="10"             # Git Finalization depends on Context Analysis
     [12]="2"              # Markdown Linting depends on Consistency
     [13]="0"              # Prompt Engineer Analysis depends on Pre-Analysis (can run early)
     [14]="0,1"            # UX Analysis depends on Pre-Analysis and Documentation
+    [11]="10,12,13,14"    # Git Finalization MUST BE LAST - depends on all analysis steps
 )
 
 # Define parallelizable step groups (steps that can run simultaneously)
-# Updated v2.3.1: 3-Track Parallelization
+# Updated v2.4.0: 3-Track Parallelization with Step 11 as FINAL step
 declare -a PARALLEL_GROUPS
 PARALLEL_GROUPS=(
     "1,3,4,5,8,13,14"     # Group 1: Can run after Pre-Analysis
@@ -41,13 +41,13 @@ PARALLEL_GROUPS=(
     "6"                   # Group 3: Test Generation
     "7,9"                 # Group 4: Test Execution and Code Quality
     "10"                  # Group 5: Context Analysis
-    "11"                  # Group 6: Git Finalization
+    "11"                  # Group 6: Git Finalization (MUST BE LAST - runs after all other steps)
 )
 
-# 3-Track Parallel Execution Structure (v2.3.1)
-# Track 1 (Analysis):       0 → (3,4,13 parallel) → 10 → 11
-# Track 2 (Validation):     5 → 6 → 7 → 9 (+ 8 parallel with 5)
-# Track 3 (Documentation):  1 → 2 → 12
+# 3-Track Parallel Execution Structure (v2.4.0)
+# Track 1 (Analysis):       0 → (3,4,13 parallel) → 10 ┐
+# Track 2 (Validation):     5 → 6 → 7 → 9 (+ 8 parallel) ├─→ 11 (FINAL)
+# Track 3 (Documentation):  1 → 2 → 12 → 14 ────────────┘
 #
 # Synchronization Points:
 # - All tracks wait for Step 0 completion

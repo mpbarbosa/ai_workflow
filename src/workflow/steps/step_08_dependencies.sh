@@ -428,7 +428,7 @@ CRITICAL: Invalid ${package_file} syntax. Cannot validate dependencies.
             print_info "Logging output to: $log_file"
             
             # Execute Copilot prompt
-            execute_copilot_prompt "$copilot_prompt" "$log_file"
+            execute_copilot_prompt "$copilot_prompt" "$log_file" "step08" "dependency_management_specialist"
             
             print_success "GitHub Copilot CLI session completed"
             print_info "Full session log saved to: $log_file"

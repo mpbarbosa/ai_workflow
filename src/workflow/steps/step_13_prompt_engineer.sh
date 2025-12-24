@@ -363,7 +363,7 @@ step13_prompt_engineer_analysis() {
     
     if [[ "$INTERACTIVE_MODE" == true ]] && [[ "$AUTO_MODE" == false ]]; then
         print_info "Invoking GitHub Copilot CLI for interactive analysis..."
-        execute_copilot_prompt "$ai_prompt" "$log_file"
+        execute_copilot_prompt "$ai_prompt" "$log_file" "step13" "prompt_engineer"
         
         # Copy log output to ai_output for parsing
         cp "$log_file" "$ai_output"

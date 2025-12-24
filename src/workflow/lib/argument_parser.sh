@@ -91,6 +91,12 @@ parse_workflow_arguments() {
                 print_info "Smart execution enabled - steps will be skipped based on change detection"
                 shift
                 ;;
+            --no-smart-execution)
+                SMART_EXECUTION=false
+                export SMART_EXECUTION
+                print_info "Smart execution disabled - all steps will run"
+                shift
+                ;;
             --show-graph)
                 SHOW_GRAPH=true
                 export SHOW_GRAPH
@@ -100,6 +106,12 @@ parse_workflow_arguments() {
                 PARALLEL_EXECUTION=true
                 export PARALLEL_EXECUTION
                 print_info "Parallel execution enabled - independent steps will run simultaneously"
+                shift
+                ;;
+            --no-parallel)
+                PARALLEL_EXECUTION=false
+                export PARALLEL_EXECUTION
+                print_info "Parallel execution disabled - sequential execution"
                 shift
                 ;;
             --parallel-tracks)

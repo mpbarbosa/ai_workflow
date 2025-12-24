@@ -227,7 +227,7 @@ Dry run mode enabled. No actual git operations performed.
                 print_info "Logging output to: $log_file"
                 
                 # Execute Copilot prompt
-                execute_copilot_prompt "$copilot_prompt" "$log_file"
+                execute_copilot_prompt "$copilot_prompt" "$log_file" "step11" "git_workflow_specialist"
                 
                 echo ""
                 print_success "Copilot CLI commit message generation session completed"

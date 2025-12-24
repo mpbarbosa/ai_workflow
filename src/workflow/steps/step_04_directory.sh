@@ -323,7 +323,7 @@ step4_validate_directory_structure() {
             print_info "Logging output to: $log_file"
             
             # Execute Copilot prompt
-            execute_copilot_prompt "$copilot_prompt" "$log_file"
+            execute_copilot_prompt "$copilot_prompt" "$log_file" "step04" "directory_structure_specialist"
             
             print_success "GitHub Copilot CLI session completed"
             print_info "Full session log saved to: $log_file"

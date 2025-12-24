@@ -264,13 +264,17 @@ execute_quality_phase()  # Main orchestration
 ### Finalization Orchestrator
 **File**: `orchestrators/finalization_orchestrator.sh`  
 **Size**: 93 lines  
-**Phase**: Completion (Steps 10-12)  
-**Role**: Context analysis, git operations, and cleanup
+**Phase**: Completion (Steps 10, 12-14, then 11)  
+**Role**: Context analysis, validation, and git operations
 
 **Key Responsibilities**:
 - Execute Step 10 (Context Analysis)
-- Execute Step 11 (Git Finalization)
 - Execute Step 12 (Markdown Linting)
+- Execute Step 13 (Prompt Engineer Analysis)
+- Execute Step 14 (UX Analysis)
+- Execute Step 11 (Git Finalization) - **FINAL STEP**
+
+**Execution Order**: Steps 10, 12, 13, 14 must complete before Step 11 commits changes.
 
 **Key Functions**:
 ```bash

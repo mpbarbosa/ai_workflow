@@ -4,15 +4,19 @@ set -euo pipefail
 ################################################################################
 # Step 7: AI-Powered Test Execution and Analysis
 # Purpose: Execute test suite and analyze results with AI (adaptive)
-# Part of: Tests & Documentation Workflow Automation v2.3.1
-# Version: 2.1.0 (Phase 3 - Adaptive)
+# Part of: Tests & Documentation Workflow Automation v2.4.1
+# Version: 2.2.0 (Phase 3 - Adaptive + Regression Prevention)
 ################################################################################
 
 # Module version information
-readonly STEP7_VERSION="2.1.0"
+readonly STEP7_VERSION="2.2.0"
 readonly STEP7_VERSION_MAJOR=2
-readonly STEP7_VERSION_MINOR=1
+readonly STEP7_VERSION_MINOR=2
 readonly STEP7_VERSION_PATCH=0
+
+# Source test validation library
+STEP7_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+source "${STEP7_DIR}/../lib/test_validation.sh"
 
 # Main step function - executes tests and analyzes results with AI
 # Returns: 0 for success (or user override), 1 for failure
@@ -235,7 +239,7 @@ Coverage Metrics:
             print_info "Logging output to: $log_file"
             
             # Execute Copilot prompt
-            execute_copilot_prompt "$copilot_prompt" "$log_file"
+            execute_copilot_prompt "$copilot_prompt" "$log_file" "step07" "test_execution_analyst"
             
             print_success "GitHub Copilot CLI session completed"
             print_info "Full session log saved to: $log_file"
@@ -316,9 +320,13 @@ $(cat "$test_results_file")
     save_step_issues "7" "Test_Execution" "$step_issues"
     
     cd "$PROJECT_ROOT" || return 1
-    update_workflow_status "step7" "✅"
     
-    return $test_exit_code
+    # Use validation library to ensure visual status matches test outcome
+    # This prevents silent test failures from being marked as successful
+    validate_and_update_test_status "7" "$test_exit_code" "$tests_total" "$tests_passed" "$tests_failed"
+    local validation_result=$?
+    
+    return $validation_result
 }
 
 # Export step function

@@ -25,10 +25,10 @@ set -euo pipefail
 #   Step 8:  Dependency Validation (DevOps Engineer + Package Management Specialist)
 #   Step 9:  Code Quality Validation (Software Quality Engineer + Code Review Specialist)
 #   Step 10: Context Analysis (Technical Project Manager + Workflow Orchestration Specialist)
-#   Step 11: Git Finalization (Git Workflow Specialist + Technical Communication Expert) ⭐ ENHANCED
 #   Step 12: Markdown Linting (Technical Documentation Specialist) ⭐ NEW
 #   Step 13: Prompt Engineer Analysis (Prompt Engineer + AI Specialist) ⭐ NEW v2.3.1
 #   Step 14: UX Analysis (UX Designer + Frontend Specialist) ⭐ NEW v2.4.0
+#   Step 11: Git Finalization (Git Workflow Specialist + Technical Communication Expert) ⭐ ENHANCED [FINAL STEP]
 #
 # ARCHITECTURE PATTERN:
 #   All enhanced steps follow: Role → Task → Standards structure
@@ -119,7 +119,7 @@ set -euo pipefail
 # CONFIGURATION & CONSTANTS
 # ==============================================================================
 
-SCRIPT_VERSION="2.3.1"
+SCRIPT_VERSION="2.5.0"  # Phase 2: Smart+Parallel enabled by default
 SCRIPT_NAME="Tests & Documentation Workflow Automation"
 WORKFLOW_HOME="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
 PROJECT_ROOT="$(pwd)"  # Default: current directory; can be overridden with --target option
@@ -170,10 +170,10 @@ VERBOSE=false
 STOP_ON_COMPLETION=false
 WORKFLOW_START_TIME=$(date +%s)
 
-# Phase 2 enhancements (v2.3.0)
-SMART_EXECUTION=false
+# Phase 2 enhancements (v2.3.0+) - Smart defaults for Phase 2
+SMART_EXECUTION=true   # ✅ ENABLED BY DEFAULT (Phase 2) - Auto-skip unnecessary steps
 SHOW_GRAPH=false
-PARALLEL_EXECUTION=false
+PARALLEL_EXECUTION=true  # ✅ ENABLED BY DEFAULT (Phase 2) - Parallel validation steps
 USE_AI_CACHE=true  # Enabled by default
 NO_RESUME=false    # When true, ignore checkpoints and start from step 0
 
@@ -1391,8 +1391,14 @@ execute_full_workflow() {
             ((skipped_steps++)) || true
         else
             log_step_start 7 "Test Execution"
-            step7_execute_test_suite || { failed_step="Step 7"; }
-            [[ -z "$failed_step" ]] && update_workflow_status 7 "✅"
+            # Test execution validates its own status internally to prevent silent failures
+            if step7_execute_test_suite; then
+                # Step already updated its status based on test results
+                :  # No-op - status already set correctly
+            else
+                failed_step="Step 7"
+                # Step already set status to ❌ if tests failed
+            fi
             ((executed_steps++)) || true
             save_checkpoint 7
         fi
@@ -1465,23 +1471,8 @@ execute_full_workflow() {
         ((skipped_steps++)) || true
     fi
     
-    # Step 11: Git Finalization (with checkpoint)
-    if [[ -z "$failed_step" && $resume_from -le 11 ]] && should_execute_step 11; then
-        log_step_start 11 "Git Finalization"
-        step11_git_finalization || { failed_step="Step 11"; }
-        [[ -z "$failed_step" ]] && update_workflow_status 11 "✅"
-        ((executed_steps++)) || true
-        save_checkpoint 11
-    elif [[ -z "$failed_step" && $resume_from -le 11 ]]; then
-        print_info "Skipping Step 11 (not selected)"
-        log_to_workflow "INFO" "Skipping Step 11 (not selected)"
-        ((skipped_steps++)) || true
-    elif [[ $resume_from -gt 11 ]]; then
-        print_info "Skipping Step 11 (resuming from checkpoint)"
-        ((skipped_steps++)) || true
-    fi
-    
     # Step 12: Markdown Linting (with checkpoint)
+    # MUST run before Step 11 (Git Finalization)
     if [[ -z "$failed_step" && $resume_from -le 12 ]] && should_execute_step 12; then
         log_step_start 12 "Markdown Linting"
         step12_markdown_linting || { failed_step="Step 12"; }
@@ -1498,6 +1489,7 @@ execute_full_workflow() {
     fi
     
     # Step 13: Prompt Engineer Analysis (with checkpoint)
+    # MUST run before Step 11 (Git Finalization)
     if [[ -z "$failed_step" && $resume_from -le 13 ]] && should_execute_step 13; then
         log_step_start 13 "Prompt Engineer Analysis"
         step13_prompt_engineer_analysis || { failed_step="Step 13"; }
@@ -1512,7 +1504,8 @@ execute_full_workflow() {
         ((skipped_steps++)) || true
     fi
     
-    # Step 14: UX Analysis (with checkpoint) - NEW
+    # Step 14: UX Analysis (with checkpoint)
+    # MUST run before Step 11 (Git Finalization)
     if [[ -z "$failed_step" && $resume_from -le 14 ]] && should_execute_step 14; then
         log_step_start 14 "UX Analysis"
         step14_ux_analysis || { failed_step="Step 14"; }
@@ -1524,6 +1517,23 @@ execute_full_workflow() {
         ((skipped_steps++)) || true
     elif [[ $resume_from -gt 14 ]]; then
         print_info "Skipping Step 14 (resuming from checkpoint)"
+        ((skipped_steps++)) || true
+    fi
+    
+    # Step 11: Git Finalization (with checkpoint)
+    # MANDATORY: MUST BE THE FINAL STEP - runs after all analysis and validation steps
+    if [[ -z "$failed_step" && $resume_from -le 11 ]] && should_execute_step 11; then
+        log_step_start 11 "Git Finalization"
+        step11_git_finalization || { failed_step="Step 11"; }
+        [[ -z "$failed_step" ]] && update_workflow_status 11 "✅"
+        ((executed_steps++)) || true
+        save_checkpoint 11
+    elif [[ -z "$failed_step" && $resume_from -le 11 ]]; then
+        print_info "Skipping Step 11 (not selected)"
+        log_to_workflow "INFO" "Skipping Step 11 (not selected)"
+        ((skipped_steps++)) || true
+    elif [[ $resume_from -gt 11 ]]; then
+        print_info "Skipping Step 11 (resuming from checkpoint)"
         ((skipped_steps++)) || true
     fi
     
@@ -1687,12 +1697,20 @@ OPTIONS:
     --stop             Enable continuation prompt on completion
     
     --smart-execution  Enable smart execution (skip steps based on change detection)
+                       ✅ ENABLED BY DEFAULT in v2.5.0+
                        Performance: 40-85% faster for incremental changes
+                       Use --no-smart-execution to disable
+    
+    --no-smart-execution  Disable smart execution (run all steps)
     
     --show-graph       Display dependency graph and parallelization opportunities
     
     --parallel         Enable parallel execution for independent steps
+                       ✅ ENABLED BY DEFAULT in v2.5.0+
                        Performance: 33% faster execution time
+                       Use --no-parallel to disable
+    
+    --no-parallel      Disable parallel execution (sequential mode)
     
     --no-ai-cache      Disable AI response caching (increases token usage)
                        Default: Enabled (60-80% token savings)
@@ -1734,9 +1752,10 @@ WORKFLOW STEPS:
     Step 8:  Validate Dependencies
     Step 9:  Code Quality Validation
     Step 10: Context Analysis & Summary
-    Step 11: Git Finalization
     Step 12: Markdown Linting
     Step 13: Prompt Engineer Analysis (ai_workflow only)
+    Step 14: UX Analysis
+    Step 11: Git Finalization [FINAL STEP - commits all changes]
 
 EXAMPLES:
     # Basic: Run on current directory (default behavior)

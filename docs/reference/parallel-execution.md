@@ -152,12 +152,14 @@ The workflow organizes steps into **6 parallel groups** based on dependencies:
 
 #### Group 6: Finalization (1 step)
 **Steps**: 11  
-**Dependencies**: Requires Step 10  
+**Dependencies**: Requires Steps 10, 12, 13, 14 (ALL analysis steps must complete first)  
 **Can Run Together**: N/A - Single step  
 **Estimated Time**: ~1.5 minutes
 
 **Steps in Group**:
-- **Step 11**: Git Finalization (AI)
+- **Step 11**: Git Finalization (AI) - **FINAL STEP - commits all changes**
+
+**MANDATORY RULE**: Step 11 MUST execute LAST as it commits all workflow changes to Git.
 
 ---
 
@@ -184,26 +186,24 @@ The parallel execution follows a **3-track model** where tracks run simultaneous
 
 ### Track 1: Analysis Path
 
-**Flow**: `0 → (3, 4, 13 parallel) → 10 → 11`
+**Flow**: `0 → (3, 4, 13 parallel) → 10`
 
 ```
 Step 0: Pre-Analysis (30s)
     ↓
 ┌───┴───┬───────┬───────┐
 │       │       │       │
-Step 3  Step 4  Step 13 Step 14
-Script  Dir     Prompt  UX
-Refs    Check   Eng     Analysis
-(60s)   (90s)   (150s)  (180s)
-│       │       │       │
+Step 3  Step 4  Step 13 
+Script  Dir     Prompt
+Refs    Check   Eng
+(60s)   (90s)   (150s)
+│       │       │
 └───┬───┴───────┴───────┘
     ↓
 Step 10: Context Analysis (120s)
-    ↓
-Step 11: Git Finalization (90s)
 ```
 
-**Track Time**: 30s + 180s + 120s + 90s = **420s (7 min)**
+**Track Time**: 30s + 150s + 120s = **300s (5 min)**
 
 ---
 
@@ -236,29 +236,44 @@ Step 9: Code Quality (150s)
 
 ### Track 3: Documentation Path
 
-**Flow**: `1 → 2 → 12`
+**Flow**: `1 → 2 → 12 → 13 → 14`
 
 ```
 Step 0: Pre-Analysis (30s)
     ↓
-Step 1: Documentation (120s)
+Step 1: Documentation (120s) + Step 14: UX (180s parallel)
     ↓
 Step 2: Consistency (90s)
     ↓
 Step 12: Markdown Lint (45s)
+    ↓
+Step 13: Prompt Engineering (150s)
 ```
 
-**Track Time**: 30s + 120s + 90s + 45s = **285s (4.75 min)**
+**Track Time**: 30s + 180s + 90s + 45s + 150s = **495s (8.25 min)**
+
+---
+
+### Final Synchronization
+
+**All tracks converge before Step 11**:
+
+```
+Track 1 (Step 10) ──┐
+Track 2 (Step 9) ───┼──→ Step 11: Git Finalization (90s) [FINAL]
+Track 3 (Step 13) ──┘
+```
 
 ---
 
 ### Critical Path Analysis
 
-**Longest Track**: Track 2 (Validation) = **720 seconds (12 minutes)**
+**Longest Track**: Track 2 (Validation) = **720 seconds (12 minutes)**  
+**Plus Final Step**: + 90 seconds (Step 11) = **810 seconds (13.5 minutes)**
 
 **Sequential Execution**: 1,800 seconds (30 minutes)  
-**Parallel Execution**: 720 seconds (12 minutes)  
-**Time Savings**: **60% faster** ⚡
+**Parallel Execution**: 810 seconds (13.5 minutes)  
+**Time Savings**: **55% faster** ⚡
 
 ---
 
@@ -279,10 +294,10 @@ Step 12: Markdown Lint (45s)
 | 8 | Dependencies | 0 | 1, 3, 4, 5, 13, 14 |
 | 9 | Code Quality | 7 | (Waits for 7) |
 | 10 | Context | 1,2,3,4,7,8,9 | (Waits for most) |
-| 11 | Git Finalization | 10 | (Final step) |
 | 12 | Markdown Lint | 2 | (Waits for 2) |
 | 13 | Prompt Engineer | 0 | 1, 3, 4, 5, 8, 14 |
 | 14 | UX Analysis | 0, 1 | 3, 4, 5, 8, 13 |
+| 11 | **Git Finalization** | **10, 12, 13, 14** | **(FINAL - commits all)** |
 
 ### Dependency Graph Visual
 

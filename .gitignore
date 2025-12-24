@@ -13,10 +13,17 @@ src/workflow/logs/
 src/workflow/metrics/
 src/workflow/.checkpoints/
 src/workflow/.ai_cache/
+src/workflow/src/
+
+# Test execution reports
+test-results/
 
 # Temporary files
 *.tmp
 *.bak
+*.backup
+*.before_*
+*.old
 *.swp
 *~
 

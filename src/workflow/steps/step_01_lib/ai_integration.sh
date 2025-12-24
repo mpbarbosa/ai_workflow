@@ -5,7 +5,7 @@ set -euo pipefail
 # Step 1 AI Integration Module
 # Purpose: AI prompt building, Copilot CLI interaction, response processing
 # Part of: Step 1 Refactoring Phase 4 - High Cohesion, Low Coupling
-# Version: 1.5.0
+# Version: 2.0.0 - Migrated to centralized ai_helpers.yaml templates
 ################################################################################
 
 # Get script directory for sourcing dependencies
@@ -46,45 +46,42 @@ validate_copilot_step1() {
 }
 
 # ==============================================================================
-# PROMPT BUILDING
+# PROMPT BUILDING - Uses Centralized Templates
 # ==============================================================================
 
 # Build documentation update prompt with context
 # Usage: build_documentation_prompt_step1 <changed_files> <validation_results>
 # Returns: Complete AI prompt string
+# NOTE: This now delegates to centralized build_doc_analysis_prompt from ai_helpers.sh
 build_documentation_prompt_step1() {
     local changed_files="$1"
     local validation_results="${2:-}"
-    local prompt=""
     
-    # Header with context
-    prompt="I need help updating project documentation based on recent code changes.\n\n"
+    # Prepare documentation files list
+    local doc_files="README.md .github/copilot-instructions.md"
     
-    # Changed files section
-    prompt+="## Changed Files\n"
-    prompt+="The following files have been modified:\n"
-    prompt+="${changed_files}\n\n"
-    
-    # Validation results (if any issues)
+    # Add validation results context if present
     if [[ -n "$validation_results" ]]; then
-        prompt+="## Documentation Issues Detected\n"
-        prompt+="${validation_results}\n\n"
+        changed_files="${changed_files}
+
+## Documentation Issues Detected
+
+Documentation validation found issues (see above)"
     fi
     
-    # Instructions for AI
-    prompt+="## Task\n"
-    prompt+="Please analyze these changes and suggest updates to:\n"
-    prompt+="1. README.md - Update feature descriptions, usage examples, or API docs\n"
-    prompt+="2. .github/copilot-instructions.md - Update AI context if architecture changed\n"
-    prompt+="3. docs/ - Update technical documentation for affected components\n\n"
-    
-    prompt+="Focus on:\n"
-    prompt+="- Accuracy: Ensure documentation matches actual code behavior\n"
-    prompt+="- Completeness: Cover all significant changes\n"
-    prompt+="- Clarity: Use clear language for the target audience\n"
-    prompt+="- Examples: Update code examples if APIs changed\n"
-    
-    echo -e "$prompt"
+    # Use centralized prompt builder from ai_helpers.sh
+    # This ensures we use the optimized ai_helpers.yaml templates with:
+    # - role_prefix + behavioral_guidelines
+    # - Language-specific context injection
+    # - Structured task templates
+    # - Complete approach methodology
+    if command -v build_doc_analysis_prompt &>/dev/null; then
+        build_doc_analysis_prompt "$changed_files" "$doc_files"
+    else
+        # Fallback if function not available (should not happen in normal workflow)
+        print_error "build_doc_analysis_prompt function not found - ai_helpers.sh may not be sourced"
+        return 1
+    fi
 }
 
 # Build prompt for specific documentation file update

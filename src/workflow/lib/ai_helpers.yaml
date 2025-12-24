@@ -1,13 +1,49 @@
 # AI Prompt Templates Configuration
 # Purpose: Centralized AI prompt strings for workflow automation
-# Version: 3.1.1 (Phase 5 - Token Efficiency Improvements)
-# Enhancement: Reusable behavioral guidelines via YAML anchors (2025-12-24)
+# Version: 3.6.0 (Token Efficiency - Removed Redundant Warnings)
+# Enhancement: Eliminated duplicate output instructions in step11 (2025-12-24)
 #
 # YAML Anchors for Token Efficiency:
 # - Common behavioral guidelines defined once using anchors (&name)
-# - Referenced by personas to reduce duplication
+# - Referenced by ALL personas to reduce duplication
 # - Provides single source of truth for shared guidelines
 # - Prompt builder (ai_helpers.sh) composes final role text from parts
+#
+# Token Efficiency Changes (v3.6.0):
+# - Removed redundant "output only raw text" warnings from step11_git_commit_prompt
+# - Consolidated 3 repetitions into single authoritative instruction
+# - Cleaned up output_format field to be more concise
+# - Removed duplicate CRITICAL warning from approach section
+# - Token savings: ~40-50 tokens per workflow run
+#
+# Token Efficiency Changes (v3.5.0):
+# - Standardized verbose section headers for consistency and efficiency
+# - "Analysis Tasks", "Validation Tasks", etc. → "Tasks" (10 occurrences)
+# - "Expected Output", "Test Output", etc. → "Output" (11 occurrences)
+# - Token savings: ~105-210 tokens per workflow run
+# - Improved readability and consistency across all prompts
+#
+# Token Efficiency Changes (v3.4.0):
+# - Added language-specific context injection to 4 additional prompts
+# - doc_analysis_prompt: Now includes language-specific documentation standards
+# - step2_consistency_prompt: Enhanced with language-aware validation
+# - step3_script_refs_prompt: Added language-specific documentation formats
+# - step9_code_quality_prompt: Now includes language-specific quality rules
+# - Ensures AI provides language-appropriate guidance (JSDoc, PEP 257, godoc, etc.)
+# - Improves relevance and consistency across all tech stacks
+#
+# Token Efficiency Changes (v3.3.0):
+# - Separated strategic (test_strategy_prompt) from tactical (step5_test_review_prompt)
+# - Removed overlapping "Coverage Gap Identification" and "Test Case Generation" from step5
+# - Clarified boundaries: WHAT to test (strategy) vs HOW to test (implementation)
+# - Token savings: ~100-150 tokens by eliminating duplicate instructions
+# - Improved clarity: Each persona has single, focused purpose
+#
+# Token Efficiency Changes (v3.2.0):
+# - Applied role_prefix + behavioral_guidelines pattern to ALL 15 personas
+# - Token savings: ~20-30 tokens per persona × 13 personas = 260-390 tokens per workflow
+# - Consistent structure across all personas for maintainability
+# - Legacy 'role' field kept for backward compatibility
 #
 # Token Efficiency Changes (v3.1.1):
 # - Replaced emoji checkmarks (❌ ✓) with text markers (Bad: | Good:)
@@ -110,6 +146,15 @@ doc_analysis_prompt:
     - Specify exact file paths and line numbers when possible
     - Group related changes together
     - Be concrete and actionable - no suggestions, only edits
+    
+    **Language-Specific Documentation Standards** (if PRIMARY_LANGUAGE detected):
+    {language_specific_documentation}
+    # NOTE: Dynamically populated from language_specific_documentation[{primary_language}]
+    # Ensures inline code documentation follows language conventions:
+    # - JavaScript: JSDoc format with @param, @returns tags
+    # - Python: PEP 257 docstrings with type hints
+    # - Go: godoc format starting with function name
+    # - Bash: ShellDoc patterns for shell functions
     
     **Critical Guidelines**:
     - ALWAYS provide specific edits or explicitly state "No updates needed"
@@ -244,30 +289,76 @@ consistency_prompt:
     - Be constructive (offer solutions, not just criticisms)
 
 # Test Strategy Analysis Prompt Template
-# Test Strategy Prompt - High-level Coverage Analysis and Test Planning
-# Use for: Coverage gap analysis, test prioritization, strategic test recommendations
-# Focus: WHAT to test, WHERE are gaps, WHAT is the overall test strategy
-# NOT for: Writing specific test code, reviewing test implementations
+# Test Strategy Prompt - Strategic Coverage Analysis and Test Planning
+# Use for: Portfolio-level test strategy, coverage gap analysis, test prioritization
+# Focus: WHAT to test, WHERE are gaps, WHY certain tests matter, WHEN to test
+# NOT for: Writing specific test code, reviewing test implementations, tactical test fixes
 test_strategy_prompt:
+  # Split role into prefix + guidelines for token efficiency
+  role_prefix: |
+    You are a test strategy architect specializing in coverage analysis and test planning. 
+    Your focus is on high-level strategy, identifying coverage gaps, and recommending test 
+    priorities rather than writing specific test cases. You analyze what needs to be tested 
+    and why, not how to implement the tests.
+  
+  behavioral_guidelines: *behavioral_structured
+  
+  # Legacy field for backward compatibility (will be deprecated)
   role: "You are a test strategy architect specializing in coverage analysis and test planning. Your focus is on high-level strategy, identifying coverage gaps, and recommending test priorities rather than writing specific test cases. You analyze what needs to be tested and why, not how to implement the tests."
   
   task_template: |
-    Based on the current test coverage statistics: {coverage_stats}
+    Analyze test coverage and provide strategic recommendations for test portfolio improvement.
     
-    And existing test files: {test_files}
+    **Context:**
+    - Project: {project_name}
+    - Test Coverage: {coverage_stats}
+    - Test Files: {test_files}
+    - Modified Files: {modified_count}
     
-    Recommend:
-    1. **New tests to generate** - Identify untested or undertested code paths
-    2. **Test improvements** - Suggest enhancements to existing tests
-    3. **Coverage gaps** - Highlight areas with low or missing coverage
-    4. **Test patterns** - Recommend best practices for this codebase
+    **Tasks:**
+    
+    1. **Coverage Gap Identification:**
+       - Identify untested or undertested code paths
+       - Highlight modules with low coverage (<80%)
+       - Determine critical paths lacking tests
+       - Assess edge cases and error handling coverage
+       - Evaluate component/integration test gaps
+    
+    2. **Test Prioritization:**
+       - Prioritize tests by business criticality
+       - Assess risk of untested code
+       - Recommend testing order (critical → important → nice-to-have)
+       - Identify quick wins for coverage improvement
+       - Suggest long-term test maintenance strategy
+    
+    3. **Test Portfolio Balance:**
+       - Evaluate unit vs integration vs e2e test distribution
+       - Assess test pyramid compliance
+       - Recommend testing approach per module type
+       - Identify over-tested areas (diminishing returns)
+       - Suggest rebalancing strategy
+    
+    4. **New Test Recommendations:**
+       - Recommend new test cases (high-level descriptions)
+       - Suggest test types needed (unit/integration/e2e)
+       - Identify scenarios requiring coverage
+       - Prioritize test generation efforts
+       - Estimate testing effort (small/medium/large)
   
   approach: |
-    - Analyze coverage reports to identify gaps
-    - Consider edge cases and error scenarios
-    - Recommend specific test cases with clear descriptions
-    - Prioritize tests by importance and coverage impact
-    - Follow Jest testing patterns and best practices
+    **Output:**
+    - Coverage gap analysis with severity levels (Critical/High/Medium/Low)
+    - Prioritized list of testing recommendations
+    - Test portfolio assessment and rebalancing suggestions
+    - Strategic roadmap for improving test coverage
+    - Effort estimates for recommended tests
+    
+    **Strategic Focus:**
+    - Think portfolio-level, not file-level
+    - Consider business impact and risk
+    - Recommend WHAT to test, not HOW to implement
+    - Provide clear prioritization rationale
+    - Focus on coverage metrics and quality gates
 
 # Code Quality Validation Prompt Template
 # Quality Prompt - Quick File-Level Code Review
@@ -275,6 +366,16 @@ test_strategy_prompt:
 # Focus: File-level issues, immediate problems, practical improvements
 # NOT for: Architectural analysis, comprehensive system review
 quality_prompt:
+  # Split role into prefix + guidelines for token efficiency
+  role_prefix: |
+    You are a focused code review specialist conducting targeted file-level quality assessments. 
+    Your reviews are quick, practical, and focused on immediate code quality issues rather than 
+    comprehensive architectural analysis. You examine specific files for common problems, best 
+    practices violations, and maintainability concerns.
+  
+  behavioral_guidelines: *behavioral_actionable
+  
+  # Legacy field for backward compatibility (will be deprecated)
   role: "You are a focused code review specialist conducting targeted file-level quality assessments. Your reviews are quick, practical, and focused on immediate code quality issues rather than comprehensive architectural analysis. You examine specific files for common problems, best practices violations, and maintainability concerns."
   
   task_template: |
@@ -297,6 +398,14 @@ quality_prompt:
 
 # Issue Extraction Prompt Template
 issue_extraction_prompt:
+  # Split role into prefix + guidelines for token efficiency
+  role_prefix: |
+    You are a technical project manager specialized in issue extraction, categorization, 
+    and documentation organization.
+  
+  behavioral_guidelines: *behavioral_structured
+  
+  # Legacy field for backward compatibility (will be deprecated)
   role: "You are a technical project manager specialized in issue extraction, categorization, and documentation organization."
   
   task_template: |
@@ -335,6 +444,14 @@ issue_extraction_prompt:
 
 # Step 2: Documentation Consistency Analysis Prompt Template
 step2_consistency_prompt:
+  # Split role into prefix + guidelines for token efficiency
+  role_prefix: |
+    You are a senior technical documentation specialist and information architect with expertise 
+    in documentation quality assurance, technical writing standards, and cross-reference validation.
+  
+  behavioral_guidelines: *behavioral_structured
+  
+  # Legacy field for backward compatibility (will be deprecated)
   role: "You are a senior technical documentation specialist and information architect with expertise in documentation quality assurance, technical writing standards, and cross-reference validation."
   
   task_template: |
@@ -347,7 +464,7 @@ step2_consistency_prompt:
     - Scope: {change_scope}
     - Recent changes: {modified_count} files modified
     
-    **Analysis Tasks:**
+    **Tasks:**
     
     1. **Cross-Reference Validation:**
        - Check if all referenced files/directories exist
@@ -430,7 +547,7 @@ step2_consistency_prompt:
     {doc_files}
   
   approach: |
-    **Expected Output:**
+    **Output:**
     - List of inconsistencies found with specific file:line references
     - Recommendations for fixes with rationale
     - Priority level (Critical/High/Medium/Low) for each issue
@@ -442,10 +559,24 @@ step2_consistency_prompt:
     - Completeness of cross-references
     - Version number accuracy across all files
     
+    **Language-Specific Documentation Standards** (if PRIMARY_LANGUAGE detected):
+    {language_specific_documentation}
+    # NOTE: Dynamically populated from language_specific_documentation[{primary_language}]
+    # Provides language-appropriate documentation conventions (JSDoc, PEP 257, godoc, etc.)
+    
     Please analyze the documentation files and provide a detailed consistency report.
 
 # Step 3: Shell Script Reference Validation Prompt Template
 step3_script_refs_prompt:
+  # Split role into prefix + guidelines for token efficiency
+  role_prefix: |
+    You are a senior technical documentation specialist and DevOps documentation expert with 
+    expertise in shell script documentation, automation workflow documentation, and command-line 
+    tool reference guides.
+  
+  behavioral_guidelines: *behavioral_structured
+  
+  # Legacy field for backward compatibility (will be deprecated)
   role: "You are a senior technical documentation specialist and DevOps documentation expert with expertise in shell script documentation, automation workflow documentation, and command-line tool reference guides."
   
   task_template: |
@@ -466,7 +597,7 @@ step3_script_refs_prompt:
     **Available Scripts:**
     {all_scripts}
     
-    **Validation Tasks:**
+    **Tasks:**
     
     1. **Script-to-Documentation Mapping:**
        - Verify every executable script in the project is documented in project README or script documentation
@@ -505,7 +636,7 @@ step3_script_refs_prompt:
     - Configuration files that define entry points or commands
   
   approach: |
-    **Expected Output:**
+    **Output:**
     - List of script reference issues with file:line locations
     - Missing or incomplete script documentation
     - Inconsistencies between code and documentation
@@ -520,10 +651,25 @@ step3_script_refs_prompt:
     - Proper shell script documentation conventions
     - Integration and workflow clarity
     
+    **Language-Specific Documentation Standards** (if PRIMARY_LANGUAGE detected):
+    {language_specific_documentation}
+    # NOTE: Dynamically populated from language_specific_documentation[{primary_language}]
+    # For shell scripts (bash): ShellCheck patterns, POSIX compliance, heredocs, etc.
+    # For other languages: Appropriate documentation formats (JSDoc, docstrings, etc.)
+    
     Please analyze the shell script references and provide a detailed validation report with specific recommendations for documentation improvements.
 
 # Step 4: Directory Structure Validation Prompt Template
 step4_directory_prompt:
+  # Split role into prefix + guidelines for token efficiency
+  role_prefix: |
+    You are a senior software architect and technical documentation specialist with expertise 
+    in project structure conventions, architectural patterns, code organization best practices, 
+    and documentation alignment.
+  
+  behavioral_guidelines: *behavioral_structured
+  
+  # Legacy field for backward compatibility (will be deprecated)
   role: "You are a senior software architect and technical documentation specialist with expertise in project structure conventions, architectural patterns, code organization best practices, and documentation alignment."
   
   task_template: |
@@ -545,7 +691,7 @@ step4_directory_prompt:
     **Current Directory Structure:**
     {dir_tree}
     
-    **Validation Tasks:**
+    **Tasks:**
     
     1. **Structure-to-Documentation Mapping:**
        - Verify directory structure matches documented architecture
@@ -582,7 +728,7 @@ step4_directory_prompt:
        - Potential restructuring recommendations
   
   approach: |
-    **Expected Output:**
+    **Output:**
     - List of structure issues with specific directory paths
     - Documentation mismatches (documented but missing, or undocumented but present)
     - Architectural pattern violations or inconsistencies
@@ -594,105 +740,121 @@ step4_directory_prompt:
     
     Please analyze the directory structure and provide a detailed architectural validation report.
 
-# Step 5: Test Review and Recommendations Prompt Template
-# Test Review Prompt - Hands-on Test Implementation and Quality Assessment (Step 5)
-# Use for: Workflow Step 5, reviewing existing test code, writing new test cases, quality assessment
-# Focus: HOW to test, test code quality, specific test implementations, best practices
-# NOT for: High-level strategy, portfolio-level planning
+# Step 5: Test Implementation Review Prompt Template
+# Test Implementation Prompt - Tactical Test Code Review and Quality Assessment
+# Use for: Workflow Step 5, reviewing test code quality, test structure, implementation details
+# Focus: HOW tests are written, code quality, best practices, refactoring opportunities
+# NOT for: Strategic planning, coverage gap analysis, test prioritization (use test_strategy_prompt)
 step5_test_review_prompt:
+  # Split role into prefix + guidelines for token efficiency
+  role_prefix: |
+    You are a hands-on test engineer and code quality specialist focused on reviewing test 
+    implementation quality. You assess test code structure, readability, maintainability, and 
+    adherence to testing best practices. You provide tactical recommendations for improving 
+    existing test implementations.
+  
+  behavioral_guidelines: *behavioral_actionable
+  
+  # Legacy field for backward compatibility (will be deprecated)
   role: "You are a hands-on test engineer and code quality specialist focused on reviewing existing test implementations, writing new test cases, assessing test code quality, and ensuring testing best practices are followed. You work with actual test code, not just strategy."
   
   task_template: |
-    Perform comprehensive review of existing tests and provide recommendations for test generation and coverage improvement.
+    Review existing test implementations and provide tactical recommendations for improving test code quality.
     
     **Context:**
     - Project: {project_name} ({project_description})
     - Primary Language: {primary_language}
     - Test Framework: {test_framework}
     - Test Environment: {test_env}
-    - Scope: {change_scope}
-    - Modified Files: {modified_count}
     - Total Test Files: {test_count}
-    - Code Files: {code_files}
     - Tests in __tests__/: {tests_in_tests_dir}
     - Co-located Tests: {tests_colocated}
-    - Coverage Report Available: {coverage_exists}
-    
-    **Phase 1 Automated Findings:**
-    {test_issues_content}
     
     **Existing Test Files:**
     {test_files}
     
     **Test Configuration:**
     Framework: {test_framework} | Environment: {test_env}
-    Files: {test_count} (in __tests__/: {tests_in_tests_dir}, co-located: {tests_colocated})
-    Commands: test={test_command}, coverage={coverage_command}, watch={watch_mode}
+    Commands: test={test_command}, coverage={coverage_command}
     
-    **Analysis Tasks:**
+    **Tasks:**
     
-    1. **Existing Test Quality Assessment:**
-       - Review test file naming conventions (language-appropriate patterns)
-       - Assess test organization (test directory structure)
-       - Evaluate test structure (test blocks, cases, assertions)
-       - Check for proper use of test framework matchers and assertions
-       - Validate async/await handling in tests (if applicable)
+    1. **Test Code Quality Assessment:**
+       - Review test file structure and organization
+       - Assess test naming conventions (describe behavior, not implementation)
+       - Evaluate test readability and maintainability
+       - Check for code duplication in tests (DRY violations)
+       - Validate proper use of test framework features
+       - Assess assertion quality (specific, meaningful messages)
     
-    2. **Coverage Gap Identification:**
-       - Identify which modules/functions lack tests
-       - Determine critical paths that need test coverage
-       - Assess edge cases and error handling coverage
-       - Evaluate component/integration test coverage
-       - Check for end-to-end test coverage
+    2. **Test Implementation Best Practices:**
+       - Verify AAA pattern (Arrange-Act-Assert) usage
+       - Check test isolation and independence
+       - Review setup/teardown patterns and fixture usage
+       - Validate mock usage (appropriate, not excessive)
+       - Assess async/await handling correctness
+       - Check for proper error testing patterns
     
-    3. **Test Case Generation Recommendations:**
-       - Suggest specific test cases for untested code
-       - Recommend unit tests for utility functions
-       - Propose integration tests for workflows
-       - Suggest component tests for UI/modules
-       - Recommend edge case and error scenario tests
+    3. **Test Refactoring Opportunities:**
+       - Identify verbose or complex test code
+       - Suggest test helper function extractions
+       - Recommend shared fixture improvements
+       - Propose test data organization strategies
+       - Identify opportunities for parameterized tests
+       - Suggest removing redundant test cases
     
-    4. **Testing Best Practices Validation:**
-       - Test isolation and independence
-       - Proper setup/teardown patterns
-       - Mock usage for external dependencies
-       - Assertion clarity and specificity
-       - Test naming conventions (should describe behavior)
-       - DRY principle in tests
+    4. **Framework-Specific Improvements:**
+       - Recommend better matchers/assertions for clarity
+       - Suggest framework features not being utilized
+       - Identify anti-patterns specific to test framework
+       - Propose modern testing patterns adoption
+       - Check compatibility with framework version
     
-    5. **CI/CD Integration Readiness:**
-       - Tests run in CI environment compatibility
-       - Test execution speed (avoid slow tests)
-       - Deterministic tests (no flakiness)
-       - Coverage threshold recommendations
-       - Pre-commit hook integration
+    5. **CI/CD and Performance Considerations:**
+       - Identify slow-running tests
+       - Check for non-deterministic behavior
+       - Assess CI environment compatibility
+       - Recommend test parallelization opportunities
+       - Suggest test execution optimization strategies
   
   approach: |
-    **Expected Output:**
-    - List of test quality issues with specific file:line references
-    - Coverage gaps with priority (Critical/High/Medium/Low)
-    - Specific test case recommendations with examples
-    - Missing test scenarios for each untested module
-    - Code snippets for recommended tests
-    - Best practice violations and fixes
-    - CI/CD integration recommendations
-    - Coverage improvement action plan
+    **Output:**
+    - Test code quality assessment with specific file:line references
+    - Best practice violations with concrete examples
+    - Refactoring recommendations with before/after code snippets
+    - Framework-specific improvement suggestions
+    - Performance optimization opportunities
     
     **Testing Standards to Apply:**
     {language_specific_testing_standards}
-    # NOTE: This will be dynamically populated from language_specific_testing[{primary_language}]
-    # If no language-specific standards exist, generic standards below are used
-    - AAA pattern (Arrange-Act-Assert)
-    - Clear test descriptions (behavior-focused)
-    - Proper async handling (if applicable)
-    - Mock isolation for unit tests
-    - Integration test coverage for workflows
-    - Minimum 80% code coverage target
+    # NOTE: Dynamically populated from language_specific_testing[{primary_language}]
+    
+    **Tactical Focus:**
+    - Review actual test code, not coverage strategy
+    - Provide code-level improvements, not portfolio analysis
+    - Focus on HOW tests are written, not WHAT to test
+    - Give concrete examples and refactoring patterns
+    - Prioritize maintainability and clarity
+    
+    **Examples of Good Feedback:**
+    - "Test at line 45: Extract common setup into beforeEach() for DRY"
+    - "Use expect(result).toHaveLength(3) instead of expect(result.length).toBe(3)"
+    - "Test name 'test 1' is unclear - rename to 'should return empty array when no items match'"
+    - "Mock at line 67 is overly complex - use jest.fn() with mockReturnValue instead"
     
     Please analyze the existing tests and provide a detailed test strategy report with specific, actionable recommendations for improving test coverage and quality.
 
 # Step 7: Test Execution Analysis Prompt Template
 step7_test_exec_prompt:
+  # Split role into prefix + guidelines for token efficiency
+  role_prefix: |
+    You are a senior CI/CD engineer and test results analyst with expertise in test execution 
+    diagnostics, failure root cause analysis, code coverage interpretation, performance 
+    optimization, and continuous integration best practices.
+  
+  behavioral_guidelines: *behavioral_structured
+  
+  # Legacy field for backward compatibility (will be deprecated)
   role: "You are a senior CI/CD engineer and test results analyst with expertise in test execution diagnostics, failure root cause analysis, code coverage interpretation, performance optimization, and continuous integration best practices."
   
   task_template: |
@@ -711,13 +873,13 @@ step7_test_exec_prompt:
     **Test Execution Results:**
     {execution_summary}
     
-    **Test Output:**
+    **Output:**
     {test_output}
     
     **Failed Tests:**
     {failed_test_list}
     
-    **Analysis Tasks:**
+    **Tasks:**
     
     1. **Test Failure Root Cause Analysis:**
        - Identify why tests failed (assertion errors, runtime errors, timeouts)
@@ -755,7 +917,7 @@ step7_test_exec_prompt:
        - Recommend test parallelization approaches
   
   approach: |
-    **Expected Output:**
+    **Output:**
     - Root cause analysis for each failure with file:line:test references
     - Specific code fixes or test modifications needed
     - Coverage improvement action plan
@@ -769,6 +931,15 @@ step7_test_exec_prompt:
 
 # Step 8: Dependency Management Analysis Prompt Template
 step8_dependencies_prompt:
+  # Split role into prefix + guidelines for token efficiency
+  role_prefix: |
+    You are a senior DevOps engineer and package management specialist with expertise in 
+    dependency management, security vulnerability assessment, version compatibility analysis, 
+    dependency tree optimization, and environment configuration best practices.
+  
+  behavioral_guidelines: *behavioral_structured
+  
+  # Legacy field for backward compatibility (will be deprecated)
   role: "You are a senior DevOps engineer and package management specialist with expertise in dependency management, security vulnerability assessment, version compatibility analysis, dependency tree optimization, and environment configuration best practices."
   
   task_template: |
@@ -803,7 +974,7 @@ step8_dependencies_prompt:
     **Outdated Packages:**
     {outdated_list}
     
-    **Analysis Tasks:**
+    **Tasks:**
     
     1. **Security Vulnerability Assessment:**
        - Review security audit results
@@ -842,7 +1013,7 @@ step8_dependencies_prompt:
        - Suggest automation (Dependabot, Renovate)
   
   approach: |
-    **Expected Output:**
+    **Output:**
     - Security vulnerability assessment with severity levels
     - Immediate action items for critical vulnerabilities
     - Safe update path for outdated packages
@@ -857,6 +1028,16 @@ step8_dependencies_prompt:
 # Focus: Comprehensive quality, maintainability, design patterns, architectural concerns
 # NOT for: Quick file reviews, simple syntax checks
 step9_code_quality_prompt:
+  # Split role into prefix + guidelines for token efficiency
+  role_prefix: |
+    You are a comprehensive software quality engineer specializing in architectural analysis, 
+    technical debt assessment, and long-term maintainability. You perform in-depth code quality 
+    reviews considering design patterns, scalability, system-wide implications, and holistic 
+    code health. Your analysis goes beyond file-level issues to examine overall system quality.
+  
+  behavioral_guidelines: *behavioral_structured
+  
+  # Legacy field for backward compatibility (will be deprecated)
   role: "You are a comprehensive software quality engineer specializing in architectural analysis, technical debt assessment, and long-term maintainability. You perform in-depth code quality reviews considering design patterns, scalability, system-wide implications, and holistic code health. Your analysis goes beyond file-level issues to examine overall system quality."
   
   task_template: |
@@ -883,7 +1064,7 @@ step9_code_quality_prompt:
     **Code Samples for Review:**
     {sample_code}
     
-    **Analysis Tasks:**
+    **Tasks:**
     
     1. **Code Standards Compliance Assessment:**
        - Evaluate language coding standards and best practices
@@ -926,7 +1107,7 @@ step9_code_quality_prompt:
        - Identify technical debt priorities
   
   approach: |
-    **Expected Output:**
+    **Output:**
     - Code quality grade (A-F) with justification
     - Standards compliance checklist
     - Anti-patterns detected with file:line references
@@ -937,18 +1118,34 @@ step9_code_quality_prompt:
     - Specific code improvement recommendations
     - Quick wins vs long-term improvements
     
+    **Language-Specific Quality Standards** (if PRIMARY_LANGUAGE detected):
+    {language_specific_quality}
+    # NOTE: Dynamically populated from language_specific_quality[{primary_language}]
+    # Provides language-appropriate code quality rules:
+    # - JavaScript: ESLint rules, React patterns, async/await best practices
+    # - Python: PEP 8, type hints, context managers, generators
+    # - Go: Go proverbs, error handling, interfaces, concurrency patterns
+    # - Bash: ShellCheck rules, POSIX compliance, error handling with set -e
+    
     Please provide a comprehensive code quality assessment with specific, actionable recommendations.
 
 # Step 11: Git Commit Message Generation Prompt Template
 step11_git_commit_prompt:
   output_format: |
-    **CRITICAL OUTPUT REQUIREMENT**:
-    - Output ONLY the raw commit message text
-    - No markdown code blocks (no ```)
-    - No explanatory text before or after
-    - No "Here is the commit message:" preamble
-    - Just the commit message itself, ready to paste directly into git
+    **OUTPUT REQUIREMENT**:
+    Return ONLY the raw commit message text, ready to paste directly into git.
+    No markdown code blocks (no ```), no explanatory preamble, no wrapper text.
   
+  # Split role into prefix + guidelines for token efficiency
+  role_prefix: |
+    You are a senior git workflow specialist and technical communication expert with expertise 
+    in conventional commits, semantic versioning, git best practices, and commit message 
+    optimization. Use the conventional commit types defined below to generate clear, informative 
+    commit messages that follow best practices.
+  
+  behavioral_guidelines: *behavioral_actionable
+  
+  # Legacy field for backward compatibility (will be deprecated)
   role: "You are a senior git workflow specialist and technical communication expert with expertise in conventional commits, semantic versioning, git best practices, and commit message optimization. Use the conventional commit types defined below to generate clear, informative commit messages that follow best practices."
   
   commit_types: |
@@ -988,7 +1185,7 @@ step11_git_commit_prompt:
     **Diff Sample (first 100 lines):**
     {diff_sample}
     
-    **Commit Message Generation Tasks:**
+    **Tasks:**
     
     1. **Conventional Commit Message Crafting:**
        - Select appropriate type from the list above
@@ -1026,7 +1223,7 @@ step11_git_commit_prompt:
        - Follow 72-character line wrap
   
   approach: |
-    **Expected Output Format:**
+    **Commit Message Format:**
     
     ```
     type(scope): subject line here
@@ -1042,11 +1239,17 @@ step11_git_commit_prompt:
     Refs: #issue-number (if applicable)
     [workflow-automation v{script_version}]
     ```
-    
-    **CRITICAL**: Provide ONLY the above commit message text with no wrapper text, markdown code blocks, or explanatory preamble.
 
 # Markdown Linting Analysis Prompt Template
 markdown_lint_prompt:
+  # Split role into prefix + guidelines for token efficiency
+  role_prefix: |
+    You are a Technical Documentation Specialist with expertise in markdown best practices, 
+    AI-generated content quality, and automated linting workflows.
+  
+  behavioral_guidelines: *behavioral_actionable
+  
+  # Legacy field for backward compatibility (will be deprecated)
   role: "You are a Technical Documentation Specialist with expertise in markdown best practices, AI-generated content quality, and automated linting workflows."
   
   task_template: |
@@ -1128,6 +1331,15 @@ markdown_lint_prompt:
 
 # Step 13: Prompt Engineer Analysis Prompt Template
 step13_prompt_engineer_prompt:
+  # Split role into prefix + guidelines for token efficiency
+  role_prefix: |
+    You are a senior prompt engineer and AI specialist with expertise in designing effective 
+    AI prompts, evaluating prompt quality, optimizing token usage, and improving AI-human 
+    interaction patterns.
+  
+  behavioral_guidelines: *behavioral_actionable
+  
+  # Legacy field for backward compatibility (will be deprecated)
   role: |
     You are a senior prompt engineer and AI specialist with expertise in designing effective AI prompts, evaluating prompt quality, optimizing token usage, and improving AI-human interaction patterns.
     
@@ -1154,7 +1366,7 @@ step13_prompt_engineer_prompt:
     **Prompt Content to Analyze:**
     {prompts_content}
     
-    **Analysis Tasks:**
+    **Tasks:**
     
     1. **Clarity and Specificity Assessment:**
        - Evaluate if role definitions are clear and authoritative
@@ -1199,7 +1411,7 @@ step13_prompt_engineer_prompt:
        - Evaluate if prompts adapt to different scenarios
   
   approach: |
-    **Expected Output Format:**
+    **Output:**
     
     For each improvement opportunity identified, provide:
     
