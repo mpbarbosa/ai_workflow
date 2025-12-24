@@ -16,6 +16,23 @@ source "${WORKFLOW_LIB_DIR}/config.sh"
 source "${WORKFLOW_LIB_DIR}/utils.sh"
 source "${WORKFLOW_LIB_DIR}/session_manager.sh"
 
+# Track test sessions and log files for cleanup
+TEST_SESSIONS=()
+TEST_LOG_FILES=()
+
+# Cleanup handler
+cleanup_test_files() {
+    # Clean up any log files created during tests
+    for log_file in "${TEST_LOG_FILES[@]}"; do
+        [[ -f "$log_file" ]] && rm -f "$log_file"
+    done
+    # Clean up any session files
+    rm -f /tmp/workflow_*.log 2>/dev/null || true
+}
+
+# Register cleanup on exit
+trap cleanup_test_files EXIT
+
 # Test counters
 TESTS_RUN=0
 TESTS_PASSED=0

@@ -25,12 +25,20 @@ declare -a FAILED_TESTS
 # Test directory
 TEST_DIR="/tmp/file_ops_test_$$"
 
+# Cleanup handler
+cleanup_test_files() {
+    [[ -d "$TEST_DIR" ]] && rm -rf "$TEST_DIR"
+}
+
+# Register cleanup on exit
+trap cleanup_test_files EXIT
+
 # Setup
 setup() {
     mkdir -p "$TEST_DIR"
 }
 
-# Teardown
+# Teardown (kept for compatibility but trap handles cleanup)
 teardown() {
     rm -rf "$TEST_DIR"
 }

@@ -1,6 +1,6 @@
 # AI Prompt Templates Configuration
 # Purpose: Centralized AI prompt strings for workflow automation
-# Version: 3.1.0 (Phase 5 - YAML Anchors for Token Efficiency)
+# Version: 3.1.1 (Phase 5 - Token Efficiency Improvements)
 # Enhancement: Reusable behavioral guidelines via YAML anchors (2025-12-24)
 #
 # YAML Anchors for Token Efficiency:
@@ -8,6 +8,11 @@
 # - Referenced by personas to reduce duplication
 # - Provides single source of truth for shared guidelines
 # - Prompt builder (ai_helpers.sh) composes final role text from parts
+#
+# Token Efficiency Changes (v3.1.1):
+# - Replaced emoji checkmarks (❌ ✓) with text markers (Bad: | Good:)
+# - Saves ~5-10 tokens per usage
+# - Improves compatibility across all LLM contexts
 
 # ==============================================================================
 # REUSABLE BEHAVIORAL GUIDELINES (YAML Anchors)
@@ -232,7 +237,7 @@ consistency_prompt:
     - Estimated Fix Time: X hours
     
     **Quality Standards**:
-    - Be specific, not vague (❌ "docs need updates" ✓ "README.md:45 lists version 2.3.0 but source is 2.4.0")
+    - Be specific, not vague (Bad: "docs need updates" | Good: "README.md:45 lists version 2.3.0 but source is 2.4.0")
     - Provide evidence (reference specific files and lines)
     - Focus on user impact (how does this affect documentation consumers?)
     - Suggest priority order for fixes (what should be fixed first?)
@@ -562,6 +567,8 @@ step4_directory_prompt:
     
     4. **Best Practice Compliance:**
        {language_specific_directory_standards}
+       # NOTE: This will be dynamically populated from language_specific_documentation[{primary_language}]
+       # If no language-specific standards exist, generic standards below are used
        - Source vs build output directory separation
        - Documentation organization (docs/ location and structure)
        - Configuration file locations (conventional paths)
@@ -673,6 +680,8 @@ step5_test_review_prompt:
     
     **Testing Standards to Apply:**
     {language_specific_testing_standards}
+    # NOTE: This will be dynamically populated from language_specific_testing[{primary_language}]
+    # If no language-specific standards exist, generic standards below are used
     - AAA pattern (Arrange-Act-Assert)
     - Clear test descriptions (behavior-focused)
     - Proper async handling (if applicable)
@@ -932,6 +941,14 @@ step9_code_quality_prompt:
 
 # Step 11: Git Commit Message Generation Prompt Template
 step11_git_commit_prompt:
+  output_format: |
+    **CRITICAL OUTPUT REQUIREMENT**:
+    - Output ONLY the raw commit message text
+    - No markdown code blocks (no ```)
+    - No explanatory text before or after
+    - No "Here is the commit message:" preamble
+    - Just the commit message itself, ready to paste directly into git
+  
   role: "You are a senior git workflow specialist and technical communication expert with expertise in conventional commits, semantic versioning, git best practices, and commit message optimization. Use the conventional commit types defined below to generate clear, informative commit messages that follow best practices."
   
   commit_types: |
@@ -1026,7 +1043,7 @@ step11_git_commit_prompt:
     [workflow-automation v{script_version}]
     ```
     
-    Please generate a complete conventional commit message following these standards. Provide ONLY the commit message text (no explanations, no markdown code blocks, just the raw commit message).
+    **CRITICAL**: Provide ONLY the above commit message text with no wrapper text, markdown code blocks, or explanatory preamble.
 
 # Markdown Linting Analysis Prompt Template
 markdown_lint_prompt:
@@ -1247,6 +1264,9 @@ step13_prompt_engineer_prompt:
 # ==============================================================================
 
 # Language-Specific Instructions for Documentation
+# NOTE: These templates are injected into step prompts based on detected PRIMARY_LANGUAGE
+# Template variable format: {language_specific_directory_standards}, {language_specific_documentation_standards}
+# Usage: The ai_prompt_builder.sh dynamically populates these based on .workflow-config.yaml settings
 language_specific_documentation:
   javascript:
     key_points: |
@@ -1383,6 +1403,9 @@ language_specific_documentation:
       backup_database() { ... }
 
 # Language-Specific Code Quality Standards
+# NOTE: These templates are injected into step prompts based on detected PRIMARY_LANGUAGE
+# Template variable format: {language_specific_quality}
+# Usage: The ai_prompt_builder.sh dynamically populates these based on .workflow-config.yaml settings
 language_specific_quality:
   javascript:
     focus_areas:
@@ -1561,6 +1584,9 @@ language_specific_quality:
       - "Run shellcheck regularly"
 
 # Language-Specific Test Patterns
+# NOTE: These templates are injected into step prompts based on detected PRIMARY_LANGUAGE
+# Template variable format: {language_specific_testing_standards}
+# Usage: The ai_prompt_builder.sh dynamically populates these based on .workflow-config.yaml settings
 language_specific_testing:
   javascript:
     framework: "Jest"

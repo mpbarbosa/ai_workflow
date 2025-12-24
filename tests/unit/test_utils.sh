@@ -62,6 +62,16 @@ teardown_test() {
     fi
 }
 
+# Global cleanup handler for unexpected exits
+cleanup_on_exit() {
+    if [[ -d "${TEST_TEMP_DIR:-}" ]]; then
+        rm -rf "$TEST_TEMP_DIR"
+    fi
+}
+
+# Register cleanup on exit
+trap cleanup_on_exit EXIT
+
 # Assert functions
 assert_equals() {
     local expected="$1"
