@@ -16,6 +16,7 @@ WORKFLOW_LIB_DIR="${PROJECT_ROOT}/src/workflow/lib"
 
 # Load color definitions
 source "${WORKFLOW_LIB_DIR}/colors.sh"
+source "${WORKFLOW_LIB_DIR}/utils.sh"
 
 # Test counters
 TESTS_RUN=0
@@ -41,14 +42,14 @@ assert_equals() {
     local actual="$2"
     local test_name="$3"
     
-    ((TESTS_RUN++))
+    TESTS_RUN=$((TESTS_RUN + 1))
     
     if [[ "${expected}" == "${actual}" ]]; then
-        ((TESTS_PASSED++))
+        TESTS_PASSED=$((TESTS_PASSED + 1))
         echo -e "${GREEN}✓${NC} ${test_name}"
         return 0
     else
-        ((TESTS_FAILED++))
+        TESTS_FAILED=$((TESTS_FAILED + 1))
         FAILED_TESTS+=("${test_name}")
         echo -e "${RED}✗${NC} ${test_name}"
         echo -e "  Expected: ${expected}"
@@ -61,14 +62,14 @@ assert_not_empty() {
     local value="$1"
     local test_name="$2"
     
-    ((TESTS_RUN++))
+    TESTS_RUN=$((TESTS_RUN + 1))
     
     if [[ -n "${value}" ]]; then
-        ((TESTS_PASSED++))
+        TESTS_PASSED=$((TESTS_PASSED + 1))
         echo -e "${GREEN}✓${NC} ${test_name}"
         return 0
     else
-        ((TESTS_FAILED++))
+        TESTS_FAILED=$((TESTS_FAILED + 1))
         FAILED_TESTS+=("${test_name}")
         echo -e "${RED}✗${NC} ${test_name}"
         echo -e "  Expected: non-empty value"
@@ -81,14 +82,14 @@ assert_file_exists() {
     local file="$1"
     local test_name="$2"
     
-    ((TESTS_RUN++))
+    TESTS_RUN=$((TESTS_RUN + 1))
     
     if [[ -f "${file}" ]]; then
-        ((TESTS_PASSED++))
+        TESTS_PASSED=$((TESTS_PASSED + 1))
         echo -e "${GREEN}✓${NC} ${test_name}"
         return 0
     else
-        ((TESTS_FAILED++))
+        TESTS_FAILED=$((TESTS_FAILED + 1))
         FAILED_TESTS+=("${test_name}")
         echo -e "${RED}✗${NC} ${test_name}"
         echo -e "  File not found: ${file}"
@@ -101,14 +102,14 @@ assert_contains() {
     local needle="$2"
     local test_name="$3"
     
-    ((TESTS_RUN++))
+    TESTS_RUN=$((TESTS_RUN + 1))
     
     if echo "${haystack}" | grep -q "${needle}"; then
-        ((TESTS_PASSED++))
+        TESTS_PASSED=$((TESTS_PASSED + 1))
         echo -e "${GREEN}✓${NC} ${test_name}"
         return 0
     else
-        ((TESTS_FAILED++))
+        TESTS_FAILED=$((TESTS_FAILED + 1))
         FAILED_TESTS+=("${test_name}")
         echo -e "${RED}✗${NC} ${test_name}"
         echo -e "  Expected to find: ${needle}"

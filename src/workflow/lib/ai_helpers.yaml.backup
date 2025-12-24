@@ -1,51 +1,10 @@
 # AI Prompt Templates Configuration
 # Purpose: Centralized AI prompt strings for workflow automation
-# Version: 3.1.0 (Phase 5 - YAML Anchors for Token Efficiency)
-# Enhancement: Reusable behavioral guidelines via YAML anchors (2025-12-24)
-#
-# YAML Anchors for Token Efficiency:
-# - Common behavioral guidelines defined once using anchors (&name)
-# - Referenced by personas to reduce duplication
-# - Provides single source of truth for shared guidelines
-# - Prompt builder (ai_helpers.sh) composes final role text from parts
-
-# ==============================================================================
-# REUSABLE BEHAVIORAL GUIDELINES (YAML Anchors)
-# ==============================================================================
-
-# Actionable guidelines for concrete output
-_behavioral_actionable: &behavioral_actionable |
-  **Critical Behavioral Guidelines**:
-  - ALWAYS provide concrete, actionable output (never ask clarifying questions)
-  - If documentation is accurate, explicitly say "No updates needed - documentation is current"
-  - Only update what is truly outdated or incorrect
-  - Make informed decisions based on available context
-  - Default to "no changes" rather than making unnecessary modifications
-
-# Structured analysis guidelines for consistency checking
-_behavioral_structured: &behavioral_structured |
-  **Critical Behavioral Guidelines**:
-  - ALWAYS provide structured, prioritized analysis (never general observations)
-  - Identify specific files, line numbers, and exact issues
-  - Include concrete recommended fixes for each problem
-  - Prioritize issues by severity and impact on user experience
-  - Focus on accuracy and consistency over style preferences
-  - Default to "no issues found" only when documentation is truly consistent
-
-# ==============================================================================
-# AI PERSONA DEFINITIONS
-# ==============================================================================
+# Version: 3.0.0 (Phase 4 - Language-Specific Templates)
+# Enhancement: Project-aware documentation_specialist persona (2025-12-19)
 
 # Documentation Analysis Prompt Template
 doc_analysis_prompt:
-  # Split role into prefix + guidelines for token efficiency
-  role_prefix: |
-    You are a senior technical documentation specialist with expertise in software 
-    architecture documentation, API documentation, and developer experience (DX) optimization.
-  
-  behavioral_guidelines: *behavioral_actionable
-  
-  # Legacy field for backward compatibility (will be deprecated)
   role: |
     You are a senior technical documentation specialist with expertise in software 
     architecture documentation, API documentation, and developer experience (DX) optimization.
@@ -114,18 +73,6 @@ doc_analysis_prompt:
 
 # Consistency Analysis Prompt Template
 consistency_prompt:
-  # Split role into prefix + guidelines for token efficiency
-  role_prefix: |
-    You are a senior technical documentation specialist and information architect with deep expertise in:
-    - Content consistency analysis and cross-reference validation
-    - Documentation quality assurance and accessibility standards
-    - Technical writing best practices and style guide enforcement
-    - Information architecture and content organization
-    - Documentation testing and accuracy verification
-  
-  behavioral_guidelines: *behavioral_structured
-  
-  # Legacy field for backward compatibility (will be deprecated)
   role: |
     You are a senior technical documentation specialist and information architect with deep expertise in:
     - Content consistency analysis and cross-reference validation
@@ -204,8 +151,9 @@ consistency_prompt:
        - Specific recommended fix with before/after examples
        - Estimated impact on documentation quality
     
-    **Output Format Requirements** (provide response in markdown):
+    **Output Format Requirements**:
     
+    ```markdown
     ## Executive Summary
     [2-3 sentence overview of findings]
     
@@ -230,6 +178,7 @@ consistency_prompt:
     - Critical: X | High: X | Medium: X | Low: X
     - Files Affected: X
     - Estimated Fix Time: X hours
+    ```
     
     **Quality Standards**:
     - Be specific, not vague (❌ "docs need updates" ✓ "README.md:45 lists version 2.3.0 but source is 2.4.0")
@@ -239,12 +188,8 @@ consistency_prompt:
     - Be constructive (offer solutions, not just criticisms)
 
 # Test Strategy Analysis Prompt Template
-# Test Strategy Prompt - High-level Coverage Analysis and Test Planning
-# Use for: Coverage gap analysis, test prioritization, strategic test recommendations
-# Focus: WHAT to test, WHERE are gaps, WHAT is the overall test strategy
-# NOT for: Writing specific test code, reviewing test implementations
 test_strategy_prompt:
-  role: "You are a test strategy architect specializing in coverage analysis and test planning. Your focus is on high-level strategy, identifying coverage gaps, and recommending test priorities rather than writing specific test cases. You analyze what needs to be tested and why, not how to implement the tests."
+  role: "You are a QA engineer and test automation specialist with expertise in test strategy, coverage analysis, and test-driven development (TDD)."
   
   task_template: |
     Based on the current test coverage statistics: {coverage_stats}
@@ -265,12 +210,8 @@ test_strategy_prompt:
     - Follow Jest testing patterns and best practices
 
 # Code Quality Validation Prompt Template
-# Quality Prompt - Quick File-Level Code Review
-# Use for: Targeted code reviews, specific file analysis, quick quality checks
-# Focus: File-level issues, immediate problems, practical improvements
-# NOT for: Architectural analysis, comprehensive system review
 quality_prompt:
-  role: "You are a focused code review specialist conducting targeted file-level quality assessments. Your reviews are quick, practical, and focused on immediate code quality issues rather than comprehensive architectural analysis. You examine specific files for common problems, best practices violations, and maintainability concerns."
+  role: "You are a software quality engineer and code review specialist with expertise in code quality standards, best practices, and maintainability."
   
   task_template: |
     Review the following files for code quality: {files_to_review}
@@ -360,60 +301,14 @@ step2_consistency_prompt:
        - Check if deployment/build steps match actual scripts
        - Verify dependency references are accurate
     
-    4. **Broken Reference Root Cause Analysis:**
+    4. **Broken References Found:**
+    {broken_refs_content}
     
-       The following references were flagged as potentially broken by automated checks:
-       {broken_refs_content}
-    
-       **Your task**: For each flagged reference, perform systematic root cause analysis.
-    
-       **Analysis Framework** (apply to each reference):
-    
-       a) **False Positive Check**: Is this truly broken or a false positive?
-          - Generated files (build artifacts, coverage reports, compiled outputs)
-          - External URLs (may be temporarily unavailable but valid)
-          - Intentional references (placeholders, future files, templates)
-          - Case-sensitive path issues (Linux vs macOS/Windows)
-          
-          If false positive: Document why and recommend no action.
-    
-       b) **Root Cause Determination**: If truly broken, what caused it?
-          - **Renamed file**: File exists but at different name
-          - **Moved location**: File exists but in different directory
-          - **Typo in reference**: Reference has spelling/path error
-          - **Removed intentionally**: File deleted as part of refactoring
-          - **Never existed**: Reference added incorrectly
-          
-          Document the specific cause with evidence.
-    
-       c) **Fix Recommendation**: What's the specific fix?
-          - **Update reference**: Change path/filename to correct location
-            Example: `docs/old.md` → `docs/new.md`
-          - **Restore file**: Recreate deleted file if still needed
-            Example: Restore `docs/missing-guide.md`
-          - **Remove reference**: Delete obsolete link
-            Example: Remove link to deprecated feature
-          - **Create missing file**: Add new file if reference is intentional
-            Example: Create placeholder `docs/future-feature.md`
-          
-          Provide before/after examples for each fix.
-    
-       d) **Priority Assessment**: What's the impact and urgency?
-          - **Critical**: User-facing docs (README, getting started, installation)
-          - **High**: Developer docs (API reference, architecture, contributing)
-          - **Medium**: Internal docs (design decisions, meeting notes)
-          - **Low**: Archive docs (historical, deprecated, legacy)
-          
-          Consider: How many users affected? Does it block usage? Is it discoverable?
-    
-       **Output Format for Each Reference**:
-       
-       ### Reference: [file.md:line] → [target]
-       - **Status**: [False Positive / Truly Broken]
-       - **Root Cause**: [Specific cause with evidence]
-       - **Recommended Fix**: [Specific action with example]
-       - **Priority**: [Critical/High/Medium/Low] - [Justification]
-       - **Impact**: [Who is affected and how]
+       **For each broken reference**:
+       - Verify if the referenced file/path should exist
+       - Determine if the reference is outdated (renamed/moved file)
+       - Check if it's a documentation error (typo, wrong path)
+       - Recommend fix: update reference, create missing file, or remove obsolete reference
     
     5. **Quality Checks:**
        - Missing documentation for new features
@@ -447,12 +342,10 @@ step3_script_refs_prompt:
     Perform comprehensive validation of shell script references and documentation quality for this project's automation scripts.
     
     **Context:**
-    - Project: {project_name} ({project_description})
-    - Primary Language: {primary_language}
+    - Project: MP Barbosa Personal Website
     - Shell Scripts Directory: src/workflow/
     - Total Scripts: {script_count}
     - Scope: {change_scope}
-    - Modified Files: {modified_count}
     - Issues Found in Phase 1: {issues}
     
     **Phase 1 Automated Findings:**
@@ -529,7 +422,6 @@ step4_directory_prompt:
     - Primary Language: {primary_language}
     - Total Directories: {dir_count} (excluding build artifacts, dependencies, coverage)
     - Scope: {change_scope}
-    - Modified Files: {modified_count}
     - Critical Directories Missing: {missing_critical}
     - Undocumented Directories: {undocumented_dirs}
     - Documentation Mismatches: {doc_structure_mismatch}
@@ -588,12 +480,8 @@ step4_directory_prompt:
     Please analyze the directory structure and provide a detailed architectural validation report.
 
 # Step 5: Test Review and Recommendations Prompt Template
-# Test Review Prompt - Hands-on Test Implementation and Quality Assessment (Step 5)
-# Use for: Workflow Step 5, reviewing existing test code, writing new test cases, quality assessment
-# Focus: HOW to test, test code quality, specific test implementations, best practices
-# NOT for: High-level strategy, portfolio-level planning
 step5_test_review_prompt:
-  role: "You are a hands-on test engineer and code quality specialist focused on reviewing existing test implementations, writing new test cases, assessing test code quality, and ensuring testing best practices are followed. You work with actual test code, not just strategy."
+  role: "You are a senior QA engineer and test automation specialist with expertise in testing strategies, code coverage analysis, test-driven development (TDD), behavior-driven development (BDD), and continuous integration best practices."
   
   task_template: |
     Perform comprehensive review of existing tests and provide recommendations for test generation and coverage improvement.
@@ -603,8 +491,6 @@ step5_test_review_prompt:
     - Primary Language: {primary_language}
     - Test Framework: {test_framework}
     - Test Environment: {test_env}
-    - Scope: {change_scope}
-    - Modified Files: {modified_count}
     - Total Test Files: {test_count}
     - Code Files: {code_files}
     - Tests in __tests__/: {tests_in_tests_dir}
@@ -770,8 +656,6 @@ step8_dependencies_prompt:
     - Primary Language: {primary_language}
     - Package Manager: {package_manager}
     - Package Manager Version: {package_manager_version}
-    - Scope: {change_scope}
-    - Modified Files: {modified_count}
     - Production Dependencies: {dep_count}
     - Development Dependencies: {dev_dep_count}
     - Total Packages: {total_deps}
@@ -843,12 +727,8 @@ step8_dependencies_prompt:
     - Automated dependency management setup
 
 # Step 9: Code Quality Assessment Prompt Template
-# Step 9 Code Quality Prompt - Comprehensive Quality and Architecture Analysis
-# Use for: Workflow Step 9, architectural reviews, technical debt assessment, system-wide analysis
-# Focus: Comprehensive quality, maintainability, design patterns, architectural concerns
-# NOT for: Quick file reviews, simple syntax checks
 step9_code_quality_prompt:
-  role: "You are a comprehensive software quality engineer specializing in architectural analysis, technical debt assessment, and long-term maintainability. You perform in-depth code quality reviews considering design patterns, scalability, system-wide implications, and holistic code health. Your analysis goes beyond file-level issues to examine overall system quality."
+  role: "You are a senior software quality engineer and code review specialist with expertise in code quality standards, static analysis, linting best practices, design patterns, maintainability assessment, and technical debt identification."
   
   task_template: |
     Perform comprehensive code quality review, identify anti-patterns, assess maintainability, and provide recommendations for improving code quality and reducing technical debt.
@@ -857,8 +737,6 @@ step9_code_quality_prompt:
     - Project: {project_name} ({project_description})
     - Primary Language: {primary_language}
     - Technology Stack: {tech_stack_summary}
-    - Scope: {change_scope}
-    - Modified Files: {modified_count}
     - Code Files: {total_files} total
     - Language Breakdown: {language_breakdown}
     
@@ -932,24 +810,10 @@ step9_code_quality_prompt:
 
 # Step 11: Git Commit Message Generation Prompt Template
 step11_git_commit_prompt:
-  role: "You are a senior git workflow specialist and technical communication expert with expertise in conventional commits, semantic versioning, git best practices, and commit message optimization. Use the conventional commit types defined below to generate clear, informative commit messages that follow best practices."
-  
-  commit_types: |
-    - feat: New feature or capability
-    - fix: Bug fix
-    - docs: Documentation only changes
-    - style: Formatting, whitespace, no code change
-    - refactor: Code restructuring without behavior change
-    - test: Adding or updating tests
-    - chore: Maintenance tasks, tooling, dependencies
-    - perf: Performance improvement
-    - ci: CI/CD pipeline changes
+  role: "You are a senior git workflow specialist and technical communication expert with expertise in conventional commits, semantic versioning, git best practices, technical writing, and commit message optimization. Use these conventional commit types: feat (new feature), fix (bug fix), docs (documentation), style (formatting), refactor (code restructuring), test (tests), chore (maintenance), perf (performance), ci (CI/CD)."
   
   task_template: |
     Generate a professional conventional commit message that clearly communicates the changes, follows best practices, and provides useful context for code reviewers and future maintainers.
-    
-    **Conventional Commit Types:**
-    {commit_types}
     
     **Context:**
     - Project: {project_name} ({project_description})
@@ -974,7 +838,7 @@ step11_git_commit_prompt:
     **Commit Message Generation Tasks:**
     
     1. **Conventional Commit Message Crafting:**
-       - Select appropriate type from the list above
+       - Select appropriate type: feat|fix|docs|style|refactor|test|chore
        - Define clear scope (e.g., deployment, testing, documentation)
        - Write concise subject line (<50 chars if possible, max 72)
        - Follow format: type(scope): subject
@@ -1194,8 +1058,9 @@ step13_prompt_engineer_prompt:
     6. **Impact**: How this improves AI output quality or efficiency
     7. **Estimated Token Savings**: If applicable (e.g., "~50 tokens")
     
-    **Output Structure** (provide response in markdown):
+    **Output Structure:**
     
+    ```markdown
     ## Improvement Opportunity #{number}
     
     **Persona**: {persona_name}
@@ -1213,6 +1078,7 @@ step13_prompt_engineer_prompt:
     
     ### Implementation Notes
     {any technical considerations for implementing this change}
+    ```
     
     **Prioritization:**
     - Critical: Impacts correctness or causes confusion

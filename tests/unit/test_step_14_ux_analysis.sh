@@ -19,11 +19,13 @@ WORKFLOW_STEPS_DIR="${PROJECT_ROOT}/src/workflow/steps"
 # Load color definitions
 source "${WORKFLOW_LIB_DIR}/colors.sh"
 
-# Disable strict error handling from sourced files
-set +e
-
 # Load required libraries for Step 14
 source "${WORKFLOW_LIB_DIR}/utils.sh" 2>/dev/null || true
+
+# CRITICAL: Disable strict error handling AFTER sourcing libraries
+# (colors.sh and utils.sh both set -euo pipefail)
+set +e
+set -uo pipefail
 
 # Set test mode to prevent step script from enabling strict error handling
 export TEST_MODE=1
@@ -306,9 +308,10 @@ test_ui_file_discovery() {
     export PROJECT_ROOT="$api_dir"
     
     ui_files=$(find_ui_files)
-    local ui_file_count=$(echo "$ui_files" | grep -v "^$" | wc -l || echo "0")
+    local ui_file_count=$(echo "$ui_files" | grep -c -v "^$" 2>/dev/null || echo "0")
+    ui_file_count=$(echo "$ui_file_count" | tr -d '[:space:]')  # Remove all whitespace
     
-    [[ $ui_file_count -eq 0 ]]
+    [[ ${ui_file_count:-0} -eq 0 ]]
     assert_success $? "Returns empty for API-only project"
 }
 

@@ -135,6 +135,77 @@ build_ai_prompt() {
 EOF
 }
 
+# ==============================================================================
+# YAML ANCHOR SUPPORT FOR TOKEN EFFICIENCY
+# ==============================================================================
+
+# Compose role from role_prefix and behavioral_guidelines if available
+# Falls back to legacy 'role' field for backward compatibility
+# Usage: compose_role_from_yaml <yaml_file> <prompt_section>
+# Returns: Complete role text
+compose_role_from_yaml() {
+    local yaml_file="$1"
+    local prompt_section="$2"
+    
+    # Try to extract role_prefix and behavioral_guidelines using Python
+    # This provides cleaner YAML parsing with anchor resolution
+    if command -v python3 &>/dev/null; then
+        local composed_role
+        composed_role=$(python3 << EOF
+import yaml
+import sys
+
+try:
+    with open('$yaml_file', 'r') as f:
+        data = yaml.safe_load(f)
+    
+    section = data.get('$prompt_section', {})
+    
+    # Check if we have the new format (role_prefix + behavioral_guidelines)
+    if 'role_prefix' in section and 'behavioral_guidelines' in section:
+        role_prefix = section['role_prefix'].strip()
+        guidelines = section['behavioral_guidelines'].strip()
+        print(f"{role_prefix}\\n\\n{guidelines}")
+    elif 'role' in section:
+        # Fallback to legacy format
+        print(section['role'])
+    else:
+        sys.exit(1)
+except Exception:
+    sys.exit(1)
+EOF
+)
+        if [[ $? -eq 0 && -n "$composed_role" ]]; then
+            echo "$composed_role"
+            return 0
+        fi
+    fi
+    
+    # Fallback: extract legacy 'role' field using awk
+    local role
+    role=$(awk -v section="^${prompt_section}:" '
+        $0 ~ section { in_section=1; next }
+        in_section && /role: \|/ { in_role=1; next }
+        in_section && in_role && /^  [a-z_]/ { exit }
+        in_section && in_role && /^    / {
+            sub(/^    /, "");
+            if (NR > 1) printf "\n";
+            printf "%s", $0
+        }
+    ' "$yaml_file")
+    
+    if [[ -n "$role" ]]; then
+        echo "$role"
+        return 0
+    fi
+    
+    return 1
+}
+
+# ==============================================================================
+# PROMPT BUILDING FUNCTIONS
+# ==============================================================================
+
 # Build a documentation analysis prompt
 # Usage: build_doc_analysis_prompt <changed_files> <doc_files>
 # Step 1: Build a documentation analysis prompt
@@ -234,20 +305,25 @@ ${base_task_context}"
 
         #IF role is still empty, extract from doc_analysis_prompt section   
         if [[ -z "$role" ]]; then
-            # Extract multi-line role (supports both | format and quoted format)
-            role=$(awk '/^doc_analysis_prompt:/,/^  task/ {
-                if (/role: \|/) { in_role=1; next }
-                if (in_role && /^  [a-z]/) { exit }
-                if (in_role && /^    /) { 
-                    sub(/^    /, ""); 
-                    if (NR > 1) printf "\n";
-                    printf "%s", $0
-                }
-            }' "$yaml_file")
+            # Try new compose function for token efficiency (supports YAML anchors)
+            role=$(compose_role_from_yaml "$yaml_file" "doc_analysis_prompt" 2>/dev/null)
             
-            # Fallback: try quoted format if multi-line extraction failed
+            # Fallback: legacy extraction if compose fails
             if [[ -z "$role" ]]; then
-                role=$(sed -n '/^doc_analysis_prompt:/,/^[a-z_]/p' "$yaml_file" | grep 'role:' | sed 's/^[[:space:]]*role:[[:space:]]*"\(.*\)"[[:space:]]*$/\1/')
+                role=$(awk '/^doc_analysis_prompt:/,/^  task/ {
+                    if (/role: \|/) { in_role=1; next }
+                    if (in_role && /^  [a-z]/) { exit }
+                    if (in_role && /^    /) { 
+                        sub(/^    /, ""); 
+                        if (NR > 1) printf "\n";
+                        printf "%s", $0
+                    }
+                }' "$yaml_file")
+                
+                # Double fallback: try quoted format
+                if [[ -z "$role" ]]; then
+                    role=$(sed -n '/^doc_analysis_prompt:/,/^[a-z_]/p' "$yaml_file" | grep 'role:' | sed 's/^[[:space:]]*role:[[:space:]]*"\(.*\)"[[:space:]]*$/\1/')
+                fi
             fi
         fi
         
@@ -1752,11 +1828,22 @@ build_step11_git_commit_prompt() {
     # Read from YAML config if available
     if [[ -f "$yaml_file" ]]; then
         local role
+        local commit_types
         local task_template
         local approach
         
         # Extract role from step11_git_commit_prompt section
         role=$(sed -n '/^step11_git_commit_prompt:/,/^[a-z_]/p' "$yaml_file" | grep 'role:' | sed 's/^[[:space:]]*role:[[:space:]]*"\(.*\)"[[:space:]]*$/\1/')
+        
+        # Extract commit_types
+        commit_types=$(sed -n '/^step11_git_commit_prompt:/,/^[a-z_]/p' "$yaml_file" | awk '
+            /commit_types: \|/ {flag=1; next}
+            /^[[:space:]]+task_template:/ {flag=0}
+            flag && /^[[:space:]]{4}/ {
+                sub(/^[[:space:]]{4}/, "");
+                print
+            }
+        ')
         
         # Extract task template
         task_template=$(sed -n '/^step11_git_commit_prompt:/,/^[a-z_]/p' "$yaml_file" | awk '
@@ -1787,7 +1874,8 @@ build_step11_git_commit_prompt() {
         local primary_language="${temp#*|}"
         
         # Replace placeholders in task template
-        local task="${task_template//\{script_version\}/$script_version}"
+        local task="${task_template//\{commit_types\}/$commit_types}"
+        task="${task//\{script_version\}/$script_version}"
         task="${task//\{change_scope\}/${change_scope:-General updates}}"
         task="${task//\{git_context\}/$git_context}"
         task="${task//\{changed_files\}/$changed_files}"
@@ -2158,6 +2246,7 @@ trigger_ai_step() {
 export -f is_copilot_available
 export -f is_copilot_authenticated
 export -f validate_copilot_cli
+export -f compose_role_from_yaml  # NEW: YAML anchor support
 export -f build_ai_prompt
 export -f build_doc_analysis_prompt
 export -f build_consistency_prompt

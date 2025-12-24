@@ -33,14 +33,14 @@ assert_equals() {
     local actual="$2"
     local test_name="$3"
     
-    ((TESTS_RUN++))
+    ((TESTS_RUN++)) || true
     
     if [[ "$expected" == "$actual" ]]; then
-        ((TESTS_PASSED++))
+        ((TESTS_PASSED++)) || true
         echo -e "${GREEN}✅ PASS${NC}: $test_name"
         return 0
     else
-        ((TESTS_FAILED++))
+        ((TESTS_FAILED++)) || true
         FAILED_TESTS+=("$test_name")
         echo -e "${RED}❌ FAIL${NC}: $test_name"
         echo -e "   Expected: ${YELLOW}$expected${NC}"
@@ -53,14 +53,14 @@ assert_true() {
     local condition="$1"
     local test_name="$2"
     
-    ((TESTS_RUN++))
+    ((TESTS_RUN++)) || true
     
     if eval "$condition"; then
-        ((TESTS_PASSED++))
+        ((TESTS_PASSED++)) || true
         echo -e "${GREEN}✅ PASS${NC}: $test_name"
         return 0
     else
-        ((TESTS_FAILED++))
+        ((TESTS_FAILED++)) || true
         FAILED_TESTS+=("$test_name")
         echo -e "${RED}❌ FAIL${NC}: $test_name"
         echo -e "   Condition failed: ${YELLOW}$condition${NC}"
@@ -73,14 +73,14 @@ assert_contains() {
     local needle="$2"
     local test_name="$3"
     
-    ((TESTS_RUN++))
+    ((TESTS_RUN++)) || true
     
     if [[ "$haystack" == *"$needle"* ]]; then
-        ((TESTS_PASSED++))
+        ((TESTS_PASSED++)) || true
         echo -e "${GREEN}✅ PASS${NC}: $test_name"
         return 0
     else
-        ((TESTS_FAILED++))
+        ((TESTS_FAILED++)) || true
         FAILED_TESTS+=("$test_name")
         echo -e "${RED}❌ FAIL${NC}: $test_name"
         echo -e "   Haystack: ${YELLOW}$haystack${NC}"

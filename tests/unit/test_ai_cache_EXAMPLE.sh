@@ -29,6 +29,12 @@ source "${WORKFLOW_LIB_DIR}/colors.sh" 2>/dev/null || {
     CYAN='\033[0;36m'
     NC='\033[0m'
 }
+source "${WORKFLOW_LIB_DIR}/utils.sh" 2>/dev/null || {
+    # Provide minimal stub functions if utils.sh is not available
+    print_info() { echo "$@"; }
+    print_success() { echo "$@"; }
+    print_error() { echo "$@" >&2; }
+}
 
 # Test counters
 TESTS_RUN=0
@@ -48,14 +54,14 @@ print_test_header() {
 }
 
 pass() {
-    ((TESTS_RUN++))
-    ((TESTS_PASSED++))
+    ((TESTS_RUN++)) || true
+    ((TESTS_PASSED++)) || true
     echo -e "${GREEN}✓${NC} $1"
 }
 
 fail() {
-    ((TESTS_RUN++))
-    ((TESTS_FAILED++))
+    ((TESTS_RUN++)) || true
+    ((TESTS_FAILED++)) || true
     echo -e "${RED}✗${NC} $1"
     FAILED_TESTS+=("$1")
 }
@@ -314,7 +320,7 @@ test_check_cache_hit() {
     init_ai_cache
     
     local key=$(generate_cache_key "test_prompt" "test_context")
-    local cache_file="${AI_CACHE_DIR}/${key}"
+    local cache_file="${AI_CACHE_DIR}/${key}.txt"
     
     # Manually create cache entry
     echo "Cached response content" > "${cache_file}"
@@ -352,7 +358,7 @@ test_check_cache_expired_ttl() {
     init_ai_cache
     
     local key=$(generate_cache_key "old_prompt" "old_context")
-    local cache_file="${AI_CACHE_DIR}/${key}"
+    local cache_file="${AI_CACHE_DIR}/${key}.txt"
     
     echo "Expired response" > "${cache_file}"
     
@@ -440,7 +446,7 @@ test_save_to_cache_creates_file() {
     
     local key=$(generate_cache_key "save_test" "")
     local response="Test AI response content"
-    local cache_file="${AI_CACHE_DIR}/${key}"
+    local cache_file="${AI_CACHE_DIR}/${key}.txt"
     
     save_to_cache "${key}" "${response}"
     
@@ -549,12 +555,12 @@ test_cleanup_removes_expired_entries() {
     
     # Create old entry
     local old_key=$(generate_cache_key "old_entry" "")
-    local old_file="${AI_CACHE_DIR}/${old_key}"
+    local old_file="${AI_CACHE_DIR}/${old_key}.txt"
     echo "Old content" > "${old_file}"
     
     # Create recent entry
     local new_key=$(generate_cache_key "new_entry" "")
-    local new_file="${AI_CACHE_DIR}/${new_key}"
+    local new_file="${AI_CACHE_DIR}/${new_key}.txt"
     echo "New content" > "${new_file}"
     
     # Setup index with one expired, one valid
@@ -719,7 +725,7 @@ test_cache_concurrent_access() {
     
     wait
     
-    if [[ -f "${AI_CACHE_DIR}/${key1}" ]] && [[ -f "${AI_CACHE_DIR}/${key2}" ]]; then
+    if [[ -f "${AI_CACHE_DIR}/${key1}.txt" ]] && [[ -f "${AI_CACHE_DIR}/${key2}.txt" ]]; then
         pass "Handles concurrent cache writes"
     else
         fail "Concurrent writes failed"

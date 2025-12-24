@@ -127,12 +127,17 @@ get_cached_response() {
     return 1
 }
 
+# Alias for backward compatibility with tests
+get_from_cache() {
+    get_cached_response "$@"
+}
+
 # Save response to cache
-# Args: $1 = cache_key, $2 = response_text, $3 = prompt, $4 = context
+# Args: $1 = cache_key, $2 = response_text, $3 = prompt (optional), $4 = context (optional)
 save_to_cache() {
     local cache_key="$1"
     local response="$2"
-    local prompt="$3"
+    local prompt="${3:-}"
     local context="${4:-}"
     
     if [[ "${USE_AI_CACHE}" != "true" ]]; then
@@ -154,8 +159,8 @@ save_to_cache() {
   "prompt_preview": "$(echo "${prompt}" | head -c 100 | sed 's/"/\\"/g')...",
   "context": "$(echo "${context}" | sed 's/"/\\"/g')",
   "response_size": $(echo "${response}" | wc -c),
-  "workflow_run_id": "${WORKFLOW_RUN_ID}",
-  "version": "${SCRIPT_VERSION}"
+  "workflow_run_id": "${WORKFLOW_RUN_ID:-unknown}",
+  "version": "${SCRIPT_VERSION:-1.0.0}"
 }
 EOF
     

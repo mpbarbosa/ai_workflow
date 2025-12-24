@@ -1,0 +1,18 @@
+================================================================================
+TEST EXECUTION REPORT
+================================================================================
+Date:          2025-12-24 12:26:42
+Test Type:     all
+Total Tests:   3
+Passed:        1
+Failed:        2
+Skipped:       0
+Pass Rate:     33%
+
+Passed Tests:
+  ✓ test_adaptive_checks
+
+Failed Tests:
+  ✗ test_ai_cache
+  ✗ test_file_operations
+

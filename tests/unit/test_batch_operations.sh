@@ -14,6 +14,7 @@ WORKFLOW_LIB_DIR="${SCRIPT_DIR}/../../src/workflow/lib"
 
 # Source required libraries
 source "$WORKFLOW_LIB_DIR/colors.sh"
+source "$WORKFLOW_LIB_DIR/utils.sh"
 source "$WORKFLOW_LIB_DIR/performance.sh"
 
 # Test counters
@@ -26,14 +27,14 @@ run_test() {
     local test_name="$1"
     local test_func="$2"
     
-    ((TESTS_RUN++))
+    TESTS_RUN=$((TESTS_RUN + 1))
     echo "Running: $test_name"
     
     if $test_func; then
-        ((TESTS_PASSED++))
+        TESTS_PASSED=$((TESTS_PASSED + 1))
         echo "✓ PASSED: $test_name"
     else
-        ((TESTS_FAILED++))
+        TESTS_FAILED=$((TESTS_FAILED + 1))
         echo "✗ FAILED: $test_name"
     fi
     echo ""

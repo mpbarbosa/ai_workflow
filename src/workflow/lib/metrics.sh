@@ -116,13 +116,13 @@ stop_step_timer() {
     # Update counters
     case "${status}" in
         success)
-            ((WORKFLOW_STEPS_COMPLETED++))
+            WORKFLOW_STEPS_COMPLETED=$((WORKFLOW_STEPS_COMPLETED + 1))
             ;;
         failed)
-            ((WORKFLOW_STEPS_FAILED++))
+            WORKFLOW_STEPS_FAILED=$((WORKFLOW_STEPS_FAILED + 1))
             ;;
         skipped)
-            ((WORKFLOW_STEPS_SKIPPED++))
+            WORKFLOW_STEPS_SKIPPED=$((WORKFLOW_STEPS_SKIPPED + 1))
             ;;
     esac
     

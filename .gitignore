@@ -4,6 +4,7 @@ shell_scripts/workflow/summaries/
 shell_scripts/workflow/logs/
 shell_scripts/workflow/metrics/
 shell_scripts/workflow/.checkpoints/
+.ai_workflow/
 
 # New workflow paths (src/workflow)
 src/workflow/backlog/

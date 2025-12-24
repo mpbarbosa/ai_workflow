@@ -18,6 +18,26 @@ readonly STEP14_VERSION_MAJOR=1
 readonly STEP14_VERSION_MINOR=0
 readonly STEP14_VERSION_PATCH=0
 
+# Determine script directory and project root
+STEP14_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+WORKFLOW_LIB_DIR="${STEP14_DIR}/../lib"
+
+# Source required dependencies if not already loaded
+if ! type -t print_info &>/dev/null; then
+    # shellcheck source=../lib/colors.sh
+    source "${WORKFLOW_LIB_DIR}/colors.sh" 2>/dev/null || true
+    # shellcheck source=../lib/utils.sh
+    source "${WORKFLOW_LIB_DIR}/utils.sh" 2>/dev/null || true
+fi
+
+# Define fallback functions if still not available (for standalone usage)
+if ! type -t print_info &>/dev/null; then
+    print_info() { echo "ℹ️  $1"; }
+    print_success() { echo "✅ $1"; }
+    print_warning() { echo "⚠️  WARNING: $1"; }
+    print_error() { echo "❌ ERROR: $1" >&2; }
+fi
+
 # ==============================================================================
 # UI DETECTION FUNCTIONS
 # ==============================================================================
@@ -553,13 +573,15 @@ EOF
     
     # Check for form labels
     if [[ -n "$html_files" ]]; then
-        local forms=$(echo "$html_files" | xargs grep -c "<form" 2>/dev/null | grep -v ":0$" | wc -l || echo "0")
-        local labels=$(echo "$html_files" | xargs grep -c "<label" 2>/dev/null | grep -v ":0$" | wc -l || echo "0")
+        local forms=$(echo "$html_files" | xargs grep -c "<form" 2>/dev/null | grep -v ":0$" | wc -l 2>/dev/null || echo "0")
+        forms=$(echo "$forms" | tr -d '[:space:]')  # Remove whitespace
+        local labels=$(echo "$html_files" | xargs grep -c "<label" 2>/dev/null | grep -v ":0$" | wc -l 2>/dev/null || echo "0")
+        labels=$(echo "$labels" | tr -d '[:space:]')  # Remove whitespace
         
-        echo "- Forms found: $forms"
-        echo "- Labels found: $labels"
+        echo "- Forms found: ${forms:-0}"
+        echo "- Labels found: ${labels:-0}"
         
-        if [[ $forms -gt 0 ]] && [[ $labels -eq 0 ]]; then
+        if [[ ${forms:-0} -gt 0 ]] && [[ ${labels:-0} -eq 0 ]]; then
             echo ""
             echo "⚠️ **Warning**: Forms detected without labels - add \`<label>\` tags for accessibility"
         fi

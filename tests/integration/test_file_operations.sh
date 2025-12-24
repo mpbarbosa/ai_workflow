@@ -44,14 +44,14 @@ assert_equals() {
     local actual="$2"
     local test_name="$3"
     
-    ((TESTS_RUN++))
+    ((TESTS_RUN++)) || true
     
     if [[ "$expected" == "$actual" ]]; then
-        ((TESTS_PASSED++))
+        ((TESTS_PASSED++)) || true
         echo -e "${GREEN}✅ PASS${NC}: $test_name"
         return 0
     else
-        ((TESTS_FAILED++))
+        ((TESTS_FAILED++)) || true
         FAILED_TESTS+=("$test_name")
         echo -e "${RED}❌ FAIL${NC}: $test_name"
         echo -e "   Expected: ${YELLOW}$expected${NC}"
@@ -64,14 +64,14 @@ assert_file_exists() {
     local filepath="$1"
     local test_name="$2"
     
-    ((TESTS_RUN++))
+    ((TESTS_RUN++)) || true
     
     if [[ -f "$filepath" ]]; then
-        ((TESTS_PASSED++))
+        ((TESTS_PASSED++)) || true
         echo -e "${GREEN}✅ PASS${NC}: $test_name"
         return 0
     else
-        ((TESTS_FAILED++))
+        ((TESTS_FAILED++)) || true
         FAILED_TESTS+=("$test_name")
         echo -e "${RED}❌ FAIL${NC}: $test_name"
         echo -e "   File not found: ${YELLOW}$filepath${NC}"
@@ -83,14 +83,14 @@ assert_file_not_exists() {
     local filepath="$1"
     local test_name="$2"
     
-    ((TESTS_RUN++))
+    ((TESTS_RUN++)) || true
     
     if [[ ! -f "$filepath" ]]; then
-        ((TESTS_PASSED++))
+        ((TESTS_PASSED++)) || true
         echo -e "${GREEN}✅ PASS${NC}: $test_name"
         return 0
     else
-        ((TESTS_FAILED++))
+        ((TESTS_FAILED++)) || true
         FAILED_TESTS+=("$test_name")
         echo -e "${RED}❌ FAIL${NC}: $test_name"
         echo -e "   File exists: ${YELLOW}$filepath${NC}"

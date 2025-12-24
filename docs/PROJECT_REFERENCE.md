@@ -20,7 +20,7 @@
 ### Key Statistics
 
 - **Total Lines**: 26,562 (22,411 shell + 4,151 YAML)
-- **Total Modules**: 58 (32 libraries + 15 steps + 7 configs + 4 orchestrators)
+- **Total Modules**: 59 (33 libraries + 15 steps + 7 configs + 4 orchestrators)
 - **Test Coverage**: 100% (37+ automated tests)
 - **Performance**: Up to 90% faster for documentation-only changes
 
@@ -57,9 +57,9 @@
 
 ## Module Inventory
 
-### Library Modules (32 total in src/workflow/lib/)
+### Library Modules (33 total in src/workflow/lib/)
 
-> **Note**: Module count updated 2025-12-24 to reflect actual inventory. Previous documentation referenced 28 modules before recent additions (ai_prompt_builder.sh, ai_personas.sh, ai_validation.sh, cleanup_handlers.sh).
+> **Note**: Module count updated 2025-12-24 to reflect actual inventory. Previous documentation referenced 28 modules before recent additions (ai_prompt_builder.sh, ai_personas.sh, ai_validation.sh, cleanup_handlers.sh, test_broken_reference_analysis.sh).
 
 #### Core Modules (12 modules)
 - `ai_helpers.sh` (102K) - AI integration with 14 functional personas
@@ -75,7 +75,7 @@
 - `health_check.sh` (15K) - System validation
 - `file_operations.sh` (15K) - Safe file operations
 
-#### Supporting Modules (20 modules)
+#### Supporting Modules (21 modules)
 - `edit_operations.sh` (14K) - File editing operations
 - `project_kind_detection.sh` (14K) - Project type detection
 - `doc_template_validator.sh` (13K) - Template validation
@@ -94,6 +94,7 @@
 - `summary.sh` (3.8K) - Report generation
 - `ai_validation.sh` (3.6K) - AI response validation
 - `backlog.sh` (2.7K) - Execution history
+- `test_broken_reference_analysis.sh` (2.4K) - Reference validation testing
 - `config.sh` (2.1K) - YAML configuration
 - `colors.sh` (637 bytes) - Terminal formatting
 
@@ -301,7 +302,7 @@ echo "See docs/PROJECT_REFERENCE.md for project statistics"
 ### From Documentation
 Instead of duplicating lists, use references:
 ```markdown
-The workflow includes 28 library modules (see [Project Reference](PROJECT_REFERENCE.md#module-inventory).).
+The workflow includes 33 library modules (see [Project Reference](PROJECT_REFERENCE.md#module-inventory)).
 ```
 
 ---

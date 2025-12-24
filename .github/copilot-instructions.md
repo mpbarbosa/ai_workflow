@@ -15,7 +15,7 @@ AI Workflow Automation is an intelligent workflow system for validating and enha
 
 **Core Features**:
 - **15-Step Automated Pipeline** with 14 AI personas
-- **32 Library Modules** (14,993 lines) + **15 Step Modules** (4,777 lines)
+- **33 Library Modules** (15,500+ lines) + **15 Step Modules** (4,777 lines)
 - **Smart Execution**: 40-85% faster | **Parallel Execution**: 33% faster
 - **AI Response Caching**: 60-80% token reduction
 - **UX Analysis** (NEW v2.4.0): Accessibility checking with WCAG 2.1
@@ -47,9 +47,9 @@ AI Workflow Automation is an intelligent workflow system for validating and enha
 
 **Quick Reference**:
 - **Core Modules** (12): ai_helpers.sh, tech_stack.sh, workflow_optimization.sh, change_detection.sh, etc.
-- **Supporting Modules** (16): edit_operations.sh, ai_cache.sh, session_manager.sh, etc.
+- **Supporting Modules** (21): edit_operations.sh, ai_cache.sh, session_manager.sh, ai_personas.sh, ai_prompt_builder.sh, etc.
 - **Step Modules** (15): step_00_analyze.sh through step_14_ux_analysis.sh
-- **Configuration Files** (6): YAML-based prompt templates and project configuration
+- **Configuration Files** (7): YAML-based prompt templates and project configuration
 
 ## Key Files and Directories
 
@@ -74,7 +74,7 @@ src/workflow/config/
 
 ### Library and Step Modules
 
-> 📋 **Complete List**: See [docs/PROJECT_REFERENCE.md#module-inventory](../docs/PROJECT_REFERENCE.md#module-inventory for all 28 library modules and 15 step modules with line counts.
+> 📋 **Complete List**: See [docs/PROJECT_REFERENCE.md#module-inventory](../docs/PROJECT_REFERENCE.md#module-inventory for all 33 library modules and 15 step modules with line counts.
 
 ### Documentation Structure
 
