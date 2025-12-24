@@ -87,52 +87,60 @@ build_prompt_engineer_analysis_prompt() {
         return 1
     fi
     
-    # Extract role
-    local role=$(awk '/^step13_prompt_engineer_prompt:$/,/^[a-z]/ {
-        if ($0 ~ /^[[:space:]]*role:/) {
-            match($0, /role:[[:space:]]*"(.+)"/, arr)
-            print arr[1]
-            exit
-        }
-    }' "$yaml_file")
-    
-    # Extract task template and substitute variables
-    local task_template=$(awk '/^step13_prompt_engineer_prompt:$/,/^[a-z]/ {
-        if (in_task) {
-            if ($0 ~ /^[[:space:]]*approach:/) {
-                exit
-            }
+    # Extract role (multiline YAML block scalar format with 2-space indent)
+    local role=$(awk '
+        /^step13_prompt_engineer_prompt:$/ { in_section=1; next }
+        in_section && /^[a-z]/ { exit }
+        in_section && /^[[:space:]]{2}role:[[:space:]]*\|/ { in_role=1; next }
+        in_section && in_role {
+            # Stop at next field (at same or lower indent level)
+            if ($0 ~ /^[[:space:]]{0,2}[a-z_]+:/) { in_role=0; next }
+            # Capture content (remove 4-space indent from content lines)
             if ($0 ~ /^[[:space:]]{4}/) {
                 sub(/^[[:space:]]{4}/, "")
                 print
             }
         }
-        if ($0 ~ /^[[:space:]]*task_template:/) {
-            in_task=1
+    ' "$yaml_file")
+    
+    # Extract task template (multiline YAML block scalar format with 2-space indent)
+    local task_template=$(awk '
+        /^step13_prompt_engineer_prompt:$/ { in_section=1; next }
+        in_section && /^[a-z]/ { exit }
+        in_section && /^[[:space:]]{2}task_template:[[:space:]]*\|/ { in_task=1; next }
+        in_section && in_task {
+            # Stop at next field (at same or lower indent level)
+            if ($0 ~ /^[[:space:]]{0,2}[a-z_]+:/) { in_task=0; next }
+            # Capture content (remove 4-space indent from content lines)
+            if ($0 ~ /^[[:space:]]{4}/) {
+                sub(/^[[:space:]]{4}/, "")
+                print
+            }
         }
-    }' "$yaml_file")
+    ' "$yaml_file")
     
     # Substitute variables in task template
     task_template=$(echo "$task_template" | sed "s/{persona_count}/${persona_count}/g")
     task_template=$(echo "$task_template" | sed "s|{personas_list}|${personas_list}|g")
     
-    # Note: We'll pass prompts_content separately as it's too large for inline substitution
+    # Note: prompts_content is appended at the end of the prompt (after approach section)
+    # to avoid sed issues with large YAML content containing special characters
     
-    # Extract approach
-    local approach=$(awk '/^step13_prompt_engineer_prompt:$/,/^[a-z]/ {
-        if (in_approach) {
-            if ($0 ~ /^[a-z]/) {
-                exit
-            }
+    # Extract approach (multiline YAML block scalar format with 2-space indent)
+    local approach=$(awk '
+        /^step13_prompt_engineer_prompt:$/ { in_section=1; next }
+        in_section && /^[a-z]/ { exit }
+        in_section && /^[[:space:]]{2}approach:[[:space:]]*\|/ { in_approach=1; next }
+        in_section && in_approach {
+            # Stop at next field (at same or lower indent level) or next persona
+            if ($0 ~ /^[[:space:]]{0,2}[a-z_]+:/) { in_approach=0; next }
+            # Capture content (remove 4-space indent from content lines)
             if ($0 ~ /^[[:space:]]{4}/) {
                 sub(/^[[:space:]]{4}/, "")
                 print
             }
         }
-        if ($0 ~ /^[[:space:]]*approach:/) {
-            in_approach=1
-        }
-    }' "$yaml_file")
+    ' "$yaml_file")
     
     # Build complete prompt
     cat << EOF

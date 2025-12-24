@@ -54,7 +54,7 @@ organize_misplaced_documentation() {
         ["bugfix"]="docs/reports/bugfixes"
         ["implementation"]="docs/reports/implementation"
         ["analysis"]="docs/reports/analysis"
-        ["uncategorized"]="docs/archive"
+        ["uncategorized"]="docs/misc"
     )
     
     # Create category directories

@@ -1,8 +1,8 @@
 # GitHub Copilot Instructions - AI Workflow Automation
 
 **Repository**: ai_workflow  
-**Version**: v2.4.0  
-**Last Updated**: 2025-12-23  
+**Version**: v2.6.0  
+**Last Updated**: 2025-12-24  
 **Maintainer**: Marcelo Pereira Barbosa ([@mpbarbosa](https://github.com/mpbarbosa))
 
 ## Project Overview
@@ -18,9 +18,13 @@ AI Workflow Automation is an intelligent workflow system for validating and enha
 - **33 Library Modules** (15,500+ lines) + **15 Step Modules** (4,777 lines)
 - **Smart Execution**: 40-85% faster | **Parallel Execution**: 33% faster
 - **AI Response Caching**: 60-80% token reduction
-- **UX Analysis** (NEW v2.4.0): Accessibility checking with WCAG 2.1
+- **Auto-Commit Workflow** (NEW v2.6.0): Automatic artifact commits
+- **Workflow Templates** (NEW v2.6.0): Docs-only, test-only, feature templates
+- **IDE Integration** (NEW v2.6.0): VS Code tasks with 10 pre-configured workflows
+- **UX Analysis** (v2.4.0): Accessibility checking with WCAG 2.1
 - **Checkpoint Resume**: Automatic continuation from failures
 - **100% Test Coverage**: 37+ automated tests
+- **Code Quality**: B+ (87/100) assessed by Software Quality Engineer AI
 
 ## Architecture Patterns
 
@@ -115,12 +119,20 @@ src/workflow/
 
 ## Development Workflow
 
-### Command-Line Options (v2.4.0)
+### Command-Line Options (v2.6.0)
 
 ```bash
 # Basic usage - runs on current directory by default
 cd /path/to/project
 /path/to/ai_workflow/src/workflow/execute_tests_docs_workflow.sh
+
+# Workflow templates (NEW v2.6.0) - fastest way to run common workflows
+./templates/workflows/docs-only.sh    # Documentation only (3-4 min)
+./templates/workflows/test-only.sh    # Test development (8-10 min)
+./templates/workflows/feature.sh      # Full feature dev (15-20 min)
+
+# Auto-commit (NEW v2.6.0) - automatically commit workflow artifacts
+./execute_tests_docs_workflow.sh --auto-commit
 
 # Target a different project
 ./execute_tests_docs_workflow.sh --target /path/to/project
@@ -155,7 +167,7 @@ cd /path/to/project
 ./execute_tests_docs_workflow.sh --dry-run
 ```
 
-### Performance Characteristics (v2.4.0)
+### Performance Characteristics (v2.6.0)
 
 | Change Type | Baseline | Smart | Parallel | Combined |
 |-------------|----------|-------|----------|----------|
@@ -164,7 +176,8 @@ cd /path/to/project
 | Full Changes | 23 min | 23 min (baseline) | 15.5 min (33% faster) | 15.5 min (33% faster) |
 
 **AI Response Caching**: 60-80% token usage reduction with 24-hour TTL  
-**Checkpoint Resume**: Automatic continuation from last completed step (use `--no-resume` to disable)
+**Checkpoint Resume**: Automatic continuation from last completed step (use `--no-resume` to disable)  
+**Auto-Commit**: Intelligently commits workflow artifacts (docs, tests, source) with generated messages (use `--auto-commit` to enable)
 
 ### Testing
 
@@ -233,12 +246,19 @@ The documentation_specialist persona is project-aware and references:
 
 > 📋 **Complete History**: See [docs/PROJECT_REFERENCE.md#version-history-major-releases](../docs/PROJECT_REFERENCE.md#version-history-major-releases for all releases and detailed changelogs.
 
-**Current Version**: v2.4.0 (2025-12-23)
-- Step 14: UX Analysis with accessibility checking
-- UX Designer AI persona
-- No breaking changes
+**Current Version**: v2.6.0 (2025-12-24)
+- Auto-commit workflow artifacts with intelligent message generation
+- Workflow templates (docs-only, test-only, feature development)
+- VS Code integration with 10 pre-configured tasks
+- IDE integration guide (JetBrains, Vim/Neovim)
+- Step 13 bug fix: Fixed YAML block scalar parsing for prompt engineer analysis
+- No breaking changes - 100% backward compatible
 
-**Recent Versions**: v2.3.1 (bug fixes), v2.3.0 (smart/parallel execution), v2.2.0 (metrics), v2.1.0 (modularization), v2.0.0 (initial release)
+**Recent Versions**: 
+- v2.5.0 (2025-12-24): Phase 2 optimizations + test regression fix
+- v2.4.0 (2025-12-23): UX Analysis with WCAG 2.1, UX Designer persona
+- v2.3.1 (bug fixes): Step 13 prompt engineer fix
+- v2.3.0 (smart/parallel execution), v2.2.0 (metrics), v2.1.0 (modularization), v2.0.0 (initial release)
 
 ## Common Patterns
 
@@ -372,11 +392,10 @@ finalize_metrics
 > 📋 **Single Source of Truth**: [docs/PROJECT_REFERENCE.md](../docs/PROJECT_REFERENCE.md)
 
 **Key Documentation**:
-- **[docs/PROJECT_REFERENCE.md](../docs/PROJECT_REFERENCE.md) - Authoritative project reference (features, modules, versions)
-- **[docs/archive/reports/implementation/MIGRATION_README.md](../docs/archive/reports/implementation/MIGRATION_README.md)**: Architecture overview
-- **[docs/reference/workflow-diagrams.md](../docs/reference/workflow-diagrams.md) - Visual diagrams (17 Mermaid diagrams)
-- **[docs/archive/](../docs/archive/)**: Comprehensive workflow documentation
-- **[src/workflow/README.md](../src/workflow/README.md)**: Module API reference
+- **[docs/PROJECT_REFERENCE.md](../docs/PROJECT_REFERENCE.md)** - Authoritative project reference (features, modules, versions)
+- **[docs/reference/workflow-diagrams.md](../docs/reference/workflow-diagrams.md)** - Visual diagrams (17 Mermaid diagrams)
+- **[src/workflow/README.md](../src/workflow/README.md)** - Module API reference
+- **Git History** - Use `git log` for historical documentation and architectural evolution
 
 ---
 

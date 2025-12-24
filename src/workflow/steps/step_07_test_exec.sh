@@ -282,9 +282,18 @@ Coverage Metrics:
     # Summary
     echo ""
     if [[ $test_exit_code -eq 0 ]]; then
-        print_success "Test suite executed successfully ✅ ($tests_passed/$tests_total passed)"
-        print_success "Coverage: Lines ${coverage_lines}%, Branches ${coverage_branches}%"
-        save_step_summary "7" "Test_Execution" "All ${tests_total} tests passed. Coverage: ${coverage_lines}% lines, ${coverage_branches}% branches. Test suite healthy." "✅"
+        if [[ $tests_failed -gt 0 ]]; then
+            # Tests failed but user chose to continue
+            print_warning "Test suite executed with failures ⚠️ ($tests_passed/$tests_total passed, $tests_failed failed)"
+            print_info "Continuing workflow as requested - review failures later"
+            print_success "Coverage: Lines ${coverage_lines}%, Branches ${coverage_branches}%"
+            save_step_summary "7" "Test_Execution" "${tests_failed} of ${tests_total} tests failed, but continuing workflow. Coverage: ${coverage_lines}% lines." "⚠️"
+        else
+            # All tests passed
+            print_success "Test suite executed successfully ✅ ($tests_passed/$tests_total passed)"
+            print_success "Coverage: Lines ${coverage_lines}%, Branches ${coverage_branches}%"
+            save_step_summary "7" "Test_Execution" "All ${tests_total} tests passed. Coverage: ${coverage_lines}% lines, ${coverage_branches}% branches. Test suite healthy." "✅"
+        fi
     else
         print_error "Test suite failed ❌ ($tests_failed/$tests_total failed)"
         if [[ "$AUTO_MODE" == false ]]; then
@@ -322,11 +331,22 @@ $(cat "$test_results_file")
     cd "$PROJECT_ROOT" || return 1
     
     # Use validation library to ensure visual status matches test outcome
-    # This prevents silent test failures from being marked as successful
-    validate_and_update_test_status "7" "$test_exit_code" "$tests_total" "$tests_passed" "$tests_failed"
-    local validation_result=$?
-    
-    return $validation_result
+    # However, if user chose to continue despite failures (test_exit_code=0), respect that
+    if [[ $test_exit_code -eq 0 ]]; then
+        # User chose to continue or tests passed
+        if command -v update_workflow_status &>/dev/null; then
+            if [[ $tests_failed -gt 0 ]]; then
+                update_workflow_status "step7" "⚠️"  # Warning: continued despite failures
+            else
+                update_workflow_status "step7" "✅"  # All tests passed
+            fi
+        fi
+        return 0
+    else
+        # Tests failed and user chose not to continue
+        validate_and_update_test_status "7" "$test_exit_code" "$tests_total" "$tests_passed" "$tests_failed"
+        return $?
+    fi
 }
 
 # Export step function

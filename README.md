@@ -1,10 +1,10 @@
 # AI Workflow Automation
 
-[![Version](https://img.shields.io/badge/version-2.4.0-blue.svg)](https://github.com/mpbarbosa/ai_workflow/releases)
+[![Version](https://img.shields.io/badge/version-2.6.0-blue.svg)](https://github.com/mpbarbosa/ai_workflow/releases)
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
-[![Code Quality](https://img.shields.io/github/actions/workflow/status/mpbarbosa/ai_workflow/code-quality.yml?label=code%20quality)](https://github.com/mpbarbosa/ai_workflow/actions/workflows/code-quality.yml)
-[![Tests](https://img.shields.io/github/actions/workflow/status/mpbarbosa/ai_workflow/validate-tests.yml?label=tests)](https://github.com/mpbarbosa/ai_workflow/actions/workflows/validate-tests.yml)
-[![Documentation](https://img.shields.io/github/actions/workflow/status/mpbarbosa/ai_workflow/validate-docs.yml?label=docs)](https://github.com/mpbarbosa/ai_workflow/actions/workflows/validate-docs.yml)
+[![Code Quality](https://img.shields.io/badge/quality-B%2B%20(87%2F100)-brightgreen.svg)](src/COMPREHENSIVE_CODE_QUALITY_REPORT.md)
+[![Tests](https://img.shields.io/badge/tests-37%2B%20passing-brightgreen.svg)](tests/)
+[![Documentation](https://img.shields.io/badge/docs-comprehensive-blue.svg)](docs/)
 [![Test Coverage](https://img.shields.io/badge/coverage-100%25-brightgreen.svg)](tests/)
 [![Shell Scripts](https://img.shields.io/badge/shell-bash%204.0%2B-blue.svg)](https://www.gnu.org/software/bash/)
 [![Maintained](https://img.shields.io/badge/maintained-yes-brightgreen.svg)](https://github.com/mpbarbosa/ai_workflow/graphs/commit-activity)
@@ -13,7 +13,7 @@
 Intelligent workflow automation system for validating and enhancing documentation, code, and tests with AI support.
 
 **Migrated from**: mpbarbosa_site repository (2025-12-18)  
-**Version**: v2.4.0  
+**Version**: v2.6.0  
 **Repository**: [github.com/mpbarbosa/ai_workflow](https://github.com/mpbarbosa/ai_workflow)
 
 ## Overview
@@ -31,8 +31,12 @@ This repository provides a comprehensive, modular workflow automation system tha
 - **Smart Execution**: 40-85% faster (change-based step skipping)
 - **Parallel Execution**: 33% faster (independent steps run simultaneously)
 - **AI Response Caching**: 60-80% token reduction
-- **UX Analysis** (NEW v2.4.0): Accessibility checking with WCAG 2.1
+- **Auto-Commit Workflow** (NEW v2.6.0): Automatic artifact commits with intelligent message generation
+- **Workflow Templates** (NEW v2.6.0): Docs-only, test-only, and feature development templates
+- **IDE Integration** (NEW v2.6.0): VS Code tasks with keyboard shortcuts
+- **UX Analysis** (v2.4.0): Accessibility checking with WCAG 2.1
 - **100% Test Coverage**: 37+ automated tests
+- **Code Quality**: B+ (87/100) with comprehensive assessment
 
 ## Quick Start
 
@@ -54,7 +58,7 @@ cd ai_workflow
 ./src/workflow/execute_tests_docs_workflow.sh --smart-execution --parallel
 ```
 
-> **💡 Tip**: The best way to understand the workflow is to run it on itself. See [Example Projects Guide](docs/EXAMPLE_PROJECTS_GUIDE.md) for detailed testing scenarios.
+> **💡 Tip**: The best way to understand the workflow is to run it on itself or on a test project.
 
 ### Applying to Target Projects
 
@@ -97,7 +101,16 @@ cd /path/to/your/project
 /path/to/ai_workflow/src/workflow/execute_tests_docs_workflow.sh \
   --show-tech-stack
 
-# Option 7: Copy workflow to target project
+# Option 7: Use workflow templates (NEW v2.6.0)
+./templates/workflows/docs-only.sh    # Documentation changes only (3-4 min)
+./templates/workflows/test-only.sh    # Test development (8-10 min)
+./templates/workflows/feature.sh      # Full feature workflow (15-20 min)
+
+# Option 8: Auto-commit workflow artifacts (NEW v2.6.0)
+./src/workflow/execute_tests_docs_workflow.sh --auto-commit
+
+# Option 9: VS Code integration (NEW v2.6.0)
+# Press Ctrl+Shift+B in VS Code to access 10 pre-configured tasks
 cp -r ai_workflow/src/workflow /path/to/target/project/src/
 cd /path/to/target/project
 ./src/workflow/execute_tests_docs_workflow.sh
@@ -106,29 +119,25 @@ cd /path/to/target/project
 **Performance Tips**:
 - Use `--smart-execution` for 40-85% faster execution
 - Use `--parallel` for 33% additional speed improvement
-- **📊 See [Performance Benchmarks](docs/PERFORMANCE_BENCHMARKS.md) for detailed methodology and raw data**
+- **📊 See [Performance Benchmarks](docs/reference/performance-benchmarks.md) for detailed methodology and raw data**
 - AI responses cached automatically (60-80% token savings)
 - Checkpoint resume enabled by default (use `--no-resume` for fresh start)
 - Combined optimizations: Up to 90% faster for simple changes
 
 ## Documentation
 
-**📚 [Complete Documentation Hub](docs/DOCUMENTATION_HUB.md)** - Organized by audience and topic ⭐
+**📚 Complete Documentation** - See [docs/README.md](docs/README.md) and [docs/PROJECT_REFERENCE.md](docs/PROJECT_REFERENCE.md) ⭐
 
 ### Quick Start
-- **[docs/FAQ.md](docs/FAQ.md)**: Frequently Asked Questions (NEW)
-- **[docs/ROADMAP.md](docs/ROADMAP.md)**: Future plans and development roadmap (NEW)
-- **[docs/V2.4.0_COMPLETE_FEATURE_GUIDE.md](docs/V2.4.0_COMPLETE_FEATURE_GUIDE.md)**: Complete v2.4.0 feature guide (NEW)
-- **[docs/EXAMPLE_PROJECTS_GUIDE.md](docs/EXAMPLE_PROJECTS_GUIDE.md)**: Example projects and testing guide (NEW)
-- **[docs/TARGET_PROJECT_FEATURE.md](docs/TARGET_PROJECT_FEATURE.md)**: --target option guide
-- **[docs/QUICK_REFERENCE_TARGET_OPTION.md](docs/QUICK_REFERENCE_TARGET_OPTION.md)**: Quick reference
-- **[docs/INIT_CONFIG_WIZARD.md](docs/INIT_CONFIG_WIZARD.md)**: Configuration wizard guide
+- **[docs/ROADMAP.md](docs/ROADMAP.md)**: Future plans and development roadmap
+- **[docs/reference/target-project-feature.md](docs/reference/target-project-feature.md)**: --target option guide
+- **[docs/reference/target-option-quick-reference.md](docs/reference/target-option-quick-reference.md)**: Quick reference
+- **[docs/reference/init-config-wizard.md](docs/reference/init-config-wizard.md)**: Configuration wizard guide
 
 ### Technical Documentation
-- **[MIGRATION_README.md](docs/reports/implementation/MIGRATION_README.md)**: Migration details and architecture overview
-- **[docs/WORKFLOW_DIAGRAMS.md](docs/WORKFLOW_DIAGRAMS.md)**: Visual diagrams for complex workflows (NEW)
-- **[docs/ORCHESTRATOR_ARCHITECTURE.md](docs/ORCHESTRATOR_ARCHITECTURE.md)**: Orchestrator design (v2.4.0)
-- **[docs/RELEASE_NOTES_v2.4.0.md](docs/RELEASE_NOTES_v2.4.0.md)**: Step 14 release notes
+- **[docs/design/adr/](docs/design/adr/)**: Architecture Decision Records (modular architecture, YAML config, orchestrators)
+- **[docs/reference/workflow-diagrams.md](docs/reference/workflow-diagrams.md)**: Visual diagrams for complex workflows
+- **[docs/RELEASE_NOTES_v2.6.0.md](docs/RELEASE_NOTES_v2.6.0.md)**: Latest release notes
 - **[docs/workflow-automation/](docs/workflow-automation/)**: Comprehensive workflow documentation
 - **[src/workflow/README.md](src/workflow/README.md)**: Module API reference
 - **[.github/copilot-instructions.md](.github/copilot-instructions.md)**: Complete system reference for GitHub Copilot
@@ -140,9 +149,10 @@ ai_workflow/
 ├── .github/                       # GitHub configuration
 │   └── workflows/                 # CI/CD workflows
 ├── docs/                          # Comprehensive documentation
+│   ├── design/adr/                # Architecture Decision Records
+│   ├── reference/                 # Reference documentation
 │   ├── workflow-automation/       # Workflow system docs
-│   ├── TECH_STACK_ADAPTIVE_FRAMEWORK.md  # Tech stack detection
-│   └── PROJECT_KIND_ADAPTIVE_FRAMEWORK_PHASED_PLAN.md  # Project kind detection
+│   └── PROJECT_REFERENCE.md       # Authoritative project reference
 ├── examples/                      # Usage examples and demonstrations
 │   └── using_new_features.sh      # Feature demonstration script
 ├── scripts/                       # Utility scripts
@@ -160,8 +170,6 @@ ai_workflow/
 │   ├── unit/                      # Unit tests (4 tests)
 │   ├── integration/               # Integration tests (5 tests)
 │   └── run_all_tests.sh           # Master test runner
-├── docs/reports/implementation/
-│   └── MIGRATION_README.md        # Migration documentation
 └── README.md                      # This file
 ```
 
@@ -250,7 +258,7 @@ This project is licensed under the **MIT License** - see the [LICENSE](LICENSE) 
 - **Created**: 2025-12-14
 - **Repository**: [github.com/mpbarbosa/ai_workflow](https://github.com/mpbarbosa/ai_workflow)
 - **Migrated From**: mpbarbosa_site (2025-12-18)
-- **Current Version**: v2.4.0
+- **Current Version**: v2.6.0 (2025-12-24)
 
 ### Contributing
 
@@ -265,7 +273,7 @@ We welcome contributions! See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines 
 
 - **Issues**: [GitHub Issues](https://github.com/mpbarbosa/ai_workflow/issues)
 - **Discussions**: [GitHub Discussions](https://github.com/mpbarbosa/ai_workflow/discussions)
-- **Security**: See [SECURITY.md](SECURITY.md) for vulnerability reporting
+- **Security**: Report vulnerabilities via GitHub Security Advisories
 
 ### Acknowledgments
 
@@ -331,12 +339,13 @@ What makes AI Workflow unique:
 
 1. **AI-Native**: 14 specialized AI personas using GitHub Copilot CLI
 2. **Comprehensive**: 15-step pipeline covering docs, code, tests, and UX
-3. **Modular**: 32 library modules + 15 step modules (26.5K+ lines)
+3. **Modular**: 33 library modules + 15 step modules (26.5K+ lines)
 4. **Performance**: Smart execution (40-85% faster), parallel execution (33% faster)
-5. **Intelligent**: Change detection, dependency analysis, AI response caching
-6. **Local-First**: Runs on your machine, optional CI/CD integration
-7. **Shell-Based**: Bash scripts, no heavy dependencies
-8. **Open Source**: MIT licensed, community-driven
+5. **Developer Experience**: Auto-commit workflow, pre-configured templates, IDE integration (v2.6.0)
+6. **Intelligent**: Change detection, dependency analysis, AI response caching
+7. **Local-First**: Runs on your machine, optional CI/CD integration
+8. **Shell-Based**: Bash scripts, no heavy dependencies
+9. **Open Source**: MIT licensed, community-driven
 
 ### Complementary Tools
 
@@ -390,4 +399,4 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for how to contribute.
 
 ---
 
-For detailed information, see [MIGRATION_README.md](docs/reports/implementation/MIGRATION_README.md)
+For detailed architecture information, see [Architecture Decision Records](docs/design/adr/) and [PROJECT_REFERENCE.md](docs/PROJECT_REFERENCE.md)

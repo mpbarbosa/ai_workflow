@@ -120,5 +120,5 @@ All maintainers, current and former, are recognized in:
 
 ---
 
-**Last Updated**: 2025-12-23  
-**Document Version**: 1.0.0
+**Last Updated**: 2025-12-24  
+**Document Version**: 1.1.0

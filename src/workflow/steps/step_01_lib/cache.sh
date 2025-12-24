@@ -43,8 +43,8 @@ get_or_cache_step1() {
     local cache_key="$1"
     shift
     
-    # Check if value is cached (safe check for unbound variable)
-    if [[ -v "STEP1_CACHE[$cache_key]" ]] && [[ -n "${STEP1_CACHE[$cache_key]}" ]]; then
+    # Check if value is cached (safe check with default empty value)
+    if [[ -n "${STEP1_CACHE[$cache_key]:-}" ]]; then
         echo "${STEP1_CACHE[$cache_key]}"
         return 0
     fi
@@ -64,8 +64,8 @@ get_or_cache_step1() {
 get_cached_git_diff_step1() {
     local cache_key="git_diff_files"
     
-    # Return cached result if available (safe check for unbound variable)
-    if [[ -v "STEP1_CACHE[$cache_key]" ]] && [[ -n "${STEP1_CACHE[$cache_key]}" ]]; then
+    # Return cached result if available (safe check with default empty value)
+    if [[ -n "${STEP1_CACHE[$cache_key]:-}" ]]; then
         echo "${STEP1_CACHE[$cache_key]}"
         return 0
     fi

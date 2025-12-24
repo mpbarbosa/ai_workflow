@@ -1363,9 +1363,6 @@ step13_prompt_engineer_prompt:
     **Current Personas:**
     {personas_list}
     
-    **Prompt Content to Analyze:**
-    {prompts_content}
-    
     **Tasks:**
     
     1. **Clarity and Specificity Assessment:**

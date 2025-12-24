@@ -1,7 +1,7 @@
 # AI Workflow Automation - Roadmap
 
-**Version**: 1.0.0  
-**Last Updated**: 2025-12-23  
+**Project Version**: v2.6.0  
+**Last Updated**: 2025-12-24  
 **Status**: 🎯 Active Planning  
 **Maintained By**: Marcelo Pereira Barbosa ([@mpbarbosa](https://github.com/mpbarbosa))
 
@@ -13,7 +13,7 @@ To create the most comprehensive, intelligent, and developer-friendly workflow a
 
 ---
 
-## Current Status (v2.4.0)
+## Current Status (v2.6.0)
 
 ### ✅ Completed
 
@@ -21,13 +21,18 @@ To create the most comprehensive, intelligent, and developer-friendly workflow a
 - ✅ 15-step automated pipeline with checkpoint resume
 - ✅ 33 library modules + 15 step modules (26K+ lines)
 - ✅ 14 AI personas with GitHub Copilot CLI integration
-- ✅ Smart execution (40-85% faster with change detection)
-- ✅ Parallel execution (33% faster with dependency groups)
+- ✅ Smart execution (40-85% faster with change detection) - **enabled by default in v2.5.0**
+- ✅ Parallel execution (33% faster with dependency groups) - **enabled by default in v2.5.0**
 - ✅ AI response caching (60-80% token reduction)
+- ✅ **Auto-commit workflow (v2.6.0)** - Intelligent artifact commits with automatic message generation
+- ✅ **Workflow templates (v2.6.0)** - Pre-configured templates: docs-only (3-4 min), test-only (8-10 min), feature (15-20 min)
+- ✅ **IDE integration (v2.6.0)** - VS Code tasks with 10 pre-configured workflows, JetBrains and Vim/Neovim guides
 - ✅ UX/Accessibility analysis (WCAG 2.1 compliance)
 - ✅ 100% test coverage (37+ automated tests)
+- ✅ Code quality assessment: B+ (87/100) by AI Quality Engineer
 - ✅ Complete documentation system with quality assurance
 - ✅ Professional badges and ecosystem integration
+- ✅ **Step 13 bug fix (2024-12-24)** - Fixed prompt engineer YAML parsing for multiline block scalars
 
 **Statistics**:
 - **Total Lines**: 26,562 (22,411 shell + 4,151 YAML)
@@ -52,13 +57,29 @@ See [PROJECT_REFERENCE.md](docs/PROJECT_REFERENCE.md) for complete details.
 
 ---
 
-## Version 2.5.0 - Enhanced Validation
+## Version 2.7.0 - Enhanced Validation
 
-**Target**: Q1 2025  
+**Target**: Q1 2026  
 **Status**: 🎯 Planning  
-**Focus**: Improve validation capabilities and developer experience
+**Focus**: Improve validation capabilities and code quality checks
 
-### Planned Features
+### Recent Releases
+
+✅ **v2.5.0 COMPLETED** (2025-12-24): Phase 2 optimizations + test regression fix
+- Smart execution enabled by default (85% faster for docs-only changes)
+- Parallel execution enabled by default (33% faster overall)
+- Metrics dashboard tool
+- Test validation enhancements
+- Comprehensive CONTRIBUTING.md updates
+
+✅ **v2.6.0 COMPLETED** (2025-12-24): Developer experience enhancements
+- **Auto-commit workflow**: `--auto-commit` flag with intelligent artifact detection and message generation
+- **Workflow templates**: Pre-configured scripts in `templates/workflows/` (docs-only, test-only, feature)
+- **IDE integration**: VS Code tasks (10 workflows), JetBrains and Vim/Neovim guides
+- Step 13 bug fix: Fixed YAML block scalar parsing for prompt engineer analysis
+- 100% backward compatible with all existing workflows
+
+### Planned Features for v2.7.0
 
 #### 1. Enhanced Code Quality Checks
 **Priority**: HIGH  
@@ -119,20 +140,19 @@ See [PROJECT_REFERENCE.md](docs/PROJECT_REFERENCE.md) for complete details.
   - Mock usage analysis
   - Test coverage gap identification
 
-#### 4. Developer Experience Improvements
-**Priority**: HIGH  
+#### 4. Additional Developer Experience Improvements
+**Priority**: MEDIUM  
 **Effort**: Low-Medium
 
-- [ ] **Interactive Mode Enhancements**
-  - Better progress visualization
-  - Real-time log streaming
-  - Interactive step selection
-  - Suggested fixes UI
+- [x] **Interactive Mode Enhancements** (v2.6.0)
+  - Auto-commit workflow
+  - Workflow templates
+  - IDE integration (VS Code, JetBrains, Vim/Neovim)
 
-- [ ] **Editor Integration**
-  - VSCode extension
-  - IntelliJ plugin
-  - Vim/Neovim plugin
+- [ ] **Editor Extensions** (future)
+  - VSCode extension with GUI
+  - IntelliJ plugin with dashboard
+  - Enhanced Vim/Neovim integration
   - Emacs mode
 
 - [ ] **Webhook Support**
@@ -141,13 +161,13 @@ See [PROJECT_REFERENCE.md](docs/PROJECT_REFERENCE.md) for complete details.
   - Email reports
   - Custom webhooks
 
-### Success Criteria v2.5.0
+### Success Criteria v2.7.0
 
 - [ ] 5+ new static analysis tools integrated
 - [ ] Link checking finds 95%+ broken links
 - [ ] Test generation creates valid tests 80%+ of time
 - [ ] Developer satisfaction score: 8/10+
-- [ ] Performance: No regression vs v2.4.0
+- [ ] Performance: No regression vs v2.6.0
 
 ---
 
@@ -442,13 +462,13 @@ See [PROJECT_REFERENCE.md](docs/PROJECT_REFERENCE.md) for complete details.
 ## Version Timeline
 
 ```
-2025 Q1        Q2          Q3          Q4          2026
-─────┼───────────┼───────────┼───────────┼───────────┼─────
-     │           │           │           │           │
-  v2.5.0      v3.0.0      v3.1.0      v4.0.0      v4.1.0
-     │           │           │           │           │
- Validation   Plugin    Languages    AI/ML    Enterprise
-  Enhance    System     Support    Flexibility  Features
+2025 Q4        2026 Q1     Q2          Q3          Q4          2027
+─────┼───────────┼───────────┼───────────┼───────────┼───────────┼─────
+     │           │           │           │           │           │
+  v2.6.0      v2.7.0      v3.0.0      v3.1.0      v4.0.0      v4.1.0
+     │           │           │           │           │           │
+   DevEx     Validation   Plugin    Languages    AI/ML    Enterprise
+   DONE       Enhance    System     Support    Flexibility  Features
 ```
 
 **Release Cadence**:
@@ -605,7 +625,7 @@ Open a [GitHub Discussion](https://github.com/mpbarbosa/ai_workflow/discussions)
 
 ---
 
-**Last Updated**: 2025-12-23  
-**Version**: 1.0.0  
+**Last Updated**: 2025-12-24  
+**Version**: 1.1.0  
 **Maintainer**: [@mpbarbosa](https://github.com/mpbarbosa)  
-**Next Review**: 2026-03-23
+**Next Review**: 2026-03-24

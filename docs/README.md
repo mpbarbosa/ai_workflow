@@ -70,6 +70,6 @@ For questions, issues, or contributions:
 
 ---
 
-**Version**: v2.4.0  
+**Version**: v2.6.0  
 **Last Updated**: 2025-12-24  
 **Maintainer**: Marcelo Pereira Barbosa (@mpbarbosa)

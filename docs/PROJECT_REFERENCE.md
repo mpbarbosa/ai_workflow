@@ -1,8 +1,8 @@
 # AI Workflow Automation - Project Reference
 
 **SINGLE SOURCE OF TRUTH**  
-**Version**: v2.4.0  
-**Last Updated**: 2025-12-23
+**Version**: v2.6.0  
+**Last Updated**: 2025-12-24
 
 > ⚠️ **Important**: This document is the authoritative source for project statistics, features, and module lists. All other documentation should reference this file, not duplicate its content.
 
@@ -12,7 +12,7 @@
 
 - **Repository**: [github.com/mpbarbosa/ai_workflow](https://github.com/mpbarbosa/ai_workflow)
 - **License**: MIT
-- **Current Version**: v2.4.0
+- **Current Version**: v2.6.0
 - **Previous Repository**: mpbarbosa_site (migrated 2025-12-18)
 - **Primary Maintainer**: Marcelo Pereira Barbosa ([@mpbarbosa](https://github.com/mpbarbosa))
 - **Contact**: mpbarbosa@gmail.com
@@ -24,7 +24,7 @@
 - **Test Coverage**: 100% (37+ automated tests)
 - **Performance**: Up to 90% faster for documentation-only changes
 
-## Core Features (v2.4.0)
+## Core Features (v2.6.0)
 
 ### Workflow Pipeline
 - **15-Step Automated Pipeline**: Complete workflow from analysis to finalization
@@ -49,8 +49,14 @@
 - **Project Kind Classification**: 12+ project types supported
 - **Configuration Wizard**: Interactive setup with `--init-config`
 
+### Developer Experience
+- **Auto-Commit Workflow** (NEW v2.6.0): Automatic artifact commits with intelligent message generation
+- **Workflow Templates** (NEW v2.6.0): Pre-configured scripts (docs-only 3-4min, test-only 8-10min, feature 15-20min)
+- **IDE Integration** (NEW v2.6.0): VS Code tasks with keyboard shortcuts, JetBrains and Vim/Neovim guides
+- **Step 13 Bug Fix** (v2.6.0): Fixed YAML block scalar parsing for prompt engineer analysis
+
 ### Analysis & Quality
-- **UX Analysis** (NEW v2.4.0): AI-powered UI/UX with accessibility checking
+- **UX Analysis** (v2.4.0): AI-powered UI/UX with accessibility checking
 - **Dependency Visualization**: Interactive Mermaid diagrams
 - **Metrics Collection**: Automatic performance tracking
 - **Code Quality Checks**: Comprehensive validation
@@ -172,6 +178,21 @@ The AI Workflow uses a **flexible persona system** with dynamic prompt construct
 This architecture enables the same workflow to intelligently adapt to different project types without code changes.
 
 ## Version History (Major Releases)
+
+### v2.6.0 (2025-12-24)
+- **Auto-commit workflow**: `--auto-commit` flag with intelligent artifact detection and message generation
+- **Workflow templates**: Pre-configured scripts (docs-only, test-only, feature)
+- **IDE integration**: VS Code tasks with keyboard shortcuts, JetBrains and Vim/Neovim guides
+- **Step 13 bug fix**: Fixed YAML block scalar parsing for prompt engineer
+- **No breaking changes** (100% backward compatible)
+
+### v2.5.0 (2025-12-24)
+- **Smart execution enabled by default**: 85% faster for docs-only changes
+- **Parallel execution enabled by default**: 33% faster overall
+- **Metrics dashboard tool**: Interactive performance analysis
+- **Test validation enhancements**: Improved test execution framework
+- **CONTRIBUTING.md updates**: Comprehensive contributor guidelines
+- **No breaking changes**
 
 ### v2.4.0 (2025-12-23)
 - Step 14: UX Analysis with accessibility checking

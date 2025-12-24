@@ -85,19 +85,6 @@ categorize_docs_step2() {
     else
         categorized+="(none found)\n"
     fi
-    categorized+="\n"
-    
-    # Archive (lowest priority)
-    categorized+="**Archive Documentation (Priority 4 - Review only if relevant):**\n"
-    local archive_docs
-    archive_docs=$(echo "$doc_files" | grep 'docs/archive/' || true)
-    if [[ -n "$archive_docs" ]]; then
-        local archive_count
-        archive_count=$(echo "$archive_docs" | wc -l)
-        categorized+="($archive_count files in archive - review only if explicitly referenced)\n"
-    else
-        categorized+="(none found)\n"
-    fi
     
     echo -e "$categorized"
 }
