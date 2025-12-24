@@ -4,9 +4,15 @@ set -euo pipefail
 ################################################################################
 # Step 0: Pre-Analysis - Analyzing Recent Changes
 # Purpose: Analyze git state and capture change context before workflow execution (adaptive)
-# Part of: Tests & Documentation Workflow Automation v2.3.1
-# Version: 2.2.0 (Phase 3 - Tech stack + Project kind detection)
+# Part of: Tests & Documentation Workflow Automation v2.6.1
+# Version: 2.3.0 (Added test infrastructure smoke test)
 ################################################################################
+
+# Source test smoke test module
+STEP0_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+if [[ -f "${STEP0_DIR}/../lib/test_smoke.sh" ]]; then
+    source "${STEP0_DIR}/../lib/test_smoke.sh"
+fi
 
 # Main step function - analyzes recent changes and sets workflow context
 # Returns: 0 for success
@@ -50,6 +56,38 @@ step0_analyze_changes() {
         fi
     fi
     
+    # TEST INFRASTRUCTURE SMOKE TEST (NEW in v2.6.1)
+    # Quick validation to catch test issues early (saves 30+ minutes on failures)
+    local smoke_test_status="⚠️ Skipped"
+    local smoke_test_details="Test smoke test not run"
+    
+    if declare -f smoke_test_infrastructure >/dev/null 2>&1; then
+        print_info ""
+        print_info "=== Test Infrastructure Pre-Validation ==="
+        
+        if smoke_test_infrastructure; then
+            smoke_test_status="✅ Passed"
+            smoke_test_details="Test infrastructure validated successfully"
+            print_success "Test infrastructure validation passed"
+        else
+            smoke_test_status="❌ Failed"
+            smoke_test_details="Test infrastructure validation failed - check logs"
+            print_warning "Test infrastructure validation failed"
+            print_warning "This may cause failures in Step 7 (Test Execution)"
+            print_warning "Consider fixing test setup before continuing workflow"
+            
+            if [[ "${AUTO_MODE:-false}" != "true" ]]; then
+                read -r -p "Continue anyway? (y/N): " continue_choice
+                if [[ ! "$continue_choice" =~ ^[Yy]$ ]]; then
+                    print_error "Workflow aborted by user"
+                    return 1
+                fi
+            fi
+        fi
+        print_info "=========================================="
+        print_info ""
+    fi
+    
     export ANALYSIS_COMMITS=$commits_ahead
     export ANALYSIS_MODIFIED=$modified_files
     
@@ -62,7 +100,7 @@ step0_analyze_changes() {
     print_success "Pre-analysis complete (Scope: $CHANGE_SCOPE)"
     
     # Save step summary
-    save_step_summary "0" "Pre_Analysis" "Analyzed ${modified_files} modified files across ${commits_ahead} commits. Change scope: ${CHANGE_SCOPE}. Repository state captured for workflow context." "✅"
+    save_step_summary "0" "Pre_Analysis" "Analyzed ${modified_files} modified files across ${commits_ahead} commits. Change scope: ${CHANGE_SCOPE}. Test smoke test: ${smoke_test_status}. Repository state captured for workflow context." "✅"
     
     # Save pre-analysis data to backlog
     local step_issues
@@ -91,12 +129,21 @@ step0_analyze_changes() {
 "
     fi
     
+    local smoke_test_info="
+### Test Infrastructure Pre-Validation
+
+**Status:** ${smoke_test_status}
+**Details:** ${smoke_test_details}
+
+This early validation helps catch test infrastructure issues before Step 7, potentially saving 30+ minutes of workflow execution time.
+"
+    
     step_issues="### Repository Analysis
 
 **Commits Ahead:** ${commits_ahead}
 **Modified Files:** ${modified_files}
 **Change Scope:** ${CHANGE_SCOPE}
-${tech_stack_info}${project_kind_info}
+${tech_stack_info}${project_kind_info}${smoke_test_info}
 
 ### Modified Files List
 

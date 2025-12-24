@@ -13,6 +13,12 @@ set -euo pipefail
 # CACHE CONFIGURATION
 # ==============================================================================
 
+# Set defaults for configuration variables if not already set
+VERBOSE=${VERBOSE:-false}
+USE_AI_CACHE=${USE_AI_CACHE:-true}
+WORKFLOW_RUN_ID=${WORKFLOW_RUN_ID:-unknown}
+SCRIPT_VERSION=${SCRIPT_VERSION:-1.0.0}
+
 # Cache directory structure
 AI_CACHE_DIR="${WORKFLOW_HOME}/src/workflow/.ai_cache"
 AI_CACHE_INDEX="${AI_CACHE_DIR}/index.json"
@@ -87,21 +93,23 @@ check_cache() {
         return 1
     fi
     
-    # Check if files exist
-    if [[ ! -f "${cache_file}" ]] || [[ ! -f "${cache_meta}" ]]; then
+    # Check if cache file exists (meta is optional for backward compatibility)
+    if [[ ! -f "${cache_file}" ]]; then
         return 1
     fi
     
-    # Check if cache is expired
-    local timestamp=$(jq -r '.timestamp_epoch' "${cache_meta}" 2>/dev/null || echo "0")
-    local now=$(date +%s)
-    local age=$((now - timestamp))
-    
-    if [[ ${age} -gt ${AI_CACHE_TTL} ]]; then
-        if [[ "${VERBOSE}" == "true" ]]; then
-            print_info "Cache expired for key: ${cache_key}"
+    # If meta file exists, check if cache is expired
+    if [[ -f "${cache_meta}" ]]; then
+        local timestamp=$(jq -r '.timestamp_epoch' "${cache_meta}" 2>/dev/null || echo "0")
+        local now=$(date +%s)
+        local age=$((now - timestamp))
+        
+        if [[ ${age} -gt ${AI_CACHE_TTL} ]]; then
+            if [[ "${VERBOSE}" == "true" ]]; then
+                print_info "Cache expired for key: ${cache_key}"
+            fi
+            return 1
         fi
-        return 1
     fi
     
     return 0
@@ -180,15 +188,19 @@ EOF
 update_cache_index() {
     local cache_key="$1"
     
+    if [[ "${USE_AI_CACHE}" != "true" ]]; then
+        return 0
+    fi
+    
     if [[ ! -f "${AI_CACHE_INDEX}" ]]; then
         init_ai_cache
     fi
     
-    # Check if entry already exists
-    if jq -e ".entries[] | select(.cache_key == \"${cache_key}\")" "${AI_CACHE_INDEX}" > /dev/null 2>&1; then
+    # Check if entry already exists (look for both cache_key and key for compatibility)
+    if jq -e ".entries[] | select(.cache_key == \"${cache_key}\" or .key == \"${cache_key}\")" "${AI_CACHE_INDEX}" > /dev/null 2>&1; then
         # Update existing entry
         local temp_index=$(mktemp)
-        jq ".entries |= map(if .cache_key == \"${cache_key}\" then .last_accessed = \"$(date -Iseconds)\" | .access_count += 1 else . end)" \
+        jq ".entries |= map(if (.cache_key // .key) == \"${cache_key}\" then .last_accessed = \"$(date -Iseconds)\" | .access_count = ((.access_count // 0) + 1) else . end)" \
             "${AI_CACHE_INDEX}" > "${temp_index}"
         mv "${temp_index}" "${AI_CACHE_INDEX}"
     else
@@ -210,31 +222,54 @@ cleanup_ai_cache_old_entries() {
         return 0
     fi
     
+    if [[ ! -d "${AI_CACHE_DIR}" ]]; then
+        return 0
+    fi
+    
     local now=$(date +%s)
     local deleted_count=0
     
     # Find and delete expired cache files
-    while IFS= read -r cache_file; do
-        local cache_key=$(basename "${cache_file}" .txt)
-        local cache_meta="${AI_CACHE_DIR}/${cache_key}.meta"
-        
-        if [[ -f "${cache_meta}" ]]; then
-            local timestamp=$(jq -r '.timestamp_epoch' "${cache_meta}" 2>/dev/null || echo "0")
-            local age=$((now - timestamp))
-            
-            if [[ ${age} -gt ${AI_CACHE_TTL} ]]; then
-                rm -f "${cache_file}" "${cache_meta}"
-                ((deleted_count++))
-            fi
-        fi
-    done < <(find "${AI_CACHE_DIR}" -name "*.txt" -type f 2>/dev/null)
+    # Use simple command substitution to avoid stdin/subprocess issues
+    local cache_files_list
+    cache_files_list=$(find "${AI_CACHE_DIR}" -name "*.txt" -type f 2>/dev/null || true)
     
-    # Update index to remove deleted entries
-    if [[ ${deleted_count} -gt 0 ]]; then
+    if [[ -n "${cache_files_list}" ]]; then
+        while IFS= read -r cache_file; do
+            [[ -z "${cache_file}" ]] && continue
+            
+            local cache_key=$(basename "${cache_file}" .txt)
+            local cache_meta="${AI_CACHE_DIR}/${cache_key}.meta"
+            
+            if [[ -f "${cache_meta}" ]]; then
+                local timestamp=$(jq -r '.timestamp_epoch' "${cache_meta}" 2>/dev/null || echo "0")
+                local age=$((now - timestamp))
+                
+                if [[ ${age} -gt ${AI_CACHE_TTL} ]]; then
+                    rm -f "${cache_file}" "${cache_meta}"
+                    ((deleted_count++))
+                fi
+            fi
+        done <<< "${cache_files_list}"
+    fi
+    
+    # Only update index if we actually deleted something
+    if [[ ${deleted_count} -gt 0 ]] && [[ -f "${AI_CACHE_INDEX}" ]]; then
         local temp_index=$(mktemp)
-        jq ".last_cleanup = \"$(date -Iseconds)\" | .entries |= map(select(.cache_key as \$key | \"${AI_CACHE_DIR}/\$key.txt\" | test(\".*\")))" \
-            "${AI_CACHE_INDEX}" > "${temp_index}" 2>/dev/null || true
-        mv "${temp_index}" "${AI_CACHE_INDEX}"
+        # Update last_cleanup and filter out entries where cache file no longer exists
+        jq --arg cleanup "$(date -Iseconds)" '
+            .last_cleanup = $cleanup | 
+            .entries |= map(select(
+                (.cache_key // .key) as $key | 
+                ($key | . != null and . != "")
+            ))
+        ' "${AI_CACHE_INDEX}" > "${temp_index}" 2>/dev/null || true
+        
+        if [[ -s "${temp_index}" ]]; then
+            mv "${temp_index}" "${AI_CACHE_INDEX}"
+        else
+            rm -f "${temp_index}"
+        fi
         
         if [[ "${VERBOSE}" == "true" ]]; then
             print_info "Cleaned up ${deleted_count} expired cache entries"

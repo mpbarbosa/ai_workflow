@@ -440,3 +440,226 @@ calculate_critical_path() {
 export -f check_dependencies get_next_runnable_steps get_parallel_steps
 export -f generate_dependency_diagram generate_execution_plan
 export -f display_execution_phases calculate_critical_path
+
+# ==============================================================================
+# JSON EXPORT (NEW v2.6.1)
+# ==============================================================================
+
+# Export step metadata and dependencies as JSON
+# Usage: export_step_metadata_json [output_file]
+export_step_metadata_json() {
+    local output_file="${1:-/dev/stdout}"
+    
+    # Source step metadata if available
+    if [[ -f "$(dirname "${BASH_SOURCE[0]}")/step_metadata.sh" ]]; then
+        source "$(dirname "${BASH_SOURCE[0]}")/step_metadata.sh"
+    fi
+    
+    cat > "$output_file" << 'JSONEOF'
+{
+  "version": "2.6.1",
+  "generated": "$(date -Iseconds)",
+  "workflow": {
+    "total_steps": 15,
+    "parallelizable": true,
+    "supports_smart_execution": true
+  },
+  "steps": [
+JSONEOF
+    
+    # Generate JSON for each step
+    local first=true
+    for step in {0..14}; do
+        # Skip if step doesn't exist
+        if [[ ! -v STEP_DEPENDENCIES[$step] ]]; then
+            continue
+        fi
+        
+        # Add comma separator
+        if [[ "$first" == "false" ]]; then
+            echo "    ," >> "$output_file"
+        fi
+        first=false
+        
+        # Get metadata
+        local name="${STEP_NAMES[$step]:-Step $step}"
+        local desc="${STEP_DESCRIPTIONS[$step]:-No description}"
+        local category="${STEP_CATEGORIES[$step]:-unknown}"
+        local can_skip="${STEP_CAN_SKIP[$step]:-false}"
+        local can_parallel="${STEP_CAN_PARALLELIZE[$step]:-false}"
+        local needs_ai="${STEP_REQUIRES_AI[$step]:-false}"
+        local affects="${STEP_AFFECTS_FILES[$step]:-}"
+        local deps="${STEP_DEPENDENCIES[$step]:-}"
+        local time="${STEP_TIME_ESTIMATES[$step]:-60}"
+        
+        # Convert dependencies to JSON array
+        local deps_json="[]"
+        if [[ -n "$deps" ]]; then
+            deps_json="[$(echo "$deps" | sed 's/,/,/g')]"
+        fi
+        
+        cat >> "$output_file" << STEPJSON
+    {
+      "id": $step,
+      "name": "$name",
+      "description": "$desc",
+      "category": "$category",
+      "dependencies": $deps_json,
+      "estimated_time_seconds": $time,
+      "can_skip": $can_skip,
+      "can_parallelize": $can_parallel,
+      "requires_ai": $needs_ai,
+      "affects_files": "$affects"
+    }
+STEPJSON
+    done
+    
+    cat >> "$output_file" << 'JSONEOF'
+  ],
+  "categories": {
+    "analysis": [0, 10],
+    "documentation": [1],
+    "validation": [2, 3, 4, 8],
+    "testing": [5, 6, 7],
+    "quality": [9, 12, 13, 14],
+    "finalization": [11]
+  },
+  "parallelization": {
+    "max_parallel_groups": 6,
+    "groups": [
+      {
+        "id": 1,
+        "steps": [1, 3, 4, 5, 8, 13, 14],
+        "description": "Independent validation after Pre-Analysis"
+      },
+      {
+        "id": 2,
+        "steps": [2, 12],
+        "description": "Documentation checks"
+      },
+      {
+        "id": 3,
+        "steps": [6],
+        "description": "Test generation"
+      },
+      {
+        "id": 4,
+        "steps": [7, 9],
+        "description": "Test execution and quality"
+      },
+      {
+        "id": 5,
+        "steps": [10],
+        "description": "Context analysis"
+      },
+      {
+        "id": 6,
+        "steps": [11],
+        "description": "Final git operations"
+      }
+    ]
+  },
+  "critical_path": {
+    "steps": [0, 5, 6, 7, 10, 11],
+    "total_time_seconds": 780,
+    "description": "Longest sequential chain through workflow"
+  },
+  "optimization": {
+    "sequential_time_seconds": 1395,
+    "parallel_time_seconds": 930,
+    "time_savings_seconds": 465,
+    "time_savings_percent": 33
+  }
+}
+JSONEOF
+    
+    if [[ "$output_file" != "/dev/stdout" ]]; then
+        echo "Step metadata exported to: $output_file"
+    fi
+}
+
+# Query step dependencies with metadata
+# Usage: query_step_info <step_number>
+query_step_info() {
+    local step_num="$1"
+    
+    if [[ ! -v STEP_DEPENDENCIES[$step_num] ]]; then
+        echo "Error: Invalid step number: $step_num" >&2
+        return 1
+    fi
+    
+    # Source metadata if available
+    if [[ -f "$(dirname "${BASH_SOURCE[0]}")/step_metadata.sh" ]]; then
+        source "$(dirname "${BASH_SOURCE[0]}")/step_metadata.sh"
+    fi
+    
+    echo "=== Step $step_num Information ==="
+    echo "Name: ${STEP_NAMES[$step_num]:-Unknown}"
+    echo "Description: ${STEP_DESCRIPTIONS[$step_num]:-No description}"
+    echo "Category: ${STEP_CATEGORIES[$step_num]:-unknown}"
+    echo "Dependencies: ${STEP_DEPENDENCIES[$step_num]:-none}"
+    echo "Estimated Time: ${STEP_TIME_ESTIMATES[$step_num]:-unknown}s"
+    echo "Can Skip: ${STEP_CAN_SKIP[$step_num]:-unknown}"
+    echo "Can Parallelize: ${STEP_CAN_PARALLELIZE[$step_num]:-unknown}"
+    echo "Requires AI: ${STEP_REQUIRES_AI[$step_num]:-unknown}"
+    echo "Affects Files: ${STEP_AFFECTS_FILES[$step_num]:-none}"
+}
+
+# Find steps that can run now based on completed steps
+# Usage: get_ready_steps <completed_steps_csv>
+get_ready_steps() {
+    local completed="$1"
+    local ready=()
+    
+    for step in {0..14}; do
+        if [[ ! -v STEP_DEPENDENCIES[$step] ]]; then
+            continue
+        fi
+        
+        # Skip if already completed
+        if echo ",$completed," | grep -q ",$step,"; then
+            continue
+        fi
+        
+        # Check if dependencies are met
+        if check_dependencies "$step" "$completed"; then
+            ready+=("$step")
+        fi
+    done
+    
+    echo "${ready[@]}" | tr ' ' ','
+}
+
+# Calculate critical path through workflow
+# Returns: Space-separated list of steps in critical path
+calculate_critical_path() {
+    # Hardcoded based on dependency analysis
+    # This is the longest sequential chain
+    echo "0 5 6 7 10 11"
+}
+
+# Calculate total time for step list
+# Usage: calculate_total_time <step_list_csv>
+calculate_total_time() {
+    local steps="$1"
+    local total=0
+    
+    IFS=',' read -ra STEP_ARRAY <<< "$steps"
+    for step in "${STEP_ARRAY[@]}"; do
+        local time="${STEP_TIME_ESTIMATES[$step]:-60}"
+        total=$((total + time))
+    done
+    
+    echo "$total"
+}
+
+# Export additional functions
+export -f export_step_metadata_json
+export -f query_step_info
+export -f get_ready_steps
+export -f calculate_critical_path
+export -f calculate_total_time
+
+################################################################################
+# Module enhanced with step metadata support (v2.6.1)
+################################################################################
