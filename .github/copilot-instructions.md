@@ -15,7 +15,7 @@ AI Workflow Automation is an intelligent workflow system for validating and enha
 
 **Core Features**:
 - **15-Step Automated Pipeline** with 14 AI personas
-- **28 Library Modules** (19,952 lines) + **15 Step Modules** (3,786 lines)
+- **32 Library Modules** (14,993 lines) + **15 Step Modules** (4,777 lines)
 - **Smart Execution**: 40-85% faster | **Parallel Execution**: 33% faster
 - **AI Response Caching**: 60-80% token reduction
 - **UX Analysis** (NEW v2.4.0): Accessibility checking with WCAG 2.1

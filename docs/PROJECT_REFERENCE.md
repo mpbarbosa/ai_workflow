@@ -19,8 +19,8 @@
 
 ### Key Statistics
 
-- **Total Lines**: 24,146 (19,952 shell + 4,194 YAML)
-- **Total Modules**: 49 (28 libraries + 15 steps + 6 configs)
+- **Total Lines**: 26,562 (22,411 shell + 4,151 YAML)
+- **Total Modules**: 58 (32 libraries + 15 steps + 7 configs + 4 orchestrators)
 - **Test Coverage**: 100% (37+ automated tests)
 - **Performance**: Up to 90% faster for documentation-only changes
 
@@ -57,7 +57,9 @@
 
 ## Module Inventory
 
-### Library Modules (28 total in src/workflow/lib/)
+### Library Modules (32 total in src/workflow/lib/)
+
+> **Note**: Module count updated 2025-12-24 to reflect actual inventory. Previous documentation referenced 28 modules before recent additions (ai_prompt_builder.sh, ai_personas.sh, ai_validation.sh, cleanup_handlers.sh).
 
 #### Core Modules (12 modules)
 - `ai_helpers.sh` (102K) - AI integration with 14 functional personas
@@ -73,7 +75,7 @@
 - `health_check.sh` (15K) - System validation
 - `file_operations.sh` (15K) - Safe file operations
 
-#### Supporting Modules (16 modules)
+#### Supporting Modules (20 modules)
 - `edit_operations.sh` (14K) - File editing operations
 - `project_kind_detection.sh` (14K) - Project type detection
 - `doc_template_validator.sh` (13K) - Template validation
@@ -138,6 +140,33 @@
 12. **directory_validator** - Directory validation
 13. **test_execution_analyst** - Test execution analysis
 14. **ux_designer** - UX/UI analysis (NEW v2.4.0)
+
+### AI Persona Architecture
+
+The AI Workflow uses a **flexible persona system** with dynamic prompt construction:
+
+**System Design**:
+- **9 Base Prompt Templates** in `src/workflow/lib/ai_helpers.yaml`
+  - doc_analysis_prompt, consistency_prompt, test_strategy_prompt, quality_prompt, issue_extraction_prompt, markdown_lint_prompt, language_specific_documentation, language_specific_quality, language_specific_testing
+
+- **4 Specialized Persona Types** in `src/workflow/config/ai_prompts_project_kinds.yaml`
+  - documentation_specialist (adapts per project kind)
+  - code_reviewer (adapts per project kind)
+  - test_engineer (adapts per project kind)
+  - ux_designer (NEW v2.4.0, adapts per project kind)
+
+**How It Works**:
+1. Base prompts provide general guidance applicable across project types
+2. Specialized persona types customize behavior for detected project kind (Node.js API, React SPA, Python CLI, etc.)
+3. System dynamically constructs prompts based on execution context
+4. Language-specific enhancements automatically applied when `PRIMARY_LANGUAGE` set in `.workflow-config.yaml`
+
+**Example**: Step 2 (Documentation Consistency) uses:
+- Base: consistency_prompt
+- Specialized: documentation_specialist (shell_automation variant)
+- Enhancement: language_specific_documentation (if PRIMARY_LANGUAGE=bash)
+
+This architecture enables the same workflow to intelligently adapt to different project types without code changes.
 
 ## Version History (Major Releases)
 

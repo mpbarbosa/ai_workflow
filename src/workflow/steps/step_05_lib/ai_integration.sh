@@ -120,7 +120,7 @@ execute_test_review_step5() {
     print_info "Logging output to: $log_file"
     
     if command -v execute_copilot_prompt &>/dev/null; then
-        execute_copilot_prompt "$prompt" "$log_file"
+        execute_copilot_prompt "$prompt" "$log_file" "step05" "test_engineer"
     else
         # Fallback execution with comprehensive flags
         copilot -p "$prompt" --allow-all-tools --allow-all-paths --enable-all-github-mcp-tools 2>&1 | tee "$log_file"

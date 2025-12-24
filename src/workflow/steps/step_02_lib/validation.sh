@@ -71,7 +71,7 @@ check_version_consistency_step2() {
                 echo "$md_file: $version" >> "$version_map_file"
             fi
         done <<< "$versions"
-    done < <(find . -name "*.md" -type f ! -path "*/node_modules/*" ! -path "*/.git/*" 2>/dev/null || true)
+    done < <(find . -name "*.md" -type f ! -path "*/node_modules/*" ! -path "*/.git/*" ! -path "*/.ai_workflow/*" 2>/dev/null || true)
     
     # Check package.json version if exists
     if [[ -f "src/package.json" ]]; then

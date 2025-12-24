@@ -44,6 +44,14 @@ check_file_refs_step2() {
     while IFS= read -r ref; do
         [[ -z "$ref" ]] && continue
         
+        # Skip placeholder/example paths (common in documentation about validation)
+        if [[ "$ref" =~ ^/path/to/|^/images/|^/absolute/path/|/MISSING|/deleted_|/missing/ ]]; then
+            # Check if line contains EXAMPLE or placeholder indicators
+            if grep -q "# EXAMPLE\|placeholder\|for testing purposes\|intentional.*example" "$file" 2>/dev/null; then
+                continue
+            fi
+        fi
+        
         # Extract file paths using regex (paths starting with /)
         local full_path="${PROJECT_ROOT}${ref}"
         if [[ ! -e "$full_path" ]]; then
@@ -74,7 +82,7 @@ check_all_documentation_links_step2() {
         local broken=0
         check_file_refs_step2 "$md_file" "$output_file" || broken=$?
         ((total_broken += broken)) || true
-    done < <(fast_find "docs" "*.md" 5 2>/dev/null || find docs -name "*.md" -type f 2>/dev/null || true)
+    done < <(fast_find "docs" "*.md" 5 2>/dev/null || find docs -name "*.md" -type f ! -path "*/.ai_workflow/*" 2>/dev/null || true)
     
     # Check README.md
     if [[ -f "README.md" ]]; then
@@ -103,9 +111,9 @@ check_all_documentation_links_step2() {
 get_documentation_inventory_step2() {
     # Use fast_find if available, otherwise fallback to regular find
     if command -v fast_find &>/dev/null; then
-        fast_find "." "*.md" 5 "node_modules" ".git" "coverage" 2>/dev/null | sort
+        fast_find "." "*.md" 5 "node_modules" ".git" "coverage" ".ai_workflow" 2>/dev/null | sort
     else
-        find . -name "*.md" -type f ! -path "*/node_modules/*" ! -path "*/.git/*" ! -path "*/coverage/*" 2>/dev/null | sort
+        find . -name "*.md" -type f ! -path "*/node_modules/*" ! -path "*/.git/*" ! -path "*/coverage/*" ! -path "*/.ai_workflow/*" 2>/dev/null | sort
     fi
 }
 

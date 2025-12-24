@@ -19,9 +19,9 @@ if [[ -z "${PROJECT_ROOT:-}" ]]; then
 fi
 
 SRC_DIR="${PROJECT_ROOT}/src"
-BACKLOG_DIR="${PROJECT_ROOT}/src/workflow/backlog"
-SUMMARIES_DIR="${PROJECT_ROOT}/src/workflow/summaries"
-LOGS_DIR="${PROJECT_ROOT}/src/workflow/logs"
+BACKLOG_DIR="${PROJECT_ROOT}/.ai_workflow/backlog"
+SUMMARIES_DIR="${PROJECT_ROOT}/.ai_workflow/summaries"
+LOGS_DIR="${PROJECT_ROOT}/.ai_workflow/logs"
 DOCS_DIR="${PROJECT_ROOT}/docs"
 SHELL_SCRIPTS_DIR="${PROJECT_ROOT}/src/workflow"
 

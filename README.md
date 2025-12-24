@@ -26,7 +26,7 @@ This repository provides a comprehensive, modular workflow automation system tha
 
 **Highlights**:
 - **15-Step Automated Pipeline** with checkpoint resume
-- **28 Library Modules** (19,952 lines) + **15 Step Modules** (3,786 lines)
+- **32 Library Modules** (14,993 lines) + **15 Step Modules** (4,777 lines)
 - **14 AI Personas** with GitHub Copilot CLI integration
 - **Smart Execution**: 40-85% faster (change-based step skipping)
 - **Parallel Execution**: 33% faster (independent steps run simultaneously)
@@ -149,8 +149,8 @@ ai_workflow/
 │   └── validate_line_counts.sh    # Documentation validation
 ├── src/workflow/                  # Workflow automation system
 │   ├── execute_tests_docs_workflow.sh  # Main orchestrator (2,009 lines)
-│   ├── lib/                       # 28 library modules (12,671 lines: 27 .sh + 1 .yaml)
-│   ├── steps/                     # 15 step modules (3,786 lines)
+│   ├── lib/                       # 32 library modules (14,993 lines)
+│   ├── steps/                     # 15 step modules (4,777 lines)
 │   ├── config/                    # YAML configuration
 │   └── backlog/                   # Execution history
 ├── templates/                     # Reusable templates
@@ -307,7 +307,7 @@ What makes AI Workflow unique:
 
 1. **AI-Native**: 14 specialized AI personas using GitHub Copilot CLI
 2. **Comprehensive**: 15-step pipeline covering docs, code, tests, and UX
-3. **Modular**: 28 library modules + 15 step modules (24K+ lines)
+3. **Modular**: 32 library modules + 15 step modules (26.5K+ lines)
 4. **Performance**: Smart execution (40-85% faster), parallel execution (33% faster)
 5. **Intelligent**: Change detection, dependency analysis, AI response caching
 6. **Local-First**: Runs on your machine, optional CI/CD integration

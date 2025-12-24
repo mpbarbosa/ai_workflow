@@ -39,9 +39,9 @@ WORKFLOW_HOME="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
 PROJECT_ROOT="$(pwd)"
 TARGET_PROJECT_ROOT=""
 SRC_DIR="${PROJECT_ROOT}/src"
-BACKLOG_DIR="${WORKFLOW_HOME}/src/workflow/backlog"
-SUMMARIES_DIR="${WORKFLOW_HOME}/src/workflow/summaries"
-LOGS_DIR="${WORKFLOW_HOME}/src/workflow/logs"
+BACKLOG_DIR="${WORKFLOW_HOME}/.ai_workflow/backlog"
+SUMMARIES_DIR="${WORKFLOW_HOME}/.ai_workflow/summaries"
+LOGS_DIR="${WORKFLOW_HOME}/.ai_workflow/logs"
 
 # Workflow tracking
 WORKFLOW_RUN_ID="workflow_$(date +%Y%m%d_%H%M%S)"

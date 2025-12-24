@@ -1,0 +1,62 @@
+================================================================================
+WORKFLOW EXECUTION LOG
+================================================================================
+Workflow ID: workflow_20251221_183800
+Script Version: 2.3.0
+Started: 2025-12-21 18:38:01
+Mode: INTERACTIVE
+Steps: all
+Workflow Home: /home/mpb/Documents/GitHub/ai_workflow
+Project Root: /home/mpb/Documents/GitHub/busca_vagas
+
+================================================================================
+EXECUTION LOG
+================================================================================
+
+[2025-12-21 18:38:01] [INFO] Starting pre-flight system checks
+[2025-12-21 18:38:01] [SUCCESS] Project root validated: /home/mpb/Documents/GitHub/busca_vagas
+[2025-12-21 18:38:01] [SUCCESS] Source directory validated: /home/mpb/Documents/GitHub/busca_vagas/src
+[2025-12-21 18:38:01] [INFO] Tech stack: nodejs
+[2025-12-21 18:38:01] [SUCCESS] package.json found
+[2025-12-21 18:38:01] [SUCCESS] Node.js detected: v25.2.1
+[2025-12-21 18:38:01] [SUCCESS] npm detected: 11.7.0
+[2025-12-21 18:38:01] [SUCCESS] Git repository validated
+[2025-12-21 18:38:01] [INFO] Staged all uncommitted changes
+[2025-12-21 18:38:01] [SUCCESS] docs directory found
+[2025-12-21 18:38:01] [SUCCESS] tree command available
+[2025-12-21 18:38:01] [SUCCESS] All pre-flight checks PASSED
+[2025-12-21 18:38:01] [INFO] Starting dependency validation
+[2025-12-21 18:38:01] [INFO] Tech stack: nodejs
+[2025-12-21 18:38:01] [INFO] Node.js project - checking npm dependencies
+[2025-12-21 18:38:01] [SUCCESS] node_modules directory exists
+
+================================================================================
+WORKFLOW SUMMARY
+================================================================================
+Completed: 2025-12-21 18:38:01
+Duration: 0m 1s
+Total Steps: 13
+
+Step Status:
+  Step 0: NOT_EXECUTED
+  Step 1: NOT_EXECUTED
+  Step 2: NOT_EXECUTED
+  Step 3: NOT_EXECUTED
+  Step 4: NOT_EXECUTED
+  Step 5: NOT_EXECUTED
+  Step 6: NOT_EXECUTED
+  Step 7: NOT_EXECUTED
+  Step 8: NOT_EXECUTED
+  Step 9: NOT_EXECUTED
+  Step 10: NOT_EXECUTED
+  Step 11: NOT_EXECUTED
+  Step 12: NOT_EXECUTED
+
+Output Files:
+  - Backlog: /home/mpb/Documents/GitHub/busca_vagas/src/workflow/backlog/workflow_20251221_183800
+  - Summaries: /home/mpb/Documents/GitHub/busca_vagas/src/workflow/summaries/workflow_20251221_183800
+  - Logs: /home/mpb/Documents/GitHub/busca_vagas/src/workflow/logs/workflow_20251221_183800
+
+================================================================================
+END OF LOG
+================================================================================

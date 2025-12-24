@@ -16,12 +16,13 @@ set -euo pipefail
 # These are generated during workflow execution and should not trigger steps
 declare -a WORKFLOW_ARTIFACTS
 WORKFLOW_ARTIFACTS=(
-    "src/workflow/backlog/*"
-    "src/workflow/logs/*"
-    "src/workflow/summaries/*"
+    ".ai_workflow/backlog/*"
+    ".ai_workflow/logs/*"
+    ".ai_workflow/summaries/*"
     "src/workflow/metrics/*"
     "src/workflow/.checkpoints/*"
     "src/workflow/.ai_cache/*"
+    ".ai_workflow/*"
     "shell_scripts/workflow/backlog/*"
     "shell_scripts/workflow/logs/*"
     "shell_scripts/workflow/summaries/*"

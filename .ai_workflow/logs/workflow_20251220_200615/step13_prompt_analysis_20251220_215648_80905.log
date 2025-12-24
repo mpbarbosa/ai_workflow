@@ -1,0 +1,348 @@
+I'll analyze the prompt content to identify improvement opportunities.
+
+✓ Count lines in ai_helpers.yaml
+ $ cd /home/mpb/Documents/GitHub/ai_workflow && wc -l src/workflow/config/ai_helpers.yaml
+    └ 2 lines...
+
+✓ Find ai_helpers.yaml location
+ $ cd /home/mpb/Documents/GitHub/ai_workflow && find . -name "ai_helpers.yaml" -type f
+ 2>/dev/null
+    └ 2 lines...
+
+✓ Count total lines and persona prompts
+ $ cd /home/mpb/Documents/GitHub/ai_workflow && wc -l src/workflow/lib/ai_helpers.yaml && echo
+ "---" && grep -c "^[a-z_]*_prompt:" src/workflow/lib/ai_helpers.yaml
+    └ 4 lines...
+
+Based on my analysis of the AI prompt templates in `ai_helpers.yaml`, here are the **prioritized improvement opportunities**:
+
+---
+
+## Improvement Opportunity #1
+
+**Persona**: doc_analysis_prompt (documentation_specialist)  
+**Category**: TokenEfficiency | Clarity  
+**Severity**: High
+
+### Current Problem
+The task_template contains redundant instructions about "making edits" that are repeated in multiple sections. Lines like "Make specific edits: Provide exact text changes, not just descriptions" appear in both REQUIRED ACTIONS and approach sections.
+
+**Current text (redundant)**:
+```
+REQUIRED ACTIONS:
+3. **Make specific edits**: Provide exact text changes, not just descriptions
+...
+approach:
+3. **Edit surgically**: Change ONLY affected sections...
+5. **Provide specifics**: Give exact edits, not suggestions
+```
+
+### Recommendation
+Consolidate the "specific edits" guidance into a single, clear directive in the approach section and remove redundancy from task_template:
+
+**Revised REQUIRED ACTIONS #3**:
+```
+3. **Determine changes**: Identify exact sections requiring updates
+```
+
+**Revised approach** (keep the detailed guidance here):
+```
+3. **Edit surgically**: Provide EXACT text changes (before/after blocks), not suggestions. Change ONLY affected sections, preserve everything else.
+```
+
+### Expected Impact
+- **Token savings**: ~30-40 tokens per invocation
+- **Clarity**: Reduces confusion about where to focus attention
+- **Consistency**: Aligns with other persona patterns (role → high-level task → detailed approach)
+
+---
+
+## Improvement Opportunity #2
+
+**Persona**: step2_consistency_prompt  
+**Category**: OutputQuality | Clarity  
+**Severity**: High
+
+### Current Problem
+The task_template contains a placeholder `{broken_refs_content}` in section 4 ("Broken References Found") but doesn't explain what format this content will take or how to interpret it. This can lead to inconsistent analysis.
+
+**Current text**:
+```
+4. **Broken References Found:**
+{broken_refs_content}
+```
+
+### Recommendation
+Add explicit guidance about interpreting the broken references section:
+
+**Revised section 4**:
+```
+4. **Broken References Found:**
+{broken_refs_content}
+
+   **For each broken reference**:
+   - Verify if the referenced file/path should exist
+   - Determine if the reference is outdated (renamed/moved file)
+   - Check if it's a documentation error (typo, wrong path)
+   - Recommend fix: update reference, create missing file, or remove obsolete reference
+```
+
+### Expected Impact
+- **Output quality**: More structured and actionable broken reference analysis
+- **Consistency**: AI will consistently categorize broken references
+- **User experience**: Clearer remediation guidance
+
+---
+
+## Improvement Opportunity #3
+
+**Persona**: step5_test_review_prompt  
+**Category**: TokenEfficiency  
+**Severity**: Medium
+
+### Current Problem
+The prompt contains verbose placeholder text that could be simplified. The section listing test environment details repeats "Test" many times unnecessarily.
+
+**Current text**:
+```
+- Test Framework: {test_framework}
+- Test Environment: {test_env}
+- Total Test Files: {test_count}
+...
+- Test Command: {test_command}
+- Test Environment: {test_environment}
+- Coverage Command: {coverage_command}
+- Watch Mode: {watch_mode}
+```
+
+### Recommendation
+Use a more compact format with a simple list:
+
+**Revised context**:
+```
+**Test Configuration:**
+Framework: {test_framework} | Environment: {test_env}
+Files: {test_count} (in __tests__/: {tests_in_tests_dir}, co-located: {tests_colocated})
+Commands: test={test_command}, coverage={coverage_command}, watch={watch_mode}
+```
+
+### Expected Impact
+- **Token savings**: ~25-30 tokens per invocation
+- **Readability**: More scannable configuration summary
+- **No loss**: All information retained
+
+---
+
+## Improvement Opportunity #4
+
+**Persona**: step7_test_exec_prompt  
+**Category**: OutputQuality | DomainExpertise  
+**Severity**: Critical
+
+### Current Problem
+The "Flaky Test Identification" section doesn't provide concrete criteria for detecting flaky tests from test output logs. Without timing data or multiple runs, AI can only guess.
+
+**Current text**:
+```
+4. **Flaky Test Identification:**
+   - Detect non-deterministic test behavior
+   - Identify timing-dependent tests
+   - Find tests with external dependencies
+```
+
+### Recommendation
+Make expectations realistic and provide concrete signals to look for:
+
+**Revised section 4**:
+```
+4. **Flaky Test Analysis** (if multiple runs available):
+   - Review test output for timing-related errors (timeouts, race conditions)
+   - Identify tests that interact with external systems (network, filesystem, database)
+   - Flag tests with random data generation without seeding
+   - Note: True flaky test detection requires multiple runs; provide best-effort analysis from single execution
+```
+
+### Expected Impact
+- **Output quality**: More accurate and realistic flaky test analysis
+- **User experience**: Sets correct expectations about what's detectable
+- **Credibility**: AI won't make unfounded claims about flakiness
+
+---
+
+## Improvement Opportunity #5
+
+**Persona**: step11_git_commit_prompt  
+**Category**: TokenEfficiency | OutputQuality  
+**Severity**: Medium
+
+### Current Problem
+The "Expected Output Format" section shows a template with example formatting, then the "Conventional Commit Types" and "Best Practices" sections repeat guidance already given. This is ~150 tokens of redundancy.
+
+**Current format**:
+```
+**Expected Output Format:**
+[template with examples]
+
+**Conventional Commit Types:**
+[list of types with descriptions]
+
+**Best Practices:**
+[repeated guidance about format]
+```
+
+### Recommendation
+Move conventional commit types into role section (one-time context), remove redundant best practices:
+
+**Revised role** (add types here):
+```
+...with expertise in conventional commits (feat|fix|docs|style|refactor|test|chore|perf|ci), semantic versioning...
+```
+
+**Remove from approach** (redundant):
+- Delete "Conventional Commit Types" subsection
+- Delete "Best Practices" subsection  
+- Keep only "Expected Output Format" with inline guidance
+
+### Expected Impact
+- **Token savings**: ~120-150 tokens per invocation
+- **Clarity**: Reduces cognitive load by front-loading commit type context
+- **Quality**: No degradation—all essential info retained
+
+---
+
+## Improvement Opportunity #6
+
+**Persona**: language_specific_documentation (all languages)  
+**Category**: Consistency | TokenEfficiency  
+**Severity**: Medium
+
+### Current Problem
+Each language section repeats similar structure ("conventions", "standards", "examples") but with inconsistent depth. Some languages have verbose examples, others brief. This creates ~800 tokens of repetitive structure.
+
+**Example inconsistency**:
+- JavaScript: Long JSDoc example with full function
+- Go: Brief one-liner example
+- Python: Medium-length example with detailed docstring
+
+### Recommendation
+Standardize example length and create a template format:
+
+**Template format for each language**:
+```
+{language}:
+  key_points: |
+    • [3-5 bullet points of critical conventions]
+  doc_format: "{format_name} (e.g., JSDoc, godoc, PEP 257)"
+  example_snippet: |
+    [One consistent 4-6 line example showing format]
+```
+
+### Expected Impact
+- **Token savings**: ~200-250 tokens across all language definitions
+- **Consistency**: Uniform guidance depth across languages
+- **Maintainability**: Easier to add new languages
+
+---
+
+## Improvement Opportunity #7
+
+**Persona**: language_specific_testing (all languages)  
+**Category**: TokenEfficiency  
+**Severity**: Low
+
+### Current Problem
+The example code blocks for each language testing framework are unnecessarily long (some 10+ lines). Since these are just illustrative, briefer examples would suffice.
+
+**Current examples**: 10-15 lines per language (8 languages × ~12 lines = ~96 lines)
+
+### Recommendation
+Reduce examples to 3-5 lines per language, showing only the essential pattern:
+
+**Before (JavaScript)**:
+```
+describe('UserService', () => {
+  it('should fetch user by ID', async () => {
+    const user = await UserService.getUser('123');
+    expect(user.id).toBe('123');
+  });
+});
+```
+
+**After (JavaScript)**:
+```
+describe('UserService', () => {
+  it('fetches user by ID', async () => {
+    expect(await UserService.getUser('123').id).toBe('123');
+  });
+});
+```
+
+### Expected Impact
+- **Token savings**: ~80-100 tokens across all examples
+- **Clarity**: Shorter examples are easier to scan
+- **Sufficient**: Pattern is still clear
+
+---
+
+## Improvement Opportunity #8
+
+**Persona**: markdown_lint_prompt  
+**Category**: Clarity | UserExperience  
+**Severity**: Medium
+
+### Current Problem
+The "Important Filtering Rules" section in the approach has ALL CAPS emphasis ("IGNORE", "Focus ONLY") which is somewhat aggressive and the repetition feels defensive rather than instructive.
+
+**Current text**:
+```
+**Important Filtering Rules:**
+- IGNORE all violations of disabled rules (MD001, MD002...)
+- Focus ONLY on MD007, MD009, MD026, MD047
+- Do not suggest "fixing" disabled rules - they are intentionally disabled
+```
+
+### Recommendation
+Reframe positively and consolidate:
+
+**Revised approach addition**:
+```
+**Scope**: Analyze only enabled rules (MD007, MD009, MD026, MD047). 
+Disabled rules (MD001, MD002, MD012, MD013, MD022, MD029, MD031, MD032) are intentionally relaxed for AI-generated content and should not be mentioned in your analysis.
+```
+
+### Expected Impact
+- **Token savings**: ~20-30 tokens
+- **User experience**: More professional tone
+- **Clarity**: Simpler positive framing
+
+---
+
+## Summary Statistics
+
+| Category | Count | Est. Total Token Savings |
+|----------|-------|-------------------------|
+| TokenEfficiency | 5 | 450-550 tokens |
+| OutputQuality | 4 | N/A (quality improvements) |
+| Clarity | 5 | 100-150 tokens |
+| Consistency | 2 | 200-250 tokens |
+| Critical fixes | 1 | N/A (correctness) |
+
+**Total estimated savings**: ~750-950 tokens per workflow execution (assuming all personas used)
+
+**Priority implementation order**:
+1. #4 (Critical - flaky test expectations)
+2. #1 (High - documentation redundancy)
+3. #2 (High - broken reference guidance)
+4. #5 (Medium - commit message efficiency)
+5. #3 (Medium - test config compactness)
+6. #6 (Medium - language template consistency)
+7. #8 (Medium - markdown lint tone)
+8. #7 (Low - example brevity)
+
+
+Total usage est:       1 Premium request
+Total duration (API):  1m 4.715s
+Total duration (wall): 1m 10.011s
+Total code changes:    0 lines added, 0 lines removed
+Usage by model:
+    claude-sonnet-4.5    133.6k input, 3.2k output, 104.8k cache read (Est. 1 Premium request)

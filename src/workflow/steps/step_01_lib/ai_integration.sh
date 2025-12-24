@@ -139,23 +139,31 @@ execute_ai_documentation_analysis_step1() {
     
     print_info "Executing GitHub Copilot CLI for documentation analysis..."
     
-    # Execute with copilot CLI (not gh copilot suggest - that's deprecated)
-    if [[ -n "$output_file" ]]; then
-        # Non-interactive mode with output capture
-        copilot -p "$prompt" --allow-all-tools --allow-all-paths --enable-all-github-mcp-tools > "$output_file" 2>&1
-        local exit_code=$?
-        
-        if [[ $exit_code -eq 0 ]]; then
-            print_success "AI analysis saved to: $output_file"
-            return 0
-        else
-            print_error "AI analysis failed with exit code: $exit_code"
-            return 1
-        fi
-    else
-        # Interactive mode
-        copilot -p "$prompt" --allow-all-tools --allow-all-paths --enable-all-github-mcp-tools
+    # Use centralized execution function for consistent logging
+    # This automatically logs the prompt to .ai_workflow/prompts/
+    if command -v execute_copilot_prompt &>/dev/null; then
+        # Use centralized function if available (logs prompts automatically)
+        execute_copilot_prompt "$prompt" "$output_file" "step01" "documentation_specialist"
         return $?
+    else
+        # Fallback to direct execution (backward compatibility)
+        if [[ -n "$output_file" ]]; then
+            # Non-interactive mode with output capture
+            copilot -p "$prompt" --allow-all-tools --allow-all-paths --enable-all-github-mcp-tools > "$output_file" 2>&1
+            local exit_code=$?
+            
+            if [[ $exit_code -eq 0 ]]; then
+                print_success "AI analysis saved to: $output_file"
+                return 0
+            else
+                print_error "AI analysis failed with exit code: $exit_code"
+                return 1
+            fi
+        else
+            # Interactive mode
+            copilot -p "$prompt" --allow-all-tools --allow-all-paths --enable-all-github-mcp-tools
+            return $?
+        fi
     fi
 }
 
@@ -279,10 +287,36 @@ run_ai_documentation_workflow_step1() {
     # Create output dir
     mkdir -p "$output_dir"
     
-    # Build prompt
-    print_info "Building AI prompt..."
+    # Build prompt using centralized function with full persona definition
+    print_info "Building AI prompt with full persona context..."
     local prompt
-    prompt=$(build_documentation_prompt_step1 "$changed_files" "$validation_results")
+    
+    # Determine documentation files to review
+    local doc_files=""
+    if [[ -d "${PROJECT_ROOT:-${TARGET_DIR:-.}}/docs" ]]; then
+        doc_files=$(find "${PROJECT_ROOT:-${TARGET_DIR:-.}}/docs" -name "*.md" -type f | head -20 | xargs echo)
+    fi
+    doc_files+=" README.md .github/copilot-instructions.md"
+    
+    # Use centralized build_doc_analysis_prompt if available (includes full persona)
+    if command -v build_doc_analysis_prompt &>/dev/null; then
+        # Simply call the function - diagnostic output goes to stderr naturally
+        prompt=$(build_doc_analysis_prompt "$changed_files" "$doc_files")
+        
+        # Append validation results if present
+        if [[ -n "$validation_results" ]]; then
+            prompt+="
+
+## Documentation Issues Detected
+
+${validation_results}
+"
+        fi
+    else
+        # Fallback to simplified prompt if centralized function unavailable
+        print_warning "Centralized prompt builder not available, using simplified prompt"
+        prompt=$(build_documentation_prompt_step1 "$changed_files" "$validation_results")
+    fi
     
     # Execute AI analysis
     local response_file="${output_dir}/ai_documentation_analysis.txt"

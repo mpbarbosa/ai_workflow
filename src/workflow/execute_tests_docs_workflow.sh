@@ -127,11 +127,12 @@ TARGET_PROJECT_ROOT=""  # Set via --target option when specified
 SRC_DIR="${PROJECT_ROOT}/src"
 
 # Artifact directories - will be updated after --target option is processed
-# These store workflow execution artifacts (logs, backlog, summaries)
+# These store workflow execution artifacts (logs, backlog, summaries, prompts)
 # By default, stored in workflow home; with --target, stored in target project
 BACKLOG_DIR=""
 SUMMARIES_DIR=""
 LOGS_DIR=""
+PROMPTS_DIR=""
 
 # Temporary files tracking for cleanup
 # Used by AI-enhanced steps to store intermediate validation results
@@ -141,11 +142,12 @@ TEMP_FILES=()
 # Backlog tracking
 WORKFLOW_RUN_ID="workflow_$(date +%Y%m%d_%H%M%S)"
 export WORKFLOW_RUN_ID
-# Note: BACKLOG_RUN_DIR, SUMMARIES_RUN_DIR, LOGS_RUN_DIR are set after argument parsing
-# because BACKLOG_DIR, SUMMARIES_DIR, LOGS_DIR depend on --target option
+# Note: BACKLOG_RUN_DIR, SUMMARIES_RUN_DIR, LOGS_RUN_DIR, PROMPTS_RUN_DIR are set after argument parsing
+# because BACKLOG_DIR, SUMMARIES_DIR, LOGS_DIR, PROMPTS_DIR depend on --target option
 BACKLOG_RUN_DIR=""
 SUMMARIES_RUN_DIR=""
 LOGS_RUN_DIR=""
+PROMPTS_RUN_DIR=""
 WORKFLOW_LOG_FILE=""
 
 # Color codes (matching existing scripts)

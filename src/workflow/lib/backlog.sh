@@ -77,7 +77,7 @@ EOF
 1. **Review Individual Steps:** Click on any step report above to see detailed findings
 2. **Address Issues:** Work through issues by priority (Critical → High → Medium → Low)
 3. **Track Progress:** Mark issues as resolved and update documentation
-4. **Archive:** Move resolved workflow runs to \`src/workflow/backlog/archive/\` for historical reference
+4. **Archive:** Move resolved workflow runs to \`.ai_workflow/backlog/archive/\` for historical reference
 
 ---
 

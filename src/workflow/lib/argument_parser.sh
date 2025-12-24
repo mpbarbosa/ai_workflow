@@ -35,6 +35,7 @@ parse_workflow_arguments() {
                 BACKLOG_DIR="${PROJECT_ROOT}/.ai_workflow/backlog"
                 SUMMARIES_DIR="${PROJECT_ROOT}/.ai_workflow/summaries"
                 LOGS_DIR="${PROJECT_ROOT}/.ai_workflow/logs"
+                PROMPTS_DIR="${PROJECT_ROOT}/.ai_workflow/prompts"
                 
                 print_info "Target project: $PROJECT_ROOT"
                 shift 2
@@ -193,25 +194,29 @@ validate_parsed_arguments() {
     
     # Set default artifact directories if not already set (no --target option used)
     if [[ -z "${BACKLOG_DIR:-}" ]]; then
-        BACKLOG_DIR="${WORKFLOW_HOME}/src/workflow/backlog"
-        SUMMARIES_DIR="${WORKFLOW_HOME}/src/workflow/summaries"
-        LOGS_DIR="${WORKFLOW_HOME}/src/workflow/logs"
+        BACKLOG_DIR="${WORKFLOW_HOME}/.ai_workflow/backlog"
+        SUMMARIES_DIR="${WORKFLOW_HOME}/.ai_workflow/summaries"
+        LOGS_DIR="${WORKFLOW_HOME}/.ai_workflow/logs"
+        PROMPTS_DIR="${WORKFLOW_HOME}/.ai_workflow/prompts"
     fi
     
     # Export artifact directory variables
     export BACKLOG_DIR
     export SUMMARIES_DIR
     export LOGS_DIR
+    export PROMPTS_DIR
     
     # Set run-specific directories now that base directories are known
     BACKLOG_RUN_DIR="${BACKLOG_DIR}/${WORKFLOW_RUN_ID}"
     SUMMARIES_RUN_DIR="${SUMMARIES_DIR}/${WORKFLOW_RUN_ID}"
     LOGS_RUN_DIR="${LOGS_DIR}/${WORKFLOW_RUN_ID}"
+    PROMPTS_RUN_DIR="${PROMPTS_DIR}/${WORKFLOW_RUN_ID}"
     WORKFLOW_LOG_FILE="${LOGS_RUN_DIR}/workflow_execution.log"
     
     export BACKLOG_RUN_DIR
     export SUMMARIES_RUN_DIR
     export LOGS_RUN_DIR
+    export PROMPTS_RUN_DIR
     export WORKFLOW_LOG_FILE
     
     return $errors

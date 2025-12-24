@@ -168,6 +168,8 @@ test_documentation_consistency() {
     {
         print_info "Test 1: Verifying documented files exist..."
         local test1_failed=0
+        local missing_files_file="${BACKLOG_STEP_DIR:-/tmp}/missing_files_report.txt"
+        > "$missing_files_file"  # Clear file
         
         # Check README.md references
         if [[ -f "README.md" ]]; then
@@ -180,11 +182,19 @@ test_documentation_consistency() {
                     [[ "$link_path" =~ ^#  ]] && continue
                     
                     if [[ -n "$link_path" ]] && [[ ! -e "$link_path" ]]; then
-                        print_warning "README.md references missing file: $link_path"
+                        # Log to file instead of spamming console
+                        echo "⚠️  README.md references missing file: $link_path" >> "$missing_files_file"
                         ((test1_failed++))
                     fi
                 fi
             done < README.md
+        fi
+        
+        # Print summary instead of individual warnings
+        if [[ $test1_failed -gt 0 ]]; then
+            print_warning "Found $test1_failed missing file reference(s) - details in: $missing_files_file"
+        else
+            print_success "All documented files exist"
         fi
         
         echo "$test1_failed" > "${test_results_file}.test1"
@@ -195,6 +205,8 @@ test_documentation_consistency() {
     {
         print_info "Test 2: Checking for broken internal links..."
         local test2_failed=0
+        local broken_links_file="${BACKLOG_STEP_DIR:-/tmp}/broken_links_report.txt"
+        > "$broken_links_file"  # Clear file
         
         # Check all markdown files for broken links
         while IFS= read -r doc_file; do
@@ -212,7 +224,8 @@ test_documentation_consistency() {
                     local target_file="${link_dir}/${link}"
                     
                     if [[ -n "$link" ]] && [[ ! -e "$target_file" ]]; then
-                        print_warning "$doc_file: Broken link to $link"
+                        # Log to file instead of spamming console
+                        echo "⚠️  $doc_file: Broken link to $link" >> "$broken_links_file"
                         ((test2_failed++))
                     fi
                 fi
@@ -232,6 +245,13 @@ test_documentation_consistency() {
                     2>/dev/null || true
             fi
         )
+        
+        # Print summary instead of individual warnings
+        if [[ $test2_failed -gt 0 ]]; then
+            print_warning "Found $test2_failed broken link(s) - details in: $broken_links_file"
+        else
+            print_success "All internal links valid"
+        fi
         
         echo "$test2_failed" > "${test_results_file}.test2"
     } &

@@ -12,7 +12,97 @@ set -euo pipefail
 # PROMPT BUILDING
 # ==============================================================================
 
-# Build Step 2 consistency analysis prompt
+# Filter broken references to remove false positives
+# Usage: filter_broken_refs_step2 <broken_refs>
+# Returns: Filtered broken references
+filter_broken_refs_step2() {
+    local broken_refs="$1"
+    
+    # Skip if no broken refs
+    if [[ -z "$broken_refs" ]] || [[ "$broken_refs" == "No broken references detected" ]]; then
+        echo "No broken references detected"
+        return 0
+    fi
+    
+    # Filter out regex patterns (sed/awk patterns that look like paths)
+    # These typically contain: /^, /[, /, "", and other regex syntax
+    local filtered=""
+    while IFS= read -r line; do
+        # Skip empty lines
+        [[ -z "$line" ]] && continue
+        
+        # Skip lines containing regex patterns
+        if echo "$line" | grep -qE '(\^|\[[:space:\]\]|/".*/"|yaml-parsing)'; then
+            continue
+        fi
+        # Keep actual broken file references
+        filtered+="$line"$'\n'
+    done <<< "$broken_refs"
+    
+    # Return filtered results or default message
+    if [[ -n "$filtered" ]]; then
+        echo -n "$filtered"
+    else
+        echo "No broken references detected (false positives filtered)"
+    fi
+}
+
+# Categorize documentation files by purpose
+# Usage: categorize_docs_step2 <doc_files>
+# Returns: Categorized documentation list
+categorize_docs_step2() {
+    local doc_files="$1"
+    local categorized=""
+    
+    # Critical documentation (always review first)
+    categorized+="**Critical Documentation (Priority 1):**\n"
+    local critical_docs
+    critical_docs=$(echo "$doc_files" | grep -E '^\./README\.md$|^\.github/copilot-instructions\.md$|^\./docs/PROJECT_REFERENCE\.md$' || true)
+    if [[ -n "$critical_docs" ]]; then
+        categorized+="$critical_docs\n"
+    else
+        categorized+="(none found)\n"
+    fi
+    categorized+="\n"
+    
+    # User-facing documentation
+    categorized+="**User Documentation (Priority 2):**\n"
+    local user_docs
+    user_docs=$(echo "$doc_files" | grep -E 'docs/user-guide/|docs/reference/|CONTRIBUTING|CODE_OF_CONDUCT' || true)
+    if [[ -n "$user_docs" ]]; then
+        categorized+="$user_docs\n"
+    else
+        categorized+="(none found)\n"
+    fi
+    categorized+="\n"
+    
+    # Developer documentation
+    categorized+="**Developer Documentation (Priority 3):**\n"
+    local dev_docs
+    dev_docs=$(echo "$doc_files" | grep -E 'docs/developer-guide/|docs/design/|src/.*/README\.md' || true)
+    if [[ -n "$dev_docs" ]]; then
+        categorized+="$dev_docs\n"
+    else
+        categorized+="(none found)\n"
+    fi
+    categorized+="\n"
+    
+    # Archive (lowest priority)
+    categorized+="**Archive Documentation (Priority 4 - Review only if relevant):**\n"
+    local archive_docs
+    archive_docs=$(echo "$doc_files" | grep 'docs/archive/' || true)
+    if [[ -n "$archive_docs" ]]; then
+        local archive_count
+        archive_count=$(echo "$archive_docs" | wc -l)
+        categorized+="($archive_count files in archive - review only if explicitly referenced)\n"
+    else
+        categorized+="(none found)\n"
+    fi
+    
+    echo -e "$categorized"
+}
+
+# Build Step 2 consistency analysis prompt with enhanced context
 # Usage: build_consistency_prompt_step2 <doc_count> <change_scope> <modified_files> <broken_refs> <doc_files>
 # Returns: Complete AI prompt
 build_consistency_prompt_step2() {
@@ -22,51 +112,99 @@ build_consistency_prompt_step2() {
     local broken_refs="${4:-No broken references detected}"
     local doc_files="${5:-}"
     
+    # Get tech stack info if available
+    local project_kind="${PROJECT_KIND:-shell_automation}"
+    local primary_language="${PRIMARY_LANGUAGE:-bash}"
+    local project_name="${PROJECT_NAME:-this project}"
+    
     local prompt=""
     
-    # Header
+    # Header with project context
     prompt="## Documentation Consistency Analysis Request\n\n"
-    prompt+="I need help analyzing documentation consistency across the project.\n\n"
+    prompt+="Analyze documentation consistency for **${project_name}**, a ${project_kind} project written in ${primary_language}.\n\n"
     
-    # Context
+    # Project context with tech stack
     prompt+="### Project Context\n"
-    prompt+="- **Documentation Files**: $doc_count\n"
-    prompt+="- **Change Scope**: $change_scope\n"
-    prompt+="- **Modified Files**: $modified_files\n\n"
+    prompt+="- **Project Type**: ${project_kind}\n"
+    prompt+="- **Primary Language**: ${primary_language}\n"
+    prompt+="- **Total Documentation Files**: ${doc_count}\n"
+    prompt+="- **Change Scope**: ${change_scope}\n"
+    prompt+="- **Modified Files Count**: ${modified_files}\n\n"
     
-    # Broken references section
+    # Filter broken references to remove false positives
+    local filtered_refs
+    filtered_refs=$(filter_broken_refs_step2 "$broken_refs")
+    
+    # Automated checks results
     prompt+="### Automated Checks Results\n\n"
-    prompt+="**Broken References:**\n"
-    prompt+="$broken_refs\n\n"
-    
-    # Documentation inventory
-    if [[ -n "$doc_files" ]]; then
-        prompt+="**Documentation Inventory:**\n"
-        prompt+="$doc_files\n\n"
+    prompt+="**Broken References Found:**\n"
+    if [[ "$filtered_refs" == *"No broken references"* ]]; then
+        prompt+="✓ No broken file references detected\n\n"
+    else
+        prompt+="$filtered_refs\n"
+        prompt+="**Action Required**: Verify these references exist or update documentation to correct paths.\n\n"
     fi
     
-    # Analysis request
-    prompt+="### Analysis Required\n\n"
-    prompt+="Please analyze the documentation for:\n\n"
-    prompt+="1. **Consistency Issues**\n"
-    prompt+="   - Cross-references between documents\n"
-    prompt+="   - Terminology consistency\n"
-    prompt+="   - Format consistency\n\n"
+    # Categorized documentation inventory
+    if [[ -n "$doc_files" ]]; then
+        prompt+="### Documentation Inventory\n\n"
+        prompt+=$(categorize_docs_step2 "$doc_files")
+        prompt+="\n"
+    fi
     
-    prompt+="2. **Completeness Gaps**\n"
-    prompt+="   - Missing documentation for new features\n"
-    prompt+="   - Incomplete API documentation\n"
-    prompt+="   - Missing examples or tutorials\n\n"
+    # Analysis instructions with clear priorities
+    prompt+="### Analysis Instructions\n\n"
+    prompt+="Perform a comprehensive documentation consistency analysis focusing on:\n\n"
     
-    prompt+="3. **Accuracy Verification**\n"
-    prompt+="   - Documentation matches actual code behavior\n"
-    prompt+="   - Version numbers are consistent\n"
-    prompt+="   - Examples are up-to-date\n\n"
+    prompt+="#### 1. Consistency Issues (High Priority)\n"
+    prompt+="   - **Cross-references**: Verify all internal links point to existing files/sections\n"
+    prompt+="   - **Terminology**: Ensure consistent naming (e.g., 'workflow step' vs 'pipeline stage')\n"
+    prompt+="   - **Version numbers**: Check alignment across README, changelogs, and source files\n"
+    prompt+="   - **Format patterns**: Verify headings, code blocks, and lists follow project standards\n\n"
     
-    prompt+="4. **Quality Recommendations**\n"
-    prompt+="   - Structural improvements\n"
-    prompt+="   - Clarity enhancements\n"
-    prompt+="   - Navigation improvements\n"
+    prompt+="#### 2. Completeness Gaps (Medium Priority)\n"
+    prompt+="   - **New features**: Check if recent code changes have corresponding documentation\n"
+    prompt+="   - **API documentation**: Verify all public functions/modules are documented\n"
+    prompt+="   - **Examples**: Ensure code examples exist for key features\n"
+    prompt+="   - **Prerequisites**: Verify setup/installation instructions are complete\n\n"
+    
+    prompt+="#### 3. Accuracy Verification (High Priority)\n"
+    prompt+="   - **Code alignment**: Documentation examples match actual implementation\n"
+    prompt+="   - **Version accuracy**: Current version matches across all files\n"
+    prompt+="   - **Feature status**: Documented features actually exist in codebase\n"
+    prompt+="   - **Deprecated content**: Identify outdated information requiring updates\n\n"
+    
+    prompt+="#### 4. Quality & Usability (Low Priority)\n"
+    prompt+="   - **Clarity**: Identify unclear or ambiguous documentation\n"
+    prompt+="   - **Structure**: Suggest organizational improvements\n"
+    prompt+="   - **Navigation**: Recommend better cross-linking between related docs\n"
+    prompt+="   - **Accessibility**: Check for proper heading hierarchy and alt text\n\n"
+    
+    # Output format requirements
+    prompt+="### Output Requirements\n\n"
+    prompt+="Provide a structured analysis report with:\n"
+    prompt+="1. **Executive Summary**: High-level findings (2-3 sentences)\n"
+    prompt+="2. **Critical Issues**: Must-fix problems (broken refs, version mismatches)\n"
+    prompt+="3. **High Priority Recommendations**: Important improvements (missing docs, outdated examples)\n"
+    prompt+="4. **Medium Priority Suggestions**: Nice-to-have enhancements (clarity, structure)\n"
+    prompt+="5. **Low Priority Notes**: Optional improvements (formatting, style)\n\n"
+    
+    prompt+="For each issue, include:\n"
+    prompt+="- File path and line number (if applicable)\n"
+    prompt+="- Clear description of the problem\n"
+    prompt+="- Specific recommended fix or action\n"
+    prompt+="- Priority level (Critical/High/Medium/Low)\n\n"
+    
+    prompt+="**Focus Areas Based on Change Scope**: ${change_scope}\n"
+    if [[ "$change_scope" == *"documentation"* ]]; then
+        prompt+="- Prioritize documentation-related consistency checks\n"
+        prompt+="- Verify cross-references between updated docs\n"
+    elif [[ "$change_scope" == *"code"* ]]; then
+        prompt+="- Focus on code-documentation alignment\n"
+        prompt+="- Check if API docs match new implementations\n"
+    else
+        prompt+="- Perform comprehensive analysis across all categories\n"
+    fi
     
     echo -e "$prompt"
 }
@@ -138,7 +276,7 @@ execute_consistency_analysis_step2() {
     
     # Call execute_copilot_prompt if available, otherwise fallback
     if command -v execute_copilot_prompt &>/dev/null; then
-        execute_copilot_prompt "$prompt" "$log_file"
+        execute_copilot_prompt "$prompt" "$log_file" "step02" "documentation_specialist"
     else
         # Fallback execution with comprehensive flags
         copilot -p "$prompt" --allow-all-tools --allow-all-paths --enable-all-github-mcp-tools 2>&1 | tee "$log_file"
@@ -215,6 +353,8 @@ run_ai_consistency_workflow_step2() {
 # EXPORTS
 # ==============================================================================
 
+export -f filter_broken_refs_step2
+export -f categorize_docs_step2
 export -f build_consistency_prompt_step2
 export -f enhance_consistency_prompt_with_language_step2
 export -f execute_consistency_analysis_step2
