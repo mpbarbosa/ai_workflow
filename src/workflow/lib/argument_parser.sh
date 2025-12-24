@@ -54,6 +54,12 @@ parse_workflow_arguments() {
                 print_info "Automatic mode enabled"
                 shift
                 ;;
+            --auto-commit)
+                AUTO_COMMIT=true
+                export AUTO_COMMIT
+                print_info "Auto-commit mode enabled - workflow artifacts will be committed automatically"
+                shift
+                ;;
             --ai-batch)
                 AI_BATCH_MODE=true
                 export AI_BATCH_MODE

@@ -119,7 +119,7 @@ set -euo pipefail
 # CONFIGURATION & CONSTANTS
 # ==============================================================================
 
-SCRIPT_VERSION="2.5.0"  # Phase 2: Smart+Parallel enabled by default
+SCRIPT_VERSION="2.6.0"  # Developer Experience: Auto-commit + Templates + IDE integration
 SCRIPT_NAME="Tests & Documentation Workflow Automation"
 WORKFLOW_HOME="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
 PROJECT_ROOT="$(pwd)"  # Default: current directory; can be overridden with --target option
@@ -166,6 +166,7 @@ DRY_RUN=false
 INTERACTIVE_MODE=true
 AUTO_MODE=false
 AI_BATCH_MODE=false  # Hybrid mode: run AI non-interactively
+AUTO_COMMIT=false    # Auto-commit workflow artifacts
 VERBOSE=false
 STOP_ON_COMPLETION=false
 WORKFLOW_START_TIME=$(date +%s)
@@ -181,6 +182,7 @@ NO_RESUME=false    # When true, ignore checkpoints and start from step 0
 export DRY_RUN
 export INTERACTIVE_MODE
 export AUTO_MODE
+export AUTO_COMMIT
 export VERBOSE
 export PROJECT_ROOT
 export WORKFLOW_HOME
@@ -1689,6 +1691,8 @@ OPTIONS:
     --dry-run          Preview all actions without executing
     
     --auto             Run in automatic mode (no confirmations, skip AI)
+    --auto-commit      Auto-commit workflow artifacts (NEW v2.6.0)
+                       Automatically commits docs, tests, and code changes
     --ai-batch         Run AI prompts non-interactively (hybrid auto mode)
     --interactive      Run in interactive mode (default)
     
@@ -1795,8 +1799,16 @@ EXAMPLES:
     
     # Maximum performance: Smart + Parallel + AI Batch + Caching (RECOMMENDED)
     cd /path/to/project
-    /path/to/ai_workflow/src/workflow/execute_tests_docs_workflow.sh \\
+    /path/to/ai_workflow/src/workflow/execute_tests_docs_workflow.sh \
       --smart-execution --parallel --auto --ai-batch
+    
+    # With auto-commit (NEW v2.6.0)
+    $0 --auto-commit --smart-execution --parallel
+    
+    # Use workflow templates (NEW v2.6.0)
+    ./templates/workflows/docs-only.sh      # Documentation only (~3-4 min)
+    ./templates/workflows/test-only.sh       # Tests only (~8-10 min)  
+    ./templates/workflows/feature.sh         # Full feature workflow
     
     # Force fresh start (ignore checkpoints)
     $0 --no-resume --auto
@@ -1806,6 +1818,28 @@ EXAMPLES:
     
     # Show detected technology stack
     $0 --show-tech-stack
+
+WORKFLOW TEMPLATES (NEW v2.6.0):
+    Pre-configured templates for common development scenarios:
+    
+    📝 docs-only.sh      - Documentation changes (~3-4 min)
+    🧪 test-only.sh      - Test development (~8-10 min)
+    🚀 feature.sh        - Full feature workflow (~15-20 min)
+    
+    All templates include: auto-commit, smart execution, parallel processing
+    Location: templates/workflows/
+    Documentation: templates/workflows/README.md
+
+IDE INTEGRATION (NEW v2.6.0):
+    VS Code Tasks: Run via Ctrl+Shift+B or Tasks menu
+    Configuration: .vscode/tasks.json
+    Available tasks:
+      • AI Workflow: Full Run (default)
+      • AI Workflow: Documentation Only
+      • AI Workflow: Test Only
+      • AI Workflow: Feature Development
+      • AI Workflow: Auto-commit
+      • AI Workflow: Metrics Dashboard
 
 PERFORMANCE OPTIMIZATION:
     
