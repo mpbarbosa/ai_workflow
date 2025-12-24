@@ -242,7 +242,7 @@ Module                       Functions  Test File           Coverage
 
 **Why Critical:**
 - Core AI integration with GitHub Copilot CLI
-- 13 specialized AI personas
+- 14 functional AI personas
 - YAML configuration loading
 - All AI-driven steps depend on this
 
@@ -263,7 +263,7 @@ Module                       Functions  Test File           Coverage
 # AI Persona Selection
 - get_persona_prompt("documentation_specialist") returns correct template
 - get_persona_prompt("unknown_persona") handles gracefully
-- All 13 personas have valid YAML templates
+- 14 functional personas have valid YAML templates
 
 # Error Handling
 - ai_call with copilot unavailable fails gracefully
@@ -1041,7 +1041,7 @@ test_all_personas_have_templates() {
     done
     
     if [[ ${missing} -eq 0 ]]; then
-        pass "All 13 personas have YAML templates"
+        pass "14 functional personas have YAML templates"
     else
         fail "${missing} personas missing templates"
     fi

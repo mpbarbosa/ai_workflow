@@ -1,5 +1,15 @@
 # AI Workflow Automation
 
+[![Version](https://img.shields.io/badge/version-2.4.0-blue.svg)](https://github.com/mpbarbosa/ai_workflow/releases)
+[![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
+[![Code Quality](https://img.shields.io/github/actions/workflow/status/mpbarbosa/ai_workflow/code-quality.yml?label=code%20quality)](https://github.com/mpbarbosa/ai_workflow/actions/workflows/code-quality.yml)
+[![Tests](https://img.shields.io/github/actions/workflow/status/mpbarbosa/ai_workflow/validate-tests.yml?label=tests)](https://github.com/mpbarbosa/ai_workflow/actions/workflows/validate-tests.yml)
+[![Documentation](https://img.shields.io/github/actions/workflow/status/mpbarbosa/ai_workflow/validate-docs.yml?label=docs)](https://github.com/mpbarbosa/ai_workflow/actions/workflows/validate-docs.yml)
+[![Test Coverage](https://img.shields.io/badge/coverage-100%25-brightgreen.svg)](tests/)
+[![Shell Scripts](https://img.shields.io/badge/shell-bash%204.0%2B-blue.svg)](https://www.gnu.org/software/bash/)
+[![Maintained](https://img.shields.io/badge/maintained-yes-brightgreen.svg)](https://github.com/mpbarbosa/ai_workflow/graphs/commit-activity)
+[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
+
 Intelligent workflow automation system for validating and enhancing documentation, code, and tests with AI support.
 
 **Migrated from**: mpbarbosa_site repository (2025-12-18)  
@@ -12,19 +22,17 @@ This repository provides a comprehensive, modular workflow automation system tha
 
 ### Key Features
 
-- **15-Step Automated Pipeline**: Complete workflow from analysis to finalization
-- **28 Library Modules**: Modular architecture with AI caching and advanced optimization (27 .sh modules + 1 .yaml config)
-- **AI Integration**: GitHub Copilot CLI with 14 specialized personas
-- **UX Analysis** (v2.4.0): AI-powered UI/UX analysis with accessibility checking (Step 14)
-- **Smart Execution** (v2.3): Skip steps based on change detection (40-85% faster)
-- **Parallel Execution** (v2.3): Run independent steps simultaneously (33% faster)
-- **AI Response Caching** (v2.3): Reduce token usage by 60-80%
-- **Target Project Support** (v2.3): Run on any project with --target option
-- **Checkpoint Resume** (v2.3): Automatic workflow continuation (use --no-resume to disable)
-- **Prompt Engineering** (v2.3.1): Analyze and improve AI persona prompts (Step 13 - ai_workflow only)
-- **Metrics Collection**: Automatic performance tracking and historical analysis
-- **Dependency Visualization**: Interactive graph showing execution flow
-- **100% Test Coverage**: 37+ automated tests ensure reliability
+> 📋 See [Project Reference](docs/PROJECT_REFERENCE.md) for complete feature list, module inventory, and version history.
+
+**Highlights**:
+- **15-Step Automated Pipeline** with checkpoint resume
+- **28 Library Modules** (19,952 lines) + **15 Step Modules** (3,786 lines)
+- **14 AI Personas** with GitHub Copilot CLI integration
+- **Smart Execution**: 40-85% faster (change-based step skipping)
+- **Parallel Execution**: 33% faster (independent steps run simultaneously)
+- **AI Response Caching**: 60-80% token reduction
+- **UX Analysis** (NEW v2.4.0): Accessibility checking with WCAG 2.1
+- **100% Test Coverage**: 37+ automated tests
 
 ## Quick Start
 
@@ -41,7 +49,12 @@ cd ai_workflow
 # Run specific test suites
 ./tests/run_all_tests.sh --unit          # Unit tests only
 ./tests/run_all_tests.sh --integration   # Integration tests only
+
+# Test the workflow on itself (self-testing - recommended first step)
+./src/workflow/execute_tests_docs_workflow.sh --smart-execution --parallel
 ```
+
+> **💡 Tip**: The best way to understand the workflow is to run it on itself. See [Example Projects Guide](docs/EXAMPLE_PROJECTS_GUIDE.md) for detailed testing scenarios.
 
 ### Applying to Target Projects
 
@@ -93,15 +106,32 @@ cd /path/to/target/project
 **Performance Tips**:
 - Use `--smart-execution` for 40-85% faster execution
 - Use `--parallel` for 33% additional speed improvement
+- **📊 See [Performance Benchmarks](docs/PERFORMANCE_BENCHMARKS.md) for detailed methodology and raw data**
 - AI responses cached automatically (60-80% token savings)
 - Checkpoint resume enabled by default (use `--no-resume` for fresh start)
 - Combined optimizations: Up to 90% faster for simple changes
 
 ## Documentation
 
+**📚 [Complete Documentation Hub](docs/DOCUMENTATION_HUB.md)** - Organized by audience and topic ⭐
+
+### Quick Start
+- **[docs/FAQ.md](docs/FAQ.md)**: Frequently Asked Questions (NEW)
+- **[docs/ROADMAP.md](docs/ROADMAP.md)**: Future plans and development roadmap (NEW)
+- **[docs/V2.4.0_COMPLETE_FEATURE_GUIDE.md](docs/V2.4.0_COMPLETE_FEATURE_GUIDE.md)**: Complete v2.4.0 feature guide (NEW)
+- **[docs/EXAMPLE_PROJECTS_GUIDE.md](docs/EXAMPLE_PROJECTS_GUIDE.md)**: Example projects and testing guide (NEW)
+- **[docs/TARGET_PROJECT_FEATURE.md](docs/TARGET_PROJECT_FEATURE.md)**: --target option guide
+- **[docs/QUICK_REFERENCE_TARGET_OPTION.md](docs/QUICK_REFERENCE_TARGET_OPTION.md)**: Quick reference
+- **[docs/INIT_CONFIG_WIZARD.md](docs/INIT_CONFIG_WIZARD.md)**: Configuration wizard guide
+
+### Technical Documentation
 - **[MIGRATION_README.md](docs/reports/implementation/MIGRATION_README.md)**: Migration details and architecture overview
-- **[docs/workflow-automation/](docs/workflow-automation/)**: Comprehensive documentation
+- **[docs/WORKFLOW_DIAGRAMS.md](docs/WORKFLOW_DIAGRAMS.md)**: Visual diagrams for complex workflows (NEW)
+- **[docs/ORCHESTRATOR_ARCHITECTURE.md](docs/ORCHESTRATOR_ARCHITECTURE.md)**: Orchestrator design (v2.4.0)
+- **[docs/RELEASE_NOTES_v2.4.0.md](docs/RELEASE_NOTES_v2.4.0.md)**: Step 14 release notes
+- **[docs/workflow-automation/](docs/workflow-automation/)**: Comprehensive workflow documentation
 - **[src/workflow/README.md](src/workflow/README.md)**: Module API reference
+- **[.github/copilot-instructions.md](.github/copilot-instructions.md)**: Complete system reference for GitHub Copilot
 
 ## Repository Structure
 
@@ -118,7 +148,7 @@ ai_workflow/
 ├── scripts/                       # Utility scripts
 │   └── validate_line_counts.sh    # Documentation validation
 ├── src/workflow/                  # Workflow automation system
-│   ├── execute_tests_docs_workflow.sh  # Main orchestrator (4,740 lines)
+│   ├── execute_tests_docs_workflow.sh  # Main orchestrator (2,009 lines)
 │   ├── lib/                       # 28 library modules (12,671 lines: 27 .sh + 1 .yaml)
 │   ├── steps/                     # 15 step modules (3,786 lines)
 │   ├── config/                    # YAML configuration
@@ -168,7 +198,171 @@ The repository includes GitHub Actions workflows for automated testing and valid
 
 ## License
 
-[Same as parent project]
+This project is licensed under the **MIT License** - see the [LICENSE](LICENSE) file for details.
+
+### MIT License Summary
+
+- ✅ **Commercial use** - Use in commercial projects
+- ✅ **Modification** - Modify the source code
+- ✅ **Distribution** - Distribute copies
+- ✅ **Private use** - Use privately
+- ℹ️  **License and copyright notice** - Include with all copies
+
+**Copyright © 2025 mpbarbosa**
+
+---
+
+## Authors and Maintainers
+
+### Primary Author & Maintainer
+
+**Marcelo Pereira Barbosa** ([@mpbarbosa](https://github.com/mpbarbosa))
+- Email: mpbarbosa@gmail.com
+- GitHub: [github.com/mpbarbosa](https://github.com/mpbarbosa)
+- Role: Project creator, lead developer, and maintainer
+
+### Project Information
+
+- **Created**: 2025-12-14
+- **Repository**: [github.com/mpbarbosa/ai_workflow](https://github.com/mpbarbosa/ai_workflow)
+- **Migrated From**: mpbarbosa_site (2025-12-18)
+- **Current Version**: v2.4.0
+
+### Contributing
+
+We welcome contributions! See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines on:
+- Code contributions
+- Documentation improvements
+- Bug reports
+- Feature requests
+- Testing
+
+### Support
+
+- **Issues**: [GitHub Issues](https://github.com/mpbarbosa/ai_workflow/issues)
+- **Discussions**: [GitHub Discussions](https://github.com/mpbarbosa/ai_workflow/discussions)
+- **Security**: See [SECURITY.md](SECURITY.md) for vulnerability reporting
+
+### Acknowledgments
+
+- Built with [GitHub Copilot CLI](https://githubnext.com/projects/copilot-cli)
+- Inspired by workflow automation best practices
+- Community feedback and contributions
+
+---
+
+## Related Projects and Ecosystem
+
+### Similar Workflow Automation Tools
+
+This project fits into the broader ecosystem of workflow automation and documentation tools. Here are some related projects you might find useful:
+
+#### Workflow Automation
+- **[pre-commit](https://github.com/pre-commit/pre-commit)** - Framework for managing git pre-commit hooks
+  - **Comparison**: Focuses on pre-commit hooks; AI Workflow provides full 15-step pipeline
+  - **Use Together**: Use pre-commit for immediate checks, AI Workflow for comprehensive validation
+
+- **[GitHub Actions](https://github.com/features/actions)** - CI/CD platform by GitHub
+  - **Comparison**: Cloud-based CI/CD; AI Workflow is local-first with optional CI integration
+  - **Use Together**: Run AI Workflow in GitHub Actions for automated checks
+
+- **[Taskfile](https://github.com/go-task/task)** - Task runner alternative to Make
+  - **Comparison**: General task automation; AI Workflow specialized for docs/code/tests
+  - **Use Together**: Use Taskfile to orchestrate AI Workflow execution
+
+#### Documentation Tools
+- **[MkDocs](https://github.com/mkdocs/mkdocs)** - Static site generator for documentation
+  - **Comparison**: Documentation rendering; AI Workflow validates and enhances docs
+  - **Use Together**: AI Workflow validates, MkDocs publishes
+
+- **[Vale](https://github.com/errata-ai/vale)** - Linter for prose and documentation
+  - **Comparison**: Style/grammar checking; AI Workflow provides AI-powered analysis
+  - **Use Together**: Vale for style, AI Workflow for consistency and correctness
+
+- **[doctoc](https://github.com/thlorenz/doctoc)** - Generates table of contents for markdown
+  - **Comparison**: TOC generation; AI Workflow comprehensive doc validation
+  - **Use Together**: doctoc for TOCs, AI Workflow for validation
+
+#### Code Quality Tools
+- **[ShellCheck](https://github.com/koalaman/shellcheck)** - Shell script static analysis
+  - **Comparison**: Shell script linting; AI Workflow broader validation
+  - **Use Together**: ShellCheck for scripts, AI Workflow for full project
+
+- **[SonarQube](https://github.com/SonarSource/sonarqube)** - Code quality and security
+  - **Comparison**: Enterprise quality platform; AI Workflow developer-focused
+  - **Use Together**: SonarQube for teams, AI Workflow for individuals
+
+#### AI-Powered Tools
+- **[GitHub Copilot](https://github.com/features/copilot)** - AI pair programmer
+  - **Comparison**: Code generation; AI Workflow uses Copilot for validation/analysis
+  - **Use Together**: Copilot writes code, AI Workflow validates it
+
+- **[ChatGPT](https://openai.com/chatgpt)** - AI assistant
+  - **Comparison**: General AI; AI Workflow specialized for workflows
+  - **Use Together**: ChatGPT for questions, AI Workflow for automation
+
+### Key Differentiators
+
+What makes AI Workflow unique:
+
+1. **AI-Native**: 14 specialized AI personas using GitHub Copilot CLI
+2. **Comprehensive**: 15-step pipeline covering docs, code, tests, and UX
+3. **Modular**: 28 library modules + 15 step modules (24K+ lines)
+4. **Performance**: Smart execution (40-85% faster), parallel execution (33% faster)
+5. **Intelligent**: Change detection, dependency analysis, AI response caching
+6. **Local-First**: Runs on your machine, optional CI/CD integration
+7. **Shell-Based**: Bash scripts, no heavy dependencies
+8. **Open Source**: MIT licensed, community-driven
+
+### Complementary Tools
+
+These tools work well alongside AI Workflow:
+
+**Before AI Workflow**:
+- Use `pre-commit` for immediate syntax checks
+- Use `ShellCheck` for shell script linting
+- Use `Vale` for prose style checking
+
+**With AI Workflow**:
+- Comprehensive validation and enhancement
+- AI-powered analysis and suggestions
+- Automated test generation and execution
+
+**After AI Workflow**:
+- Use `MkDocs` or similar to publish validated documentation
+- Use `GitHub Actions` to run AI Workflow in CI/CD
+- Use `SonarQube` for enterprise-level quality tracking
+
+### Inspiration and Acknowledgments
+
+AI Workflow was inspired by:
+- **GitHub Copilot CLI** - AI-powered command line interface
+- **Make/Taskfile** - Task automation patterns
+- **pre-commit** - Git hook management approach
+- **Unix Philosophy** - Small, composable tools
+- **DevOps Best Practices** - Automation, validation, continuous improvement
+
+### Community and Ecosystem
+
+**Related Resources**:
+- [Awesome Shell](https://github.com/alebcay/awesome-shell) - Curated shell tools
+- [Awesome Bash](https://github.com/awesome-lists/awesome-bash) - Bash resources
+- [Awesome Documentation](https://github.com/PharkMillups/beautiful-docs) - Documentation tools
+
+**Discussion Forums**:
+- [GitHub Discussions](https://github.com/mpbarbosa/ai_workflow/discussions) - Project-specific
+- [Reddit r/bash](https://reddit.com/r/bash) - Shell scripting
+- [Stack Overflow](https://stackoverflow.com/questions/tagged/bash) - Technical Q&A
+
+### Contributing to Ecosystem
+
+We encourage ecosystem integration:
+- **Plugin System** (future): Extend AI Workflow with custom steps
+- **Integration Guides**: Help us document integration with other tools
+- **Community Tools**: Share your AI Workflow extensions
+- **Feedback**: Tell us what tools you want to integrate with
+
+See [CONTRIBUTING.md](CONTRIBUTING.md) for how to contribute.
 
 ---
 

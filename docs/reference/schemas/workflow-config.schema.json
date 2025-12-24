@@ -1,0 +1,68 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://github.com/mpbarbosa/ai_workflow/schema/workflow-config.json",
+  "title": "AI Workflow Configuration",
+  "description": "Schema for .workflow-config.yaml file used by AI Workflow Automation",
+  "type": "object",
+  "required": ["tech_stack"],
+  "properties": {
+    "project": {
+      "type": "object",
+      "description": "Project metadata",
+      "properties": {
+        "name": {"type": "string", "description": "Project display name", "maxLength": 100},
+        "type": {"type": "string", "description": "Project type identifier"},
+        "description": {"type": "string", "description": "Brief project description", "maxLength": 500},
+        "kind": {
+          "type": "string",
+          "description": "Project kind classification",
+          "enum": ["shell_automation", "nodejs_api", "nodejs_cli", "nodejs_library", "static_website", "client_spa", "react_spa", "vue_spa", "python_api", "python_cli", "python_library", "documentation", "generic"]
+        },
+        "repository": {"type": "string", "description": "Repository URL", "pattern": "^https?://.*"}
+      }
+    },
+    "tech_stack": {
+      "type": "object",
+      "description": "Technology stack configuration",
+      "required": ["primary_language"],
+      "properties": {
+        "primary_language": {
+          "type": "string",
+          "description": "Primary programming language (REQUIRED)",
+          "enum": ["javascript", "python", "go", "java", "ruby", "rust", "cpp", "bash", "typescript"]
+        },
+        "languages": {"type": "array", "items": {"type": "string"}},
+        "build_system": {"type": "string"},
+        "test_framework": {"type": "string"},
+        "test_command": {"type": "string"},
+        "linter": {"type": "string"},
+        "lint_command": {"type": "string"}
+      }
+    },
+    "structure": {
+      "type": "object",
+      "properties": {
+        "source_dirs": {"type": "array", "items": {"type": "string"}, "default": ["src"]},
+        "test_dirs": {"type": "array", "items": {"type": "string"}, "default": ["tests"]},
+        "docs_dirs": {"type": "array", "items": {"type": "string"}, "default": ["docs"]},
+        "exclude_dirs": {"type": "array", "items": {"type": "string"}},
+        "entry_point": {"type": "string"}
+      }
+    },
+    "dependencies": {
+      "type": "object",
+      "properties": {
+        "package_file": {"type": "string"},
+        "lock_file": {"type": "string"},
+        "install_command": {"type": "string"}
+      }
+    },
+    "ai_prompts": {
+      "type": "object",
+      "properties": {
+        "language_context": {"type": "string", "maxLength": 2000},
+        "custom_instructions": {"type": "array", "items": {"type": "string"}}
+      }
+    }
+  }
+}

@@ -34,7 +34,7 @@ src/workflow/
 │   ├── validation.sh                 # Pre-flight checks (280 lines)
 │   ├── backlog.sh                    # Backlog tracking (91 lines)
 │   ├── summary.sh                    # Summary generation (134 lines)
-│   ├── ai_helpers.sh                 # AI integration with 13 personas (2,359 lines) Project-aware
+│   ├── ai_helpers.sh                 # AI integration (14 functional personas) Project-aware
 │   ├── ai_helpers.yaml               # AI prompt templates (1,520 lines) ⭐ Project-aware personas
 │   ├── ai_cache.sh                   # AI response caching (352 lines) 🚀 NEW v2.3.0
 │   ├── session_manager.sh            # Bash session management (376 lines)
@@ -1224,7 +1224,7 @@ execute_tests_docs_workflow_v2.4.sh (Main Controller)
 
 ## Test Infrastructure
 
-The workflow includes comprehensive test coverage with 13 specialized test suites covering all critical functionality.
+The workflow includes comprehensive test coverage with 13 specialized test suites (covering 14 functional AI personas) across all critical functionality.
 
 ### Test Organization (5,122 lines total)
 

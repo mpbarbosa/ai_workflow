@@ -79,7 +79,7 @@ enhance_consistency_prompt_with_language_step2() {
     local language="${2:-bash}"
     local enhanced="$base_prompt"
     
-    # Check if language-aware prompts are available
+    # Apply language-specific documentation conventions if available
     if command -v should_use_language_aware_prompts &>/dev/null; then
         if should_use_language_aware_prompts; then
             if command -v get_language_documentation_conventions &>/dev/null; then
@@ -89,7 +89,7 @@ enhance_consistency_prompt_with_language_step2() {
                 if [[ -n "$lang_conventions" ]] && [[ "$lang_conventions" != "No language specified" ]]; then
                     enhanced+="\n\n**${language^} Documentation Standards:**\n"
                     enhanced+="$lang_conventions\n"
-                    print_info "Using language-aware consistency checks for $language"
+                    # Language-aware enhancements applied silently
                 fi
             fi
         fi

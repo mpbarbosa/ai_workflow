@@ -79,7 +79,7 @@ enhance_test_review_prompt_step5() {
             if [[ -n "$test_conventions" ]] && [[ "$test_conventions" != "No language specified" ]]; then
                 enhanced+="\n\n**${language^} Testing Conventions:**\n"
                 enhanced+="$test_conventions\n"
-                print_info "Using language-aware test review for $language"
+                # Language-aware enhancements applied silently
             fi
         fi
     fi

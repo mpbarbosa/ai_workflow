@@ -2,7 +2,8 @@
 
 **Repository**: ai_workflow  
 **Version**: v2.4.0  
-**Last Updated**: 2025-12-23
+**Last Updated**: 2025-12-23  
+**Maintainer**: Marcelo Pereira Barbosa ([@mpbarbosa](https://github.com/mpbarbosa))
 
 ## Project Overview
 
@@ -10,25 +11,16 @@ AI Workflow Automation is an intelligent workflow system for validating and enha
 
 ### Key Capabilities
 
-- **15-Step Automated Pipeline**: Complete workflow from pre-analysis to git finalization
-- **28 Library Modules**: Modular architecture with single responsibility principle (27 .sh + 1 .yaml)
-- **AI Integration**: GitHub Copilot CLI with 14 specialized personas
-- **Smart Execution**: Change-based step skipping (40-85% faster)
-- **Parallel Execution**: Independent steps run simultaneously (33% faster)
-- **AI Response Caching**: 60-80% token usage reduction with automatic TTL management
-- **Checkpoint Resume**: Automatic workflow continuation from last completed step
-- **Metrics Collection**: Automatic performance tracking and historical analysis
-- **Dependency Visualization**: Interactive graph with Mermaid diagrams
-- **100% Test Coverage**: 37 automated tests ensure reliability
+> 📋 **Reference**: See [docs/PROJECT_REFERENCE.md](../docs/PROJECT_REFERENCE.md) for authoritative project statistics, features, and module inventory.
 
-### Project Statistics
-
-- **Total Lines**: 19,952 shell code + 4,194 YAML configuration = 24,146 total *[See PROJECT_STATISTICS.md]*
-- **Modules**: 49 total (28 libraries + 15 steps + 6 configs)
-- **Configuration**: YAML-based externalized prompt templates
-- **Performance**: Up to 90% faster for documentation-only changes
-
-> 📊 See [PROJECT_STATISTICS.md](../docs/archive/PROJECT_STATISTICS.md) for detailed breakdown.
+**Core Features**:
+- **15-Step Automated Pipeline** with 14 AI personas
+- **28 Library Modules** (19,952 lines) + **15 Step Modules** (3,786 lines)
+- **Smart Execution**: 40-85% faster | **Parallel Execution**: 33% faster
+- **AI Response Caching**: 60-80% token reduction
+- **UX Analysis** (NEW v2.4.0): Accessibility checking with WCAG 2.1
+- **Checkpoint Resume**: Automatic continuation from failures
+- **100% Test Coverage**: 37+ automated tests
 
 ## Architecture Patterns
 
@@ -51,35 +43,13 @@ AI Workflow Automation is an intelligent workflow system for validating and enha
 
 ### Module Categories
 
-#### Workflow Orchestration
-- `execute_tests_docs_workflow.sh` - Main orchestrator (4,740 lines)
-- `step_execution.sh` - Step lifecycle management
-- `workflow_optimization.sh` - Smart execution and parallel processing
+> 📋 **Complete Inventory**: See [docs/PROJECT_REFERENCE.md#module-inventory](../docs/PROJECT_REFERENCE.md#module-inventory for full module list with descriptions.
 
-#### AI Integration
-- `ai_helpers.sh` - GitHub Copilot CLI integration with 14 personas
-- `ai_cache.sh` - AI response caching system (NEW in v2.3.0)
-- `ai_helpers.yaml` - Prompt templates (762 lines)
-
-#### Change Intelligence
-- `change_detection.sh` - Git diff analysis and impact classification
-- `dependency_graph.sh` - Execution dependency visualization
-- `git_cache.sh` - Optimized git operations
-
-#### Metrics & Performance
-- `metrics.sh` - Performance tracking and historical analysis
-- `performance.sh` - Timing and benchmarking utilities
-- `health_check.sh` - System validation
-
-#### Utilities
-- `config.sh` - YAML configuration loading
-- `backlog.sh` - Execution history management
-- `file_operations.sh` - Safe file operations
-- `colors.sh` - Terminal output formatting
-- `utils.sh` - Common utilities
-- `validation.sh` - Input validation and safety checks
-- `summary.sh` - Report generation
-- `session_manager.sh` - Long-running process management
+**Quick Reference**:
+- **Core Modules** (12): ai_helpers.sh, tech_stack.sh, workflow_optimization.sh, change_detection.sh, etc.
+- **Supporting Modules** (16): edit_operations.sh, ai_cache.sh, session_manager.sh, etc.
+- **Step Modules** (15): step_00_analyze.sh through step_14_ux_analysis.sh
+- **Configuration Files** (6): YAML-based prompt templates and project configuration
 
 ## Key Files and Directories
 
@@ -87,10 +57,11 @@ AI Workflow Automation is an intelligent workflow system for validating and enha
 
 ```
 src/workflow/execute_tests_docs_workflow.sh
-├── Main orchestrator script (4,740 lines)
+├── Main orchestrator script (2,009 lines)
 ├── Handles all command-line options
 ├── Coordinates 15-step workflow execution
-└── Manages parallel execution and metrics
+├── Manages parallel execution and metrics
+└── Orchestrator modules (630 lines in orchestrators/): pre_flight, validation, quality, finalization
 ```
 
 ### Configuration Files
@@ -101,47 +72,9 @@ src/workflow/config/
 └── ai_helpers.yaml           # AI prompt templates (762 lines)
 ```
 
-### Library Modules (src/workflow/lib/)
+### Library and Step Modules
 
-**Core Modules**:
-- `ai_helpers.sh` (18.7 KB) - AI integration with 13 personas
-- `ai_cache.sh` (10.6 KB) - AI response caching (NEW v2.3.0)
-- `change_detection.sh` (14.7 KB) - Change analysis
-- `dependency_graph.sh` (13.5 KB) - Dependency visualization
-- `metrics.sh` (12.2 KB) - Performance tracking
-- `workflow_optimization.sh` (11.5 KB) - Execution optimization
-
-**Support Modules**:
-- `step_execution.sh` (9.6 KB) - Step lifecycle
-- `config.sh` (6.8 KB) - Configuration loading
-- `backlog.sh` (6.7 KB) - History management
-- `file_operations.sh` (5.9 KB) - File utilities
-- `health_check.sh` (5.7 KB) - System validation
-- `performance.sh` (4.9 KB) - Timing utilities
-- `session_manager.sh` (4.5 KB) - Process management
-- `validation.sh` (4.3 KB) - Input validation
-- `git_cache.sh` (3.8 KB) - Git operations
-- `summary.sh` (3.0 KB) - Report generation
-- `utils.sh` (2.8 KB) - Common utilities
-- `colors.sh` (1.6 KB) - Terminal colors
-
-### Step Modules (src/workflow/steps/)
-
-1. `step_00_analyze.sh` - Pre-flight analysis and validation
-2. `step_01_documentation.sh` - Documentation updates with AI
-3. `step_02_consistency.sh` - Cross-reference consistency validation
-4. `step_03_script_refs.sh` - Script reference validation
-5. `step_04_directory.sh` - Directory structure validation
-6. `step_05_test_review.sh` - Test coverage review
-7. `step_06_test_gen.sh` - Test case generation
-8. `step_07_test_exec.sh` - Test execution
-9. `step_08_dependencies.sh` - Dependency validation
-10. `step_09_code_quality.sh` - Code quality checks
-11. `step_10_context.sh` - Context analysis
-12. `step_11_git.sh` - Git operations and finalization
-13. `step_12_markdown_lint.sh` - Markdown linting
-14. `step_13_prompt_engineer.sh` - Prompt engineering analysis
-15. `step_14_ux_analysis.sh` - UX/UI analysis (NEW in v2.4.0)
+> 📋 **Complete List**: See [docs/PROJECT_REFERENCE.md#module-inventory](../docs/PROJECT_REFERENCE.md#module-inventory for all 28 library modules and 15 step modules with line counts.
 
 ### Documentation Structure
 
@@ -279,24 +212,16 @@ cd ../
 
 ### AI Personas
 
-The system uses 14 specialized AI personas for different tasks:
+> 📋 **Complete List**: See [docs/PROJECT_REFERENCE.md#ai-personas-14-total](../docs/PROJECT_REFERENCE.md#ai-personas-14-total for all 14 functional AI personas.
 
-1. **documentation_specialist** - Documentation updates and validation (context-aware: adapts based on project kind and language from `project_kinds.yaml` and `.workflow-config.yaml`)
-2. **consistency_analyst** - Cross-reference consistency checks
-3. **code_reviewer** - Code quality and architecture review
-4. **test_engineer** - Test generation and validation
-5. **dependency_analyst** - Dependency graph analysis
-6. **git_specialist** - Git operations and finalization
-7. **performance_analyst** - Performance optimization
-8. **security_analyst** - Security vulnerability scanning
-9. **markdown_linter** - Markdown formatting validation
-10. **context_analyst** - Contextual understanding and analysis
-11. **script_validator** - Shell script validation
-12. **directory_validator** - Directory structure validation
-13. **test_execution_analyst** - Test execution analysis
-14. **ux_designer** - UX/UI analysis and accessibility (NEW in v2.4.0)
+The system uses **14 specialized AI personas** including documentation_specialist, code_reviewer, test_engineer, and ux_designer (NEW v2.4.0).
 
-Each persona has specialized prompts in `ai_helpers.yaml`. The documentation_specialist persona is project-aware and references:
+Personas are implemented through:
+- **9 base prompt templates** in `src/workflow/lib/ai_helpers.yaml`
+- **4 project-kind specific personas** in `src/workflow/config/ai_prompts_project_kinds.yaml` (documentation_specialist, code_reviewer, test_engineer, ux_designer)
+- **Language-aware enhancements**: When `PRIMARY_LANGUAGE` is set in `.workflow-config.yaml`, AI prompts are automatically enhanced with language-specific conventions (documentation standards, testing practices, code quality rules) from `ai_helpers.yaml`. This happens silently in Steps 2 and 5.
+
+The documentation_specialist persona is project-aware and references:
 - **`src/workflow/config/project_kinds.yaml`** - Defines project types (shell_script_automation, nodejs_api, static_website, client_spa, react_spa, python_app, generic) with quality standards, testing frameworks, and documentation requirements
 - **`.workflow-config.yaml`** - Project-specific configuration including:
   - `project.kind` - Explicitly set project kind (shell_automation, nodejs_api, nodejs_cli, nodejs_library, static_website, client_spa, react_spa, vue_spa, python_api, python_cli, python_library, documentation)
@@ -306,99 +231,14 @@ Each persona has specialized prompts in `ai_helpers.yaml`. The documentation_spe
 
 ## Version History
 
-### v2.4.0 (2025-12-23) - UX Designer Persona & Step 14
+> 📋 **Complete History**: See [docs/PROJECT_REFERENCE.md#version-history-major-releases](../docs/PROJECT_REFERENCE.md#version-history-major-releases for all releases and detailed changelogs.
 
-**Major Features**:
-- ✅ Step 14: UX Analysis - AI-powered UI/UX analysis with accessibility checking
-- ✅ UX Designer AI persona with WCAG 2.1 expertise
-- ✅ Intelligent UI detection (React, Vue, Static, TUI)
-- ✅ Smart skipping for non-UI projects (APIs, libraries, CLI tools)
-- ✅ Comprehensive accessibility analysis with automated fallback
-- ✅ Parallel execution support (runs in Group 1 with steps 1, 3, 4, 5, 8, 13)
+**Current Version**: v2.4.0 (2025-12-23)
+- Step 14: UX Analysis with accessibility checking
+- UX Designer AI persona
+- No breaking changes
 
-**New Files**:
-- `src/workflow/steps/step_14_ux_analysis.sh` (605 lines) - UX analysis implementation
-- `tests/unit/test_step_14_ux_analysis.sh` (425 lines) - Comprehensive test suite
-- `tests/unit/test_step_14_ui_detection.sh` (30 lines) - UI detection validation
-- `docs/workflow-automation/UX_DESIGNER_PERSONA_REQUIREMENTS.md` - Functional requirements
-- `docs/workflow-automation/STEP_14_UX_ANALYSIS.md` - Feature documentation
-- `docs/RELEASE_NOTES_v2.4.0.md` - Complete release notes
-
-**Configuration Updates**:
-- Updated `ai_prompts_project_kinds.yaml` - Added UX Designer persona for web_application and documentation_site
-- Updated `step_relevance.yaml` - Step 14 relevance matrix for all project kinds
-- Updated `dependency_graph.sh` - Step 14 dependencies and parallel grouping
-- Updated `execute_tests_docs_workflow.sh` - Step 14 execution with checkpoint support
-
-**Performance Impact**:
-- Execution Time: ~3 minutes (180 seconds)
-- Parallel with: Steps 1, 3, 4, 5, 8, 13 (Group 1)
-- Smart execution: Skips when no UI code changes
-- AI caching: 60-80% token reduction
-
-**Test Coverage**:
-- ✅ UI detection for React/Vue/Static projects
-- ✅ Skip behavior for APIs/libraries
-- ✅ Project kind classification
-- ✅ Automated UX checks fallback
-- ✅ Integration with workflow
-
-### v2.3.1 (2025-12-18) - Critical Fixes & Checkpoint Control
-
-**New Features**:
-- ✅ `--no-resume` flag to bypass checkpoint resume functionality
-- ✅ `--init-config` flag to run interactive configuration wizard
-- ✅ `--show-tech-stack` flag to display detected technology stack
-- ✅ `--config-file FILE` option to use custom .workflow-config.yaml file
-- ✅ Tech stack initialization with auto-detection and configuration support
-- ✅ Adaptive test execution supporting Jest, BATS, and pytest frameworks
-- ✅ Adaptive directory validation based on project configuration
-- ✅ Force fresh workflow start from Step 0 when needed
-
-**Bug Fixes**:
-- ✅ Fixed checkpoint file Bash syntax errors (proper variable quoting)
-- ✅ Fixed metrics calculation arithmetic errors in historical stats
-- ✅ Resolved "command not found" errors in checkpoint files
-- ✅ Fixed Step 7 test execution directory navigation (now uses TARGET_DIR)
-- ✅ Added safe log file directory checks to prevent early execution errors
-
-**Improvements**:
-- Enhanced checkpoint file format with proper quoting
-- Improved error handling in metrics calculations
-- Added tech stack detection and configuration framework
-- Updated Step 4 to use config-based directory validation
-- Updated Step 7 to support multiple test frameworks adaptively
-- Added comprehensive project critical analysis documentation
-
-### v2.3.0 (2025-12-18) - Phase 2 Integration Complete
-
-**Major Features**:
-- ✅ Smart execution with change detection (--smart-execution)
-- ✅ Parallel execution of independent steps (--parallel)
-- ✅ AI response caching system (ai_cache.sh module)
-- ✅ Integrated metrics collection
-- ✅ Dependency graph visualization (--show-graph)
-- ✅ Target project option (--target, defaults to current directory)
-
-**Performance Impact**:
-- Up to 90% faster for documentation-only changes
-- 60-80% token usage reduction with AI caching
-- 33% time savings with parallel execution
-
-### v2.2.0 (2025-12-17)
-- Change detection and impact analysis
-- Dependency graph generation
-- Metrics framework foundation
-
-### v2.1.0 (2025-12-15)
-- Complete modularization (30 modules)
-- YAML configuration system
-- Enhanced output limits
-
-### v2.0.0 (2025-12-14)
-- Initial modular architecture
-- 14-step workflow pipeline (expanded to 15 in v2.4.0)
-- AI integration framework
+**Recent Versions**: v2.3.1 (bug fixes), v2.3.0 (smart/parallel execution), v2.2.0 (metrics), v2.1.0 (modularization), v2.0.0 (initial release)
 
 ## Common Patterns
 
@@ -529,11 +369,14 @@ finalize_metrics
 
 ## Support and Resources
 
-- **Main Documentation**: `MIGRATION_README.md`
-- **Technical Analysis**: `docs/workflow-automation/COMPREHENSIVE_WORKFLOW_EXECUTION_ANALYSIS.md`
-- **Module Reference**: `src/workflow/README.md`
-- **Feature Guide**: `docs/TARGET_PROJECT_FEATURE.md`
-- **Quick Reference**: `docs/QUICK_REFERENCE_TARGET_OPTION.md`
+> 📋 **Single Source of Truth**: [docs/PROJECT_REFERENCE.md](../docs/PROJECT_REFERENCE.md)
+
+**Key Documentation**:
+- **[docs/PROJECT_REFERENCE.md](../docs/PROJECT_REFERENCE.md) - Authoritative project reference (features, modules, versions)
+- **[docs/archive/reports/implementation/MIGRATION_README.md](../docs/archive/reports/implementation/MIGRATION_README.md)**: Architecture overview
+- **[docs/reference/workflow-diagrams.md](../docs/reference/workflow-diagrams.md) - Visual diagrams (17 Mermaid diagrams)
+- **[docs/archive/](../docs/archive/)**: Comprehensive workflow documentation
+- **[src/workflow/README.md](../src/workflow/README.md)**: Module API reference
 
 ---
 

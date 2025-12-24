@@ -1,0 +1,24 @@
+✓ List directory .
+   └ 16 files found
+
+I need more information about your request. You've provided a YAML configuration file with AI prompt templates but haven't specified:
+
+1. **Role**: What role should I take? (reviewer, analyst, implementer, etc.)
+2. **Task**: What specific task do you want me to perform?
+3. **Approach**: How should I approach this task?
+
+Could you please clarify what you'd like me to do with this YAML prompt configuration? For example:
+
+- Review and provide feedback on the prompts?
+- Analyze specific persona templates for improvements?
+- Check consistency and quality across all prompts?
+- Implement changes to improve specific sections?
+- Generate new prompt templates for missing use cases?
+
+
+Total usage est:       1 Premium request
+Total duration (API):  13s
+Total duration (wall): 16s
+Total code changes:    0 lines added, 0 lines removed
+Usage by model:
+    claude-sonnet-4.5    68.9k input, 260 output, 41.1k cache read (Est. 1 Premium request)

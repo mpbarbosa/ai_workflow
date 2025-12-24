@@ -32,11 +32,11 @@ These are the authoritative project statistics. All documentation should referen
 - `doc_template_validator.sh` (411 lines) - Template validation
 - `step_adaptation.sh` (493 lines) - Dynamic step adaptation
 
-**Orchestrator Modules** (4 files, 21,210 lines):
-- `orchestrators/pre_flight.sh` (7,337 lines) - Pre-execution validation
-- `orchestrators/validation_orchestrator.sh` (7,488 lines) - Validation coordination
-- `orchestrators/quality_orchestrator.sh` (3,031 lines) - Quality assurance
-- `orchestrators/finalization_orchestrator.sh` (3,354 lines) - Post-execution
+**Orchestrator Modules** (4 files, 630 lines):
+- `orchestrators/pre_flight.sh` (227 lines) - Pre-execution validation
+- `orchestrators/validation_orchestrator.sh` (228 lines) - Validation coordination
+- `orchestrators/quality_orchestrator.sh` (82 lines) - Quality assurance
+- `orchestrators/finalization_orchestrator.sh` (93 lines) - Post-execution
 
 **Test Infrastructure** (13 files, ~4,200 lines):
 - All `test_*.sh` files in `src/workflow/lib/`
@@ -50,10 +50,10 @@ These are the authoritative project statistics. All documentation should referen
 | **v2.3.1 Production Code** |||✅ Documented |
 | - Library Code | 12,781 | `lib/*.sh` (excluding tests) | ✅ Documented |
 | - Step Code | 5,287 | `steps/step_*.sh` | ✅ Documented |
-| - Main Workflow | 1,884 | `execute_tests_docs_workflow.sh` | ✅ Documented |
+| - - Main Workflow | 2,009 | `execute_tests_docs_workflow.sh | ✅ Documented |
 | **v2.4.0 New Code** ||| ⚠️ **Undocumented** |
 | - New Libraries | 2,094 | 5 new modules | ⚠️ Undocumented |
-| - Orchestrators | 21,210 | 4 orchestrator modules | ⚠️ Undocumented |
+| - - Orchestrators | 630 | 4 orchestrator modules | ⚠️ Undocumented |
 | - v2.4 Main Workflow | 481 | `execute_tests_docs_workflow_v2.4.sh` | ⚠️ Undocumented |
 | **Test Infrastructure** ||| ⚠️ Undocumented |
 | - Test Scripts | ~4,200 | 13 test files | ⚠️ Undocumented |
@@ -66,7 +66,7 @@ These are the authoritative project statistics. All documentation should referen
 
 **Documentation Gap**: 27,985 lines (~58.4%) requiring documentation
 
-**Priority**: Document v2.4.0 orchestrator architecture (21,210 lines - critical)
+**Priority**: Document v2.4.0 orchestrator architecture (630 lines - 4 modules)
 
 ### AI Integration
 
@@ -195,7 +195,7 @@ See [PROJECT_STATISTICS.md](PROJECT_STATISTICS.md) for official counts.
 | Component | Scripts | Lines | Documented | Status |
 |-----------|---------|-------|------------|--------|
 | v2.3.1 Production | 37 | 19,952 | ✅ Yes | Complete |
-| v2.4.0 Orchestrators | 4 | 21,210 | ❌ No | Critical priority |
+| v2.4.0 - Orchestrators | 630 | ❌ No | Critical priority |
 | v2.4.0 New Libraries | 5 | 2,094 | ❌ No | High priority |
 | v2.4.0 Main Script | 1 | 481 | ❌ No | High priority |
 | Test Infrastructure | 13 | ~4,200 | ❌ No | Medium priority |

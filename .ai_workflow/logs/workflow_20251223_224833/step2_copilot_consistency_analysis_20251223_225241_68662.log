@@ -1,0 +1,168 @@
+I'll analyze the documentation consistency across the project, focusing on the broken references and overall documentation quality.
+
+✓ List directory .
+   └ 21 files found
+
+✓ List directory docs
+   └ 9 files found
+
+✓ Read docs/PROJECT_REFERENCE.md:1-100
+   └ 100 lines read
+
+✓ Grep "/shell_scripts/" (/home/mpb/Documents/GitHub/ai_workflow/docs)
+   └ 14 files found
+
+✓ Read docs/archive/reports/analysis/DOCUMENTATION_CONSISTENCY_ANALYSIS_REPORT.md:1-100
+   └ 100 lines read
+
+✓ Grep "/docs/MISSING\.md" (/home/mpb/Documents/GitHub/ai_workflow/docs)
+   └ 4 files found
+
+✓ Count actual markdown files in docs
+ $ cd /home/mpb/Documents/GitHub/ai_workflow && find docs -name "*.md" -type f | wc -l
+    └ 2 lines...
+
+✓ Read docs/archive/reports/analysis/DOCUMENTATION_CONSISTENCY_ANALYSIS_20251223_185454.md:1-100
+   └ 100 lines read
+
+✓ Count all markdown files in project
+ $ cd /home/mpb/Documents/GitHub/ai_workflow && find . -path ./.git -prune -o -name "*.md" -type
+ f -print | wc -l
+    └ 2 lines...
+
+✓ Count modified files
+ $ cd /home/mpb/Documents/GitHub/ai_workflow && git status --porcelain | wc -l
+    └ 2 lines...
+
+✓ Count unstaged modified files
+ $ cd /home/mpb/Documents/GitHub/ai_workflow && git diff --name-only | wc -l
+    └ 2 lines...
+
+✓ Count staged files
+ $ cd /home/mpb/Documents/GitHub/ai_workflow && git diff --cached --name-only | wc -l
+    └ 2 lines...
+
+✓ Count library shell scripts
+ $ cd /home/mpb/Documents/GitHub/ai_workflow && find src/workflow/lib -name "*.sh" -type f | wc
+ -l
+    └ 2 lines...
+
+✓ Count step modules
+ $ cd /home/mpb/Documents/GitHub/ai_workflow && find src/workflow/steps -name "*.sh" -type f | wc
+  -l
+    └ 2 lines...
+
+✓ Get main orchestrator line count
+ $ cd /home/mpb/Documents/GitHub/ai_workflow && wc -l src/workflow/execute_tests_docs_workflow.sh
+    └ 2 lines...
+
+✓ Get total library shell script lines
+ $ cd /home/mpb/Documents/GitHub/ai_workflow && find src/workflow/lib -name "*.sh" -type f -exec
+ wc -l {} + | tail -1
+    └ 2 lines...
+
+✓ Get total step module lines
+ $ cd /home/mpb/Documents/GitHub/ai_workflow && find src/workflow/steps -name "*.sh" -type f
+ -exec wc -l {} + | tail -1
+    └ 2 lines...
+
+✓ Get ai_helpers.yaml line count
+ $ cd /home/mpb/Documents/GitHub/ai_workflow && wc -l src/workflow/lib/ai_helpers.yaml
+    └ 2 lines...
+
+✓ Read README.md:1-50
+   └ 50 lines read
+
+✓ Read .github/copilot-instructions.md:1-50
+   └ 50 lines read
+
+✓ Get orchestrator modules line count
+ $ cd /home/mpb/Documents/GitHub/ai_workflow && find src/workflow/orchestrators -name "*.sh"
+ -type f -exec wc -l {} + | tail -1 2>/dev/null || echo "0 total"
+    └ 2 lines...
+
+✓ Get config yaml line count
+ $ cd /home/mpb/Documents/GitHub/ai_workflow && find src/workflow/config -name "*.yaml" -type f
+ -exec wc -l {} + | tail -1
+    └ 2 lines...
+
+✓ Check for shell_scripts directory
+ $ cd /home/mpb/Documents/GitHub/ai_workflow && ls -la | grep -i shell
+    └ 1 line...
+
+✓ Find shell_scripts references in archive
+ $ cd /home/mpb/Documents/GitHub/ai_workflow && grep -r "/shell_scripts/" docs/archive
+ --include="*.md" | head -20
+    └ 21 lines...
+
+✓ Check version consistency in main docs
+ $ cd /home/mpb/Documents/GitHub/ai_workflow && grep -r "v2\.3\|v2\.2\|v2\.1"
+ docs/PROJECT_REFERENCE.md docs/README.md README.md | grep -i "version\|current" | head -10
+    └ 1 line...
+
+✓ Read docs/design/yaml-parsing-design.md:1-80
+   └ 80 lines read
+
+✓ Check AI persona counts in key docs
+ $ cd /home/mpb/Documents/GitHub/ai_workflow && grep -c "14 AI" README.md
+ .github/copilot-instructions.md docs/PROJECT_REFERENCE.md
+    └ 4 lines...
+
+✓ List AI-related modules
+ $ cd /home/mpb/Documents/GitHub/ai_workflow && find src/workflow/lib -name "ai*.sh" -o -name
+ "ai*.yaml" | head -10
+    └ 7 lines...
+
+Now I'll create a comprehensive documentation consistency analysis report:
+
+✓ Create docs/archive/reports/analysis/DOCUMENTATION_CONSISTENCY_ANALYSIS_20251224.md
+
+Perfect! I've completed a comprehensive documentation consistency analysis. Here's the summary:
+
+## Analysis Complete ✅
+
+**Overall Documentation Quality Score: 8.2/10**
+
+### Key Findings:
+
+**Issues Identified: 34 total**
+- 🔴 Critical: 0 (all previously critical issues resolved)
+- 🟠 High: 3 (statistics discrepancies)
+- 🟡 Medium: 15 (mostly archived documents)
+- 🟢 Low: 8 (maintenance items)
+
+### Top Priority Actions:
+
+1. **Update Statistics** (HIGH)
+   - README.md claims "28 Library Modules (19,952 lines)" → Actually **32 modules (14,928 lines)**
+   - README.md claims "15 Step Modules (3,786 lines)" → Actually **31 modules (7,007 lines)**
+   - Same discrepancies in `.github/copilot-instructions.md`
+
+2. **Document New Architecture** (HIGH)
+   - New `orchestrators/` directory (4 modules, 630 lines) not yet documented
+   - Part of v2.4.0 but missing from module inventory
+
+3. **Legacy References** (MEDIUM)
+   - 14 archived documents still reference obsolete `/shell_scripts/` path
+   - Recommend adding historical context notice rather than bulk replacement
+
+### Strengths ✅:
+- Version v2.4.0 consistently documented
+- PROJECT_REFERENCE.md serves well as single source of truth
+- Excellent documentation structure and organization
+- 100% test coverage well documented
+- Active maintenance (recent updates 2025-12-23)
+
+### False Positives:
+- Regex patterns in YAML parsing docs incorrectly flagged as broken links
+- Example placeholders in analysis reports are intentional, not broken references
+
+**Full report created**: `docs/archive/reports/analysis/DOCUMENTATION_CONSISTENCY_ANALYSIS_20251224.md`
+
+
+Total usage est:       1 Premium request
+Total duration (API):  2m 56.829s
+Total duration (wall): 3m 4.862s
+Total code changes:    0 lines added, 0 lines removed
+Usage by model:
+    claude-sonnet-4.5    506.9k input, 11.1k output, 429.0k cache read (Est. 1 Premium request)
