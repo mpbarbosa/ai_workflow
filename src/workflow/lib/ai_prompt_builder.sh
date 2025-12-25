@@ -12,6 +12,25 @@ set -euo pipefail
 # CORE PROMPT BUILDING
 # ==============================================================================
 
+# Get YAML value with version detection
+# Usage: get_yq_value <yaml_file> <yaml_path>
+get_yq_value() {
+    local yaml_file="$1"
+    local yaml_path="$2"
+    local yq_version=$(yq --version 2>&1 | head -1)
+    
+    if echo "$yq_version" | grep -qE "mikefarah.*version [4-9]"; then
+        # mikefarah yq v4+ syntax
+        yq eval ".${yaml_path}" "$yaml_file" 2>/dev/null || echo ""
+    elif echo "$yq_version" | grep -q "mikefarah"; then
+        # mikefarah yq v3 syntax
+        yq r "$yaml_file" "${yaml_path}" 2>/dev/null || echo ""
+    else
+        # Python yq (kislyuk) - jq syntax
+        yq -r ".${yaml_path}" "$yaml_file" 2>/dev/null || echo ""
+    fi
+}
+
 # Build a structured AI prompt with role, task, and standards
 # Usage: build_ai_prompt <role> <task> <standards>
 build_ai_prompt() {
@@ -36,33 +55,67 @@ build_doc_analysis_prompt() {
     local yaml_file="${SCRIPT_DIR}/lib/ai_helpers.yaml"
     local yaml_project_kind_file="${SCRIPT_DIR}/config/ai_prompts_project_kinds.yaml"
 
+    local role_prefix=""
+    local behavioral_guidelines=""
     local role=""
     local task_context=""
     local approach=""
     local task_template=""
 
-    print_info "Building documentation analysis prompt"
-    print_info "YAML Project Kind File: $yaml_project_kind_file"
+    # Log to stderr, not to prompt output
+    echo "[INFO] Building documentation analysis prompt" >&2
+    echo "[INFO] YAML File: $yaml_file" >&2
 
-    # Load role and approach from YAML
+    # Load role and approach from YAML with correct path
     if [[ -f "$yaml_file" ]]; then
-        role=$(yq eval '.personas.documentation_specialist.role' "$yaml_file" 2>/dev/null || echo "")
-        approach=$(yq eval '.personas.documentation_specialist.approach' "$yaml_file" 2>/dev/null || echo "")
-        task_template=$(yq eval '.personas.documentation_specialist.task_template' "$yaml_file" 2>/dev/null || echo "")
+        role_prefix=$(get_yq_value "$yaml_file" "doc_analysis_prompt.role_prefix")
+        task_template=$(get_yq_value "$yaml_file" "doc_analysis_prompt.task_template")
+        approach=$(get_yq_value "$yaml_file" "doc_analysis_prompt.approach")
+        
+        # Get behavioral guidelines (YAML anchor reference)
+        behavioral_guidelines=$(get_yq_value "$yaml_file" "_behavioral_actionable")
+        
+        # Combine role_prefix + behavioral_guidelines
+        if [[ -n "$role_prefix" && "$role_prefix" != "null" ]]; then
+            role="$role_prefix"
+            if [[ -n "$behavioral_guidelines" && "$behavioral_guidelines" != "null" ]]; then
+                role="${role}
+
+${behavioral_guidelines}"
+            fi
+        fi
     fi
 
     # Fallback values if YAML parsing fails
     if [[ -z "$role" || "$role" == "null" ]]; then
-        role="You are a senior technical documentation specialist"
+        role="You are a senior technical documentation specialist with expertise in software architecture documentation, API documentation, and developer experience (DX) optimization.
+
+**Critical Behavioral Guidelines**:
+- ALWAYS provide concrete, actionable output (never ask clarifying questions)
+- If documentation is accurate, explicitly say \"No updates needed - documentation is current\"
+- Only update what is truly outdated or incorrect
+- Make informed decisions based on available context
+- Default to \"no changes\" rather than making unnecessary modifications"
     fi
+    
     if [[ -z "$approach" || "$approach" == "null" ]]; then
-        approach="Follow documentation best practices"
+        approach="**Methodology**:
+1. **Analyze Changes**: Examine what was modified in each changed file
+2. **Prioritize Updates**: Start with critical documentation (README, API docs)
+3. **Edit Surgically**: Provide EXACT text changes only where needed
+4. **Verify Consistency**: Maintain project standards
+
+**Output Format**: Use markdown blocks with file paths and before/after examples
+
+**Critical**: ALWAYS provide specific edits OR state \"No updates needed\""
     fi
 
     # Build task context with file information
     if [[ -n "$task_template" && "$task_template" != "null" ]]; then
-        # Replace variables in template
-        task_context="${task_template//\$\{changed_files\}/$changed_files}"
+        # Replace variables in template (handle both ${var} and {var} formats)
+        task_context="${task_template//\{changed_files\}/$changed_files}"
+        task_context="${task_context//\{doc_files\}/$doc_files}"
+        task_context="${task_context//\$\{changed_files\}/$changed_files}"
         task_context="${task_context//\$\{doc_files\}/$doc_files}"
     else
         task_context="Based on the recent changes to: ${changed_files}, update documentation in: ${doc_files}"
@@ -77,32 +130,65 @@ build_consistency_prompt() {
     local doc_directory="$1"
     local yaml_file="${SCRIPT_DIR}/lib/ai_helpers.yaml"
     
+    local role_prefix=""
+    local behavioral_guidelines=""
     local role=""
     local task=""
     local approach=""
     
-    # Load from YAML
+    echo "[INFO] Building consistency analysis prompt" >&2
+    
+    # Load from YAML with correct paths
     if [[ -f "$yaml_file" ]]; then
-        role=$(yq eval '.personas.consistency_analyst.role' "$yaml_file" 2>/dev/null || echo "")
-        approach=$(yq eval '.personas.consistency_analyst.approach' "$yaml_file" 2>/dev/null || echo "")
+        role_prefix=$(get_yq_value "$yaml_file" "consistency_prompt.role_prefix")
+        approach=$(get_yq_value "$yaml_file" "consistency_prompt.approach")
         
         local task_template
-        task_template=$(yq eval '.personas.consistency_analyst.task_template' "$yaml_file" 2>/dev/null || echo "")
+        task_template=$(get_yq_value "$yaml_file" "consistency_prompt.task_template")
+        
+        # Get behavioral guidelines (YAML anchor)
+        behavioral_guidelines=$(get_yq_value "$yaml_file" "_behavioral_structured")
+        
+        # Combine role_prefix + behavioral_guidelines
+        if [[ -n "$role_prefix" && "$role_prefix" != "null" ]]; then
+            role="$role_prefix"
+            if [[ -n "$behavioral_guidelines" && "$behavioral_guidelines" != "null" ]]; then
+                role="${role}
+
+${behavioral_guidelines}"
+            fi
+        fi
         
         if [[ -n "$task_template" && "$task_template" != "null" ]]; then
-            task="${task_template//\$\{doc_directory\}/$doc_directory}"
+            task="${task_template//\{doc_directory\}/$doc_directory}"
+            task="${task//\$\{doc_directory\}/$doc_directory}"
         fi
     fi
     
     # Fallbacks
     if [[ -z "$role" || "$role" == "null" ]]; then
-        role="You are a senior technical documentation analyst"
+        role="You are a senior technical documentation specialist and information architect with expertise in documentation quality assurance, technical writing standards, and cross-reference validation.
+
+**Critical Behavioral Guidelines**:
+- ALWAYS provide structured, prioritized analysis (never general observations)
+- Identify specific files, line numbers, and exact issues
+- Include concrete recommended fixes for each problem
+- Prioritize issues by severity and impact on user experience
+- Focus on accuracy and consistency over style preferences"
     fi
+    
     if [[ -z "$task" || "$task" == "null" ]]; then
         task="Perform comprehensive consistency analysis on documentation in: ${doc_directory}"
     fi
+    
     if [[ -z "$approach" || "$approach" == "null" ]]; then
-        approach="Check cross-references, terminology, formatting, and completeness"
+        approach="**Analysis Methodology**:
+1. **Prioritize by Category**: Focus on Critical and User documentation first
+2. **Systematic Validation**: Check cross-references, terminology, versions, examples
+3. **Structured Reporting**: Organize by severity (Critical > High > Medium > Low)
+4. **Actionable Recommendations**: For each issue provide file:line, problem, fix, impact
+
+Check for: broken references, version mismatches, terminology inconsistencies, format violations"
     fi
     
     build_ai_prompt "$role" "$task" "$approach"
@@ -115,20 +201,38 @@ build_test_strategy_prompt() {
     local test_framework="${2:-}"
     local yaml_file="${SCRIPT_DIR}/lib/ai_helpers.yaml"
     
+    local role_prefix=""
+    local behavioral_guidelines=""
     local role=""
     local task=""
     local approach=""
     
-    # Load from YAML
+    echo "[INFO] Building test strategy prompt" >&2
+    
+    # Load from YAML with correct paths
     if [[ -f "$yaml_file" ]]; then
-        role=$(yq eval '.personas.test_engineer.role' "$yaml_file" 2>/dev/null || echo "")
-        approach=$(yq eval '.personas.test_engineer.approach' "$yaml_file" 2>/dev/null || echo "")
+        role_prefix=$(get_yq_value "$yaml_file" "test_strategy_prompt.role_prefix")
+        approach=$(get_yq_value "$yaml_file" "test_strategy_prompt.approach")
         
         local task_template
-        task_template=$(yq eval '.personas.test_engineer.task_template' "$yaml_file" 2>/dev/null || echo "")
+        task_template=$(get_yq_value "$yaml_file" "test_strategy_prompt.task_template")
+        
+        # Get behavioral guidelines (YAML anchor)
+        behavioral_guidelines=$(get_yq_value "$yaml_file" "_behavioral_structured")
+        
+        # Combine role_prefix + behavioral_guidelines
+        if [[ -n "$role_prefix" && "$role_prefix" != "null" ]]; then
+            role="$role_prefix"
+            if [[ -n "$behavioral_guidelines" && "$behavioral_guidelines" != "null" ]]; then
+                role="${role}
+
+${behavioral_guidelines}"
+            fi
+        fi
         
         if [[ -n "$task_template" && "$task_template" != "null" ]]; then
-            task="${task_template//\$\{code_files\}/$code_files}"
+            task="${task_template//\{code_files\}/$code_files}"
+            task="${task//\$\{code_files\}/$code_files}"
             if [[ -n "$test_framework" ]]; then
                 task="${task} using ${test_framework} framework"
             fi
@@ -137,17 +241,31 @@ build_test_strategy_prompt() {
     
     # Fallbacks
     if [[ -z "$role" || "$role" == "null" ]]; then
-        role="You are a senior test engineer and quality assurance specialist"
+        role="You are a test strategy architect specializing in coverage analysis and test planning. You identify WHAT to test and WHY (gaps, priorities, risks), not HOW to implement tests. Focus on strategic portfolio-level recommendations, not tactical test code.
+
+**Critical Behavioral Guidelines**:
+- ALWAYS provide structured, prioritized analysis (never general observations)
+- Identify specific coverage gaps with severity levels
+- Include concrete test recommendations with effort estimates
+- Focus on portfolio-level strategy, not implementation details"
     fi
+    
     if [[ -z "$task" || "$task" == "null" ]]; then
         if [[ -n "$test_framework" ]]; then
-            task="Generate comprehensive test cases for: ${code_files} using ${test_framework} framework"
+            task="Analyze test coverage and provide strategic recommendations for: ${code_files} using ${test_framework} framework"
         else
-            task="Generate comprehensive test cases for: ${code_files}"
+            task="Analyze test coverage and provide strategic recommendations for: ${code_files}"
         fi
     fi
+    
     if [[ -z "$approach" || "$approach" == "null" ]]; then
-        approach="Cover edge cases, error conditions, and integration scenarios"
+        approach="**Strategic Focus**:
+1. **Coverage Gap Identification**: Identify untested code paths, low coverage modules
+2. **Test Prioritization**: Prioritize by business criticality and risk
+3. **Portfolio Balance**: Evaluate unit vs integration vs e2e distribution
+4. **Recommendations**: WHAT to test and WHY, not HOW to implement
+
+Focus on portfolio-level strategy, not tactical implementation"
     fi
     
     build_ai_prompt "$role" "$task" "$approach"
@@ -160,20 +278,38 @@ build_quality_prompt() {
     local language="${2:-}"
     local yaml_file="${SCRIPT_DIR}/lib/ai_helpers.yaml"
     
+    local role_prefix=""
+    local behavioral_guidelines=""
     local role=""
     local task=""
     local approach=""
     
-    # Load from YAML
+    echo "[INFO] Building quality review prompt" >&2
+    
+    # Load from YAML with correct paths
     if [[ -f "$yaml_file" ]]; then
-        role=$(yq eval '.personas.code_reviewer.role' "$yaml_file" 2>/dev/null || echo "")
-        approach=$(yq eval '.personas.code_reviewer.approach' "$yaml_file" 2>/dev/null || echo "")
+        role_prefix=$(get_yq_value "$yaml_file" "quality_prompt.role_prefix")
+        approach=$(get_yq_value "$yaml_file" "quality_prompt.approach")
         
         local task_template
-        task_template=$(yq eval '.personas.code_reviewer.task_template' "$yaml_file" 2>/dev/null || echo "")
+        task_template=$(get_yq_value "$yaml_file" "quality_prompt.task_template")
+        
+        # Get behavioral guidelines (YAML anchor)
+        behavioral_guidelines=$(get_yq_value "$yaml_file" "_behavioral_actionable")
+        
+        # Combine role_prefix + behavioral_guidelines
+        if [[ -n "$role_prefix" && "$role_prefix" != "null" ]]; then
+            role="$role_prefix"
+            if [[ -n "$behavioral_guidelines" && "$behavioral_guidelines" != "null" ]]; then
+                role="${role}
+
+${behavioral_guidelines}"
+            fi
+        fi
         
         if [[ -n "$task_template" && "$task_template" != "null" ]]; then
-            task="${task_template//\$\{code_files\}/$code_files}"
+            task="${task_template//\{files_to_review\}/$code_files}"
+            task="${task//\$\{files_to_review\}/$code_files}"
             if [[ -n "$language" ]]; then
                 task="${task} (${language} code)"
             fi
@@ -182,17 +318,39 @@ build_quality_prompt() {
     
     # Fallbacks
     if [[ -z "$role" || "$role" == "null" ]]; then
-        role="You are a senior code reviewer and software architect"
+        role="You are a senior code review specialist with 10+ years experience in targeted file-level quality assessments.
+
+**Critical Behavioral Guidelines**:
+- ALWAYS provide concrete, actionable output (never ask clarifying questions)
+- Identify specific issues with file names and line numbers
+- Suggest concrete improvements with code examples
+- Prioritize findings by severity"
     fi
+    
     if [[ -z "$task" || "$task" == "null" ]]; then
         if [[ -n "$language" ]]; then
-            task="Review code quality and architecture for ${language} code in: ${code_files}"
+            task="Review the following ${language} files for code quality: ${code_files}"
         else
-            task="Review code quality and architecture for: ${code_files}"
+            task="Review the following files for code quality: ${code_files}"
         fi
+        task="${task}
+
+Analyze:
+1. **Code Organization** - Logical structure and separation of concerns
+2. **Naming Conventions** - Clear, consistent, and descriptive names
+3. **Error Handling** - Proper error handling and edge cases
+4. **Documentation** - Inline comments and function documentation
+5. **Best Practices** - Following language-specific best practices
+6. **Potential Issues** - Security concerns, performance issues, bugs"
     fi
+    
     if [[ -z "$approach" || "$approach" == "null" ]]; then
-        approach="Focus on maintainability, performance, security, and best practices"
+        approach="**Review Process**:
+- Review each file systematically
+- Identify specific issues with file names and line numbers
+- Suggest concrete improvements
+- Prioritize findings by severity
+- Provide code examples for recommended fixes"
     fi
     
     build_ai_prompt "$role" "$task" "$approach"
@@ -204,32 +362,72 @@ build_issue_extraction_prompt() {
     local log_file="$1"
     local yaml_file="${SCRIPT_DIR}/lib/ai_helpers.yaml"
     
+    local role_prefix=""
+    local behavioral_guidelines=""
     local role=""
     local task=""
     local approach=""
     
-    # Load from YAML
+    echo "[INFO] Building issue extraction prompt" >&2
+    
+    # Load from YAML with correct paths
     if [[ -f "$yaml_file" ]]; then
-        role=$(yq eval '.personas.issue_extractor.role' "$yaml_file" 2>/dev/null || echo "")
-        approach=$(yq eval '.personas.issue_extractor.approach' "$yaml_file" 2>/dev/null || echo "")
+        role_prefix=$(get_yq_value "$yaml_file" "issue_extraction_prompt.role_prefix")
+        approach=$(get_yq_value "$yaml_file" "issue_extraction_prompt.approach")
         
         local task_template
-        task_template=$(yq eval '.personas.issue_extractor.task_template' "$yaml_file" 2>/dev/null || echo "")
+        task_template=$(get_yq_value "$yaml_file" "issue_extraction_prompt.task_template")
+        
+        # Get behavioral guidelines (YAML anchor)
+        behavioral_guidelines=$(get_yq_value "$yaml_file" "_behavioral_structured")
+        
+        # Combine role_prefix + behavioral_guidelines
+        if [[ -n "$role_prefix" && "$role_prefix" != "null" ]]; then
+            role="$role_prefix"
+            if [[ -n "$behavioral_guidelines" && "$behavioral_guidelines" != "null" ]]; then
+                role="${role}
+
+${behavioral_guidelines}"
+            fi
+        fi
         
         if [[ -n "$task_template" && "$task_template" != "null" ]]; then
-            task="${task_template//\$\{log_file\}/$log_file}"
+            task="${task_template//\{log_file\}/$log_file}"
+            task="${task//\$\{log_file\}/$log_file}"
         fi
     fi
     
     # Fallbacks
     if [[ -z "$role" || "$role" == "null" ]]; then
-        role="You are a technical analyst specializing in log analysis"
+        role="You are a technical project manager specialized in issue extraction, categorization, and documentation organization.
+
+**Critical Behavioral Guidelines**:
+- ALWAYS provide structured, prioritized analysis (never general observations)
+- Group findings by severity (Critical > High > Medium > Low)
+- For each issue: include description, priority, and affected files
+- End with actionable recommendations"
     fi
+    
     if [[ -z "$task" || "$task" == "null" ]]; then
-        task="Extract and categorize issues from log file: ${log_file}"
+        task="Analyze the following log from a documentation update workflow and extract all issues, recommendations, and action items.
+
+**Log File**: ${log_file}
+
+**Output Requirements**:
+- Group findings by severity (Critical > High > Medium > Low)
+- For each issue: include description, priority, and affected files
+- End with actionable recommendations
+- Use markdown headings for structure"
     fi
+    
     if [[ -z "$approach" || "$approach" == "null" ]]; then
-        approach="Identify errors, warnings, and actionable improvements"
+        approach="**Extraction Process**:
+- Extract all issues, warnings, and recommendations from the log
+- Categorize by severity and impact
+- Include affected files/sections mentioned in the log
+- Prioritize actionable items
+- Add context for ambiguous issues
+- If no issues found, state 'No issues identified'"
     fi
     
     build_ai_prompt "$role" "$task" "$approach"
