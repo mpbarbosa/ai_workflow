@@ -36,6 +36,7 @@ parse_workflow_arguments() {
                 SUMMARIES_DIR="${PROJECT_ROOT}/.ai_workflow/summaries"
                 LOGS_DIR="${PROJECT_ROOT}/.ai_workflow/logs"
                 PROMPTS_DIR="${PROJECT_ROOT}/.ai_workflow/prompts"
+                METRICS_DIR="${PROJECT_ROOT}/.ai_workflow/metrics"
                 
                 print_info "Target project: $PROJECT_ROOT"
                 shift 2
@@ -139,6 +140,26 @@ parse_workflow_arguments() {
                 print_info "Fresh start enabled - ignoring any checkpoints"
                 shift
                 ;;
+            --cleanup-days)
+                if [[ -z "${2:-}" ]] || [[ "$2" == --* ]]; then
+                    print_error "--cleanup-days requires a number argument"
+                    exit 1
+                fi
+                if ! [[ "$2" =~ ^[0-9]+$ ]]; then
+                    print_error "--cleanup-days must be a positive number"
+                    exit 1
+                fi
+                CLEANUP_DAYS="$2"
+                export CLEANUP_DAYS
+                print_info "Artifact cleanup retention set to ${CLEANUP_DAYS} days"
+                shift 2
+                ;;
+            --no-cleanup)
+                NO_CLEANUP=true
+                export NO_CLEANUP
+                print_info "Artifact cleanup disabled"
+                shift
+                ;;
             --show-tech-stack)
                 SHOW_TECH_STACK=true
                 export SHOW_TECH_STACK
@@ -157,6 +178,83 @@ parse_workflow_arguments() {
             --init-config)
                 INIT_CONFIG_WIZARD=true
                 export INIT_CONFIG_WIZARD
+                shift
+                ;;
+            --enhanced-validations)
+                ENABLE_ENHANCED_VALIDATIONS=true
+                export ENABLE_ENHANCED_VALIDATIONS
+                print_info "Enhanced validations enabled (lint, changelog, CDN, metrics)"
+                shift
+                ;;
+            --strict-validations)
+                ENABLE_ENHANCED_VALIDATIONS=true
+                STRICT_VALIDATIONS=true
+                export ENABLE_ENHANCED_VALIDATIONS STRICT_VALIDATIONS
+                print_info "Strict validation mode enabled - workflow will fail if validations fail"
+                shift
+                ;;
+            --ml-optimize)
+                ML_OPTIMIZE=true
+                export ML_OPTIMIZE
+                print_info "ML optimization enabled - predictive workflow optimization"
+                shift
+                ;;
+            --show-ml-status)
+                SHOW_ML_STATUS=true
+                export SHOW_ML_STATUS
+                shift
+                ;;
+            --multi-stage)
+                MULTI_STAGE=true
+                export MULTI_STAGE
+                print_info "Multi-stage pipeline enabled - progressive validation (3 stages)"
+                shift
+                ;;
+            --show-pipeline)
+                SHOW_PIPELINE=true
+                export SHOW_PIPELINE
+                shift
+                ;;
+            --manual-trigger)
+                MANUAL_TRIGGER=true
+                export MANUAL_TRIGGER
+                print_info "Manual trigger enabled - all 3 stages will execute"
+                shift
+                ;;
+            --generate-docs)
+                AUTO_GENERATE_DOCS=true
+                export AUTO_GENERATE_DOCS
+                print_info "Auto-documentation enabled - workflow reports will be generated"
+                shift
+                ;;
+            --update-changelog)
+                AUTO_UPDATE_CHANGELOG=true
+                export AUTO_UPDATE_CHANGELOG
+                print_info "Auto-changelog enabled - CHANGELOG.md will be updated from commits"
+                shift
+                ;;
+            --generate-api-docs)
+                GENERATE_API_DOCS=true
+                export GENERATE_API_DOCS
+                print_info "API documentation generation enabled"
+                shift
+                ;;
+            --install-hooks)
+                INSTALL_HOOKS=true
+                export INSTALL_HOOKS
+                print_info "Pre-commit hooks will be installed"
+                shift
+                ;;
+            --uninstall-hooks)
+                UNINSTALL_HOOKS=true
+                export UNINSTALL_HOOKS
+                print_info "Pre-commit hooks will be uninstalled"
+                shift
+                ;;
+            --test-hooks)
+                TEST_HOOKS=true
+                export TEST_HOOKS
+                print_info "Pre-commit hooks will be tested"
                 shift
                 ;;
             --help)
@@ -184,30 +282,30 @@ validate_parsed_arguments() {
     # Validate PROJECT_ROOT is set and exists
     if [[ -z "${PROJECT_ROOT:-}" ]]; then
         print_error "PROJECT_ROOT is not set"
-        ((errors++))
+        ((errors++)) || true
     elif [[ ! -d "$PROJECT_ROOT" ]]; then
         print_error "PROJECT_ROOT does not exist: $PROJECT_ROOT"
-        ((errors++))
+        ((errors++)) || true
     fi
     
     # Validate EXECUTE_STEPS format
     if [[ -n "${EXECUTE_STEPS:-}" ]] && [[ "$EXECUTE_STEPS" != "all" ]]; then
         if ! [[ "$EXECUTE_STEPS" =~ ^[0-9,]+$ ]]; then
             print_error "Invalid --steps format: must be 'all' or comma-separated numbers (e.g., '0,1,2')"
-            ((errors++))
+            ((errors++)) || true
         fi
     fi
     
     # Validate mutually exclusive modes
     if [[ "${AUTO_MODE:-false}" == "true" ]] && [[ "${INTERACTIVE_MODE:-false}" == "true" ]]; then
         print_error "Cannot use both --auto and --interactive modes"
-        ((errors++))
+        ((errors++)) || true
     fi
     
     # Validate config file if specified
     if [[ -n "${TECH_STACK_CONFIG_FILE:-}" ]] && [[ ! -f "$TECH_STACK_CONFIG_FILE" ]]; then
         print_error "Config file does not exist: $TECH_STACK_CONFIG_FILE"
-        ((errors++))
+        ((errors++)) || true
     fi
     
     # Set default artifact directories if not already set (no --target option used)
@@ -216,6 +314,7 @@ validate_parsed_arguments() {
         SUMMARIES_DIR="${WORKFLOW_HOME}/.ai_workflow/summaries"
         LOGS_DIR="${WORKFLOW_HOME}/.ai_workflow/logs"
         PROMPTS_DIR="${WORKFLOW_HOME}/.ai_workflow/prompts"
+        METRICS_DIR="${WORKFLOW_HOME}/.ai_workflow/metrics"
     fi
     
     # Export artifact directory variables
@@ -223,6 +322,7 @@ validate_parsed_arguments() {
     export SUMMARIES_DIR
     export LOGS_DIR
     export PROMPTS_DIR
+    export METRICS_DIR
     
     # Set run-specific directories now that base directories are known
     BACKLOG_RUN_DIR="${BACKLOG_DIR}/${WORKFLOW_RUN_ID}"
@@ -271,6 +371,17 @@ OPTIONS:
   
   --no-ai-cache          Disable AI response caching
   --stop                 Prompt for continuation after completion
+  
+  --cleanup-days <N>     Remove artifacts older than N days (default: 7)
+  --no-cleanup           Disable automatic artifact cleanup
+  
+  --enhanced-validations    Enable additional validation checks:
+                            • Pre-commit lint (npm run lint)
+                            • Changelog validation (version changes)
+                            • CDN readiness (cdn-urls.txt)
+                            • Metrics health (history.jsonl)
+  --strict-validations      Enable enhanced validations in strict mode
+                            (workflow fails if validations fail)
   
   --help                 Display this help message
   --version              Display script version

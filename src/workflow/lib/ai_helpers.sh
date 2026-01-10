@@ -223,17 +223,17 @@ build_doc_analysis_prompt() {
     local task_template=""
     local prompt_type="generic"  # Track which type of prompt is being used
 
-    print_info "Building documentation analysis prompt"
-    print_info "YAML Project Kind File: $yaml_project_kind_file"
+    print_info "Building documentation analysis prompt" >&2
+    print_info "YAML Project Kind File: $yaml_project_kind_file" >&2
     
     # Validate inputs - provide clear guidance if empty
     if [[ -z "$changed_files" || "$changed_files" == " " ]]; then
-        print_warning "No changed files detected - using generic documentation review prompt"
+        print_warning "No changed files detected - using generic documentation review prompt" >&2
         changed_files="(No specific file changes detected - performing general documentation review)"
     fi
     
     if [[ -z "$doc_files" || "$doc_files" == " " ]]; then
-        print_warning "No documentation files specified - using all common docs"
+        print_warning "No documentation files specified - using all common docs" >&2
         doc_files="README.md, docs/, .github/copilot-instructions.md"
     fi
     
@@ -241,7 +241,7 @@ build_doc_analysis_prompt() {
     local file_count
     file_count=$(echo "$changed_files" | wc -w)
     if [[ $file_count -gt 20 ]]; then
-        print_info "Large number of changes detected ($file_count files)"
+        print_info "Large number of changes detected ($file_count files)" >&2
         # Provide summary instead of full list
         local file_summary="$file_count files changed across multiple directories"
         local dir_summary
@@ -255,7 +255,7 @@ For detailed file list, check git status or workflow logs."
     
     # Read project kind from config if available
     if [[ -f "$yaml_project_kind_file" ]]; then
-        print_info "Reading project kind from config"
+        print_info "Reading project kind from config" >&2
         local project_kind=""
         
         # Try to get project kind, with proper error handling
@@ -273,10 +273,10 @@ For detailed file list, check git status or workflow logs."
             project_kind="generic"
         fi
         
-        print_info "Detected project kind: $project_kind"
+        print_info "Detected project kind: $project_kind" >&2
         
         if [[ -n "$project_kind" && "$project_kind" != "generic" && "$project_kind" != "null" ]]; then
-            print_success "Using PROJECT KIND-SPECIFIC prompt for: $project_kind"
+            print_success "Using PROJECT KIND-SPECIFIC prompt for: $project_kind" >&2
             prompt_type="project_kind_specialized ($project_kind)"
             
             role=$(get_project_kind_prompt "$project_kind" "documentation_specialist" "role")
@@ -292,11 +292,11 @@ ${changed_files}
 ${base_task_context}"
             approach=$(get_project_kind_prompt "$project_kind" "documentation_specialist" "approach")
         else
-            print_info "Project kind is generic - using standard prompt"
+            print_info "Project kind is generic - using standard prompt" >&2
             prompt_type="generic"
         fi
     else
-        print_info "Project kind config not found - using generic prompt"
+        print_info "Project kind config not found - using generic prompt" >&2
         prompt_type="generic"
     fi
 
@@ -409,20 +409,20 @@ Provide one of:
         
         build_ai_prompt "$role" "$task" "$approach"
         
-        # Display prompt type indicator
-        echo ""
-        print_info "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+        # Display prompt type indicator (to stderr to avoid capturing in prompt variable)
+        echo "" >&2
+        print_info "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━" >&2
         if [[ "$prompt_type" == "generic" ]]; then
-            print_warning "📋 Prompt Type: GENERIC (no project kind customization)"
+            print_warning "📋 Prompt Type: GENERIC (no project kind customization)" >&2
         else
-            print_success "🎯 Prompt Type: ${prompt_type^^}"
+            print_success "🎯 Prompt Type: ${prompt_type^^}" >&2
         fi
-        print_info "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-        echo ""
+        print_info "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━" >&2
+        echo "" >&2
     else
         # Fallback to hardcoded strings if YAML not available
         prompt_type="generic (yaml not found)"
-        print_warning "YAML config not available - using hardcoded generic prompt"
+        print_warning "YAML config not available - using hardcoded generic prompt" >&2
         build_ai_prompt \
             "You are a senior technical documentation specialist with expertise in software architecture documentation, API documentation, and developer experience (DX) optimization." \
             "Based on the recent changes to the following files: ${changed_files}
@@ -431,7 +431,7 @@ Please update all related documentation including:
 1. .github/copilot-instructions.md - Update project overview, architecture patterns, key files
 2. README.md - Update if public-facing features or setup instructions changed
 3. /docs/ directory - Update technical documentation for architecture or feature changes
-4. src/workflow/README.md - Update if shell scripts were modified
+4. Component/module README files - Update if code structure or APIs were modified
 5. Inline code comments - Add/update comments for complex logic
 
 Documentation to review: ${doc_files}" \
@@ -441,12 +441,12 @@ Documentation to review: ${doc_files}" \
 - Ensure consistency in terminology, formatting, and style
 - Maintain professional technical writing standards"
         
-        # Display prompt type for hardcoded fallback
-        echo ""
-        print_info "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-        print_warning "📋 Prompt Type: ${prompt_type^^}"
-        print_info "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-        echo ""
+        # Display prompt type for hardcoded fallback (to stderr)
+        echo "" >&2
+        print_info "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━" >&2
+        print_warning "📋 Prompt Type: ${prompt_type^^}" >&2
+        print_info "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━" >&2
+        echo "" >&2
     fi
 }
 
@@ -800,9 +800,9 @@ EOF
    - Validate command examples match actual scripts
 
 2. **Content Synchronization:**
-   - Compare .github/copilot-instructions.md with README.md
-   - Check if src/workflow/README.md matches actual scripts in src/workflow/
-   - Verify package.json scripts match documented commands
+   - Compare primary documentation files (README, copilot-instructions)
+   - Check if module/component docs match actual code structure
+   - Verify build/package configuration matches documented commands
 
 3. **Architecture Consistency:**
    - Validate directory structure matches documented structure
@@ -839,13 +839,14 @@ EOF
 }
 
 # Build a shell script reference validation prompt (Step 3)
-# Usage: build_step3_script_refs_prompt <script_count> <change_scope> <issues> <script_issues> <all_scripts>
+# Usage: build_step3_script_refs_prompt <script_count> <change_scope> <issues> <script_issues> <all_scripts> <modified_count>
 build_step3_script_refs_prompt() {
     local script_count="$1"
     local change_scope="$2"
     local issues="$3"
     local script_issues_content="$4"
     local all_scripts="$5"
+    local modified_count="${6:-0}"
     local yaml_file="${SCRIPT_DIR}/lib/ai_helpers.yaml"
     
     # Read from YAML config if available
@@ -893,6 +894,8 @@ build_step3_script_refs_prompt() {
         task="${task//\{project_name\}/$project_name}"
         task="${task//\{project_description\}/$project_description}"
         task="${task//\{primary_language\}/$primary_language}"
+        task="${task//\{scripts_dir\}/${SHELL_SCRIPTS_DIR:-scripts}}"
+        task="${task//\{modified_count\}/$modified_count}"
         
         cat << EOF
 **Role**: ${role}
@@ -919,9 +922,10 @@ EOF
 **Context:**
 - Project: ${project_name} (${project_description})
 - Primary Language: ${primary_language}
-- Shell Scripts Directory: src/workflow/
+- Shell Scripts Directory: ${SHELL_SCRIPTS_DIR:-scripts}
 - Total Scripts: ${script_count}
 - Scope: ${change_scope}
+- Modified Files: ${modified_count}
 - Issues Found in Phase 1: ${issues}
 
 **Phase 1 Automated Findings:**
@@ -933,8 +937,8 @@ ${all_scripts}
 **Validation Tasks:**
 
 1. **Script-to-Documentation Mapping:**
-   - Verify every script in src/workflow/ is documented in src/workflow/README.md
-   - Check that documented scripts actually exist
+   - Verify every executable script in the project is documented in project README or script documentation
+   - Check that documented scripts/executables actually exist at specified paths
    - Validate script descriptions match actual functionality
    - Ensure usage examples are accurate and complete
 
@@ -950,23 +954,32 @@ ${all_scripts}
    - Missing prerequisite or dependency information
    - Missing output/return value documentation
 
-4. **Shell Script Best Practices:**
+4. **Script Best Practices (Project-Specific):**
    - Executable permissions properly documented
-   - Shebang lines mentioned in documentation where relevant
+   - Entry points (shebangs, main functions) mentioned in documentation where relevant
    - Environment variable requirements documented
    - Error handling and exit codes documented
 
 5. **Integration Documentation:**
-   - Workflow relationships between scripts documented
+   - Workflow relationships between components documented
    - Execution order or dependencies clarified
    - Common use cases and examples provided
    - Troubleshooting guidance available
 
+6. **DevOps Integration Documentation** (when applicable):
+   - CI/CD pipeline references (GitHub Actions, Jenkins, GitLab CI, CircleCI)
+   - Container/orchestration scripts (Docker, Kubernetes manifests, docker-compose)
+   - Deployment automation documentation (deploy scripts, infrastructure provisioning)
+   - Infrastructure-as-code script references (Terraform, Ansible, CloudFormation)
+   - Monitoring/observability script documentation (health checks, metrics collection)
+   - Build/release automation scripts (packaging, versioning, artifact management)
+
 **Files to Analyze:**
-- src/workflow/README.md
-- All .sh files in src/workflow/
-- .github/copilot-instructions.md (for shell script references)
-- Main README.md (for automation workflow mentions)
+- Project README.md and any module/component README files
+- All executable files (shell scripts, Python scripts, Node.js scripts, etc.)
+- .github/copilot-instructions.md (for automation/script references)
+- Configuration files that define entry points or commands
+- CI/CD configuration files (.github/workflows/, .gitlab-ci.yml, Jenkinsfile, .circleci/)
 
 **Expected Output:**
 - List of script reference issues with file:line locations

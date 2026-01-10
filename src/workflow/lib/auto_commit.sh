@@ -10,11 +10,94 @@ set -euo pipefail
 ################################################################################
 
 # ==============================================================================
+# CONDITIONAL STAGING FUNCTIONS (v2.6.0)
+# ==============================================================================
+
+# Check if tests passed based on workflow status
+# Returns: 0 if tests passed, 1 if failed or not run
+tests_passed() {
+    local test_status="${WORKFLOW_STATUS[step7]:-NOT_EXECUTED}"
+    
+    # Tests passed if status is ✅
+    [[ "$test_status" == "✅" ]]
+}
+
+# Check if documentation files were modified
+# Returns: 0 if docs modified, 1 otherwise
+docs_modified() {
+    local modified_files=$(git status --porcelain 2>/dev/null | awk '{print $2}')
+    
+    # Check if any modified file is a doc file
+    while IFS= read -r file; do
+        if [[ "$file" =~ ^docs/ ]] || [[ "$file" =~ ^README\.md$ ]] || [[ "$file" =~ \.md$ ]]; then
+            return 0
+        fi
+    done <<< "$modified_files"
+    
+    return 1
+}
+
+# Stage only documentation files
+# Usage: stage_docs_only
+# Returns: Number of files staged
+stage_docs_only() {
+    local files_staged=0
+    local modified_files=$(git status --porcelain 2>/dev/null | awk '{print $2}')
+    
+    if [[ -z "$modified_files" ]]; then
+        return 0
+    fi
+    
+    # Stage only documentation files
+    while IFS= read -r file; do
+        if [[ -n "$file" ]] && ([[ "$file" =~ ^docs/ ]] || [[ "$file" =~ ^README\.md$ ]] || [[ "$file" =~ \.md$ ]]); then
+            if git add "$file" 2>/dev/null; then
+                ((files_staged++)) || true
+            fi
+        fi
+    done <<< "$modified_files"
+    
+    echo "$files_staged"
+}
+
+# Conditionally stage documentation files after tests pass
+# Implements: auto_stage_docs condition from YAML spec
+# Usage: conditional_stage_docs
+# Returns: 0 on success, 1 on skip
+conditional_stage_docs() {
+    # Check conditions: docs_modified && tests_pass
+    if ! docs_modified; then
+        print_info "Conditional staging skipped: No documentation files modified"
+        return 1
+    fi
+    
+    if ! tests_passed; then
+        print_warning "Conditional staging skipped: Tests did not pass"
+        print_info "Documentation files will not be staged automatically"
+        return 1
+    fi
+    
+    # Both conditions met - stage docs
+    print_info "Conditional staging: Tests passed and docs modified"
+    print_info "Staging documentation files automatically..."
+    
+    local files_staged=$(stage_docs_only)
+    
+    if [[ $files_staged -gt 0 ]]; then
+        print_success "Staged $files_staged documentation file(s) ✅"
+        return 0
+    else
+        print_info "No documentation files to stage"
+        return 1
+    fi
+}
+
+# ==============================================================================
 # AUTO-COMMIT CONFIGURATION
 # ==============================================================================
 
 # Patterns for workflow artifacts to commit
-declare -a ARTIFACT_PATTERNS=(
+declare -a AUTO_COMMIT_PATTERNS=(
     "docs/**/*.md"
     "README.md"
     "CONTRIBUTING.md"
@@ -24,7 +107,7 @@ declare -a ARTIFACT_PATTERNS=(
 )
 
 # Patterns to exclude from auto-commit (sensitive/generated files)
-declare -a EXCLUDE_PATTERNS=(
+declare -a AUTO_COMMIT_EXCLUDES=(
     "*.log"
     "*.tmp"
     ".ai_workflow/backlog/**"
@@ -52,14 +135,14 @@ is_workflow_artifact() {
     local file="$1"
     
     # Check if file matches any artifact pattern
-    for pattern in "${ARTIFACT_PATTERNS[@]}"; do
+    for pattern in "${AUTO_COMMIT_PATTERNS[@]}"; do
         # Convert glob to regex
         local regex="${pattern//\*\*/.*}"
         regex="${regex//\*/[^/]*}"
         
         if [[ "$file" =~ ^${regex}$ ]]; then
             # Check it doesn't match exclude patterns
-            for exclude in "${EXCLUDE_PATTERNS[@]}"; do
+            for exclude in "${AUTO_COMMIT_EXCLUDES[@]}"; do
                 local exclude_regex="${exclude//\*\*/.*}"
                 exclude_regex="${exclude_regex//\*/[^/]*}"
                 
@@ -137,11 +220,11 @@ detect_change_type() {
     
     while IFS= read -r file; do
         if [[ "$file" =~ ^docs/ ]] || [[ "$file" =~ \.md$ ]]; then
-            ((docs_count++))
+            ((docs_count++)) || true
         elif [[ "$file" =~ ^tests/ ]] || [[ "$file" =~ test.*\.sh$ ]]; then
-            ((test_count++))
+            ((test_count++)) || true
         else
-            ((code_count++))
+            ((code_count++)) || true
         fi
     done <<< "$files"
     
@@ -172,7 +255,7 @@ stage_workflow_artifacts() {
     while IFS= read -r file; do
         if [[ -n "$file" ]] && is_workflow_artifact "$file"; then
             git add "$file" 2>/dev/null || true
-            ((files_staged++))
+            ((files_staged++)) || true
         fi
     done <<< "$modified_files"
     

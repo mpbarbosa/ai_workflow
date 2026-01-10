@@ -179,17 +179,17 @@ get_project_kind() {
         return 0
     fi
     
-    # Parse project.kind from YAML config
+    # Parse project.kind or project.type from YAML config
     local kind=""
     
     if [[ "${YQ_VERSION}" == "none" ]]; then
-        # Fallback: simple awk-based parsing
+        # Fallback: simple awk-based parsing - check both kind and type
         kind=$(awk '
             BEGIN { in_project=0 }
             /^project:/ { in_project=1; next }
             in_project && /^[^ ]/ { in_project=0 }
-            in_project && /^[[:space:]]+kind:/ {
-                sub(/^[[:space:]]+kind:[[:space:]]*/, "")
+            in_project && /^[[:space:]]+(kind|type):/ {
+                sub(/^[[:space:]]+(kind|type):[[:space:]]*/, "")
                 gsub(/"/, "")
                 gsub(/'\''/, "")
                 print
@@ -197,13 +197,27 @@ get_project_kind() {
             }
         ' "${config_file}")
     elif [[ "${YQ_VERSION}" == "v4" ]]; then
+        # Try project.kind first, then project.type
         kind=$(yq eval ".project.kind" "${config_file}" 2>/dev/null || echo "")
+        if [[ -z "$kind" ]] || [[ "$kind" == "null" ]]; then
+            kind=$(yq eval ".project.type" "${config_file}" 2>/dev/null || echo "")
+        fi
     elif [[ "${YQ_VERSION}" == "kislyuk" ]]; then
+        # Try project.kind first, then project.type
         kind=$(yq -r ".project.kind" "${config_file}" 2>/dev/null || echo "")
+        if [[ -z "$kind" ]] || [[ "$kind" == "null" ]]; then
+            kind=$(yq -r ".project.type" "${config_file}" 2>/dev/null || echo "")
+        fi
     else
-        # yq v3
+        # yq v3 - try project.kind first, then project.type
         kind=$(yq r "${config_file}" "project.kind" 2>/dev/null || echo "")
+        if [[ -z "$kind" ]] || [[ "$kind" == "null" ]]; then
+            kind=$(yq r "${config_file}" "project.type" 2>/dev/null || echo "")
+        fi
     fi
+    
+    # Normalize: convert hyphens to underscores
+    kind="${kind//-/_}"
     
     # Return empty string for null values
     if [[ "${kind}" == "null" ]] || [[ "${kind}" == "---" ]]; then

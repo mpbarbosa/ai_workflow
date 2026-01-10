@@ -15,6 +15,14 @@ src/workflow/.checkpoints/
 src/workflow/.ai_cache/
 src/workflow/src/
 
+# Workflow artifacts in any project (when using --target)
+*/.ai_workflow/backlog/
+*/.ai_workflow/summaries/
+*/.ai_workflow/logs/
+*/.ai_workflow/metrics/
+*/.ai_workflow/checkpoints/
+*/.ai_workflow/.ai_cache/
+
 # Test execution reports
 test-results/
 

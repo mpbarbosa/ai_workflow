@@ -7,6 +7,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+- **Step 0 Project Kind Detection**: Config file now takes priority over auto-detection (#critical-bugfix)
+  - Previously: Auto-detection always ran and could override config file settings
+  - Now: `.workflow-config.yaml` project kind is used if present (100% confidence)
+  - Auto-detection only runs when no config file exists or project kind not specified
+  - Example: `client-spa` in config correctly used instead of misdetected `python_cli`
+  - Affects: `src/workflow/steps/step_00_analyze.sh`
+  - Impact: Prevents misclassification of projects, ensures accurate AI prompts and step execution
+  - Priority order: Config file > Auto-detection
+- **Step 14 UX Analysis**: Fixed skipping for client-spa projects (#bugfix)
+  - `get_project_kind()` now reads both `project.kind` and `project.type` from config
+  - Added automatic normalization: hyphens to underscores (`client-spa` → `client_spa`)
+  - Updated `has_ui_components()` to normalize project kind values
+  - Affects: `src/workflow/lib/project_kind_config.sh`, `src/workflow/steps/step_14_ux_analysis.sh`
+  - Impact: Step 14 now correctly runs for all UI-based project types regardless of config field name
+  - Backward compatible: No breaking changes, enhanced flexibility
+
 ### Added
 - **Step Dependency Metadata System**: Comprehensive metadata for all workflow steps
   - New module: `src/workflow/lib/step_metadata.sh` (300+ lines)
@@ -33,6 +50,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Added `calculate_critical_path()` for workflow optimization
   - Added `calculate_total_time()` for time estimation
   - Better integration with step metadata system
+- **AI Prompt Templates**: Strengthened domain expertise
+  - `quality_prompt`: Enhanced role authority with specific credentials
+  - Before: "focused code review specialist"
+  - After: "senior code review specialist with 10+ years experience"
+  - Added expertise details: anti-patterns, language best practices, maintainability
+  - Increases AI confidence and potentially improves output quality
+  - Cost: +~20 tokens (worthwhile for authority boost)
 
 ### Optimized
 - **AI Prompt Templates**: Simplified overly prescriptive output formats
@@ -47,6 +71,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - **Total savings**: ~550 tokens per full workflow execution
   - Better consistency across all prompts (no arbitrary length requirements)
   - **Meta-optimization**: Even the prompt engineer prompt is now optimized! 😄
+- **AI Prompt Templates**: Removed verbose language-specific injection comments
+  - Affected prompts: `doc_analysis_prompt`, `step2_consistency_prompt`, `step3_script_refs_prompt`, `step5_test_review_prompt`, `step9_code_quality_prompt`
+  - Before: Multi-line comments explaining dynamic population with examples (~6-8 lines each)
+  - After: Single-line reference: `**Language-Specific Standards:** {variable}`
+  - AI doesn't need implementation details about template population
+  - **Savings**: ~80-100 tokens per prompt × 5 prompts = 400-500 tokens per workflow
+  - Cleaner, more maintainable prompts
+- **AI Prompt Templates**: Consolidated redundant test framework context
+  - Affected prompts: `step5_test_review_prompt`, `step7_test_exec_prompt`
+  - Before: Framework and environment listed separately, then repeated in "Test Configuration" section
+  - After: Single consolidated line: "Test Config: {framework} in {env}" or "Test Config: {framework} via `{command}`"
+  - Eliminates duplication, improves readability
+  - **Savings**: ~25-30 tokens per prompt × 2 prompts = 50-60 tokens per workflow
+  - **Total combined savings**: ~1,000-1,100 tokens per full workflow execution
 - **AI Prompt Templates**: Enhanced DevOps expertise alignment
   - `step3_script_refs_prompt`: Added DevOps integration documentation validation
   - New validation points: CI/CD pipelines, containers, IaC, deployment automation
@@ -54,6 +92,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Better alignment with "DevOps expert" persona
   - Catches CI/CD and container-related documentation gaps
   - Cost: +50 tokens per invocation (high value for DevOps projects)
+- **Documentation**: Added token efficiency metrics to ai_helpers.yaml header
+  - Cumulative savings summary: ~1,400-1,500 tokens per workflow
+  - Breakdown by optimization type with version history
+  - Cost impact analysis (GPT-4 pricing: ~$252-270/year for 500 workflows/month)
+  - Better visibility into optimization progress over versions
+  - Documentation-only change (no token cost)
 
 ### Fixed
 - AI cache test failures (7 test assertions)

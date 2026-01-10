@@ -195,18 +195,30 @@ wizard_detect_project() {
     local detected_lang="${PRIMARY_LANGUAGE:-javascript}"
     local confidence=$(get_confidence_score "$detected_lang")
     
+    # Detect project kind
+    local project_kind="generic"
+    local kind_confidence=0
+    if command -v detect_project_kind &>/dev/null; then
+        local kind_result
+        kind_result=$(detect_project_kind 2>/dev/null || echo '{"kind":"generic","confidence":0}')
+        project_kind=$(echo "$kind_result" | jq -r '.kind' 2>/dev/null || echo "generic")
+        kind_confidence=$(echo "$kind_result" | jq -r '.confidence' 2>/dev/null || echo "0")
+    fi
+    
     echo -e "${WIZARD_GREEN}✓ Detection complete!${WIZARD_RESET}"
     echo ""
     echo -e "  Detected Language: ${WIZARD_BOLD}${detected_lang}${WIZARD_RESET}"
     echo "  Confidence:        ${confidence}%"
     echo "  Build System:      ${BUILD_SYSTEM}"
     echo "  Test Framework:    ${TEST_FRAMEWORK}"
+    echo -e "  Project Kind:      ${WIZARD_BOLD}${project_kind}${WIZARD_RESET} (${kind_confidence}% confidence)"
     echo ""
     
     if confirm_prompt "Is this correct?"; then
         WIZARD_CONFIG[primary_language]="$detected_lang"
         WIZARD_CONFIG[build_system]="$BUILD_SYSTEM"
         WIZARD_CONFIG[test_framework]="$TEST_FRAMEWORK"
+        WIZARD_CONFIG[project_kind]="$project_kind"
         echo -e "${WIZARD_GREEN}✓ Using detected configuration${WIZARD_RESET}"
     else
         echo ""
@@ -223,34 +235,42 @@ wizard_detect_project() {
             javascript)
                 WIZARD_CONFIG[build_system]="npm"
                 WIZARD_CONFIG[test_framework]="jest"
+                WIZARD_CONFIG[project_kind]="nodejs_library"
                 ;;
             python)
                 WIZARD_CONFIG[build_system]="pip"
                 WIZARD_CONFIG[test_framework]="pytest"
+                WIZARD_CONFIG[project_kind]="python_library"
                 ;;
             go)
                 WIZARD_CONFIG[build_system]="go mod"
                 WIZARD_CONFIG[test_framework]="go test"
+                WIZARD_CONFIG[project_kind]="generic"
                 ;;
             java)
                 WIZARD_CONFIG[build_system]="maven"
                 WIZARD_CONFIG[test_framework]="junit"
+                WIZARD_CONFIG[project_kind]="generic"
                 ;;
             ruby)
                 WIZARD_CONFIG[build_system]="bundler"
                 WIZARD_CONFIG[test_framework]="rspec"
+                WIZARD_CONFIG[project_kind]="generic"
                 ;;
             rust)
                 WIZARD_CONFIG[build_system]="cargo"
                 WIZARD_CONFIG[test_framework]="cargo test"
+                WIZARD_CONFIG[project_kind]="generic"
                 ;;
             cpp)
                 WIZARD_CONFIG[build_system]="cmake"
                 WIZARD_CONFIG[test_framework]="gtest"
+                WIZARD_CONFIG[project_kind]="generic"
                 ;;
             bash)
                 WIZARD_CONFIG[build_system]="none"
                 WIZARD_CONFIG[test_framework]="bats"
+                WIZARD_CONFIG[project_kind]="shell_automation"
                 ;;
         esac
         
@@ -401,6 +421,7 @@ wizard_preview_and_save() {
 
 project:
   name: "${WIZARD_CONFIG[project_name]}"
+  kind: "${WIZARD_CONFIG[project_kind]}"
 EOF
 )
     

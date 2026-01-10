@@ -1,6 +1,6 @@
 # AI Workflow Automation
 
-[![Version](https://img.shields.io/badge/version-2.6.0-blue.svg)](https://github.com/mpbarbosa/ai_workflow/releases)
+[![Version](https://img.shields.io/badge/version-2.10.0-blue.svg)](https://github.com/mpbarbosa/ai_workflow/releases)
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 [![Code Quality](https://img.shields.io/badge/quality-B%2B%20(87%2F100)-brightgreen.svg)](src/COMPREHENSIVE_CODE_QUALITY_REPORT.md)
 [![Tests](https://img.shields.io/badge/tests-37%2B%20passing-brightgreen.svg)](tests/)
@@ -13,7 +13,7 @@
 Intelligent workflow automation system for validating and enhancing documentation, code, and tests with AI support.
 
 **Migrated from**: mpbarbosa_site repository (2025-12-18)  
-**Version**: v2.6.0  
+**Version**: v2.10.0  
 **Repository**: [github.com/mpbarbosa/ai_workflow](https://github.com/mpbarbosa/ai_workflow)
 
 ## Overview
@@ -31,9 +31,13 @@ This repository provides a comprehensive, modular workflow automation system tha
 - **Smart Execution**: 40-85% faster (change-based step skipping)
 - **Parallel Execution**: 33% faster (independent steps run simultaneously)
 - **AI Response Caching**: 60-80% token reduction
-- **Auto-Commit Workflow** (NEW v2.6.0): Automatic artifact commits with intelligent message generation
-- **Workflow Templates** (NEW v2.6.0): Docs-only, test-only, and feature development templates
-- **IDE Integration** (NEW v2.6.0): VS Code tasks with keyboard shortcuts
+- **Pre-Commit Hooks** (NEW v2.10.0): Fast validation checks to prevent broken commits
+- **Auto-Documentation** (v2.9.0): Generate reports and CHANGELOG from workflow execution
+- **Multi-Stage Pipeline** (v2.8.0): Progressive validation with 3-stage intelligent execution
+- **ML Optimization** (v2.7.0): Predictive workflow intelligence with 15-30% additional improvement
+- **Auto-Commit Workflow** (v2.6.0): Automatic artifact commits with intelligent message generation
+- **Workflow Templates** (v2.6.0): Docs-only, test-only, and feature development templates
+- **IDE Integration** (v2.6.0): VS Code tasks with keyboard shortcuts
 - **UX Analysis** (v2.4.0): Accessibility checking with WCAG 2.1
 - **100% Test Coverage**: 37+ automated tests
 - **Code Quality**: B+ (87/100) with comprehensive assessment
@@ -109,16 +113,44 @@ cd /path/to/your/project
 # Option 8: Auto-commit workflow artifacts (NEW v2.6.0)
 ./src/workflow/execute_tests_docs_workflow.sh --auto-commit
 
-# Option 9: VS Code integration (NEW v2.6.0)
+# Option 9: ML-driven optimization (NEW v2.7.0)
+# Requires 10+ historical workflow runs for accurate predictions
+./src/workflow/execute_tests_docs_workflow.sh \
+  --ml-optimize \
+  --smart-execution \
+  --parallel \
+  --auto
+
+# Option 10: Check ML system status (NEW v2.7.0)
+./src/workflow/execute_tests_docs_workflow.sh --show-ml-status
+
+# Option 11: VS Code integration (v2.6.0)
 # Press Ctrl+Shift+B in VS Code to access 10 pre-configured tasks
 cp -r ai_workflow/src/workflow /path/to/target/project/src/
 cd /path/to/target/project
 ./src/workflow/execute_tests_docs_workflow.sh
+
+# Option 12: Multi-stage pipeline (NEW v2.8.0)
+# Progressive validation: 80%+ of runs complete in first 2 stages
+./src/workflow/execute_tests_docs_workflow.sh \
+  --multi-stage \
+  --smart-execution \
+  --parallel
+
+# Option 13: View pipeline configuration (NEW v2.8.0)
+./src/workflow/execute_tests_docs_workflow.sh --show-pipeline
+
+# Option 14: Force all stages (NEW v2.8.0)
+./src/workflow/execute_tests_docs_workflow.sh \
+  --multi-stage \
+  --manual-trigger
 ```
 
 **Performance Tips**:
+- Use `--multi-stage` for intelligent progressive validation
 - Use `--smart-execution` for 40-85% faster execution
 - Use `--parallel` for 33% additional speed improvement
+- Use `--ml-optimize` for 15-30% ML-driven improvements (requires 10+ runs)
 - **📊 See [Performance Benchmarks](docs/reference/performance-benchmarks.md) for detailed methodology and raw data**
 - AI responses cached automatically (60-80% token savings)
 - Checkpoint resume enabled by default (use `--no-resume` for fresh start)

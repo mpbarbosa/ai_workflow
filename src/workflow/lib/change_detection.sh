@@ -162,30 +162,30 @@ detect_change_type() {
     
     while IFS= read -r file; do
         [[ -z "${file}" ]] && continue
-        ((total_count++))
+        ((total_count++)) || true
         
         if matches_pattern "${file}" "${FILE_PATTERNS[docs]}"; then
-            ((docs_count++))
+            ((docs_count++)) || true
         elif matches_pattern "${file}" "${FILE_PATTERNS[tests]}"; then
-            ((tests_count++))
+            ((tests_count++)) || true
         elif matches_pattern "${file}" "${FILE_PATTERNS[config]}"; then
-            ((config_count++))
+            ((config_count++)) || true
         elif matches_pattern "${file}" "${FILE_PATTERNS[scripts]}"; then
-            ((scripts_count++))
+            ((scripts_count++)) || true
         elif matches_pattern "${file}" "${FILE_PATTERNS[assets]}"; then
-            ((assets_count++))
+            ((assets_count++)) || true
         elif matches_pattern "${file}" "${FILE_PATTERNS[code]}"; then
-            ((code_count++))
+            ((code_count++)) || true
         fi
     done <<< "${all_changes}"
     
     # Determine change type based on counts
     local categories_changed=0
-    [[ ${docs_count} -gt 0 ]] && ((categories_changed++))
-    [[ ${tests_count} -gt 0 ]] && ((categories_changed++))
-    [[ ${config_count} -gt 0 ]] && ((categories_changed++))
-    [[ ${scripts_count} -gt 0 ]] && ((categories_changed++))
-    [[ ${code_count} -gt 0 ]] && ((categories_changed++))
+    [[ ${docs_count} -gt 0 ]] && ((categories_changed++)) || true
+    [[ ${tests_count} -gt 0 ]] && ((categories_changed++)) || true
+    [[ ${config_count} -gt 0 ]] && ((categories_changed++)) || true
+    [[ ${scripts_count} -gt 0 ]] && ((categories_changed++)) || true
+    [[ ${code_count} -gt 0 ]] && ((categories_changed++)) || true
     
     # Classification logic
     if [[ ${categories_changed} -eq 0 ]]; then
@@ -384,9 +384,9 @@ assess_change_impact() {
     while IFS= read -r file; do
         [[ -z "$file" ]] && continue
         if matches_pattern "$file" "${FILE_PATTERNS[code]}"; then
-            ((code_count++))
+            ((code_count++)) || true
         elif matches_pattern "$file" "${FILE_PATTERNS[docs]}"; then
-            ((doc_count++))
+            ((doc_count++)) || true
         fi
     done <<< "$filtered_files"
     

@@ -13,10 +13,17 @@ set -euo pipefail
 # ==============================================================================
 
 # Metrics directory structure
-METRICS_DIR="${PROJECT_ROOT}/src/workflow/metrics"
-METRICS_CURRENT="${METRICS_DIR}/current_run.json"
-METRICS_HISTORY="${METRICS_DIR}/history.jsonl"  # JSON Lines format for append-only history
-METRICS_SUMMARY="${METRICS_DIR}/summary.md"
+# Note: METRICS_DIR is set by argument_parser.sh based on --target option
+# - With --target: ${TARGET_PROJECT}/.ai_workflow/metrics
+# - Without --target: ${PROJECT_ROOT}/.ai_workflow/metrics
+# CRITICAL: Do not set default here - METRICS_DIR must be set by validate_parsed_arguments()
+# before init_metrics() is called, otherwise it will use the workflow directory instead
+# of the target project directory
+
+# Metrics file paths (initialized by init_metrics() after METRICS_DIR is set)
+METRICS_CURRENT=""
+METRICS_HISTORY=""
+METRICS_SUMMARY=""
 
 # Step timing tracking
 declare -A STEP_START_TIMES
@@ -45,6 +52,22 @@ WORKFLOW_STEPS_SKIPPED=0
 # Initialize metrics collection
 # Creates necessary directories and files
 init_metrics() {
+    # Validate METRICS_DIR is set (must be set by argument_parser.sh before calling)
+    if [[ -z "${METRICS_DIR:-}" ]]; then
+        echo "ERROR: METRICS_DIR not set. Must call validate_parsed_arguments() before init_metrics()" >&2
+        return 1
+    fi
+    
+    # Initialize metrics file paths now that METRICS_DIR is set
+    METRICS_CURRENT="${METRICS_DIR}/current_run.json"
+    METRICS_HISTORY="${METRICS_DIR}/history.jsonl"
+    METRICS_SUMMARY="${METRICS_DIR}/summary.md"
+    
+    # Export for use in other functions
+    export METRICS_CURRENT
+    export METRICS_HISTORY
+    export METRICS_SUMMARY
+    
     # Create metrics directory if it doesn't exist
     mkdir -p "${METRICS_DIR}"
     
@@ -131,6 +154,21 @@ stop_step_timer() {
     
     # Update current run JSON
     update_current_run_step "${step_num}" "${step_name}" "${status}" "${duration}" "${error_msg}"
+    
+    # Record ML training data if ML optimization is enabled (v2.7.0)
+    if [[ "${ML_OPTIMIZE:-false}" == "true" ]] && type -t record_step_execution > /dev/null 2>&1; then
+        local features="${ML_FEATURES:-{}}"
+        # Ensure features is valid JSON (not empty string)
+        [[ -z "$features" || "$features" == '""' ]] && features="{}"
+        local issues_found=0
+        
+        # Try to determine if issues were found (heuristic based on status)
+        if [[ "${status}" == "failed" ]]; then
+            issues_found=1
+        fi
+        
+        record_step_execution "${step_num}" "${duration}" "${features}" "${issues_found}"
+    fi
 }
 
 # Get step name from step number
@@ -151,6 +189,8 @@ get_step_name() {
         10) echo "Context_Analysis" ;;
         11) echo "Git_Finalization" ;;
         12) echo "Markdown_Linting" ;;
+        13) echo "Prompt_Engineer_Analysis" ;;
+        14) echo "UX_Analysis" ;;
         *) echo "Unknown_Step_${step_num}" ;;
     esac
 }
@@ -238,18 +278,31 @@ update_current_run_step() {
     # Create temporary file for jq processing
     local temp_file="${METRICS_CURRENT}.tmp"
     
-    # Build step object
-    local step_obj=$(cat << EOF
-{
-  "name": "${step_name}",
-  "status": "${status}",
-  "start_time": ${STEP_START_TIMES[${step_num}]:-0},
-  "end_time": ${STEP_END_TIMES[${step_num}]:-0},
-  "duration_seconds": ${duration},
-  "timestamp": "$(date -Iseconds)"
-}
-EOF
-    )
+    # Build step object using jq to ensure proper JSON escaping
+    local step_obj
+    local start_time="${STEP_START_TIMES[${step_num}]:-0}"
+    local end_time="${STEP_END_TIMES[${step_num}]:-0}"
+    
+    # Ensure numeric values (fallback to 0 if empty or non-numeric)
+    [[ -z "$start_time" || ! "$start_time" =~ ^[0-9]+$ ]] && start_time=0
+    [[ -z "$end_time" || ! "$end_time" =~ ^[0-9]+$ ]] && end_time=0
+    [[ -z "$duration" || ! "$duration" =~ ^[0-9]+$ ]] && duration=0
+    
+    step_obj=$(jq -n \
+        --arg name "${step_name}" \
+        --arg status "${status}" \
+        --argjson start_time "${start_time}" \
+        --argjson end_time "${end_time}" \
+        --argjson duration "${duration}" \
+        --arg timestamp "$(date -Iseconds)" \
+        '{
+            name: $name,
+            status: $status,
+            start_time: $start_time,
+            end_time: $end_time,
+            duration_seconds: $duration,
+            timestamp: $timestamp
+        }')
     
     # Add error message if present
     if [[ -n "${error_msg}" ]]; then
@@ -277,6 +330,19 @@ finalize_metrics() {
     WORKFLOW_END_EPOCH=$(date +%s)
     WORKFLOW_DURATION=$((WORKFLOW_END_EPOCH - WORKFLOW_START_EPOCH))
     WORKFLOW_SUCCESS=$([[ "${final_status}" == "success" ]] && echo "true" || echo "false")
+    
+    # Ensure all numeric variables are valid integers
+    WORKFLOW_DURATION=${WORKFLOW_DURATION:-0}
+    WORKFLOW_STEPS_COMPLETED=${WORKFLOW_STEPS_COMPLETED:-0}
+    WORKFLOW_STEPS_FAILED=${WORKFLOW_STEPS_FAILED:-0}
+    WORKFLOW_STEPS_SKIPPED=${WORKFLOW_STEPS_SKIPPED:-0}
+    WORKFLOW_END_EPOCH=${WORKFLOW_END_EPOCH:-0}
+    
+    [[ ! "$WORKFLOW_DURATION" =~ ^[0-9]+$ ]] && WORKFLOW_DURATION=0
+    [[ ! "$WORKFLOW_STEPS_COMPLETED" =~ ^[0-9]+$ ]] && WORKFLOW_STEPS_COMPLETED=0
+    [[ ! "$WORKFLOW_STEPS_FAILED" =~ ^[0-9]+$ ]] && WORKFLOW_STEPS_FAILED=0
+    [[ ! "$WORKFLOW_STEPS_SKIPPED" =~ ^[0-9]+$ ]] && WORKFLOW_STEPS_SKIPPED=0
+    [[ ! "$WORKFLOW_END_EPOCH" =~ ^[0-9]+$ ]] && WORKFLOW_END_EPOCH=0
     
     # Update current run JSON with final metrics
     local temp_file="${METRICS_CURRENT}.tmp"

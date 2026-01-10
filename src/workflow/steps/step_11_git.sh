@@ -4,14 +4,30 @@ set -euo pipefail
 ################################################################################
 # Step 11: AI-Powered Git Finalization & Commit Message Generation
 # Purpose: Stage changes, generate conventional commit messages, push to remote
-# Part of: Tests & Documentation Workflow Automation v2.0.0
-# Version: 2.0.0
+# Part of: Tests & Documentation Workflow Automation v2.7.0
+# Version: 2.2.0
+#
+# NEW IN v2.7.0 (2025-12-31):
+# - AI Batch Mode: Automatic AI commit message generation in --ai-batch mode
+# - Non-interactive AI invocation using Copilot CLI
+# - Enhanced fallback messages with full context
+# - Maintains backward compatibility with interactive mode
+# - Atomic Staging: Ensures consistent git state before Step 11 completion
+#   * Resets mixed staged/unstaged state before staging
+#   * Uses 'git add -A' for complete atomic staging
+#   * Verifies no mixed state remains after staging
+#   * Prevents partial commits and state confusion
+#
+# MODES:
+# - Interactive Mode: User pastes AI-generated message (manual)
+# - AI Batch Mode (--ai-batch): Automatic AI generation (NEW)
+# - Auto Mode (--auto): Default conventional message
 ################################################################################
 
 # Module version information
-readonly STEP11_VERSION="2.1.0"
+readonly STEP11_VERSION="2.2.0"
 readonly STEP11_VERSION_MAJOR=2
-readonly STEP11_VERSION_MINOR=1
+readonly STEP11_VERSION_MINOR=2
 readonly STEP11_VERSION_PATCH=0
 
 # Main step function - finalizes git operations with AI-generated commit messages
@@ -187,17 +203,49 @@ Dry run mode enabled. No actual git operations performed.
     echo -e "${CYAN}GitHub Copilot CLI Commit Message Generation Prompt:${NC}"
     echo -e "${YELLOW}${copilot_prompt}${NC}\n"
     
-    # Stage changes
+    # Stage changes (v2.7.0: Atomic staging strategy)
     echo ""
-    if [[ "$INTERACTIVE_MODE" == true ]]; then
-        if ! confirm_action "Stage changes for commit?"; then
-            print_warning "Skipping commit - changes not staged"
-            return 0
+    print_info "Determining staging strategy..."
+    
+    # Ensure clean git state before staging
+    # Unstage any partially staged files to ensure atomic staging
+    local mixed_state_files=$(git status --porcelain | grep -E "^(MM|AM)" | awk '{print $2}')
+    if [[ -n "$mixed_state_files" ]]; then
+        print_warning "Detected mixed staged/unstaged state - resetting for atomic staging"
+        git reset HEAD > /dev/null 2>&1 || true
+    fi
+    
+    # Try conditional staging first (docs only if tests passed)
+    local conditional_staging_applied=false
+    if type -t conditional_stage_docs > /dev/null 2>&1; then
+        if conditional_stage_docs; then
+            conditional_staging_applied=true
+            print_success "Conditional staging applied: Documentation files staged after test success"
         fi
     fi
     
-    git add .
-    print_success "Changes staged"
+    # If conditional staging wasn't applied, stage all changes (original behavior)
+    if [[ "$conditional_staging_applied" == false ]]; then
+        if [[ "$INTERACTIVE_MODE" == true ]]; then
+            if ! confirm_action "Stage all changes for commit?"; then
+                print_warning "Skipping commit - changes not staged"
+                return 0
+            fi
+        fi
+        
+        print_info "Staging all changes atomically..."
+        # Use 'git add -A' for full atomic staging (stages, modifies, and removes)
+        git add -A
+        print_success "All changes staged atomically"
+    fi
+    
+    # Verify atomic staging completed successfully
+    local verify_mixed_state=$(git status --porcelain | grep -E "^(MM|AM)" | wc -l)
+    if [[ $verify_mixed_state -gt 0 ]]; then
+        print_error "CRITICAL: Atomic staging verification failed - mixed state detected"
+        print_error "Run 'git add -u' to complete staging or 'git reset HEAD' to restart"
+        return 1
+    fi
     
     # Generate commit message
     local ai_commit_msg=""
@@ -209,7 +257,29 @@ Dry run mode enabled. No actual git operations performed.
     if is_copilot_available; then
         print_info "GitHub Copilot CLI detected - ready for commit message generation..."
         
-        if [[ "$INTERACTIVE_MODE" == true ]]; then
+        # Check if AI batch mode (with Copilot available) - NEW v2.7.0
+        if [[ "${AI_BATCH_MODE:-false}" == "true" ]]; then
+            # AI BATCH MODE: Generate AI commit message non-interactively
+            print_info "AI Batch Mode: Generating commit message automatically..."
+            print_info "This will use AI to create a professional conventional commit message"
+            echo ""
+            
+            # Generate AI commit message using batch mode
+            if ai_commit_msg=$(generate_batch_ai_commit_message); then
+                use_ai_message=true
+                echo "$ai_commit_msg" > "$commit_msg_file"
+                print_success "Using AI-generated commit message (batch mode) ✅"
+            else
+                print_warning "Batch AI generation failed - using enhanced fallback"
+                # Message already set by fallback in generate_batch_ai_commit_message
+                use_ai_message=true
+                echo "$ai_commit_msg" > "$commit_msg_file"
+            fi
+        elif [[ "$INTERACTIVE_MODE" == false ]]; then
+            # AUTO MODE (not batch): Skip AI generation, use default
+            print_info "Auto mode - using default conventional commit message"
+            print_info "Tip: Use --ai-batch for AI-generated commit messages in non-interactive mode"
+        elif [[ "$INTERACTIVE_MODE" == true ]]; then
             if confirm_action "Generate AI-powered commit message with Copilot CLI?"; then
                 print_info "Starting Copilot CLI commit message generation..."
                 print_info "This will create a professional conventional commit message"
@@ -251,11 +321,7 @@ Dry run mode enabled. No actual git operations performed.
             else
                 print_warning "Skipped AI commit message generation"
             fi
-        else
-            # AUTO MODE: Skip interactive AI generation
-            print_info "Auto mode - skipping interactive Copilot generation"
-            print_info "Using default conventional commit message"
-        fi
+        fi  # End of interactive mode check
     else
         print_warning "GitHub Copilot CLI not found - using default message"
         print_info "Install from: https://github.com/github/gh-copilot"
@@ -357,10 +423,12 @@ $(git show --stat HEAD 2>/dev/null || echo "Latest commit details unavailable")
         return 1
     fi
     
-    # Set executable permissions on shell scripts
-    print_info "Setting executable permissions on shell scripts..."
-    find src/workflow -name "*.sh" -exec chmod +x {} \;
-    print_success "Permissions updated"
+    # Set executable permissions on shell scripts (only if workflow directory exists)
+    if [[ -d "${WORKFLOW_ROOT:-}/src/workflow" ]]; then
+        print_info "Setting executable permissions on shell scripts..."
+        find "${WORKFLOW_ROOT}/src/workflow" -name "*.sh" -exec chmod +x {} \; 2>/dev/null || true
+        print_success "Permissions updated"
+    fi
 }
 
 # Export step function

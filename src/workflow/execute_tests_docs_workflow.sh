@@ -119,7 +119,7 @@ set -euo pipefail
 # CONFIGURATION & CONSTANTS
 # ==============================================================================
 
-SCRIPT_VERSION="2.6.0"  # Developer Experience: Auto-commit + Templates + IDE integration
+SCRIPT_VERSION="2.11.0"  # Workflow Dashboard: Interactive HTML reports with data visualization
 SCRIPT_NAME="Tests & Documentation Workflow Automation"
 WORKFLOW_HOME="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
 PROJECT_ROOT="$(pwd)"  # Default: current directory; can be overridden with --target option
@@ -178,6 +178,34 @@ PARALLEL_EXECUTION=true  # ✅ ENABLED BY DEFAULT (Phase 2) - Parallel validatio
 USE_AI_CACHE=true  # Enabled by default
 NO_RESUME=false    # When true, ignore checkpoints and start from step 0
 
+# Enhanced validations (v2.7.0) - NEW
+ENABLE_ENHANCED_VALIDATIONS=false  # Off by default - enable with --enhanced-validations
+STRICT_VALIDATIONS=false            # Fail workflow if validations fail
+
+# Machine Learning (v2.7.0) - NEW
+ML_OPTIMIZE=false                   # Off by default - enable with --ml-optimize
+SHOW_ML_STATUS=false                # Show ML system status and exit
+
+# Multi-Stage Pipeline (v2.8.0) - NEW
+MULTI_STAGE=false                   # Off by default - enable with --multi-stage
+SHOW_PIPELINE=false                 # Show pipeline configuration and exit
+MANUAL_TRIGGER=false                # Force all stages to run
+
+# Auto-Documentation (v2.9.0) - NEW
+AUTO_GENERATE_DOCS=false            # Auto-generate workflow reports
+AUTO_UPDATE_CHANGELOG=false         # Auto-update CHANGELOG.md from commits
+GENERATE_API_DOCS=false             # Generate API documentation
+
+# Pre-Commit Hooks (v2.10.0)
+INSTALL_HOOKS=false
+UNINSTALL_HOOKS=false
+TEST_HOOKS=false
+
+# Workflow Dashboard (v2.11.0) - NEW
+GENERATE_DASHBOARD=false            # Generate HTML dashboard
+SERVE_DASHBOARD=false               # Serve dashboard on HTTP server
+DASHBOARD_PORT=8080                 # Dashboard server port
+
 # Export mode variables so they're available in step functions
 export DRY_RUN
 export INTERACTIVE_MODE
@@ -191,6 +219,19 @@ export SHOW_GRAPH
 export PARALLEL_EXECUTION
 export USE_AI_CACHE
 export NO_RESUME
+export ENABLE_ENHANCED_VALIDATIONS
+export STRICT_VALIDATIONS
+export ML_OPTIMIZE
+export SHOW_ML_STATUS
+export MULTI_STAGE
+export SHOW_PIPELINE
+export MANUAL_TRIGGER
+export AUTO_GENERATE_DOCS
+export AUTO_UPDATE_CHANGELOG
+export GENERATE_API_DOCS
+export INSTALL_HOOKS
+export UNINSTALL_HOOKS
+export TEST_HOOKS
 
 # Step execution control
 EXECUTE_STEPS="all"  # Default: execute all steps
@@ -361,6 +402,11 @@ log_step_start() {
     local step_name="$2"
     log_to_workflow "STEP" "========== Step ${step_num}: ${step_name} =========="
     log_to_workflow "INFO" "Step ${step_num} started"
+    
+    # Start metrics timer if function exists (v2.3.0)
+    if type -t start_step_timer > /dev/null; then
+        start_step_timer "${step_num}" "${step_name}"
+    fi
 }
 
 # Log step completion
@@ -369,6 +415,18 @@ log_step_complete() {
     local step_name="$2"
     local status="$3"  # SUCCESS, SKIPPED, FAILED
     log_to_workflow "INFO" "Step ${step_num} completed: ${status}"
+    
+    # Stop metrics timer if function exists (v2.3.0)
+    if type -t stop_step_timer > /dev/null; then
+        local metrics_status
+        case "${status}" in
+            SUCCESS) metrics_status="success" ;;
+            FAILED) metrics_status="failed" ;;
+            SKIPPED) metrics_status="skipped" ;;
+            *) metrics_status="unknown" ;;
+        esac
+        stop_step_timer "${step_num}" "${metrics_status}"
+    fi
 }
 
 # Finalize workflow log with summary
@@ -1212,6 +1270,206 @@ should_execute_step() {
 }
 
 # ------------------------------------------------------------------------------
+# STEP EXECUTION WRAPPER FOR MULTI-STAGE PIPELINE
+# ------------------------------------------------------------------------------
+
+# Execute a single workflow step
+# Used by multi-stage pipeline for stage-based execution
+# Args: $1 = step_number
+# Returns: 0 on success, 1 on failure
+execute_step() {
+    local step_num="$1"
+    local step_name=""
+    
+    case "$step_num" in
+        0)
+            step_name="Pre-Analysis"
+            if step0_analyze_changes; then
+                update_workflow_status "$step_num" "✅"
+                log_step_complete "$step_num" "$step_name" "SUCCESS"
+                return 0
+            else
+                update_workflow_status "$step_num" "❌"
+                log_step_complete "$step_num" "$step_name" "FAILED"
+                return 1
+            fi
+            ;;
+        1)
+            step_name="Documentation Updates"
+            if step1_update_documentation; then
+                update_workflow_status "$step_num" "✅"
+                log_step_complete "$step_num" "$step_name" "SUCCESS"
+                return 0
+            else
+                update_workflow_status "$step_num" "❌"
+                log_step_complete "$step_num" "$step_name" "FAILED"
+                return 1
+            fi
+            ;;
+        2)
+            step_name="Consistency Analysis"
+            if step2_check_consistency; then
+                update_workflow_status "$step_num" "✅"
+                log_step_complete "$step_num" "$step_name" "SUCCESS"
+                return 0
+            else
+                update_workflow_status "$step_num" "❌"
+                log_step_complete "$step_num" "$step_name" "FAILED"
+                return 1
+            fi
+            ;;
+        3)
+            step_name="Script Reference Validation"
+            if step3_validate_script_references; then
+                update_workflow_status "$step_num" "✅"
+                log_step_complete "$step_num" "$step_name" "SUCCESS"
+                return 0
+            else
+                update_workflow_status "$step_num" "❌"
+                log_step_complete "$step_num" "$step_name" "FAILED"
+                return 1
+            fi
+            ;;
+        4)
+            step_name="Directory Structure Validation"
+            if step4_validate_directory_structure; then
+                update_workflow_status "$step_num" "✅"
+                log_step_complete "$step_num" "$step_name" "SUCCESS"
+                return 0
+            else
+                update_workflow_status "$step_num" "❌"
+                log_step_complete "$step_num" "$step_name" "FAILED"
+                return 1
+            fi
+            ;;
+        5)
+            step_name="Test Review"
+            if step5_review_existing_tests; then
+                update_workflow_status "$step_num" "✅"
+                log_step_complete "$step_num" "$step_name" "SUCCESS"
+                return 0
+            else
+                update_workflow_status "$step_num" "❌"
+                log_step_complete "$step_num" "$step_name" "FAILED"
+                return 1
+            fi
+            ;;
+        6)
+            step_name="Test Generation"
+            if step6_generate_new_tests; then
+                update_workflow_status "$step_num" "✅"
+                log_step_complete "$step_num" "$step_name" "SUCCESS"
+                return 0
+            else
+                update_workflow_status "$step_num" "❌"
+                log_step_complete "$step_num" "$step_name" "FAILED"
+                return 1
+            fi
+            ;;
+        7)
+            step_name="Test Execution"
+            if step7_execute_test_suite; then
+                update_workflow_status "$step_num" "✅"
+                log_step_complete "$step_num" "$step_name" "SUCCESS"
+                return 0
+            else
+                update_workflow_status "$step_num" "❌"
+                log_step_complete "$step_num" "$step_name" "FAILED"
+                return 1
+            fi
+            ;;
+        8)
+            step_name="Dependency Validation"
+            if step8_validate_dependencies; then
+                update_workflow_status "$step_num" "✅"
+                log_step_complete "$step_num" "$step_name" "SUCCESS"
+                return 0
+            else
+                update_workflow_status "$step_num" "❌"
+                log_step_complete "$step_num" "$step_name" "FAILED"
+                return 1
+            fi
+            ;;
+        9)
+            step_name="Code Quality Validation"
+            if step9_code_quality_validation; then
+                update_workflow_status "$step_num" "✅"
+                log_step_complete "$step_num" "$step_name" "SUCCESS"
+                return 0
+            else
+                update_workflow_status "$step_num" "❌"
+                log_step_complete "$step_num" "$step_name" "FAILED"
+                return 1
+            fi
+            ;;
+        10)
+            step_name="Context Analysis"
+            if step10_context_analysis; then
+                update_workflow_status "$step_num" "✅"
+                log_step_complete "$step_num" "$step_name" "SUCCESS"
+                return 0
+            else
+                update_workflow_status "$step_num" "❌"
+                log_step_complete "$step_num" "$step_name" "FAILED"
+                return 1
+            fi
+            ;;
+        11)
+            step_name="Git Finalization"
+            if step11_git_finalization; then
+                update_workflow_status "$step_num" "✅"
+                log_step_complete "$step_num" "$step_name" "SUCCESS"
+                return 0
+            else
+                update_workflow_status "$step_num" "❌"
+                log_step_complete "$step_num" "$step_name" "FAILED"
+                return 1
+            fi
+            ;;
+        12)
+            step_name="Markdown Linting"
+            if step12_markdown_linting; then
+                update_workflow_status "$step_num" "✅"
+                log_step_complete "$step_num" "$step_name" "SUCCESS"
+                return 0
+            else
+                update_workflow_status "$step_num" "❌"
+                log_step_complete "$step_num" "$step_name" "FAILED"
+                return 1
+            fi
+            ;;
+        13)
+            step_name="Prompt Engineer Analysis"
+            if step13_prompt_engineer_analysis; then
+                update_workflow_status "$step_num" "✅"
+                log_step_complete "$step_num" "$step_name" "SUCCESS"
+                return 0
+            else
+                update_workflow_status "$step_num" "❌"
+                log_step_complete "$step_num" "$step_name" "FAILED"
+                return 1
+            fi
+            ;;
+        14)
+            step_name="UX Analysis"
+            if step14_ux_analysis; then
+                update_workflow_status "$step_num" "✅"
+                log_step_complete "$step_num" "$step_name" "SUCCESS"
+                return 0
+            else
+                update_workflow_status "$step_num" "❌"
+                log_step_complete "$step_num" "$step_name" "FAILED"
+                return 1
+            fi
+            ;;
+        *)
+            print_error "Unknown step number: $step_num"
+            return 1
+            ;;
+    esac
+}
+
+# ------------------------------------------------------------------------------
 # WORKFLOW ORCHESTRATION
 # ------------------------------------------------------------------------------
 execute_full_workflow() {
@@ -1224,6 +1482,52 @@ execute_full_workflow() {
     validate_and_parse_steps
     log_to_workflow "INFO" "Step selection: ${EXECUTE_STEPS}"
     
+    # Check for docs-only fast track (v2.7.0 - HIGHEST PRIORITY)
+    # This is the fastest execution path for documentation-only changes (~1.5 min)
+    if [[ "${DOCS_ONLY_FAST_TRACK:-false}" == "true" && "$DRY_RUN" != true ]]; then
+        print_info "🚀🚀🚀 Docs-Only Fast Track Enabled"
+        print_info "Expected time: 90-120 seconds (93% faster than baseline)"
+        echo ""
+        
+        if type -t execute_docs_only_fast_track > /dev/null 2>&1; then
+            execute_docs_only_fast_track
+            return $?
+        else
+            print_warning "execute_docs_only_fast_track function not found - falling back to standard execution"
+        fi
+    fi
+    
+    # Check for 4-track parallel execution (v2.7.0 - SECOND PRIORITY)
+    # This provides maximum performance for full-stack changes with test sharding
+    if [[ "${FULL_CHANGES_4TRACK:-false}" == "true" && "$DRY_RUN" != true ]]; then
+        print_info "⚡⚡⚡⚡ 4-Track Parallel Execution Mode Enabled"
+        print_info "Expected time: 10-11 minutes (52-57% faster than baseline)"
+        echo ""
+        
+        if type -t execute_4track_parallel > /dev/null 2>&1; then
+            execute_4track_parallel
+            return $?
+        else
+            print_warning "execute_4track_parallel function not found - falling back to 3-track execution"
+        fi
+    fi
+    
+    # Check for 3-track parallel execution (v2.6.1 - THIRD PRIORITY)
+    # This provides maximum performance by running all compatible steps in parallel
+    if [[ "${PARALLEL_TRACKS:-false}" == "true" && "$DRY_RUN" != true ]]; then
+        print_info "⚡⚡⚡ 3-Track Parallel Execution Mode Enabled"
+        print_info "Expected time savings: ~46% compared to sequential execution"
+        echo ""
+        
+        if type -t execute_parallel_tracks > /dev/null 2>&1; then
+            execute_parallel_tracks
+            return $?
+        else
+            print_warning "execute_parallel_tracks function not found - falling back to standard execution"
+        fi
+    fi
+    
+    # Standard execution path (sequential or limited parallel)
     local failed_step=""
     local executed_steps=0
     local skipped_steps=0
@@ -1238,13 +1542,20 @@ execute_full_workflow() {
     # Execute Step 0 (Pre-Analysis) - always first unless resuming
     if [[ $resume_from -le 0 ]] && should_execute_step 0; then
         log_step_start 0 "Pre-Analysis"
-        step0_analyze_changes || { failed_step="Step 0"; }
-        [[ -z "$failed_step" ]] && update_workflow_status 0 "✅"
-        ((executed_steps++)) || true
-        save_checkpoint 0
+        if step0_analyze_changes; then
+            update_workflow_status 0 "✅"
+            log_step_complete 0 "Pre-Analysis" "SUCCESS"
+            ((executed_steps++)) || true
+            save_checkpoint 0
+        else
+            failed_step="Step 0"
+            update_workflow_status 0 "❌"
+            log_step_complete 0 "Pre-Analysis" "FAILED"
+        fi
     elif [[ $resume_from -le 0 ]]; then
         print_info "Skipping Step 0 (not selected)"
         log_to_workflow "INFO" "Skipping Step 0 (not selected)"
+        log_step_complete 0 "Pre-Analysis" "SKIPPED"
         ((skipped_steps++)) || true
     else
         print_info "Skipping Step 0 (resuming from checkpoint)"
@@ -1457,6 +1768,33 @@ execute_full_workflow() {
         ((skipped_steps++)) || true
     fi
     
+    # Enhanced Validations (v2.7.0 - NEW)
+    # Run additional validation checks if enabled
+    if [[ -z "$failed_step" && "${ENABLE_ENHANCED_VALIDATIONS}" == "true" ]]; then
+        echo ""
+        print_header "Enhanced Validations"
+        
+        if type -t run_enhanced_validations > /dev/null 2>&1; then
+            local validation_mode=""
+            if [[ "${STRICT_VALIDATIONS}" == "true" ]]; then
+                validation_mode="--strict"
+            fi
+            
+            if ! run_enhanced_validations $validation_mode; then
+                if [[ "${STRICT_VALIDATIONS}" == "true" ]]; then
+                    failed_step="Enhanced Validations"
+                    print_error "Enhanced validations failed in strict mode"
+                else
+                    print_warning "Some enhanced validations failed (non-strict mode - continuing)"
+                fi
+            fi
+        else
+            print_warning "Enhanced validations requested but module not loaded"
+        fi
+        
+        echo ""
+    fi
+    
     # Step 10: Context Analysis (with checkpoint)
     if [[ -z "$failed_step" && $resume_from -le 10 ]] && should_execute_step 10; then
         log_step_start 10 "Context Analysis"
@@ -1568,7 +1906,7 @@ execute_full_workflow() {
         
         # Finalize metrics collection (v2.3.0)
         if type -t finalize_metrics > /dev/null; then
-            finalize_metrics
+            finalize_metrics "success"
         fi
         
         # Run post-completion health checks
@@ -1597,6 +1935,22 @@ execute_full_workflow() {
         # Display cache statistics
         if type -t get_cache_stats > /dev/null; then
             get_cache_stats
+        fi
+        
+        # Validate ML predictions if enabled (v2.7.0)
+        if [[ "${ML_OPTIMIZE:-false}" == "true" ]] && [[ "${ML_ENABLED:-false}" == "true" ]]; then
+            local actual_duration=$(($(date +%s) - WORKFLOW_START_TIME))
+            validate_ml_predictions "$actual_duration"
+        fi
+        
+        # Cleanup old workflow artifacts (v2.6.0)
+        # Removes artifacts older than specified days after successful workflow completion
+        # Default: 7 days, customizable with --cleanup-days, disable with --no-cleanup
+        if [[ "$DRY_RUN" != true ]] && [[ "${NO_CLEANUP:-false}" != "true" ]] && type -t cleanup_old_artifacts > /dev/null; then
+            echo ""
+            print_header "Artifact Cleanup"
+            local cleanup_days="${CLEANUP_DAYS:-7}"
+            cleanup_old_artifacts "$cleanup_days" false
         fi
         
         # Prompt for continuation if enabled
@@ -1714,6 +2068,11 @@ OPTIONS:
                        Performance: 33% faster execution time
                        Use --no-parallel to disable
     
+    --parallel-tracks  Enable 3-track parallel execution (MAXIMUM PERFORMANCE)
+                       ⚡ NEW in v2.6.1 - Runs all compatible steps in parallel
+                       Performance: 46% faster than sequential (15.5 min vs 28.75 min)
+                       Recommended for production workflows
+    
     --no-parallel      Disable parallel execution (sequential mode)
     
     --no-ai-cache      Disable AI response caching (increases token usage)
@@ -1722,9 +2081,42 @@ OPTIONS:
     --no-resume        Start from step 0, ignore any checkpoints
                        Default: Resume from last completed step
     
+    --cleanup-days N   Remove artifacts older than N days (default: 7)
+                       Runs automatically after successful completion
+    --no-cleanup       Disable automatic artifact cleanup
+    
     --show-tech-stack  Display detected tech stack configuration
     --config-file FILE Use specific .workflow-config.yaml file
     --init-config      Run interactive configuration wizard
+    
+    --ml-optimize      Enable ML-driven optimization (v2.7.0)
+                       ⚡ Predictive step duration and smart recommendations
+                       Performance: Additional 15-30% improvement
+                       Requires: Minimum 10 historical workflow executions
+    --show-ml-status   Display ML system status and training data
+    
+    --multi-stage      Enable multi-stage pipeline execution (NEW v2.8.0)
+                       ⚡ Progressive validation with intelligent stage triggers
+                       Stage 1: Fast validation (2 min, always runs)
+                       Stage 2: Targeted checks (5 min, conditional)
+                       Stage 3: Full validation (15 min, high-impact/manual)
+                       Performance: 80%+ of runs complete in Stage 1-2
+    --show-pipeline    Display pipeline configuration and stage plan
+    --manual-trigger   Force all 3 stages to execute (with --multi-stage)
+    
+    --generate-docs    Auto-generate workflow execution reports (NEW v2.9.0)
+                       📝 Extract summaries to docs/workflow-reports/
+                       Includes metrics, issues, and performance data
+    --update-changelog Auto-update CHANGELOG.md from git commits (NEW v2.9.0)
+                       📋 Conventional commits parsed into Keep a Changelog format
+    --generate-api-docs Generate API documentation from source (NEW v2.9.0)
+                       📚 Extract function docs to docs/api/
+    
+    --install-hooks    Install pre-commit hooks (NEW v2.10.0)
+                       ⚡ Fast validation checks (< 1 second)
+                       Prevents broken commits, auto-stages generated files
+    --uninstall-hooks  Remove pre-commit hooks (NEW v2.10.0)
+    --test-hooks       Test pre-commit hooks without committing (NEW v2.10.0)
     
     --help             Show this help message
     --version          Show script version
@@ -1802,6 +2194,10 @@ EXAMPLES:
     /path/to/ai_workflow/src/workflow/execute_tests_docs_workflow.sh \
       --smart-execution --parallel --auto --ai-batch
     
+    # ULTIMATE PERFORMANCE: 3-track parallel execution (NEW v2.6.1)
+    # 46% faster than sequential - completes in ~15.5 minutes
+    $0 --parallel-tracks --smart-execution --auto
+    
     # With auto-commit (NEW v2.6.0)
     $0 --auto-commit --smart-execution --parallel
     
@@ -1843,14 +2239,17 @@ IDE INTEGRATION (NEW v2.6.0):
 
 PERFORMANCE OPTIMIZATION:
     
-    Change Type         | Baseline | --smart-execution | --parallel | Combined
-    --------------------|----------|-------------------|------------|----------
-    Documentation Only  | 23 min   | 3.5 min (85%)    | 15.5 min   | 2.3 min (90%)
-    Code Changes        | 23 min   | 14 min (40%)     | 15.5 min   | 10 min (57%)
-    Full Changes        | 23 min   | 23 min           | 15.5 min   | 15.5 min (33%)
+    Change Type         | Baseline | --smart-execution | --parallel | Combined | Optimized (v2.7)
+    --------------------|----------|-------------------|------------|----------|------------------
+    Documentation Only  | 23 min   | 3.5 min (85%)    | 15.5 min   | 2.3 min (90%) | 1.5 min (93%) ⭐
+    Code Changes        | 23 min   | 14 min (40%)     | 15.5 min   | 10 min (57%)  | 6-7 min (70-75%) ⭐
+    Full Changes        | 23 min   | 23 min           | 15.5 min   | 15.5 min (33%)| 10-11 min (52-57%) ⭐
     
     AI Response Caching: 60-80% token usage reduction (enabled by default)
     Checkpoint Resume: Automatic continuation from last completed step
+    Docs-Only Fast Track: Auto-enabled for documentation-only changes (v2.7.0)
+    Code Changes Optimization: Incremental tests + smart quality checks (v2.7.0)
+    Full Changes 4-Track: Enhanced parallelization + test sharding (v2.7.0)
 
 MODES COMPARISON:
     
@@ -1924,6 +2323,37 @@ main() {
     print_header "${SCRIPT_NAME} v${SCRIPT_VERSION}"
     
     parse_arguments "$@"
+    
+    # Handle hooks management flags (execute immediately and exit)
+    if [[ "${INSTALL_HOOKS:-false}" == "true" ]]; then
+        if type -t install_precommit_hook > /dev/null 2>&1; then
+            install_precommit_hook
+            exit $?
+        else
+            print_error "Pre-commit hooks module not loaded"
+            exit 1
+        fi
+    fi
+    
+    if [[ "${UNINSTALL_HOOKS:-false}" == "true" ]]; then
+        if type -t uninstall_precommit_hook > /dev/null 2>&1; then
+            uninstall_precommit_hook
+            exit $?
+        else
+            print_error "Pre-commit hooks module not loaded"
+            exit 1
+        fi
+    fi
+    
+    if [[ "${TEST_HOOKS:-false}" == "true" ]]; then
+        if type -t test_precommit_hook > /dev/null 2>&1; then
+            test_precommit_hook
+            exit $?
+        else
+            print_error "Pre-commit hooks module not loaded"
+            exit 1
+        fi
+    fi
     
     # If --init-config flag is set, run wizard immediately and exit
     if [[ "${INIT_CONFIG_WIZARD:-false}" == "true" ]]; then
@@ -2023,11 +2453,108 @@ main() {
     # Initialize AI cache (v2.3.0)
     init_ai_cache
     
+    # Initialize auto-documentation system (v2.9.0)
+    if [[ "${AUTO_GENERATE_DOCS:-false}" == "true" ]] || [[ "${AUTO_UPDATE_CHANGELOG:-false}" == "true" ]] || [[ "${GENERATE_API_DOCS:-false}" == "true" ]]; then
+        if type -t init_auto_documentation > /dev/null 2>&1; then
+            init_auto_documentation
+        fi
+    fi
+    
+    # Initialize ML system (v2.7.0)
+    if [[ "${ML_OPTIMIZE:-false}" == "true" ]]; then
+        if init_ml_system; then
+            print_success "ML optimization system initialized"
+            log_to_workflow "INFO" "ML optimization enabled"
+        else
+            print_warning "ML system not ready - collecting training data"
+            log_to_workflow "WARNING" "ML system needs more training samples"
+        fi
+    fi
+    
+    # If --show-ml-status flag is set, display and exit
+    if [[ "${SHOW_ML_STATUS:-false}" == "true" ]]; then
+        display_ml_status
+        exit 0
+    fi
+    
+    # If --show-pipeline flag is set, display and exit (v2.8.0)
+    if [[ "${SHOW_PIPELINE:-false}" == "true" ]]; then
+        display_pipeline_config
+        echo ""
+        display_pipeline_plan
+        exit 0
+    fi
+    
+    # Initialize analysis cache (v2.7.0)
+    if type -t init_analysis_cache > /dev/null 2>&1; then
+        init_analysis_cache
+        print_info "Advanced analysis caching enabled (3-5x faster for subsequent runs)"
+    fi
+    
+    # Initialize Git automation (v2.7.0)
+    if type -t on_workflow_start > /dev/null 2>&1; then
+        on_workflow_start
+    fi
+    
     # Initialize metrics collection (v2.3.0)
     init_metrics
     
     # Analyze change impact for conditional execution (v2.2.0)
     analyze_change_impact
+    
+    # Apply ML optimization if enabled (v2.7.0)
+    if [[ "${ML_OPTIMIZE:-false}" == "true" ]] && [[ "${ML_ENABLED:-false}" == "true" ]]; then
+        print_header "ML-Driven Optimization"
+        
+        # Extract features from current changes
+        ML_FEATURES=$(extract_change_features)
+        export ML_FEATURES
+        
+        # Get ML recommendations
+        ML_RECOMMENDATIONS=$(apply_ml_optimization)
+        export ML_RECOMMENDATIONS
+        
+        # Apply parallelization recommendation
+        local ml_parallel=$(echo "$ML_RECOMMENDATIONS" | jq -r '.parallelization.recommend_parallel // false')
+        if [[ "$ml_parallel" == "true" ]] && [[ "${PARALLEL_EXECUTION}" == "false" ]]; then
+            print_info "ML recommendation: Enabling parallel execution"
+            PARALLEL_EXECUTION=true
+            export PARALLEL_EXECUTION
+        fi
+        
+        # Show predicted duration
+        local predicted_duration=$(echo "$ML_RECOMMENDATIONS" | jq -r '.predicted_duration // 0')
+        if [[ $predicted_duration -gt 0 ]]; then
+            local pred_min=$((predicted_duration / 60))
+            print_success "Predicted workflow duration: ${pred_min}m (${predicted_duration}s)"
+        fi
+        
+        log_to_workflow "INFO" "ML optimization applied"
+    fi
+    
+    # Enable docs-only fast track optimization if applicable (v2.7.0)
+    if type -t enable_docs_only_optimization > /dev/null 2>&1; then
+        if enable_docs_only_optimization; then
+            # Docs-only fast track detected - will use optimized execution path
+            print_info "Estimated completion time: 90-120 seconds"
+        fi
+    fi
+    
+    # Enable code changes optimization if applicable (v2.7.0)
+    if type -t enable_code_changes_optimization > /dev/null 2>&1; then
+        if enable_code_changes_optimization; then
+            # Code changes optimization enabled
+            :  # Info messages already printed by function
+        fi
+    fi
+    
+    # Enable full changes optimization if applicable (v2.7.0)
+    if type -t enable_full_changes_optimization > /dev/null 2>&1; then
+        if enable_full_changes_optimization; then
+            # Full changes optimization enabled (4-track + sharding)
+            :  # Info messages already printed by function
+        fi
+    fi
     
     # Show dependency graph if requested (v2.3.0)
     if [[ "${SHOW_GRAPH}" == "true" ]]; then
@@ -2053,8 +2580,49 @@ main() {
         print_info "Fresh start mode - starting from Step 0"
     fi
     
-    # Execute full workflow with all AI-enhanced steps
-    execute_full_workflow
+    # Execute workflow with appropriate mode (v2.8.0)
+    if [[ "${MULTI_STAGE:-false}" == "true" ]]; then
+        # Multi-stage pipeline mode
+        print_header "Multi-Stage Pipeline Mode"
+        
+        if [[ "${MANUAL_TRIGGER:-false}" == "true" ]]; then
+            print_info "Manual trigger enabled - all 3 stages will execute"
+            enable_manual_trigger
+        fi
+        
+        # Execute multi-stage pipeline
+        if ! execute_pipeline; then
+            print_error "Multi-stage pipeline execution failed"
+            exit 1
+        fi
+    else
+        # Standard full workflow execution
+        execute_full_workflow
+    fi
+    
+    # Execute post-workflow Git automation (v2.7.0)
+    if type -t on_workflow_complete > /dev/null 2>&1; then
+        local workflow_result=$?
+        if [[ $workflow_result -eq 0 ]]; then
+            on_workflow_complete "success"
+        else
+            on_workflow_complete "failure"
+        fi
+    fi
+    
+    # Auto-generate documentation (v2.9.0)
+    if [[ "${AUTO_GENERATE_DOCS:-false}" == "true" ]] && type -t on_workflow_complete_docs > /dev/null 2>&1; then
+        local workflow_status="success"
+        [[ $? -ne 0 ]] && workflow_status="failure"
+        
+        on_workflow_complete_docs "$workflow_status"
+    fi
+    
+    # Generate API documentation if requested (v2.9.0)
+    if [[ "${GENERATE_API_DOCS:-false}" == "true" ]] && type -t generate_api_docs > /dev/null 2>&1; then
+        print_header "Generating API Documentation"
+        generate_api_docs "${WORKFLOW_DIR}/lib"
+    fi
 }
 
 # ==============================================================================

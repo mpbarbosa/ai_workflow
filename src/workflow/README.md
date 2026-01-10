@@ -917,7 +917,7 @@ fi
 **Generated Config Example:**
 ```yaml
 project:
-  kind: nodejs_api
+  kind: nodejs_api        # Can also use 'type' field
   description: "REST API project"
   
 tech_stack:
@@ -935,6 +935,8 @@ structure:
   test_dir: "tests"
   docs_dir: "docs"
 ```
+
+> **Note**: The configuration supports both `project.kind` and `project.type` fields. Values with hyphens (e.g., `client-spa`) are automatically normalized to underscores (`client_spa`).
 
 **Usage:**
 ```bash

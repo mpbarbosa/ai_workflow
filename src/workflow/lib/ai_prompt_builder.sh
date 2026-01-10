@@ -5,8 +5,134 @@ set -euo pipefail
 # AI Prompt Builder Module
 # Purpose: Structured AI prompt construction for various workflow steps
 # Extracted from: ai_helpers.sh (Module Decomposition)
-# Part of: Tests & Documentation Workflow Automation v2.4.0
+# Part of: Tests & Documentation Workflow Automation v2.7.0
 ################################################################################
+
+# ==============================================================================
+# LANGUAGE-SPECIFIC CONTENT EXTRACTION (v2.7.0 - NEW)
+# ==============================================================================
+
+# Get language-specific content from YAML and format for prompt
+# Usage: get_language_specific_content <yaml_file> <section_name> <language>
+# Example: get_language_specific_content "ai_helpers.yaml" "language_specific_documentation" "javascript"
+get_language_specific_content() {
+    local yaml_file="$1"
+    local section_name="$2"
+    local language="${3:-}"
+    
+    # Return empty if no language specified
+    if [[ -z "$language" || "$language" == "null" ]]; then
+        echo ""
+        return 0
+    fi
+    
+    # Normalize language name (lowercase)
+    language=$(echo "$language" | tr '[:upper:]' '[:lower:]')
+    
+    # Try to extract language-specific content
+    local key_points=""
+    local doc_format=""
+    local example_snippet=""
+    
+    # Extract key_points
+    key_points=$(get_yq_value "$yaml_file" "${section_name}.${language}.key_points" 2>/dev/null || echo "")
+    
+    # If we got content, format it nicely
+    if [[ -n "$key_points" && "$key_points" != "null" ]]; then
+        echo "$key_points"
+        
+        # Try to get doc_format and example if available
+        doc_format=$(get_yq_value "$yaml_file" "${section_name}.${language}.doc_format" 2>/dev/null || echo "")
+        if [[ -n "$doc_format" && "$doc_format" != "null" ]]; then
+            echo ""
+            echo "**Documentation Format:** $doc_format"
+        fi
+        
+        example_snippet=$(get_yq_value "$yaml_file" "${section_name}.${language}.example_snippet" 2>/dev/null || echo "")
+        if [[ -n "$example_snippet" && "$example_snippet" != "null" ]]; then
+            echo ""
+            echo "**Example:**"
+            echo '```'
+            echo "$example_snippet"
+            echo '```'
+        fi
+    else
+        # No language-specific content found - return generic message
+        echo "• Follow language best practices for documentation"
+        echo "• Use consistent formatting and style"
+        echo "• Include examples where appropriate"
+    fi
+}
+
+# Substitute language-specific placeholders in prompt template
+# Usage: substitute_language_placeholders <prompt_text> <yaml_file>
+# Replaces: {language_specific_documentation}, {language_specific_testing_standards}, {language_specific_quality}
+substitute_language_placeholders() {
+    local prompt_text="$1"
+    local yaml_file="$2"
+    
+    # Get PRIMARY_LANGUAGE from .workflow-config.yaml or environment
+    local primary_language="${PRIMARY_LANGUAGE:-}"
+    
+    # Try to read from .workflow-config.yaml if not in environment
+    if [[ -z "$primary_language" ]] && [[ -f "${PROJECT_ROOT}/.workflow-config.yaml" ]]; then
+        primary_language=$(get_yq_value "${PROJECT_ROOT}/.workflow-config.yaml" "tech_stack.primary_language" 2>/dev/null || echo "")
+    fi
+    
+    # If still no language, return prompt as-is with generic placeholders removed
+    if [[ -z "$primary_language" || "$primary_language" == "null" ]]; then
+        # Remove placeholder lines entirely
+        prompt_text=$(echo "$prompt_text" | sed '/{language_specific_/d')
+        echo "$prompt_text"
+        return 0
+    fi
+    
+    # Log language detection
+    echo "[INFO] Detected PRIMARY_LANGUAGE: $primary_language" >&2
+    
+    # Substitute {language_specific_documentation}
+    if echo "$prompt_text" | grep -q "{language_specific_documentation}"; then
+        local doc_content
+        doc_content=$(get_language_specific_content "$yaml_file" "language_specific_documentation" "$primary_language")
+        # Replace placeholder with content (preserve newlines)
+        prompt_text=$(echo "$prompt_text" | sed "/{language_specific_documentation}/{
+r /dev/stdin
+d
+}" <<< "$doc_content")
+    fi
+    
+    # Substitute {language_specific_testing_standards}
+    if echo "$prompt_text" | grep -q "{language_specific_testing_standards}"; then
+        local test_content
+        test_content=$(get_language_specific_content "$yaml_file" "language_specific_testing" "$primary_language")
+        prompt_text=$(echo "$prompt_text" | sed "/{language_specific_testing_standards}/{
+r /dev/stdin
+d
+}" <<< "$test_content")
+    fi
+    
+    # Substitute {language_specific_quality}
+    if echo "$prompt_text" | grep -q "{language_specific_quality}"; then
+        local quality_content
+        quality_content=$(get_language_specific_content "$yaml_file" "language_specific_quality" "$primary_language")
+        prompt_text=$(echo "$prompt_text" | sed "/{language_specific_quality}/{
+r /dev/stdin
+d
+}" <<< "$quality_content")
+    fi
+    
+    # Substitute {language_specific_directory_standards}
+    if echo "$prompt_text" | grep -q "{language_specific_directory_standards}"; then
+        local dir_content
+        dir_content=$(get_language_specific_content "$yaml_file" "language_specific_directory" "$primary_language")
+        prompt_text=$(echo "$prompt_text" | sed "/{language_specific_directory_standards}/{
+r /dev/stdin
+d
+}" <<< "$dir_content")
+    fi
+    
+    echo "$prompt_text"
+}
 
 # ==============================================================================
 # CORE PROMPT BUILDING
@@ -121,7 +247,14 @@ ${behavioral_guidelines}"
         task_context="Based on the recent changes to: ${changed_files}, update documentation in: ${doc_files}"
     fi
 
-    build_ai_prompt "$role" "$task_context" "$approach"
+    # Build the prompt
+    local prompt
+    prompt=$(build_ai_prompt "$role" "$task_context" "$approach")
+    
+    # Substitute language-specific placeholders (v2.7.0 - NEW)
+    prompt=$(substitute_language_placeholders "$prompt" "$yaml_file")
+    
+    echo "$prompt"
 }
 
 # Build a consistency analysis prompt
@@ -191,7 +324,12 @@ ${behavioral_guidelines}"
 Check for: broken references, version mismatches, terminology inconsistencies, format violations"
     fi
     
-    build_ai_prompt "$role" "$task" "$approach"
+    # Build and substitute language-specific content (v2.7.0)
+    local prompt
+    prompt=$(build_ai_prompt "$role" "$task" "$approach")
+    prompt=$(substitute_language_placeholders "$prompt" "$yaml_file")
+    
+    echo "$prompt"
 }
 
 # Build a test strategy prompt
@@ -268,7 +406,12 @@ ${behavioral_guidelines}"
 Focus on portfolio-level strategy, not tactical implementation"
     fi
     
-    build_ai_prompt "$role" "$task" "$approach"
+    # Build and substitute language-specific content (v2.7.0)
+    local prompt
+    prompt=$(build_ai_prompt "$role" "$task" "$approach")
+    prompt=$(substitute_language_placeholders "$prompt" "$yaml_file")
+    
+    echo "$prompt"
 }
 
 # Build a code quality review prompt
@@ -353,7 +496,12 @@ Analyze:
 - Provide code examples for recommended fixes"
     fi
     
-    build_ai_prompt "$role" "$task" "$approach"
+    # Build and substitute language-specific content (v2.7.0)
+    local prompt
+    prompt=$(build_ai_prompt "$role" "$task" "$approach")
+    prompt=$(substitute_language_placeholders "$prompt" "$yaml_file")
+    
+    echo "$prompt"
 }
 
 # Build an issue extraction prompt

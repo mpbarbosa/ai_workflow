@@ -74,6 +74,24 @@ step7_execute_test_suite() {
     print_info "Phase 1: Executing ${language_name} test suite..."
     print_info "Test command: $test_cmd"
     
+    # Check for code changes optimization (v2.7.0)
+    # Try incremental tests first if code changes are minimal
+    local incremental_success=false
+    if [[ "${CODE_CHANGES_OPTIMIZATION:-false}" == "true" ]] && [[ "${CODE_CHANGES_STRATEGY:-}" == "incremental" ]]; then
+        print_info "Attempting incremental test execution..."
+        
+        if type -t execute_incremental_tests > /dev/null 2>&1; then
+            if execute_incremental_tests; then
+                incremental_success=true
+                print_success "Incremental tests passed - skipping full suite"
+                save_step_summary "7" "Test_Execution" "Incremental tests passed (code changes optimization)" "✅"
+                return 0
+            else
+                print_warning "Incremental tests failed or unavailable - falling back to full suite"
+            fi
+        fi
+    fi
+    
     # Check 1: Run full test suite
     print_info "Running tests with coverage..."
     local test_exit_code=0

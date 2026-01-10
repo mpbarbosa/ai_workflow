@@ -48,9 +48,12 @@ has_ui_components() {
     local project_kind="${PROJECT_KIND:-unknown}"
     local target_dir="${TARGET_PROJECT_ROOT:-${PROJECT_ROOT}}"
     
+    # Normalize project_kind: convert hyphens to underscores for consistent matching
+    project_kind="${project_kind//-/_}"
+    
     # Check project kind first
     case "$project_kind" in
-        react_spa|vue_spa|static_website|web_application|documentation_site)
+        react_spa|vue_spa|client_spa|static_website|web_application|documentation_site)
             print_info "Project kind '$project_kind' has UI components"
             return 0
             ;;
@@ -419,12 +422,17 @@ EOF
     # Phase 3: Call AI for analysis (if available)
     print_info "Phase 3: Performing AI-powered UX analysis..."
     
-    if command -v ai_call &>/dev/null && type -t validate_copilot_cli &>/dev/null && validate_copilot_cli; then
+    if command -v execute_copilot_prompt &>/dev/null && type -t validate_copilot_cli &>/dev/null && validate_copilot_cli; then
         print_info "Using AI for UX analysis..."
         
-        # Call AI with ux_designer persona
-        if ai_call "ux_designer" "$ux_prompt" "$ai_output"; then
-            cp "$ai_output" "$ux_report"
+        # Create log file for AI output
+        local log_timestamp
+        log_timestamp=$(date +%Y%m%d_%H%M%S)_$$
+        local log_file="${LOGS_RUN_DIR:-./logs}/step14_copilot_ux_analysis_${log_timestamp}.log"
+        
+        # Call AI with ux_designer persona using execute_copilot_prompt
+        if execute_copilot_prompt "$ux_prompt" "$log_file" "step14" "ux_designer"; then
+            cp "$log_file" "$ux_report"
             print_success "AI UX analysis completed"
         else
             print_warning "AI analysis failed, falling back to automated checks"
@@ -461,7 +469,7 @@ EOF
 ## Analysis Metadata
 
 - **Step Version**: ${STEP14_VERSION}
-- **Analysis Method**: $(if command -v ai_call &>/dev/null && type -t validate_copilot_cli &>/dev/null; then echo "AI-Powered"; else echo "Automated Checks"; fi)
+- **Analysis Method**: $(if command -v execute_copilot_prompt &>/dev/null && type -t validate_copilot_cli &>/dev/null && validate_copilot_cli; then echo "AI-Powered"; else echo "Automated Checks"; fi)
 - **Target Directory**: ${target_dir}
 - **UI Files Scanned**: ${ui_file_count}
 

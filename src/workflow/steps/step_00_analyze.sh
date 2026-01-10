@@ -39,7 +39,37 @@ step0_analyze_changes() {
     fi
     
     # Project Kind Detection (Phase 1 - Project Kind Awareness)
-    if declare -f detect_project_kind >/dev/null 2>&1; then
+    # Priority: 1. Config file, 2. Auto-detection
+    if declare -f get_project_kind >/dev/null 2>&1; then
+        local config_kind
+        config_kind=$(get_project_kind "$PROJECT_ROOT" 2>/dev/null || echo "")
+        
+        if [[ -n "$config_kind" ]] && [[ "$config_kind" != "null" ]]; then
+            # Use configured project kind
+            export PROJECT_KIND="$config_kind"
+            export PROJECT_KIND_CONFIDENCE=100
+            local kind_desc
+            kind_desc=$(get_project_kind_description "$PROJECT_KIND" 2>/dev/null || echo "$PROJECT_KIND")
+            print_success "Project kind from config: $kind_desc (configured)"
+        elif declare -f detect_project_kind >/dev/null 2>&1; then
+            # Auto-detect if not configured
+            print_info "No project kind in config, auto-detecting..."
+            local project_kind_result
+            project_kind_result=$(detect_project_kind "$PROJECT_ROOT" 2>/dev/null || echo '{"kind":"unknown","confidence":0}')
+            
+            export PROJECT_KIND=$(echo "$project_kind_result" | grep -oP '"kind":\s*"\K[^"]+' || echo "unknown")
+            export PROJECT_KIND_CONFIDENCE=$(echo "$project_kind_result" | grep -oP '"confidence":\s*\K[0-9]+' || echo "0")
+            
+            if [[ "$PROJECT_KIND" != "unknown" ]] && [[ $PROJECT_KIND_CONFIDENCE -gt 50 ]]; then
+                local kind_desc
+                kind_desc=$(get_project_kind_description "$PROJECT_KIND" 2>/dev/null || echo "$PROJECT_KIND")
+                print_info "Auto-detected project kind: $kind_desc (${PROJECT_KIND_CONFIDENCE}% confidence)"
+            else
+                print_info "Project kind: Could not determine with confidence"
+            fi
+        fi
+    elif declare -f detect_project_kind >/dev/null 2>&1; then
+        # Fallback to auto-detection only
         print_info "Detecting project kind..."
         local project_kind_result
         project_kind_result=$(detect_project_kind "$PROJECT_ROOT" 2>/dev/null || echo '{"kind":"unknown","confidence":0}')
@@ -94,8 +124,57 @@ step0_analyze_changes() {
     if [[ "$INTERACTIVE_MODE" == true ]]; then
         read -r -p "Enter scope of changes (e.g., 'src/workflow', 'documentation', 'tests'): " CHANGE_SCOPE
     else
-        CHANGE_SCOPE="automated-workflow"
+        # Auto-detect change scope based on modified files (v2.7.0 enhancement)
+        local modified_list
+        modified_list=$(git diff --name-only HEAD~${commits_ahead} HEAD 2>/dev/null || echo "")
+        
+        local docs_changed=0
+        local tests_changed=0
+        local src_changed=0
+        local config_changed=0
+        
+        while IFS= read -r file; do
+            [[ -z "$file" ]] && continue
+            
+            # Skip workflow artifacts
+            [[ "$file" =~ ^\.ai_workflow/ ]] && continue
+            [[ "$file" =~ ^src/workflow/(backlog|logs|summaries|metrics|\.checkpoints|\.ai_cache)/ ]] && continue
+            
+            if [[ "$file" =~ ^docs/|README\.md$|CHANGELOG\.md$|\.md$ ]]; then
+                ((docs_changed++)) || true
+            elif [[ "$file" =~ ^tests?/|^test/|test.*\.(sh|js|py|go|rb)$|_test\.(sh|js|py|go|rb)$|\.test\.(sh|js|py|go|rb)$ ]]; then
+                ((tests_changed++)) || true
+            elif [[ "$file" =~ \.(yaml|yml|json|toml|ini|conf|config)$ ]]; then
+                ((config_changed++)) || true
+            elif [[ "$file" =~ ^src/|^lib/|\.sh$|\.js$|\.py$|\.go$|\.rb$|\.java$|\.rs$ ]]; then
+                ((src_changed++)) || true
+            fi
+        done <<< "$modified_list"
+        
+        # Determine primary change scope
+        if [[ $docs_changed -gt 0 ]] && [[ $tests_changed -eq 0 ]] && [[ $src_changed -eq 0 ]]; then
+            CHANGE_SCOPE="documentation-only"
+        elif [[ $tests_changed -gt 0 ]] && [[ $docs_changed -eq 0 ]] && [[ $src_changed -eq 0 ]]; then
+            CHANGE_SCOPE="tests-only"
+        elif [[ $src_changed -gt 0 ]] && [[ $tests_changed -eq 0 ]] && [[ $docs_changed -eq 0 ]]; then
+            CHANGE_SCOPE="source-code"
+        elif [[ $config_changed -gt 0 ]] && [[ $src_changed -eq 0 ]] && [[ $tests_changed -eq 0 ]] && [[ $docs_changed -eq 0 ]]; then
+            CHANGE_SCOPE="configuration"
+        elif [[ $src_changed -gt 0 ]] && [[ $tests_changed -gt 0 ]] && [[ $docs_changed -gt 0 ]]; then
+            CHANGE_SCOPE="full-stack"
+        elif [[ $src_changed -gt 0 ]] && [[ $tests_changed -gt 0 ]]; then
+            CHANGE_SCOPE="code-and-tests"
+        elif [[ $src_changed -gt 0 ]] && [[ $docs_changed -gt 0 ]]; then
+            CHANGE_SCOPE="code-and-docs"
+        elif [[ $modified_files -eq 0 ]]; then
+            CHANGE_SCOPE="no-changes"
+        else
+            CHANGE_SCOPE="mixed-changes"
+        fi
     fi
+    
+    # Export for use in subsequent steps (v2.7.0 fix)
+    export CHANGE_SCOPE
     
     print_success "Pre-analysis complete (Scope: $CHANGE_SCOPE)"
     

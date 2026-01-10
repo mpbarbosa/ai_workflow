@@ -169,6 +169,14 @@ step3_validate_script_references() {
     
     cd "$PROJECT_ROOT" || return 1
     
+    # Skip validation if this is not an ai_workflow project
+    if [[ ! -d "src/workflow" ]]; then
+        print_info "Not an ai_workflow project - skipping script reference validation"
+        save_summary "step3" "Validate_Script_References" "Skipped" \
+            "Script reference validation only applies to ai_workflow projects. This validation was skipped."
+        return 0
+    fi
+    
     local issues=0
     local missing_refs=0
     local permission_issues=0
@@ -247,6 +255,15 @@ step3_validate_script_references() {
     # Gather all scripts for AI analysis (reuse cached result)
     # all_scripts already populated above
     
+    # Get modified file count from git cache (if available) or compute it
+    local modified_count=0
+    if command -v get_git_modified_count &>/dev/null; then
+        modified_count=$(get_git_modified_count)
+    else
+        # Fallback: count modified files directly
+        modified_count=$(git diff --name-only 2>/dev/null | wc -l || echo "0")
+    fi
+    
     # Build comprehensive script validation prompt using AI helper function
     local copilot_prompt
     copilot_prompt=$(build_step3_script_refs_prompt \
@@ -254,7 +271,8 @@ step3_validate_script_references() {
         "${CHANGE_SCOPE}" \
         "$issues" \
         "$script_issues_content" \
-        "$all_scripts")
+        "$all_scripts" \
+        "$modified_count")
 
     echo ""
     echo -e "${CYAN}GitHub Copilot CLI Script Reference Validation Prompt:${NC}"

@@ -15,8 +15,13 @@ set -euo pipefail
 #   - cleanup_old_checkpoints()        - Remove checkpoints older than 7 days
 ################################################################################
 
-# Checkpoint directory
-CHECKPOINT_DIR="${PROJECT_ROOT}/src/workflow/.checkpoints"
+# Set defaults for required variables if not already set
+PROJECT_ROOT=${PROJECT_ROOT:-$(pwd)}
+WORKFLOW_HOME=${WORKFLOW_HOME:-$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)}
+WORKFLOW_RUN_ID=${WORKFLOW_RUN_ID:-workflow_$(date +%Y%m%d_%H%M%S)}
+
+# Checkpoint directory - must use WORKFLOW_HOME not PROJECT_ROOT for --target compatibility
+CHECKPOINT_DIR="${WORKFLOW_HOME}/src/workflow/.checkpoints"
 CHECKPOINT_FILE="${CHECKPOINT_DIR}/${WORKFLOW_RUN_ID}.checkpoint"
 
 # ==============================================================================
@@ -244,7 +249,7 @@ execute_parallel_tracks() {
         
         # Step 0: Pre-Analysis
         if should_execute_step 0; then
-            step0_pre_analysis > "${parallel_dir}/track1_step0.log" 2>&1 || {
+            step0_analyze_changes > "${parallel_dir}/track1_step0.log" 2>&1 || {
                 echo "FAILED:0" > "${parallel_dir}/track_analysis.status"
                 exit 1
             }
@@ -324,20 +329,20 @@ execute_parallel_tracks() {
         # Step 5 & 8 in parallel
         local dep_pid=""
         if should_execute_step 5; then
-            step5_test_review > "${parallel_dir}/track2_step5.log" 2>&1 || {
+            step5_review_existing_tests > "${parallel_dir}/track2_step5.log" 2>&1 || {
                 echo "FAILED:5" > "${parallel_dir}/track_validation.status"
                 exit 1
             }
         fi
         
         if should_execute_step 8; then
-            step8_dependency_validation > "${parallel_dir}/track2_step8.log" 2>&1 &
+            step8_validate_dependencies > "${parallel_dir}/track2_step8.log" 2>&1 &
             dep_pid=$!
         fi
         
         # Step 6: Test Generation
         if should_execute_step 6; then
-            step6_test_generation > "${parallel_dir}/track2_step6.log" 2>&1 || {
+            step6_generate_new_tests > "${parallel_dir}/track2_step6.log" 2>&1 || {
                 echo "FAILED:6" > "${parallel_dir}/track_validation.status"
                 exit 1
             }
@@ -345,7 +350,7 @@ execute_parallel_tracks() {
         
         # Step 7: Test Execution
         if should_execute_step 7; then
-            step7_test_execution > "${parallel_dir}/track2_step7.log" 2>&1 || {
+            step7_execute_test_suite > "${parallel_dir}/track2_step7.log" 2>&1 || {
                 echo "FAILED:7" > "${parallel_dir}/track_validation.status"
                 exit 1
             }
@@ -356,7 +361,7 @@ execute_parallel_tracks() {
         
         # Step 9: Code Quality
         if should_execute_step 9; then
-            step9_code_quality > "${parallel_dir}/track2_step9.log" 2>&1 || {
+            step9_code_quality_validation > "${parallel_dir}/track2_step9.log" 2>&1 || {
                 echo "FAILED:9" > "${parallel_dir}/track_validation.status"
                 exit 1
             }
@@ -401,7 +406,7 @@ execute_parallel_tracks() {
         
         # Step 12: Markdown Linting
         if should_execute_step 12; then
-            step12_markdown_lint > "${parallel_dir}/track3_step12.log" 2>&1 || {
+            step12_markdown_linting > "${parallel_dir}/track3_step12.log" 2>&1 || {
                 echo "FAILED:12" > "${parallel_dir}/track_docs.status"
                 exit 1
             }
@@ -730,6 +735,7 @@ EOF
 # Note: All variables are properly quoted to prevent Bash interpretation errors (v2.3.1)
 save_checkpoint() {
     local last_step="$1"
+    local step_status="${2:-success}"  # Optional: success, failed, skipped (v2.6.0)
     
     mkdir -p "$CHECKPOINT_DIR"
     
@@ -764,6 +770,11 @@ CHANGE_SCOPE="${CHANGE_SCOPE}"
 EOF
     
     log_to_workflow "INFO" "Checkpoint saved: Step ${last_step} completed"
+    
+    # Record metrics if function available (v2.6.0)
+    if type -t stop_step_timer > /dev/null; then
+        stop_step_timer "${last_step}" "${step_status}"
+    fi
 }
 
 # Load checkpoint and validate it's safe to resume
@@ -912,7 +923,7 @@ cleanup_old_checkpoints() {
     while IFS= read -r checkpoint_file; do
         if [[ -f "$checkpoint_file" ]]; then
             rm -f "$checkpoint_file"
-            ((deleted_count++))
+            ((deleted_count++)) || true
         fi
     done < <(find "$CHECKPOINT_DIR" -name "*.checkpoint" -type f -mtime +7 2>/dev/null)
     

@@ -717,7 +717,11 @@ project_kind_framework/
                         ▼
 ┌─────────────────────────────────────────────────────────┐
 │ 2. Project Kind Detection                                │
-│    detect_project_kind() → nodejs_api (confidence: 0.90) │
+│    Priority: Config file > Auto-detection               │
+│    ├── Check .workflow-config.yaml for project.kind     │
+│    │   or project.type (normalized: client-spa → client_spa)│
+│    └── If not configured: detect_project_kind()         │
+│        → Result: nodejs_api (confidence: 0.90)          │
 └───────────────────────┬─────────────────────────────────┘
                         │
                         ▼
@@ -762,12 +766,14 @@ project_kind_framework/
 
 ### Configuration Priority
 
+**Updated in v2.6.1**: Config file now takes priority over auto-detection
+
 ```
 Highest Priority
       ↓
 ┌─────────────────────────────────┐
-│ 1. .workflow-config.yaml        │  User overrides
-│    (project-specific)           │
+│ 1. .workflow-config.yaml        │  User overrides (100% confidence)
+│    (project.kind or .type)      │  Takes precedence over detection
 └─────────────────┬───────────────┘
                   ↓
 ┌─────────────────────────────────┐
@@ -776,8 +782,8 @@ Highest Priority
 └─────────────────┬───────────────┘
                   ↓
 ┌─────────────────────────────────┐
-│ 3. Detected Project Kind        │  Auto-detection
-│    (with confidence)            │
+│ 3. Auto-Detection               │  Only if not in config
+│    detect_project_kind()        │  (with confidence score)
 └─────────────────┬───────────────┘
                   ↓
 ┌─────────────────────────────────┐
@@ -833,7 +839,7 @@ Create `.workflow-config.yaml` in your project root:
 ```yaml
 # Project identification
 project:
-  kind: nodejs_api              # Explicit kind override
+  kind: nodejs_api              # Use 'kind' or 'type' (both supported)
   name: "My API Project"
   description: "RESTful API service"
 
@@ -854,6 +860,10 @@ quality:
   complexity_limit: 10          # Override default
   documentation_required: true
 ```
+
+> **Note**: Project kind supports both formats:
+> - `project.kind: nodejs_api` or `project.type: nodejs-api`
+> - Hyphens are automatically converted to underscores internally
 
 ### Using with --target Flag
 
@@ -940,7 +950,7 @@ cd /path/to/existing/project
 # Option 3: Create .workflow-config.yaml manually
 cat > .workflow-config.yaml << 'EOF'
 project:
-  kind: nodejs_api  # or shell_script_automation, react_spa, etc.
+  kind: nodejs_api  # Use 'kind' or 'type', both work with hyphens or underscores
 tech_stack:
   primary_language: javascript
 testing:

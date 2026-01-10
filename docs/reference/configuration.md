@@ -51,10 +51,13 @@ The AI Workflow Automation system uses multiple YAML configuration files for dif
 # Project Information
 project:
   name: string                    # Project display name (max 100 chars)
-  type: string                    # Project type identifier
+  type: string                    # Project type identifier (alias for 'kind')
   description: string             # Brief description (max 500 chars)
   kind: enum                      # Project kind (see section 1.2)
   repository: string              # Repository URL (optional)
+  
+  # Note: 'type' and 'kind' are interchangeable. Both are supported.
+  # Hyphens and underscores are normalized (e.g., "client-spa" → "client_spa")
 
 # Technology Stack Configuration
 tech_stack:
@@ -89,8 +92,11 @@ ai_prompts:
 
 ### 1.2 Valid Project Kinds
 
+**Field Name**: Use either `project.kind` or `project.type` (both are supported)  
+**Format**: Use underscores or hyphens (both are normalized automatically)
+
 ```yaml
-project.kind: enum
+project.kind: enum    # or project.type
   # Shell Script Projects
   - shell_automation            # Shell script automation tools
   - shell_script_automation     # Alias for shell_automation
@@ -102,9 +108,9 @@ project.kind: enum
   
   # Frontend Projects
   - static_website              # Static HTML/CSS/JS site
-  - client_spa                  # Generic SPA framework
-  - react_spa                   # React single-page app
-  - vue_spa                     # Vue.js single-page app
+  - client_spa                  # Generic SPA framework (or "client-spa")
+  - react_spa                   # React single-page app (or "react-spa")
+  - vue_spa                     # Vue.js single-page app (or "vue-spa")
   
   # Python Projects
   - python_api                  # Python REST/GraphQL API
@@ -118,6 +124,11 @@ project.kind: enum
   # Generic
   - generic                     # Generic project type
 ```
+
+> **Note**: Project kind values are normalized internally:
+> - Hyphens converted to underscores: `client-spa` → `client_spa`
+> - Both `project.kind` and `project.type` fields are supported
+> - This ensures compatibility with various configuration generators
 
 ### 1.3 Valid Primary Languages
 
@@ -142,9 +153,8 @@ tech_stack.primary_language: enum
 # .workflow-config.yaml
 project:
   name: "My Automation Scripts"
-  type: "bash-automation-framework"
+  type: "shell_automation"  # Can use 'type' or 'kind' field
   description: "Shell script utilities for CI/CD automation"
-  kind: "shell_automation"
 
 tech_stack:
   primary_language: "bash"
@@ -173,9 +183,8 @@ structure:
 # .workflow-config.yaml
 project:
   name: "My REST API"
-  type: "nodejs-api"
+  kind: "nodejs_api"  # Use 'kind' or 'type', underscores or hyphens
   description: "RESTful API with Express.js"
-  kind: "nodejs_api"
 
 tech_stack:
   primary_language: "javascript"
@@ -214,9 +223,8 @@ dependencies:
 # .workflow-config.yaml
 project:
   name: "My React App"
-  type: "react-spa"
+  type: "client-spa"  # Can use hyphens (normalized to client_spa)
   description: "React single-page application"
-  kind: "react_spa"
 
 tech_stack:
   primary_language: "javascript"

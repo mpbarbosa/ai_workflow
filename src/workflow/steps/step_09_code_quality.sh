@@ -38,6 +38,25 @@ step9_code_quality_validation() {
     fi
     
     print_info "Phase 1: Automated code quality analysis (${language})..."
+    
+    # Check for code changes optimization (v2.7.0)
+    # Use incremental code quality checks if available
+    local incremental_success=false
+    if [[ "${CODE_CHANGES_OPTIMIZATION:-false}" == "true" ]] && [[ "${CODE_CHANGES_STRATEGY:-}" == "incremental" ]]; then
+        print_info "Attempting incremental code quality checks..."
+        
+        if type -t execute_incremental_code_quality > /dev/null 2>&1; then
+            if execute_incremental_code_quality; then
+                incremental_success=true
+                print_success "Incremental code quality checks passed"
+                save_step_summary "9" "Code_Quality" "Incremental checks passed (code changes optimization)" "✅"
+                return 0
+            else
+                print_info "Incremental checks completed with warnings - proceeding with full analysis"
+            fi
+        fi
+    fi
+    
     if [[ -n "$lint_cmd" ]]; then
         print_info "Linter command: $lint_cmd"
     else

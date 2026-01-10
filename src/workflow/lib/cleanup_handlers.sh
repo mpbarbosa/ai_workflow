@@ -159,6 +159,99 @@ cleanup_sessions() {
 }
 
 # ==============================================================================
+# WORKFLOW ARTIFACT CLEANUP
+# ==============================================================================
+
+# Cleanup old workflow artifacts
+# Usage: cleanup_old_artifacts <days> <dry_run>
+# Arguments:
+#   days     - Remove artifacts older than this many days (default: 7)
+#   dry_run  - If "true", only report what would be deleted (default: false)
+cleanup_old_artifacts() {
+    local days="${1:-7}"
+    local dry_run="${2:-false}"
+    local artifacts_root="${PROJECT_ROOT}/.ai_workflow"
+    
+    # Validate artifacts root exists
+    if [[ ! -d "$artifacts_root" ]]; then
+        return 0
+    fi
+    
+    echo "🧹 Cleaning up workflow artifacts older than ${days} days..."
+    
+    # Directories to clean
+    local dirs_to_clean=(
+        "${artifacts_root}/backlog"
+        "${artifacts_root}/summaries"
+        "${artifacts_root}/logs"
+    )
+    
+    local total_removed=0
+    local total_size=0
+    
+    for base_dir in "${dirs_to_clean[@]}"; do
+        if [[ ! -d "$base_dir" ]]; then
+            continue
+        fi
+        
+        # Find directories older than specified days
+        local old_dirs=()
+        while IFS= read -r -d '' dir; do
+            old_dirs+=("$dir")
+        done < <(find "$base_dir" -maxdepth 1 -mindepth 1 -type d -mtime +"${days}" -print0 2>/dev/null)
+        
+        if [[ ${#old_dirs[@]} -gt 0 ]]; then
+            echo "  Found ${#old_dirs[@]} old run(s) in $(basename "$base_dir")/"
+            
+            for dir in "${old_dirs[@]}"; do
+                local dir_size=$(du -sh "$dir" 2>/dev/null | cut -f1)
+                local dir_name=$(basename "$dir")
+                
+                if [[ "$dry_run" == "true" ]]; then
+                    echo "    [DRY RUN] Would remove: $dir_name ($dir_size)"
+                else
+                    echo "    Removing: $dir_name ($dir_size)"
+                    rm -rf "$dir" 2>/dev/null || true
+                    ((total_removed++)) || true
+                fi
+            done
+        fi
+    done
+    
+    # Clean up old checkpoint files
+    local checkpoint_dir="${artifacts_root}/checkpoints"
+    if [[ -d "$checkpoint_dir" ]]; then
+        local old_checkpoints=()
+        while IFS= read -r -d '' file; do
+            old_checkpoints+=("$file")
+        done < <(find "$checkpoint_dir" -type f -name "*.checkpoint" -mtime +"${days}" -print0 2>/dev/null)
+        
+        if [[ ${#old_checkpoints[@]} -gt 0 ]]; then
+            echo "  Found ${#old_checkpoints[@]} old checkpoint(s)"
+            
+            for file in "${old_checkpoints[@]}"; do
+                local file_name=$(basename "$file")
+                
+                if [[ "$dry_run" == "true" ]]; then
+                    echo "    [DRY RUN] Would remove: $file_name"
+                else
+                    echo "    Removing: $file_name"
+                    rm -f "$file" 2>/dev/null || true
+                fi
+            done
+        fi
+    fi
+    
+    if [[ "$dry_run" == "true" ]]; then
+        echo "✅ Dry run complete - no artifacts were removed"
+    elif [[ $total_removed -gt 0 ]]; then
+        echo "✅ Cleanup complete - removed $total_removed run(s)"
+    else
+        echo "✅ No old artifacts found to clean up"
+    fi
+}
+
+# ==============================================================================
 # USAGE EXAMPLE
 # ==============================================================================
 #
@@ -177,6 +270,10 @@ cleanup_sessions() {
 # # Register existing files/dirs
 # register_temp_file "/tmp/myfile.txt"
 # register_temp_dir "/tmp/mydir"
+#
+# # Cleanup old workflow artifacts
+# cleanup_old_artifacts 7 false  # Remove artifacts older than 7 days
+# cleanup_old_artifacts 30 true  # Dry run - show what would be deleted
 #
 # # Cleanup happens automatically on EXIT/INT/TERM
 #

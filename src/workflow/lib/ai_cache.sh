@@ -18,6 +18,7 @@ VERBOSE=${VERBOSE:-false}
 USE_AI_CACHE=${USE_AI_CACHE:-true}
 WORKFLOW_RUN_ID=${WORKFLOW_RUN_ID:-unknown}
 SCRIPT_VERSION=${SCRIPT_VERSION:-1.0.0}
+WORKFLOW_HOME=${WORKFLOW_HOME:-$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)}
 
 # Cache directory structure
 AI_CACHE_DIR="${WORKFLOW_HOME}/src/workflow/.ai_cache"
@@ -247,7 +248,7 @@ cleanup_ai_cache_old_entries() {
                 
                 if [[ ${age} -gt ${AI_CACHE_TTL} ]]; then
                     rm -f "${cache_file}" "${cache_meta}"
-                    ((deleted_count++))
+                    ((deleted_count++)) || true
                 fi
             fi
         done <<< "${cache_files_list}"
