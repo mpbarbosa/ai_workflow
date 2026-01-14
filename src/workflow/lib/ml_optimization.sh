@@ -71,27 +71,33 @@ extract_change_features() {
     local doc_files=$(get_modified_files | grep -c '\.md$\|^docs/' 2>/dev/null || echo 0)
     doc_files=$(echo "$doc_files" | tr -d '[:space:]')
     doc_files=${doc_files:-0}
+    [[ ! "$doc_files" =~ ^[0-9]+$ ]] && doc_files=0
     
     local code_files=$(get_modified_files | grep -c '\.sh$\|\.js$\|\.ts$\|\.py$' 2>/dev/null || echo 0)
     code_files=$(echo "$code_files" | tr -d '[:space:]')
     code_files=${code_files:-0}
+    [[ ! "$code_files" =~ ^[0-9]+$ ]] && code_files=0
     
     local test_files=$(get_modified_files | grep -c 'test\|spec' 2>/dev/null || echo 0)
     test_files=$(echo "$test_files" | tr -d '[:space:]')
     test_files=${test_files:-0}
+    [[ ! "$test_files" =~ ^[0-9]+$ ]] && test_files=0
     
     local config_files=$(get_modified_files | grep -c 'config\|\.yaml$\|\.json$' 2>/dev/null || echo 0)
     config_files=$(echo "$config_files" | tr -d '[:space:]')
     config_files=${config_files:-0}
+    [[ ! "$config_files" =~ ^[0-9]+$ ]] && config_files=0
     
     # Line change features
     local total_lines_added=$(git diff --cached --numstat 2>/dev/null | awk '{sum+=$1} END {print sum+0}')
     total_lines_added=$(echo "$total_lines_added" | tr -d '[:space:]')
     total_lines_added=${total_lines_added:-0}
+    [[ ! "$total_lines_added" =~ ^[0-9]+$ ]] && total_lines_added=0
     
     local total_lines_deleted=$(git diff --cached --numstat 2>/dev/null | awk '{sum+=$2} END {print sum+0}')
     total_lines_deleted=$(echo "$total_lines_deleted" | tr -d '[:space:]')
     total_lines_deleted=${total_lines_deleted:-0}
+    [[ ! "$total_lines_deleted" =~ ^[0-9]+$ ]] && total_lines_deleted=0
     
     local total_lines_changed=$((total_lines_added + total_lines_deleted))
     
@@ -107,16 +113,19 @@ extract_change_features() {
         change_type="config_change"
     fi
     
-    # Directory depth (complexity indicator)
-    local max_depth=$(get_modified_files | awk -F/ '{print NF}' | sort -rn | head -1 | tr -d '[:space:]')
+    # Directory depth (complexity indicator) - strip leading zeros for JSON, handle empty string
+    local max_depth=$(get_modified_files | awk -F/ '{print NF}' | sort -rn | head -1 | tr -d '[:space:]' | sed 's/^0*\(.\)/\1/' | sed 's/^$/0/')
     max_depth=${max_depth:-0}
+    [[ ! "$max_depth" =~ ^[0-9]+$ ]] && max_depth=0
     
-    # Time-based features
-    local hour_of_day=$(date +%H | tr -d '[:space:]')
+    # Time-based features (strip leading zeros for JSON, handle empty string)
+    local hour_of_day=$(date +%H | tr -d '[:space:]' | sed 's/^0*\(.\)/\1/' | sed 's/^$/0/')
     hour_of_day=${hour_of_day:-0}
+    [[ ! "$hour_of_day" =~ ^[0-9]+$ ]] && hour_of_day=0
     
-    local day_of_week=$(date +%u | tr -d '[:space:]')
+    local day_of_week=$(date +%u | tr -d '[:space:]' | sed 's/^0*\(.\)/\1/' | sed 's/^$/1/')
     day_of_week=${day_of_week:-1}
+    [[ ! "$day_of_week" =~ ^[0-9]+$ ]] && day_of_week=1
     
     # Build feature vector
     features=$(jq -n \
@@ -185,10 +194,13 @@ predict_step_duration() {
     if [[ $sample_count -lt 3 ]]; then
         # Not enough similar samples - fall back to overall average
         local avg_duration=$(jq -s --arg step "$step" \
-            '[.[] | select(.step == ($step | tonumber)) | .duration] | add / length' \
+            '[.[] | select(.step == ($step | tonumber)) | .duration] | 
+            if length > 0 then (add / length | floor) else 0 end' \
             "$ML_TRAINING_DATA" 2>/dev/null || echo "0")
         
-        echo "${avg_duration%.*}"  # Convert to integer
+        # Ensure it's a valid integer
+        avg_duration=${avg_duration//[^0-9]/}
+        echo "${avg_duration:-0}"
         return 0
     fi
     
@@ -198,10 +210,16 @@ predict_step_duration() {
             duration: .value.duration,
             weight: (1.0 / (($now - .value.timestamp) / 86400 + 1))
         }] | 
-        (map(.duration * .weight) | add) / (map(.weight) | add)
+        if length > 0 then
+            ((map(.duration * .weight) | add) / (map(.weight) | add) | floor)
+        else
+            0
+        end
     ' --argjson now "$(date +%s)")
     
-    echo "${predicted%.*}"
+    # Ensure it's a valid integer
+    predicted=${predicted//[^0-9]/}
+    echo "${predicted:-0}"
 }
 
 # Predict total workflow duration
@@ -367,8 +385,12 @@ recommend_skip_steps() {
     # Remove duplicates and sort
     local unique_steps=($(printf '%s\n' "${skip_steps[@]}" | sort -nu))
     
-    # Convert to JSON array
-    printf '%s\n' "${unique_steps[@]}" | jq -R . | jq -s .
+    # Convert to JSON array - handle empty case
+    if [[ ${#unique_steps[@]} -eq 0 ]]; then
+        echo "[]"
+    else
+        printf '%s\n' "${unique_steps[@]}" | jq -R 'tonumber' | jq -s .
+    fi
 }
 
 # ==============================================================================
@@ -410,6 +432,11 @@ log_anomaly() {
     local actual="$2"
     local predicted="$3"
     local deviation="$4"
+    
+    # Validate numeric inputs
+    [[ ! "$step" =~ ^[0-9]+$ ]] && step=0
+    [[ ! "$actual" =~ ^[0-9]+$ ]] && actual=0
+    [[ ! "$predicted" =~ ^[0-9]+$ ]] && predicted=0
     
     local anomaly_log="${ML_DATA_DIR}/anomalies.jsonl"
     
@@ -453,7 +480,16 @@ record_step_execution() {
     local features="$3"
     local issues_found="${4:-0}"
     
-    local record=$(jq -n \
+    # Validate numeric inputs to prevent jq errors
+    step=${step:-0}
+    duration=${duration:-0}
+    issues_found=${issues_found:-0}
+    [[ ! "$step" =~ ^[0-9]+$ ]] && step=0
+    [[ ! "$duration" =~ ^[0-9]+$ ]] && duration=0
+    [[ ! "$issues_found" =~ ^[0-9]+$ ]] && issues_found=0
+    [[ -z "$features" || "$features" == '""' || "$features" == "null" ]] && features="{}"
+    
+    local record=$(jq -nc \
         --argjson step "$step" \
         --argjson duration "$duration" \
         --argjson features "$features" \
@@ -561,30 +597,33 @@ apply_ml_optimization() {
     # Extract features from current changes
     local features=$(extract_change_features)
     
-    echo "Features detected:"
-    echo "$features" | jq .
-    echo ""
+    echo "Features detected:" >&2
+    echo "$features" | jq . >&2
+    echo "" >&2
     
     # Get parallelization recommendation
     local parallel_rec=$(recommend_parallelization "$features")
     
-    echo "Parallelization recommendation:"
-    echo "$parallel_rec" | jq .
-    echo ""
+    echo "Parallelization recommendation:" >&2
+    echo "$parallel_rec" | jq . >&2
+    echo "" >&2
     
     # Get skip recommendations
     local skip_rec=$(recommend_skip_steps "$features")
     
-    echo "Skip recommendations:"
-    echo "$skip_rec" | jq .
-    echo ""
+    echo "Skip recommendations:" >&2
+    echo "$skip_rec" | jq . >&2
+    echo "" >&2
     
     # Predict workflow duration
-    local predicted_duration=$(predict_workflow_duration "$features" {0..14})
+    local predicted_duration=$(predict_workflow_duration "$features" 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14)
+    # Ensure it's a valid integer
+    predicted_duration=${predicted_duration//[^0-9]/}
+    predicted_duration=${predicted_duration:-0}
     local predicted_min=$((predicted_duration / 60))
     
-    echo "Predicted workflow duration: ${predicted_min}m (${predicted_duration}s)"
-    echo ""
+    echo "Predicted workflow duration: ${predicted_min}m (${predicted_duration}s)" >&2
+    echo "" >&2
     
     # Build complete recommendation
     local recommendations=$(jq -n \
