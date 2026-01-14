@@ -311,7 +311,7 @@ update_current_run_step() {
     
     # Update JSON (fallback to manual update if jq not available)
     if command -v jq &> /dev/null; then
-        jq --argjson step "${step_obj}" ".steps[\"step_${step_num}\"] = \$step" "${METRICS_CURRENT}" > "${temp_file}" && mv "${temp_file}" "${METRICS_CURRENT}"
+        echo "${step_obj}" | jq -s --slurpfile current "${METRICS_CURRENT}" '.[0] as $step | $current[0] | .steps["step_'"${step_num}"'"] = $step' > "${temp_file}" && mv "${temp_file}" "${METRICS_CURRENT}"
     else
         # Manual JSON update without jq
         echo "Warning: jq not found, metrics may be incomplete" >&2
