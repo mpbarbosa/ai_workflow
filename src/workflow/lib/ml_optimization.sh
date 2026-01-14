@@ -177,6 +177,12 @@ predict_step_duration() {
     local total_files=$(echo "$features" | jq -r '.total_files')
     local lines_changed=$(echo "$features" | jq -r '.lines_changed')
     
+    # Check if training data exists
+    if [[ ! -f "$ML_TRAINING_DATA" ]]; then
+        echo "0"
+        return 0
+    fi
+    
     # Query historical data for similar patterns
     local similar_runs=$(jq -s --arg step "$step" \
         --arg change_type "$change_type" \
@@ -187,16 +193,24 @@ predict_step_duration() {
             .features.change_type == $change_type and
             ((.features.total_files - $total_files) | fabs) <= 5 and
             ((.features.lines_changed - $lines_changed) | fabs) <= 500
-        )]' "$ML_TRAINING_DATA" 2>/dev/null || echo "[]")
+        )]' "$ML_TRAINING_DATA" 2>/dev/null)
     
-    local sample_count=$(echo "$similar_runs" | jq 'length')
+    # Validate similar_runs is valid JSON
+    if ! echo "$similar_runs" | jq -e . >/dev/null 2>&1; then
+        echo "0"
+        return 0
+    fi
+    
+    local sample_count=$(echo "$similar_runs" | jq 'length' 2>/dev/null)
+    sample_count=${sample_count//[^0-9]/}
+    sample_count=${sample_count:-0}
     
     if [[ $sample_count -lt 3 ]]; then
         # Not enough similar samples - fall back to overall average
         local avg_duration=$(jq -s --arg step "$step" \
             '[.[] | select(.step == ($step | tonumber)) | .duration] | 
             if length > 0 then (add / length | floor) else 0 end' \
-            "$ML_TRAINING_DATA" 2>/dev/null || echo "0")
+            "$ML_TRAINING_DATA" 2>/dev/null)
         
         # Ensure it's a valid integer
         avg_duration=${avg_duration//[^0-9]/}
@@ -265,14 +279,32 @@ recommend_parallelization() {
     local code_files=$(echo "$features" | jq -r '.code_files')
     local test_files=$(echo "$features" | jq -r '.test_files')
     
+    # Check if training data exists
+    if [[ ! -f "$ML_TRAINING_DATA" ]]; then
+        # Return safe defaults when no training data
+        jq -n '{
+            recommend_parallel: false,
+            strategy: "sequential",
+            confidence: "low",
+            expected_benefit_pct: "0"
+        }'
+        return 0
+    fi
+    
     # Analyze historical performance with/without parallelization
     local parallel_avg=$(jq -s --arg change_type "$change_type" \
-        '[.[] | select(.features.change_type == $change_type and .parallel == true) | .total_duration] | add / length' \
-        "$ML_TRAINING_DATA" 2>/dev/null || echo "0")
+        '[.[] | select(.features.change_type == $change_type and .parallel == true) | .total_duration] | 
+        if length > 0 then (add / length) else 0 end' \
+        "$ML_TRAINING_DATA" 2>/dev/null)
+    parallel_avg=${parallel_avg//[^0-9.]/}
+    parallel_avg=${parallel_avg:-0}
     
     local serial_avg=$(jq -s --arg change_type "$change_type" \
-        '[.[] | select(.features.change_type == $change_type and .parallel == false) | .total_duration] | add / length' \
-        "$ML_TRAINING_DATA" 2>/dev/null || echo "0")
+        '[.[] | select(.features.change_type == $change_type and .parallel == false) | .total_duration] | 
+        if length > 0 then (add / length) else 0 end' \
+        "$ML_TRAINING_DATA" 2>/dev/null)
+    serial_avg=${serial_avg//[^0-9.]/}
+    serial_avg=${serial_avg:-0}
     
     local parallel_benefit=0
     if [[ "$serial_avg" != "0" ]] && [[ "$parallel_avg" != "0" ]]; then
