@@ -645,6 +645,102 @@ project_kinds:
         - "Configuration in config/ or root directory"
 
   # ----------------------------------------------------------------------------
+  # Configuration Library / Template Repository
+  # ----------------------------------------------------------------------------
+  configuration_library:
+    name: "Configuration Library"
+    description: "Language-agnostic configuration templates and reusable assets designed for Git submodule integration"
+    
+    validation:
+      required_files:
+        - "README.md"
+        - "*.yaml|*.yml"
+      required_directories:
+        - "config|templates"
+      optional_files:
+        - "INTEGRATION.md"
+        - "CHANGELOG.md"
+        - ".gitmodules"
+      file_patterns:
+        - "*.yaml"
+        - "*.yml"
+        - "*.md"
+        - "*.template"
+    
+    testing:
+      test_framework: "validation-scripts"
+      test_directory: "tests|scripts"
+      test_file_pattern: "validate_*|test_*"
+      test_command: "python scripts/validate_*.py"
+      coverage_required: false
+      coverage_threshold: 0
+      
+    quality:
+      linters:
+        - name: "yamllint"
+          enabled: true
+          command: "yamllint"
+          args: ["-d", "relaxed"]
+          file_pattern: "*.yaml|*.yml"
+        - name: "markdownlint"
+          enabled: true
+          command: "markdownlint"
+          args: ["--config", ".markdownlint.json"]
+          file_pattern: "*.md"
+      
+      documentation_required: true
+      inline_comments_recommended: true
+      readme_required: true
+      integration_guide_required: true
+    
+    dependencies:
+      package_files: []
+      lock_files: []
+      validation_required: false
+    
+    build:
+      required: false
+      build_command: ""
+      output_directory: ""
+    
+    deployment:
+      type: "git-submodule"
+      requires_build: false
+      artifact_patterns: ["*.yaml", "*.yml", "*.md", "*.template"]
+    
+    # Language-specific best practices and standards
+    ai_guidance:
+      testing_standards:
+        - "Validate YAML/JSON syntax and schema compliance"
+        - "Test template placeholder consistency"
+        - "Verify integration examples work correctly"
+        - "Check for broken links in documentation"
+        - "Validate that templates can be successfully instantiated"
+      
+      style_guides:
+        - "YAML Best Practices"
+        - "Template Design Patterns"
+        - "Git Submodule Integration Guidelines"
+        - "Semantic Versioning for configuration changes"
+      
+      best_practices:
+        - "Use consistent {{PLACEHOLDER}} format for all variables"
+        - "Provide comprehensive integration documentation"
+        - "Include working examples for multiple languages/use cases"
+        - "Maintain backward compatibility across versions"
+        - "Document all required and optional placeholders"
+        - "Use semantic versioning for template changes"
+        - "Provide migration guides for breaking changes"
+        - "Keep templates minimal and focused"
+      
+      directory_standards:
+        - "config/ or templates/ for reusable configuration"
+        - "examples/ for language-specific integration samples"
+        - "docs/ for comprehensive documentation and guides"
+        - "scripts/ for validation and utility scripts"
+        - "Keep root clean with essential files only"
+
+  # ----------------------------------------------------------------------------
   # Generic Project (Fallback)
   # ----------------------------------------------------------------------------
   generic:
@@ -718,10 +814,13 @@ project_kinds:
 # ============================================================================
 
 metadata:
-  schema_version: "1.1.0"
-  last_updated: "2025-12-22"
-  compatible_workflow_version: "2.3.1"
+  schema_version: "1.2.0"
+  last_updated: "2026-01-29"
+  compatible_workflow_version: "3.0.0"
   changelog:
+    - version: "1.2.0"
+      date: "2026-01-29"
+      changes: "Added configuration_library project kind for template repositories and Git submodule integration"
     - version: "1.1.0"
       date: "2025-12-22"
       changes: "Added client_spa project kind for vanilla JS SPAs with Bootstrap"
