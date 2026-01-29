@@ -3,7 +3,7 @@ set -euo pipefail
 
 ################################################################################
 # Machine Learning Optimization Module
-# Version: 2.9.0
+# Version: 3.0.0
 # Purpose: Predictive optimization using historical workflow data
 #
 # Features:
@@ -16,12 +16,15 @@ set -euo pipefail
 # Performance Target: 15-30% additional improvement over static optimization
 ################################################################################
 
-# Set defaults
+# Set defaults with safe fallbacks for test environments
 WORKFLOW_HOME=${WORKFLOW_HOME:-$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)}
-ML_DATA_DIR="${WORKFLOW_HOME}/.ml_data"
-ML_TRAINING_DATA="${ML_DATA_DIR}/training_data.jsonl"
-ML_MODEL_DIR="${ML_DATA_DIR}/models"
-ML_PREDICTIONS="${ML_DATA_DIR}/predictions.json"
+ML_DATA_DIR="${ML_DATA_DIR:-${WORKFLOW_HOME}/.ml_data}"
+ML_TRAINING_DATA="${ML_TRAINING_DATA:-${ML_DATA_DIR}/training_data.jsonl}"
+ML_MODEL_DIR="${ML_MODEL_DIR:-${ML_DATA_DIR}/models}"
+ML_PREDICTIONS="${ML_PREDICTIONS:-${ML_DATA_DIR}/predictions.json}"
+
+# Export for subshells and test environments
+export ML_TRAINING_DATA ML_MODEL_DIR ML_PREDICTIONS
 
 # Training thresholds
 MIN_TRAINING_SAMPLES=10  # Minimum samples before ML kicks in
@@ -67,6 +70,7 @@ extract_change_features() {
     # File count features
     local total_files=$(get_modified_files | wc -l | tr -d '[:space:]')
     total_files=${total_files:-0}
+    [[ ! "$total_files" =~ ^[0-9]+$ ]] && total_files=0
     
     local doc_files=$(get_modified_files | grep -c '\.md$\|^docs/' 2>/dev/null || echo 0)
     doc_files=$(echo "$doc_files" | tr -d '[:space:]')
@@ -512,6 +516,11 @@ record_step_execution() {
     local features="$3"
     local issues_found="${4:-0}"
     
+    # Guard: Skip if ML_TRAINING_DATA not initialized (test environment)
+    if [[ -z "${ML_TRAINING_DATA:-}" ]]; then
+        return 0
+    fi
+    
     # Validate numeric inputs to prevent jq errors
     step=${step:-0}
     duration=${duration:-0}
@@ -521,10 +530,14 @@ record_step_execution() {
     [[ ! "$issues_found" =~ ^[0-9]+$ ]] && issues_found=0
     [[ -z "$features" || "$features" == '""' || "$features" == "null" ]] && features="{}"
     
+    # Compact features JSON to single line for jq --argjson (multiline breaks parsing)
+    local features_compact
+    features_compact=$(echo "$features" | jq -c '.' 2>/dev/null || echo "{}")
+    
     local record=$(jq -nc \
         --argjson step "$step" \
         --argjson duration "$duration" \
-        --argjson features "$features" \
+        --argjson features "$features_compact" \
         --argjson issues "$issues_found" \
         --argjson timestamp "$(date +%s)" \
         --argjson parallel "${PARALLEL_EXECUTION:-false}" \

@@ -6,6 +6,7 @@ project:
   type: "bash-automation-framework"
   description: "Shell script workflow automation system with AI integration"
   kind: "shell_automation"
+  version: "3.0.0"
 tech_stack:
   primary_language: "bash"
   build_system: "none"

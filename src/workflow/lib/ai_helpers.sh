@@ -8,6 +8,11 @@ set -euo pipefail
 # Enhancement: Project-aware personas via project_kinds.yaml (2025-12-19)
 ################################################################################
 
+# Determine the directory of this module for config file resolution
+# This ensures paths are correct regardless of where this module is sourced from
+AI_HELPERS_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+AI_HELPERS_WORKFLOW_DIR="$(cd "${AI_HELPERS_DIR}/.." && pwd)"
+
 # ==============================================================================
 # COPILOT CLI DETECTION AND VALIDATION
 # ==============================================================================
@@ -214,8 +219,8 @@ EOF
 build_doc_analysis_prompt() {
     local changed_files="$1"
     local doc_files="$2"
-    local yaml_file="${SCRIPT_DIR}/lib/ai_helpers.yaml"
-    local yaml_project_kind_file="${SCRIPT_DIR}/config/ai_prompts_project_kinds.yaml"
+    local yaml_file="${AI_HELPERS_DIR}/ai_helpers.yaml"
+    local yaml_project_kind_file="${AI_HELPERS_WORKFLOW_DIR}/config/ai_prompts_project_kinds.yaml"
 
     local role=""
     local task_context=""
@@ -455,7 +460,7 @@ Documentation to review: ${doc_files}" \
 # Step 2: Build a documentation consistency analysis prompt
 build_consistency_prompt() {
     local files_to_check="$1"
-    local yaml_file="${SCRIPT_DIR}/lib/ai_helpers.yaml"
+    local yaml_file="${AI_HELPERS_DIR}/ai_helpers.yaml"
     
     # Read from YAML config if available
     if [[ -f "$yaml_file" ]]; then
@@ -514,7 +519,7 @@ Check for:
 build_test_strategy_prompt() {
     local coverage_stats="$1"
     local test_files="$2"
-    local yaml_file="${SCRIPT_DIR}/lib/ai_helpers.yaml"
+    local yaml_file="${AI_HELPERS_DIR}/ai_helpers.yaml"
     
     # Read from YAML config if available
     if [[ -f "$yaml_file" ]]; then
@@ -574,7 +579,7 @@ Recommend:
 # Usage: build_quality_prompt <files_to_review>
 build_quality_prompt() {
     local files_to_review="$1"
-    local yaml_file="${SCRIPT_DIR}/lib/ai_helpers.yaml"
+    local yaml_file="${AI_HELPERS_DIR}/ai_helpers.yaml"
     
     # Read from YAML config if available
     if [[ -f "$yaml_file" ]]; then
@@ -634,7 +639,7 @@ Analyze:
 build_issue_extraction_prompt() {
     local log_file="$1"
     local log_content="$2"
-    local yaml_file="${SCRIPT_DIR}/lib/ai_helpers.yaml"
+    local yaml_file="${AI_HELPERS_DIR}/ai_helpers.yaml"
     
     # Read from YAML config if available
     if [[ -f "$yaml_file" ]]; then
@@ -714,7 +719,7 @@ build_step2_consistency_prompt() {
     local modified_count="$3"
     local broken_refs_content="$4"
     local doc_files="$5"
-    local yaml_file="${SCRIPT_DIR}/lib/ai_helpers.yaml"
+    local yaml_file="${AI_HELPERS_DIR}/ai_helpers.yaml"
     
     # Read from YAML config if available
     if [[ -f "$yaml_file" ]]; then
@@ -847,7 +852,7 @@ build_step3_script_refs_prompt() {
     local script_issues_content="$4"
     local all_scripts="$5"
     local modified_count="${6:-0}"
-    local yaml_file="${SCRIPT_DIR}/lib/ai_helpers.yaml"
+    local yaml_file="${AI_HELPERS_DIR}/ai_helpers.yaml"
     
     # Read from YAML config if available
     if [[ -f "$yaml_file" ]]; then
@@ -1002,7 +1007,7 @@ EOF
 }
 
 # Build a directory structure validation prompt (Step 4)
-# Usage: build_step4_directory_prompt <dir_count> <change_scope> <missing_critical> <undocumented_dirs> <doc_mismatch> <structure_issues> <dir_tree>
+# Usage: build_step4_directory_prompt <dir_count> <change_scope> <missing_critical> <undocumented_dirs> <doc_mismatch> <structure_issues> <dir_tree> [modified_count]
 build_step4_directory_prompt() {
     local dir_count="$1"
     local change_scope="$2"
@@ -1011,7 +1016,13 @@ build_step4_directory_prompt() {
     local doc_structure_mismatch="$5"
     local structure_issues_content="$6"
     local dir_tree="$7"
-    local yaml_file="${SCRIPT_DIR}/lib/ai_helpers.yaml"
+    local modified_count="${8:-0}"
+    local yaml_file="${AI_HELPERS_DIR}/ai_helpers.yaml"
+    
+    # Calculate modified_count if not provided or is 0
+    if [[ "$modified_count" == "0" ]] && command -v git &>/dev/null && git rev-parse --git-dir &>/dev/null 2>&1; then
+        modified_count=$(git diff --name-only 2>/dev/null | wc -l || echo "0")
+    fi
     
     # Read from YAML config if available
     if [[ -f "$yaml_file" ]]; then
@@ -1060,6 +1071,46 @@ build_step4_directory_prompt() {
         task="${task//\{project_name\}/$project_name}"
         task="${task//\{project_description\}/$project_description}"
         task="${task//\{primary_language\}/$primary_language}"
+        task="${task//\{modified_count\}/$modified_count}"
+        
+        # Handle language-specific directory standards if present
+        if echo "$task" | grep -q "{language_specific_directory_standards}"; then
+            # Source ai_prompt_builder if available
+            local prompt_builder="${AI_HELPERS_DIR}/ai_prompt_builder.sh"
+            if [[ -f "$prompt_builder" ]]; then
+                # shellcheck source=./ai_prompt_builder.sh
+                source "$prompt_builder"
+                local dir_standards
+                dir_standards=$(get_language_specific_content "$yaml_file" "language_specific_directory" "$primary_language" 2>/dev/null || echo "")
+                if [[ -n "$dir_standards" ]]; then
+                    # Replace the placeholder with the content (preserving indentation)
+                    task=$(echo "$task" | awk -v repl="$dir_standards" '
+                        /{language_specific_directory_standards}/ {
+                            indent = match($0, /[^ ]/)
+                            gsub(/{language_specific_directory_standards}/, "")
+                            if (indent > 1) {
+                                spaces = substr($0, 1, indent-1)
+                                # Print each line of replacement with proper indentation
+                                n = split(repl, lines, "\n")
+                                for (i=1; i<=n; i++) {
+                                    if (lines[i] != "") print spaces lines[i]
+                                }
+                            } else {
+                                print repl
+                            }
+                            next
+                        }
+                        { print }
+                    ')
+                else
+                    # If no language-specific standards found, just remove the placeholder
+                    task="${task//\{language_specific_directory_standards\}/}"
+                fi
+            else
+                # If prompt builder not available, just remove the placeholder
+                task="${task//\{language_specific_directory_standards\}/}"
+            fi
+        fi
         
         cat << EOF
 **Role**: ${role}
@@ -1088,6 +1139,7 @@ EOF
 - Primary Language: ${primary_language}
 - Total Directories: ${dir_count} (excluding node_modules, .git, coverage)
 - Scope: ${change_scope}
+- Modified Files: ${modified_count}
 - Critical Directories Missing: ${missing_critical}
 - Undocumented Directories: ${undocumented_dirs}
 - Documentation Mismatches: ${doc_structure_mismatch}
@@ -1159,7 +1211,7 @@ build_step5_test_review_prompt() {
     local coverage_exists="$7"
     local test_issues_content="$8"
     local test_files="$9"
-    local yaml_file="${SCRIPT_DIR}/lib/ai_helpers.yaml"
+    local yaml_file="${AI_HELPERS_DIR}/ai_helpers.yaml"
     
     # Read from YAML config if available
     if [[ -f "$yaml_file" ]]; then
@@ -1328,7 +1380,7 @@ build_step7_test_exec_prompt() {
     local execution_summary="$5"
     local test_output="$6"
     local failed_test_list="$7"
-    local yaml_file="${SCRIPT_DIR}/lib/ai_helpers.yaml"
+    local yaml_file="${AI_HELPERS_DIR}/ai_helpers.yaml"
     
     # Read from YAML config if available
     if [[ -f "$yaml_file" ]]; then
@@ -1485,7 +1537,7 @@ build_step8_dependencies_prompt() {
     local dev_deps="$9"
     local audit_summary="${10}"
     local outdated_list="${11}"
-    local yaml_file="${SCRIPT_DIR}/lib/ai_helpers.yaml"
+    local yaml_file="${AI_HELPERS_DIR}/ai_helpers.yaml"
     
     # Read from YAML config if available
     if [[ -f "$yaml_file" ]]; then
@@ -1651,7 +1703,7 @@ build_step9_code_quality_prompt() {
     local quality_report_content="$6"
     local large_files_list="$7"
     local sample_code="$8"
-    local yaml_file="${SCRIPT_DIR}/lib/ai_helpers.yaml"
+    local yaml_file="${AI_HELPERS_DIR}/ai_helpers.yaml"
     local language="${PRIMARY_LANGUAGE:-javascript}"
     
     # Read from YAML config if available
@@ -1836,7 +1888,7 @@ build_step11_git_commit_prompt() {
     local diff_summary="$5"
     local git_analysis_content="$6"
     local diff_sample="$7"
-    local yaml_file="${SCRIPT_DIR}/lib/ai_helpers.yaml"
+    local yaml_file="${AI_HELPERS_DIR}/ai_helpers.yaml"
     
     # Read from YAML config if available
     if [[ -f "$yaml_file" ]]; then
@@ -2434,7 +2486,7 @@ export -f extract_and_save_issues_from_log
 
 ################################################################################
 # PHASE 4: LANGUAGE-SPECIFIC PROMPT GENERATION
-# Version: 3.0.0
+# Version: 4.0.0
 # Added: 2025-12-18
 ################################################################################
 
@@ -2712,8 +2764,7 @@ get_project_kind_prompt() {
     local project_kind="$1"
     local persona="$2"
     local field="$3"
-    local script_dir="${SCRIPT_DIR:-$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)}"
-    local yaml_file="${script_dir}/config/ai_prompts_project_kinds.yaml"
+    local yaml_file="${AI_HELPERS_WORKFLOW_DIR}/config/ai_prompts_project_kinds.yaml"
     
     if [[ ! -f "$yaml_file" ]]; then
         return 1

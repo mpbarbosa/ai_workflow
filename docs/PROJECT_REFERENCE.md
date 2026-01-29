@@ -1,8 +1,8 @@
 # AI Workflow Automation - Project Reference
 
 **SINGLE SOURCE OF TRUTH**  
-**Version**: v2.6.0  
-**Last Updated**: 2025-12-24
+**Version**: v3.0.0  
+**Last Updated**: 2026-01-28
 
 > ⚠️ **Important**: This document is the authoritative source for project statistics, features, and module lists. All other documentation should reference this file, not duplicate its content.
 
@@ -12,7 +12,7 @@
 
 - **Repository**: [github.com/mpbarbosa/ai_workflow](https://github.com/mpbarbosa/ai_workflow)
 - **License**: MIT
-- **Current Version**: v2.6.0
+- **Current Version**: v3.0.0
 - **Previous Repository**: mpbarbosa_site (migrated 2025-12-18)
 - **Primary Maintainer**: Marcelo Pereira Barbosa ([@mpbarbosa](https://github.com/mpbarbosa))
 - **Contact**: mpbarbosa@gmail.com
@@ -20,19 +20,19 @@
 ### Key Statistics
 
 - **Total Lines**: 26,562 (22,411 shell + 4,151 YAML)
-- **Total Modules**: 59 (33 libraries + 15 steps + 7 configs + 4 orchestrators)
+- **Total Modules**: 61 (33 libraries + 16 steps + 7 configs + 4 orchestrators + 1 pre-commit)
 - **Test Coverage**: 100% (37+ automated tests)
-- **Performance**: Up to 90% faster for documentation-only changes
+- **Performance**: Up to 93% faster with ML optimization
 
-## Core Features (v2.6.0)
+## Core Features (v3.0.0)
 
 ### Workflow Pipeline
-- **15-Step Automated Pipeline**: Complete workflow from analysis to finalization
+- **16-Step Automated Pipeline**: Complete workflow from analysis to finalization
 - **Checkpoint Resume**: Automatic continuation from last completed step
 - **Dry Run Mode**: Preview execution without changes
 
 ### AI Integration
-- **14 Functional AI Personas**: Specialized roles across 15 workflow steps
+- **14 Functional AI Personas**: Specialized roles across 16 workflow steps
 - **GitHub Copilot CLI**: Primary AI integration
 - **AI Response Caching**: 60-80% token usage reduction (24-hour TTL)
 - **Dynamic Prompt Construction**: Context-aware AI interactions
@@ -40,8 +40,10 @@
 ### Performance Optimization
 - **Smart Execution**: Change-based step skipping (40-85% faster)
 - **Parallel Execution**: Independent steps run simultaneously (33% faster)
+- **ML Optimization** (NEW v2.7.0): Predictive step durations (15-30% additional improvement)
+- **Multi-Stage Pipeline** (NEW v2.8.0): Progressive validation (80%+ complete in 2 stages)
 - **AI Response Caching**: Automatic with TTL management
-- **Combined Optimization**: Up to 90% faster for simple changes
+- **Combined Optimization**: Up to 93% faster with ML for simple changes
 
 ### Project Intelligence
 - **Target Project Support**: Run on any project with `--target` option
@@ -50,10 +52,11 @@
 - **Configuration Wizard**: Interactive setup with `--init-config`
 
 ### Developer Experience
-- **Auto-Commit Workflow** (NEW v2.6.0): Automatic artifact commits with intelligent message generation
-- **Workflow Templates** (NEW v2.6.0): Pre-configured scripts (docs-only 3-4min, test-only 8-10min, feature 15-20min)
-- **IDE Integration** (NEW v2.6.0): VS Code tasks with keyboard shortcuts, JetBrains and Vim/Neovim guides
-- **Step 13 Bug Fix** (v2.6.0): Fixed YAML block scalar parsing for prompt engineer analysis
+- **Pre-Commit Hooks** (NEW v3.0.0): Fast validation checks (< 1 second) to prevent broken commits
+- **Auto-Documentation** (NEW v2.9.0): Generate reports and CHANGELOG from workflow execution
+- **Auto-Commit Workflow** (v2.6.0): Automatic artifact commits with intelligent message generation
+- **Workflow Templates** (v2.6.0): Pre-configured scripts (docs-only 3-4min, test-only 8-10min, feature 15-20min)
+- **IDE Integration** (v2.6.0): VS Code tasks with keyboard shortcuts, JetBrains and Vim/Neovim guides
 
 ### Analysis & Quality
 - **UX Analysis** (v2.4.0): AI-powered UI/UX with accessibility checking
@@ -65,7 +68,7 @@
 
 ### Library Modules (33 total in src/workflow/lib/)
 
-> **Note**: Module count updated 2025-12-24 to reflect actual inventory. Previous documentation referenced 28 modules before recent additions (ai_prompt_builder.sh, ai_personas.sh, ai_validation.sh, cleanup_handlers.sh, test_broken_reference_analysis.sh).
+> **Note**: Module count updated 2026-01-28 to reflect actual inventory including recent additions.
 
 #### Core Modules (12 modules)
 - `ai_helpers.sh` (102K) - AI integration with 14 functional personas
@@ -109,20 +112,21 @@
 **Execution Order** (Step 11 MUST be last):
 
 1. `step_00_analyze.sh` - Pre-flight analysis
-2. `step_01_documentation.sh` - Documentation updates
-3. `step_02_consistency.sh` - Cross-reference validation
-4. `step_03_script_refs.sh` - Script reference validation
-5. `step_04_directory.sh` - Directory structure validation
-6. `step_05_test_review.sh` - Test coverage review
-7. `step_06_test_gen.sh` - Test case generation
-8. `step_07_test_exec.sh` - Test execution
-9. `step_08_dependencies.sh` - Dependency validation
-10. `step_09_code_quality.sh` - Code quality checks
-11. `step_10_context.sh` - Context analysis
-12. `step_12_markdown_lint.sh` - Markdown linting
-13. `step_13_prompt_engineer.sh` - Prompt engineering (ai_workflow only)
-14. `step_14_ux_analysis.sh` - UX/UI analysis (NEW v2.4.0)
-15. `step_11_git.sh` - **Git operations [FINAL STEP - commits all changes]**
+2. `step_0a_version_update.sh` - Semantic version updates (PRE-PROCESSING - NEW v2.6.0)
+3. `step_01_documentation.sh` - Documentation updates
+4. `step_02_consistency.sh` - Cross-reference validation
+5. `step_03_script_refs.sh` - Script reference validation
+6. `step_04_directory.sh` - Directory structure validation
+7. `step_05_test_review.sh` - Test coverage review
+8. `step_06_test_gen.sh` - Test case generation
+9. `step_07_test_exec.sh` - Test execution
+10. `step_08_dependencies.sh` - Dependency validation
+11. `step_09_code_quality.sh` - Code quality checks
+12. `step_10_context.sh` - Context analysis
+13. `step_12_markdown_lint.sh` - Markdown linting
+14. `step_13_prompt_engineer.sh` - Prompt engineering (ai_workflow only)
+15. `step_14_ux_analysis.sh` - UX/UI analysis (NEW v2.4.0)
+16. `step_11_git.sh` - **Git operations [FINAL STEP - commits all changes]**
 
 ### Configuration Files (6 total in src/workflow/config/)
 

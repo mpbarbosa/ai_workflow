@@ -1,15 +1,15 @@
 # AI Prompt Templates Configuration
 # Purpose: Centralized AI prompt strings for workflow automation
-# Version: 3.7.0 (Comprehensive Token Efficiency Optimization - 2025-12-24)
+# Version: 4.0.0 (Comprehensive Token Efficiency Optimization - 2025-12-24)
 #
 # CUMULATIVE TOKEN EFFICIENCY SUMMARY:
 # =====================================
 # Total Savings per Workflow: ~1,400-1,500 tokens (vs. v3.0.0 baseline)
 #
 # Breakdown by Optimization Type:
-# - Output format simplification (v3.7.0): ~550 tokens
-# - Language-specific injection cleanup (v3.7.0): ~340 tokens
-# - Redundant test context (v3.7.0): ~55 tokens
+# - Output format simplification (v4.0.0): ~550 tokens
+# - Language-specific injection cleanup (v4.0.0): ~340 tokens
+# - Redundant test context (v4.0.0): ~55 tokens
 # - Anchor pattern implementation (v3.2.0): ~260-390 tokens
 # - Verbose section headers (v3.5.0): ~105-210 tokens
 # - Redundant output warnings (v3.6.0): ~40-50 tokens
@@ -34,7 +34,7 @@
 # VERSION HISTORY - TOKEN EFFICIENCY OPTIMIZATIONS
 # =============================================================================
 #
-# Token Efficiency Changes (v3.7.0 - 2025-12-24):
+# Token Efficiency Changes (v4.0.0 - 2025-12-24):
 # - Output format simplification: Removed rigid templates from 5 prompts
 #   * consistency_prompt: 26 lines → 5 lines (~295 tokens)
 #   * ai_log_analysis_prompt: 13 lines → 4 lines (~50 tokens)
@@ -1866,4 +1866,36 @@ language_specific_testing:
       @test "script fails on invalid input" {
         run myscript --invalid; [ "$status" -ne 0 ]
       }
+
+# Version Manager AI Persona (Step 15)
+# Purpose: Determine semantic version bump type based on change analysis
+version_manager_prompt:
+  role_prefix: "You are a Version Manager and Semantic Versioning Expert"
+  behavioral_guidelines:
+    <<: *standard_guidelines
+  
+  specific_expertise: |
+    Analyze code changes and determine appropriate semantic version bumps following semver.org:
+    - MAJOR (X.0.0): Breaking changes, API modifications, removed features, incompatible updates
+    - MINOR (X.Y.0): New features, enhancements, additive changes, new capabilities
+    - PATCH (X.Y.Z): Bug fixes, documentation updates, refactoring, test improvements, performance tweaks
+    
+    Consider:
+    - Scope of changes (files modified, lines changed)
+    - Type of modifications (API changes vs internal refactoring)
+    - Impact on consumers (breaking vs backward compatible)
+    - Conventional commit messages if available
+  
+  approach: |
+    1. Review provided git diff and change statistics
+    2. Analyze context from workflow analysis steps (documentation, code quality, tests)
+    3. Identify breaking changes, new features, or bug fixes
+    4. Determine minimum required version bump
+    5. Provide clear reasoning for recommendation
+  
+  output_format: |
+    Bump Type: [major|minor|patch]
+    Reasoning: [2-3 sentence explanation of why this bump type is appropriate]
+    Confidence: [high|medium|low]
+
 

@@ -16,7 +16,8 @@ set -euo pipefail
 declare -A STEP_DEPENDENCIES
 STEP_DEPENDENCIES=(
     [0]=""                # Pre-Analysis has no dependencies
-    [1]="0"               # Documentation depends on Pre-Analysis
+    [0a]="0"              # Version Update depends on Pre-Analysis (runs before docs)
+    [1]="0a"              # Documentation depends on Version Update
     [2]="1"               # Consistency depends on Documentation
     [3]="0"               # Script Refs depends on Pre-Analysis
     [4]="0"               # Directory Structure depends on Pre-Analysis
@@ -29,29 +30,34 @@ STEP_DEPENDENCIES=(
     [12]="2"              # Markdown Linting depends on Consistency
     [13]="0"              # Prompt Engineer Analysis depends on Pre-Analysis (can run early)
     [14]="0,1"            # UX Analysis depends on Pre-Analysis and Documentation
-    [11]="10,12,13,14"    # Git Finalization MUST BE LAST - depends on all analysis steps
+    [15]="10,12,13,14"    # AI-Powered Version Update depends on all analysis steps
+    [11]="15"             # Git Finalization MUST BE LAST - depends on version update
 )
 
 # Define parallelizable step groups (steps that can run simultaneously)
-# Updated v2.4.0: 3-Track Parallelization with Step 11 as FINAL step
+# Updated v2.13.0: Step 15 (AI Version Update) runs after all analysis, before Step 11
 declare -a PARALLEL_GROUPS
 PARALLEL_GROUPS=(
-    "1,3,4,5,8,13,14"     # Group 1: Can run after Pre-Analysis
-    "2,12"                # Group 2: Consistency checks
-    "6"                   # Group 3: Test Generation
-    "7,9"                 # Group 4: Test Execution and Code Quality
-    "10"                  # Group 5: Context Analysis
-    "11"                  # Group 6: Git Finalization (MUST BE LAST - runs after all other steps)
+    "0a"                  # Group 1: Version Update (runs after Step 0)
+    "3,4,5,8,13,14"       # Group 2: Can run after Version Update (parallel with Step 1)
+    "2,12"                # Group 3: Consistency checks
+    "6"                   # Group 4: Test Generation
+    "7,9"                 # Group 5: Test Execution and Code Quality
+    "10"                  # Group 6: Context Analysis
+    "15"                  # Group 7: AI-Powered Version Update (after all analysis)
+    "11"                  # Group 8: Git Finalization (MUST BE LAST)
 )
 
-# 3-Track Parallel Execution Structure (v2.4.0)
+# 3-Track Parallel Execution Structure (v2.13.0)
 # Track 1 (Analysis):       0 → (3,4,13 parallel) → 10 ┐
-# Track 2 (Validation):     5 → 6 → 7 → 9 (+ 8 parallel) ├─→ 11 (FINAL)
+# Track 2 (Validation):     5 → 6 → 7 → 9 (+ 8 parallel) ├─→ 15 → 11 (FINAL)
 # Track 3 (Documentation):  1 → 2 → 12 → 14 ────────────┘
 #
 # Synchronization Points:
 # - All tracks wait for Step 0 completion
 # - Step 10 waits for Track 2 & 3 critical steps
+# - Step 15 waits for all analysis completion (Steps 10, 12, 13, 14)
+# - Step 11 waits for version update (Step 15)
 # - Estimated 60-70% time reduction vs sequential execution
 
 # Step execution time estimates (in seconds, based on historical data)
@@ -72,6 +78,8 @@ STEP_TIME_ESTIMATES=(
     [12]=45   # Markdown Linting
     [13]=150  # Prompt Engineer Analysis (with AI)
     [14]=180  # UX Analysis (with AI)
+    [0a]=45   # Version Update (automated, pre-processing)
+    [15]=60   # AI-Powered Version Update (with AI, final validation)
 )
 
 # ==============================================================================
@@ -110,7 +118,7 @@ get_next_runnable_steps() {
     local completed_steps="$1"
     local runnable_steps=""
     
-    for i in {0..14}; do
+    for i in {0..15}; do
         # Skip if already completed
         if echo ",${completed_steps}," | grep -q ",${i},"; then
             continue
@@ -460,7 +468,7 @@ export_step_metadata_json() {
   "version": "2.6.1",
   "generated": "$(date -Iseconds)",
   "workflow": {
-    "total_steps": 15,
+    "total_steps": 16,
     "parallelizable": true,
     "supports_smart_execution": true
   },
@@ -522,10 +530,11 @@ STEPJSON
     "validation": [2, 3, 4, 8],
     "testing": [5, 6, 7],
     "quality": [9, 12, 13, 14],
+    "versioning": [15],
     "finalization": [11]
   },
   "parallelization": {
-    "max_parallel_groups": 6,
+    "max_parallel_groups": 7,
     "groups": [
       {
         "id": 1,
@@ -554,21 +563,26 @@ STEPJSON
       },
       {
         "id": 6,
+        "steps": [15],
+        "description": "Version update"
+      },
+      {
+        "id": 7,
         "steps": [11],
         "description": "Final git operations"
       }
     ]
   },
   "critical_path": {
-    "steps": [0, 5, 6, 7, 10, 11],
-    "total_time_seconds": 780,
+    "steps": [0, 5, 6, 7, 10, 15, 11],
+    "total_time_seconds": 825,
     "description": "Longest sequential chain through workflow"
   },
   "optimization": {
-    "sequential_time_seconds": 1395,
-    "parallel_time_seconds": 930,
+    "sequential_time_seconds": 1440,
+    "parallel_time_seconds": 975,
     "time_savings_seconds": 465,
-    "time_savings_percent": 33
+    "time_savings_percent": 32
   }
 }
 JSONEOF
@@ -611,7 +625,7 @@ get_ready_steps() {
     local completed="$1"
     local ready=()
     
-    for step in {0..14}; do
+    for step in {0..15}; do
         if [[ ! -v STEP_DEPENDENCIES[$step] ]]; then
             continue
         fi
@@ -635,7 +649,7 @@ get_ready_steps() {
 calculate_critical_path() {
     # Hardcoded based on dependency analysis
     # This is the longest sequential chain
-    echo "0 5 6 7 10 11"
+    echo "0 5 6 7 10 15 11"
 }
 
 # Calculate total time for step list

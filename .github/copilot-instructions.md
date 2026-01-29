@@ -1,8 +1,8 @@
 # GitHub Copilot Instructions - AI Workflow Automation
 
 **Repository**: ai_workflow  
-**Version**: v2.6.0  
-**Last Updated**: 2025-12-24  
+**Version**: v3.0.0  
+**Last Updated**: 2026-01-28  
 **Maintainer**: Marcelo Pereira Barbosa ([@mpbarbosa](https://github.com/mpbarbosa))
 
 ## Project Overview
@@ -14,13 +14,17 @@ AI Workflow Automation is an intelligent workflow system for validating and enha
 > 📋 **Reference**: See [docs/PROJECT_REFERENCE.md](../docs/PROJECT_REFERENCE.md) for authoritative project statistics, features, and module inventory.
 
 **Core Features**:
-- **15-Step Automated Pipeline** with 14 AI personas
-- **33 Library Modules** (15,500+ lines) + **15 Step Modules** (4,777 lines)
+- **16-Step Automated Pipeline** with 14 AI personas
+- **33 Library Modules** (15,500+ lines) + **16 Step Modules** (4,777 lines)
 - **Smart Execution**: 40-85% faster | **Parallel Execution**: 33% faster
 - **AI Response Caching**: 60-80% token reduction
-- **Auto-Commit Workflow** (NEW v2.6.0): Automatic artifact commits
-- **Workflow Templates** (NEW v2.6.0): Docs-only, test-only, feature templates
-- **IDE Integration** (NEW v2.6.0): VS Code tasks with 10 pre-configured workflows
+- **Pre-Commit Hooks** (NEW v3.0.0): Fast validation checks to prevent broken commits
+- **Auto-Documentation** (v2.9.0): Generate reports and CHANGELOG from workflow execution
+- **Multi-Stage Pipeline** (v2.8.0): Progressive validation with 3-stage intelligent execution
+- **ML Optimization** (v2.7.0): Predictive workflow intelligence with 15-30% additional improvement
+- **Auto-Commit Workflow** (v2.6.0): Automatic artifact commits
+- **Workflow Templates** (v2.6.0): Docs-only, test-only, feature templates
+- **IDE Integration** (v2.6.0): VS Code tasks with 10 pre-configured workflows
 - **UX Analysis** (v2.4.0): Accessibility checking with WCAG 2.1
 - **Checkpoint Resume**: Automatic continuation from failures
 - **100% Test Coverage**: 37+ automated tests
@@ -52,7 +56,7 @@ AI Workflow Automation is an intelligent workflow system for validating and enha
 **Quick Reference**:
 - **Core Modules** (12): ai_helpers.sh, tech_stack.sh, workflow_optimization.sh, change_detection.sh, etc.
 - **Supporting Modules** (21): edit_operations.sh, ai_cache.sh, session_manager.sh, ai_personas.sh, ai_prompt_builder.sh, etc.
-- **Step Modules** (15): step_00_analyze.sh through step_14_ux_analysis.sh
+- **Step Modules** (16): step_00_analyze.sh through step_15_version_update.sh
 - **Configuration Files** (7): YAML-based prompt templates and project configuration
 
 ## Key Files and Directories
@@ -63,7 +67,7 @@ AI Workflow Automation is an intelligent workflow system for validating and enha
 src/workflow/execute_tests_docs_workflow.sh
 ├── Main orchestrator script (2,009 lines)
 ├── Handles all command-line options
-├── Coordinates 15-step workflow execution
+├── Coordinates 16-step workflow execution
 ├── Manages parallel execution and metrics
 └── Orchestrator modules (630 lines in orchestrators/): pre_flight, validation, quality, finalization
 ```
@@ -78,7 +82,7 @@ src/workflow/config/
 
 ### Library and Step Modules
 
-> 📋 **Complete List**: See [docs/PROJECT_REFERENCE.md#module-inventory](../docs/PROJECT_REFERENCE.md#module-inventory for all 33 library modules and 15 step modules with line counts.
+> 📋 **Complete List**: See [docs/PROJECT_REFERENCE.md#module-inventory](../docs/PROJECT_REFERENCE.md#module-inventory for all 33 library modules and 16 step modules with line counts.
 
 ### Documentation Structure
 
@@ -119,7 +123,7 @@ src/workflow/
 
 ## Development Workflow
 
-### Command-Line Options (v2.6.0)
+### Command-Line Options (v3.0.0)
 
 ```bash
 # Basic usage - runs on current directory by default
@@ -143,8 +147,52 @@ cd /path/to/project
 # Parallel execution (run independent steps simultaneously)
 ./execute_tests_docs_workflow.sh --parallel
 
+# Option 11: ML-driven optimization (NEW v2.7.0)
+# Requires 10+ historical workflow runs for accurate predictions
+./src/workflow/execute_tests_docs_workflow.sh \
+  --ml-optimize \
+  --smart-execution \
+  --parallel \
+  --auto
+
+# Option 12: Check ML system status (NEW v2.7.0)
+./src/workflow/execute_tests_docs_workflow.sh --show-ml-status
+
+# Option 13: Multi-stage pipeline (NEW v2.8.0)
+# Progressive validation: 80%+ of runs complete in first 2 stages
+./src/workflow/execute_tests_docs_workflow.sh \
+  --multi-stage \
+  --smart-execution \
+  --parallel
+
+# Option 14: View pipeline configuration (NEW v2.8.0)
+./src/workflow/execute_tests_docs_workflow.sh --show-pipeline
+
+# Option 15: Force all stages (NEW v2.8.0)
+./src/workflow/execute_tests_docs_workflow.sh \
+  --multi-stage \
+  --manual-trigger
+
+# Option 16: Auto-generate documentation (NEW v2.9.0)
+./src/workflow/execute_tests_docs_workflow.sh \
+  --generate-docs \
+  --update-changelog \
+  --generate-api-docs
+
+# Option 17: Install pre-commit hooks (NEW v3.0.0)
+./src/workflow/execute_tests_docs_workflow.sh --install-hooks
+
+# Option 18: Test hooks without committing (NEW v3.0.0)
+./src/workflow/execute_tests_docs_workflow.sh --test-hooks
+
 # Combined optimization (recommended for production)
-./execute_tests_docs_workflow.sh --smart-execution --parallel --auto
+./src/workflow/execute_tests_docs_workflow.sh \
+  --smart-execution \
+  --parallel \
+  --auto \
+  --ml-optimize \
+  --multi-stage \
+  --auto-commit
 
 # Dependency visualization
 ./execute_tests_docs_workflow.sh --show-graph
@@ -167,17 +215,20 @@ cd /path/to/project
 ./execute_tests_docs_workflow.sh --dry-run
 ```
 
-### Performance Characteristics (v2.6.0)
+### Performance Characteristics (v3.0.0)
 
-| Change Type | Baseline | Smart | Parallel | Combined |
-|-------------|----------|-------|----------|----------|
-| Documentation Only | 23 min | 3.5 min (85% faster) | 15.5 min (33% faster) | 2.3 min (90% faster) |
-| Code Changes | 23 min | 14 min (40% faster) | 15.5 min (33% faster) | 10 min (57% faster) |
-| Full Changes | 23 min | 23 min (baseline) | 15.5 min (33% faster) | 15.5 min (33% faster) |
+| Change Type | Baseline | Smart | Parallel | Combined | With ML (v2.7+) |
+|-------------|----------|-------|----------|----------|-----------------|
+| Documentation Only | 23 min | 3.5 min (85% faster) | 15.5 min (33% faster) | 2.3 min (90% faster) | 1.5 min (93% faster) |
+| Code Changes | 23 min | 14 min (40% faster) | 15.5 min (33% faster) | 10 min (57% faster) | 6-7 min (70-75% faster) |
+| Full Changes | 23 min | 23 min (baseline) | 15.5 min (33% faster) | 15.5 min (33% faster) | 10-11 min (52-57% faster) |
 
 **AI Response Caching**: 60-80% token usage reduction with 24-hour TTL  
 **Checkpoint Resume**: Automatic continuation from last completed step (use `--no-resume` to disable)  
-**Auto-Commit**: Intelligently commits workflow artifacts (docs, tests, source) with generated messages (use `--auto-commit` to enable)
+**Auto-Commit**: Intelligently commits workflow artifacts (docs, tests, source) with generated messages (use `--auto-commit` to enable)  
+**ML Optimization**: Predictive step durations and smart recommendations (requires 10+ historical runs)  
+**Multi-Stage Pipeline**: Progressive validation - 80%+ of runs complete in first 2 stages  
+**Pre-Commit Hooks**: Fast validation checks (< 1 second) to prevent broken commits
 
 ### Testing
 
@@ -246,15 +297,21 @@ The documentation_specialist persona is project-aware and references:
 
 > 📋 **Complete History**: See [docs/PROJECT_REFERENCE.md#version-history-major-releases](../docs/PROJECT_REFERENCE.md#version-history-major-releases for all releases and detailed changelogs.
 
-**Current Version**: v2.6.0 (2025-12-24)
-- Auto-commit workflow artifacts with intelligent message generation
-- Workflow templates (docs-only, test-only, feature development)
-- VS Code integration with 10 pre-configured tasks
-- IDE integration guide (JetBrains, Vim/Neovim)
-- Step 13 bug fix: Fixed YAML block scalar parsing for prompt engineer analysis
+**Current Version**: v3.0.0 (2026-01-28)
+- Pre-commit hooks for fast validation (< 1 second)
+- Step dependency metadata system for smarter execution
+- Test pre-validation in Step 0 to catch issues early
+- Enhanced dependency graph with JSON export
+- Project kind detection fixes (config priority)
+- UX analysis fixes for client-spa projects
 - No breaking changes - 100% backward compatible
 
 **Recent Versions**: 
+- v2.10.0 (2026-01-15): Pre-commit hooks initial implementation
+- v2.9.0 (2025-12-30): Auto-documentation generation
+- v2.8.0 (2025-12-26): Multi-stage pipeline with progressive validation
+- v2.7.0 (2025-12-25): ML-driven optimization
+- v2.6.0 (2025-12-24): Auto-commit + workflow templates + IDE integration
 - v2.5.0 (2025-12-24): Phase 2 optimizations + test regression fix
 - v2.4.0 (2025-12-23): UX Analysis with WCAG 2.1, UX Designer persona
 - v2.3.1 (bug fixes): Step 13 prompt engineer fix

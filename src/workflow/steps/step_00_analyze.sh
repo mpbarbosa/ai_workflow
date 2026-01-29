@@ -5,7 +5,7 @@ set -euo pipefail
 # Step 0: Pre-Analysis - Analyzing Recent Changes
 # Purpose: Analyze git state and capture change context before workflow execution (adaptive)
 # Part of: Tests & Documentation Workflow Automation v2.6.1
-# Version: 2.3.0 (Added test infrastructure smoke test)
+# Version: 3.0.0 (Added test infrastructure smoke test)
 ################################################################################
 
 # Source test smoke test module
@@ -121,12 +121,9 @@ step0_analyze_changes() {
     export ANALYSIS_COMMITS=$commits_ahead
     export ANALYSIS_MODIFIED=$modified_files
     
-    if [[ "$INTERACTIVE_MODE" == true ]]; then
-        read -r -p "Enter scope of changes (e.g., 'src/workflow', 'documentation', 'tests'): " CHANGE_SCOPE
-    else
-        # Auto-detect change scope based on modified files (v2.7.0 enhancement)
-        local modified_list
-        modified_list=$(git diff --name-only HEAD~${commits_ahead} HEAD 2>/dev/null || echo "")
+    # Auto-detect change scope based on modified files (v2.7.0 enhancement)
+    local modified_list
+    modified_list=$(git diff --name-only HEAD~${commits_ahead} HEAD 2>/dev/null || echo "")
         
         local docs_changed=0
         local tests_changed=0
@@ -171,7 +168,6 @@ step0_analyze_changes() {
         else
             CHANGE_SCOPE="mixed-changes"
         fi
-    fi
     
     # Export for use in subsequent steps (v2.7.0 fix)
     export CHANGE_SCOPE

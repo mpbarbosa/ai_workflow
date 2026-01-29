@@ -5,7 +5,7 @@ set -euo pipefail
 # Step 2 AI Integration Module
 # Purpose: AI prompt building and Copilot CLI integration for consistency analysis
 # Part of: Step 2 Refactoring - High Cohesion, Low Coupling
-# Version: 2.0.0
+# Version: 3.0.0
 ################################################################################
 
 # ==============================================================================
@@ -159,7 +159,7 @@ build_consistency_prompt_step2() {
     prompt+="   - **Code alignment**: Documentation examples match actual implementation\n"
     prompt+="   - **Version accuracy**: Current version matches across all files\n"
     prompt+="   - **Feature status**: Documented features actually exist in codebase\n"
-    prompt+="   - **Deprecated content**: Identify outdated information requiring updates\n\n"
+    prompt+="   - **Deprecated content**: Identify outdated information requiring updates or even removals\n\n"
     
     prompt+="#### 4. Quality & Usability (Low Priority)\n"
     prompt+="   - **Clarity**: Identify unclear or ambiguous documentation\n"

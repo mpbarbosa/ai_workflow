@@ -4,12 +4,12 @@ set -euo pipefail
 ################################################################################
 # Step 2: AI-Powered Documentation Consistency Analysis (Refactored)
 # Purpose: Check documentation for broken references and consistency issues
-# Part of: Tests & Documentation Workflow Automation v2.0.0
-# Version: 2.0.0 (Refactored - High Cohesion, Low Coupling)
+# Part of: Tests & Documentation Workflow Automation v3.0.0
+# Version: 3.0.0 (Refactored - High Cohesion, Low Coupling)
 ################################################################################
 
 # Module version information
-readonly STEP2_VERSION="2.0.0"
+readonly STEP2_VERSION="3.0.0"
 readonly STEP2_VERSION_MAJOR=2
 readonly STEP2_VERSION_MINOR=0
 readonly STEP2_VERSION_PATCH=0
@@ -29,6 +29,11 @@ source "${STEP2_DIR}/step_02_lib/ai_integration.sh"
 
 # shellcheck source=step_02_lib/reporting.sh
 source "${STEP2_DIR}/step_02_lib/reporting.sh"
+
+# Source incremental analysis optimization (v2.7.0)
+LIB_DIR="$(cd "${STEP2_DIR}/../lib" && pwd)"
+# shellcheck source=../lib/incremental_analysis.sh
+source "${LIB_DIR}/incremental_analysis.sh"
 
 # ==============================================================================
 # BACKWARD COMPATIBILITY ALIASES
@@ -124,9 +129,35 @@ step2_check_consistency() {
     
     # Phase 3: Gather documentation inventory
     local doc_files
-    doc_files=$(get_documentation_inventory_step2)
     local doc_count
-    doc_count=$(count_documentation_files_step2)
+    local total_doc_count
+    
+    # Check if incremental analysis is applicable (client_spa projects)
+    local project_kind="${PROJECT_KIND:-unknown}"
+    if should_use_incremental_analysis "$project_kind"; then
+        print_info "Using incremental analysis for ${project_kind} project"
+        
+        # Get only changed documentation files
+        local changed_docs
+        if changed_docs=$(get_incremental_doc_inventory "HEAD~1"); then
+            doc_files="$changed_docs"
+            doc_count=$(echo "$doc_files" | wc -l)
+            total_doc_count=$(count_documentation_files_step2)
+            
+            # Report savings
+            report_incremental_stats "2" "$total_doc_count" "$doc_count"
+        else
+            # No changes - use full inventory
+            doc_files=$(get_documentation_inventory_step2)
+            doc_count=$(count_documentation_files_step2)
+            total_doc_count=$doc_count
+        fi
+    else
+        # Full analysis for non-client_spa projects
+        doc_files=$(get_documentation_inventory_step2)
+        doc_count=$(count_documentation_files_step2)
+        total_doc_count=$doc_count
+    fi
     
     # Phase 4: AI-powered consistency analysis (if no dry run)
     local broken_refs_content

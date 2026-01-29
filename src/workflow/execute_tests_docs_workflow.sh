@@ -4,14 +4,14 @@ set -euo pipefail
 
 ################################################################################
 # Tests & Documentation Workflow Automation Script
-# Version: 2.4.0
+# Version: 3.0.0
 # Purpose: Automate the complete tests and documentation update workflow
 # Related: /prompts/tests_documentation_update_enhanced.txt
 #
 # AI ENHANCEMENTS APPLIED (v1.2.0):
 # ==================================
 # This script leverages GitHub Copilot CLI for intelligent documentation
-# analysis and validation. Fourteen steps have been enhanced with specialized
+# analysis and validation. Fifteen steps have been enhanced with specialized
 # AI personas using the modern 'copilot -p' command.
 #
 # Enhanced Steps with AI Personas:
@@ -28,6 +28,7 @@ set -euo pipefail
 #   Step 12: Markdown Linting (Technical Documentation Specialist) ⭐ NEW
 #   Step 13: Prompt Engineer Analysis (Prompt Engineer + AI Specialist) ⭐ NEW v2.3.1
 #   Step 14: UX Analysis (UX Designer + Frontend Specialist) ⭐ NEW v2.4.0
+#   Step 0a: Semantic Version Update (Version Manager - PRE-PROCESSING) ⭐ NEW v2.6.0
 #   Step 11: Git Finalization (Git Workflow Specialist + Technical Communication Expert) ⭐ ENHANCED [FINAL STEP]
 #
 # ARCHITECTURE PATTERN:
@@ -119,7 +120,7 @@ set -euo pipefail
 # CONFIGURATION & CONSTANTS
 # ==============================================================================
 
-SCRIPT_VERSION="2.11.0"  # Workflow Dashboard: Interactive HTML reports with data visualization
+SCRIPT_VERSION="3.0.0"  # Step 0a: Semantic Version Update (Pre-Processing) - Auto-updates versions before docs analysis
 SCRIPT_NAME="Tests & Documentation Workflow Automation"
 WORKFLOW_HOME="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
 PROJECT_ROOT="$(pwd)"  # Default: current directory; can be overridden with --target option
@@ -1562,6 +1563,25 @@ execute_full_workflow() {
         ((skipped_steps++)) || true
     fi
     
+    # Execute Step 0a (Version Update - Pre-Processing) - runs between 0 and 1
+    # This is a pre-processing step that must run before documentation analysis
+    if [[ -z "$failed_step" && $resume_from -le 0 ]] && should_execute_step 0; then
+        log_step_start "0a" "Version Update (Pre-Processing)"
+        if step0a_version_update; then
+            update_workflow_status "0a" "✅"
+            log_step_complete "0a" "Version Update" "SUCCESS"
+            ((executed_steps++)) || true
+            save_checkpoint "0a"
+        else
+            failed_step="Step 0a"
+            update_workflow_status "0a" "❌"
+            log_step_complete "0a" "Version Update" "FAILED"
+        fi
+    elif [[ $resume_from -gt 0 ]]; then
+        print_info "Skipping Step 0a (resuming from checkpoint)"
+        ((skipped_steps++)) || true
+    fi
+    
     # Execute Steps 1-4 (Validation) - can run in parallel if enabled
     local can_parallelize=false
     if [[ -z "$failed_step" && $resume_from -le 1 ]]; then
@@ -1860,6 +1880,25 @@ execute_full_workflow() {
         ((skipped_steps++)) || true
     fi
     
+    
+    # Step 15: AI-Powered Semantic Version Update (with checkpoint)
+    # NEW in v2.13.0: Runs after all analysis steps, before Git Finalization
+    if [[ -z "$failed_step" && $resume_from -le 15 ]] && should_execute_step 15; then
+        log_step_start 15 "AI-Powered Semantic Version Update"
+        step15_version_update || { failed_step="Step 15"; }
+        [[ -z "$failed_step" ]] && update_workflow_status 15 "✅"
+        ((executed_steps++)) || true
+        save_checkpoint 15
+    elif [[ -z "$failed_step" && $resume_from -le 15 ]]; then
+        print_info "Skipping Step 15 (not selected)"
+        log_to_workflow "INFO" "Skipping Step 15 (not selected)"
+        ((skipped_steps++)) || true
+    elif [[ $resume_from -gt 15 ]]; then
+        print_info "Skipping Step 15 (resuming from checkpoint)"
+        ((skipped_steps++)) || true
+    fi
+    
+    
     # Step 11: Git Finalization (with checkpoint)
     # MANDATORY: MUST BE THE FINAL STEP - runs after all analysis and validation steps
     if [[ -z "$failed_step" && $resume_from -le 11 ]] && should_execute_step 11; then
@@ -2132,9 +2171,9 @@ DESCRIPTION:
     - Git finalization (Step 11)
     - Markdown linting (Step 12)
     - Prompt engineering analysis (Step 13, ai_workflow only)
-    
-    By default, the workflow runs on the current directory. Use --target to specify
-    a different project directory.
+    - UX analysis (Step 14)
+    - AI-powered semantic version update (Step 15)
+    - Git finalization (Step 11) [FINAL STEP - commits all changes]
 
 WORKFLOW STEPS:
     Step 0:  Pre-Analysis - Analyzing Recent Changes
@@ -2151,6 +2190,7 @@ WORKFLOW STEPS:
     Step 12: Markdown Linting
     Step 13: Prompt Engineer Analysis (ai_workflow only)
     Step 14: UX Analysis
+    Step 15: AI-Powered Semantic Version Update
     Step 11: Git Finalization [FINAL STEP - commits all changes]
 
 EXAMPLES:

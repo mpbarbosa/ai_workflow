@@ -43,9 +43,14 @@ get_or_cache_step1() {
     local cache_key="$1"
     shift
     
-    # Check if value is cached (safe check with default empty value)
-    if [[ -n "${STEP1_CACHE[$cache_key]:-}" ]]; then
-        echo "${STEP1_CACHE[$cache_key]}"
+    # Temporarily disable nounset for array access (bash -u incompatible with associative arrays)
+    set +u
+    local cached_value="${STEP1_CACHE[$cache_key]:-}"
+    set -u
+    
+    # Return cached value if exists
+    if [[ -n "$cached_value" ]]; then
+        echo "$cached_value"
         return 0
     fi
     
@@ -64,9 +69,14 @@ get_or_cache_step1() {
 get_cached_git_diff_step1() {
     local cache_key="git_diff_files"
     
-    # Return cached result if available (safe check with default empty value)
-    if [[ -n "${STEP1_CACHE[$cache_key]:-}" ]]; then
-        echo "${STEP1_CACHE[$cache_key]}"
+    # Temporarily disable nounset for array access (bash -u incompatible with associative arrays)
+    set +u
+    local cached_value="${STEP1_CACHE[$cache_key]:-}"
+    set -u
+    
+    # Return cached value if exists
+    if [[ -n "$cached_value" ]]; then
+        echo "$cached_value"
         return 0
     fi
     

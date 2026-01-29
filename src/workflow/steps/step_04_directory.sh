@@ -4,15 +4,21 @@ set -euo pipefail
 ################################################################################
 # Step 4: AI-Powered Directory Structure Validation & Organization
 # Purpose: Validate project directory structure, organize misplaced docs, and verify architecture
-# Part of: Tests & Documentation Workflow Automation v2.3.1
-# Version: 2.2.0 (Added automatic documentation organization)
+# Part of: Tests & Documentation Workflow Automation v3.0.0
+# Version: 2.3.0 (Added incremental analysis optimization for client_spa)
 ################################################################################
 
 # Module version information
-readonly STEP4_VERSION="2.2.0"
+readonly STEP4_VERSION="2.3.0"
 readonly STEP4_VERSION_MAJOR=2
-readonly STEP4_VERSION_MINOR=2
+readonly STEP4_VERSION_MINOR=3
 readonly STEP4_VERSION_PATCH=0
+
+# Source incremental analysis optimization
+STEP4_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+LIB_DIR="$(cd "${STEP4_DIR}/../lib" && pwd)"
+# shellcheck source=../lib/incremental_analysis.sh
+source "${LIB_DIR}/incremental_analysis.sh"
 
 # Function to organize misplaced documentation files
 # Finds all documentation files outside the docs/ folder and categorizes them
@@ -151,16 +157,34 @@ step4_validate_directory_structure() {
     # Check 1: Generate current directory structure
     print_info "Generating directory inventory (excluding: ${exclude_patterns})..."
     local dir_tree=""
-    if command -v tree &> /dev/null; then
-        dir_tree=$(tree -d -L 3 -I "${exclude_patterns}" --noreport 2>/dev/null || true)
-    else
-        # Fallback: use find if tree is not available
-        local exclude_find=""
-        IFS='|' read -ra PATTERNS <<< "$exclude_patterns"
-        for pattern in "${PATTERNS[@]}"; do
-            exclude_find+=" ! -path \"*/${pattern}/*\""
-        done
-        dir_tree=$(eval "find . -maxdepth 3 -type d ${exclude_find}" | sort)
+    
+    # Check if incremental analysis is applicable
+    local project_kind="${PROJECT_KIND:-unknown}"
+    local use_incremental=false
+    
+    if should_use_incremental_analysis "$project_kind"; then
+        if can_skip_directory_validation "HEAD~1"; then
+            print_info "Using cached directory tree for ${project_kind} project"
+            dir_tree=$(get_cached_directory_tree)
+            use_incremental=true
+        else
+            print_info "Structural changes detected - performing full directory scan"
+        fi
+    fi
+    
+    # Generate tree if not using incremental analysis
+    if [[ "$use_incremental" == false ]]; then
+        if command -v tree &> /dev/null; then
+            dir_tree=$(tree -d -L 3 -I "${exclude_patterns}" --noreport 2>/dev/null || true)
+        else
+            # Fallback: use find if tree is not available
+            local exclude_find=""
+            IFS='|' read -ra PATTERNS <<< "$exclude_patterns"
+            for pattern in "${PATTERNS[@]}"; do
+                exclude_find+=" ! -path \"*/${pattern}/*\""
+            done
+            dir_tree=$(eval "find . -maxdepth 3 -type d ${exclude_find}" | sort)
+        fi
     fi
     
     # Check 2: Validate expected critical directories exist

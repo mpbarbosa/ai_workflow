@@ -5,7 +5,7 @@ set -euo pipefail
 # Step 1 AI Integration Module
 # Purpose: AI prompt building, Copilot CLI interaction, response processing
 # Part of: Step 1 Refactoring Phase 4 - High Cohesion, Low Coupling
-# Version: 2.0.0 - Migrated to centralized ai_helpers.yaml templates
+# Version: 3.0.0 - Migrated to centralized ai_helpers.yaml templates
 ################################################################################
 
 # Get script directory for sourcing dependencies
@@ -315,15 +315,26 @@ ${validation_results}
         prompt=$(build_documentation_prompt_step1 "$changed_files" "$validation_results")
     fi
     
-    # Execute AI analysis
-    local response_file="${output_dir}/ai_documentation_analysis.txt"
-    if ! execute_ai_with_retry_step1 "$prompt" "$response_file"; then
+    # Create timestamped log file in LOGS_RUN_DIR (like other steps)
+    local log_timestamp
+    log_timestamp=$(date +%Y%m%d_%H%M%S_%N | cut -c1-21)
+    local log_file="${LOGS_RUN_DIR:-./logs}/step1_copilot_documentation_analysis_${log_timestamp}.log"
+    
+    # Ensure log directory exists
+    mkdir -p "$(dirname "$log_file")"
+    
+    # Execute AI analysis with proper logging
+    if ! execute_ai_with_retry_step1 "$prompt" "$log_file"; then
         print_error "AI documentation analysis failed"
         return 1
     fi
     
+    # Also save to backlog for backward compatibility
+    local response_file="${output_dir}/ai_documentation_analysis.txt"
+    cp "$log_file" "$response_file" 2>/dev/null || true
+    
     # Validate response
-    if ! validate_ai_response_step1 "$response_file"; then
+    if ! validate_ai_response_step1 "$log_file"; then
         print_warning "AI response validation failed, but continuing..."
     fi
     

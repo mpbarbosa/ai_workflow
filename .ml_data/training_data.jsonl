@@ -1,66 +1,260 @@
-{
-  "step": 0,
-  "duration": 1767308951,
-  "features": {},
-  "issues_found": 0,
-  "timestamp": 1767308951,
-  "parallel": true,
-  "date": "2026-01-01 23:09:11"
-}
-{
-  "step": 1,
-  "duration": 1767308957,
-  "features": {},
-  "issues_found": 0,
-  "timestamp": 1767308957,
-  "parallel": true,
-  "date": "2026-01-01 23:09:17"
-}
-{
-  "step": 2,
-  "duration": 1767308959,
-  "features": {},
-  "issues_found": 0,
-  "timestamp": 1767308959,
-  "parallel": true,
-  "date": "2026-01-01 23:09:19"
-}
-{
-  "step": 3,
-  "duration": 1767308959,
-  "features": {},
-  "issues_found": 0,
-  "timestamp": 1767308959,
-  "parallel": true,
-  "date": "2026-01-01 23:09:19"
-}
-{
-  "step": 4,
-  "duration": 1767308960,
-  "features": {},
-  "issues_found": 0,
-  "timestamp": 1767308960,
-  "parallel": true,
-  "date": "2026-01-01 23:09:20"
-}
-{
-  "step": 0,
-  "duration": 1767309963,
-  "features": {},
-  "issues_found": 0,
-  "timestamp": 1767309963,
-  "parallel": true,
-  "date": "2026-01-01 23:26:03"
-}
-{
-  "step": 0,
-  "duration": 1767324747,
-  "features": {},
-  "issues_found": 0,
-  "timestamp": 1767324747,
-  "parallel": true,
-  "date": "2026-01-02 03:32:27"
-}
+{"step":0,"duration":0,"features":{},"issues_found":0,"timestamp":1767456367,"parallel":true,"date":"2026-01-03 16:06:08"}
+{"step":0,"duration":1,"features":{},"issues_found":0,"timestamp":1767456368,"parallel":true,"date":"2026-01-03 16:06:08"}
+{"step":0,"duration":0,"features":{},"issues_found":0,"timestamp":1767456378,"parallel":true,"date":"2026-01-03 16:06:18"}
+{"step":0,"duration":0,"features":{},"issues_found":0,"timestamp":1767456378,"parallel":true,"date":"2026-01-03 16:06:18"}
+{"step":2,"duration":13,"features":{},"issues_found":0,"timestamp":1767456391,"parallel":true,"date":"2026-01-03 16:06:31"}
+{"step":0,"duration":1767456435,"features":{},"issues_found":0,"timestamp":1767456435,"parallel":false,"date":"2026-01-03 16:07:15"}
+{"step":0,"duration":1767456536,"features":{},"issues_found":0,"timestamp":1767456536,"parallel":false,"date":"2026-01-03 16:08:56"}
+{"step":0,"duration":1767617074,"features":{},"issues_found":0,"timestamp":1767617074,"parallel":false,"date":"2026-01-05 12:44:34"}
+{"step":0,"duration":1767617120,"features":{},"issues_found":0,"timestamp":1767617120,"parallel":false,"date":"2026-01-05 12:45:20"}
+{"step":0,"duration":1767667172,"features":{},"issues_found":0,"timestamp":1767667172,"parallel":false,"date":"2026-01-06 02:39:32"}
+{"step":1,"duration":1767667402,"features":{},"issues_found":0,"timestamp":1767667402,"parallel":false,"date":"2026-01-06 02:43:22"}
+{"step":2,"duration":1767667627,"features":{},"issues_found":0,"timestamp":1767667627,"parallel":false,"date":"2026-01-06 02:47:07"}
+{"step":3,"duration":1767667627,"features":{},"issues_found":0,"timestamp":1767667627,"parallel":false,"date":"2026-01-06 02:47:07"}
+{"step":4,"duration":1767668003,"features":{},"issues_found":0,"timestamp":1767668003,"parallel":false,"date":"2026-01-06 02:53:23"}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

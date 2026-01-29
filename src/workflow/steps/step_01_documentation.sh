@@ -4,12 +4,12 @@ set -euo pipefail
 ################################################################################
 # Step 1: AI-Powered Documentation Updates (Refactored)
 # Purpose: Update documentation based on code changes with AI assistance  
-# Part of: Tests & Documentation Workflow Automation v2.0.0
-# Version: 2.0.0 (Refactored - All Phases Complete)
+# Part of: Tests & Documentation Workflow Automation v3.0.0
+# Version: 3.0.0 (Refactored - All Phases Complete)
 ################################################################################
 
 # Module version information
-readonly STEP1_VERSION="2.0.0"
+readonly STEP1_VERSION="3.0.0"
 readonly STEP1_VERSION_MAJOR=2
 readonly STEP1_VERSION_MINOR=0
 readonly STEP1_VERSION_PATCH=0
@@ -24,6 +24,12 @@ WORKFLOW_LIB_DIR="${STEP1_DIR}/../lib"
 # shellcheck source=../lib/third_party_exclusion.sh
 if [[ -f "${WORKFLOW_LIB_DIR}/third_party_exclusion.sh" ]]; then
     source "${WORKFLOW_LIB_DIR}/third_party_exclusion.sh"
+fi
+
+# Source AI helpers module (required for build_doc_analysis_prompt)
+# shellcheck source=../lib/ai_helpers.sh
+if [[ -f "${WORKFLOW_LIB_DIR}/ai_helpers.sh" ]]; then
+    source "${WORKFLOW_LIB_DIR}/ai_helpers.sh"
 fi
 
 # Source modular libraries (All phases complete)

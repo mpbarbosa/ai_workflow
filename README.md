@@ -1,6 +1,6 @@
 # AI Workflow Automation
 
-[![Version](https://img.shields.io/badge/version-2.10.0-blue.svg)](https://github.com/mpbarbosa/ai_workflow/releases)
+[![Version](https://img.shields.io/badge/version-3.0.0-blue.svg)](https://github.com/mpbarbosa/ai_workflow/releases)
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 [![Code Quality](https://img.shields.io/badge/quality-B%2B%20(87%2F100)-brightgreen.svg)](src/COMPREHENSIVE_CODE_QUALITY_REPORT.md)
 [![Tests](https://img.shields.io/badge/tests-37%2B%20passing-brightgreen.svg)](tests/)
@@ -13,7 +13,7 @@
 Intelligent workflow automation system for validating and enhancing documentation, code, and tests with AI support.
 
 **Migrated from**: mpbarbosa_site repository (2025-12-18)  
-**Version**: v2.10.0  
+**Version**: v3.0.0  
 **Repository**: [github.com/mpbarbosa/ai_workflow](https://github.com/mpbarbosa/ai_workflow)
 
 ## Overview
