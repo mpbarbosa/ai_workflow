@@ -57,7 +57,7 @@
 
 ### 2. AI Persona (`version_manager`)
 
-**Location**: `src/workflow/lib/ai_helpers.yaml`  
+**Location**: `.workflow_core/config/ai_helpers.yaml`  
 **Lines Added**: 24 lines
 
 **Persona Capabilities**:
@@ -372,7 +372,7 @@ Result: 96.4% test coverage ✅
 | File | Status | Lines | Description |
 |------|--------|-------|-------------|
 | `src/workflow/steps/step_15_version_update.sh` | ✅ Created | 479 | Main step module |
-| `src/workflow/lib/ai_helpers.yaml` | ✅ Modified | +24 | Version manager persona |
+| `.workflow_core/config/ai_helpers.yaml` | ✅ Modified | +24 | Version manager persona |
 | `tests/test_step_15_version_update.sh` | ✅ Created | 376 | Unit tests |
 
 **Total Lines Added**: 879 lines

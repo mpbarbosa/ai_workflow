@@ -1115,7 +1115,7 @@ ls -la src/workflow/*.backup src/workflow/*.bak src/workflow/lib/*.backup 2>/dev
 
 # If not needed, remove:
 rm src/workflow/execute_tests_docs_workflow.sh.backup
-rm src/workflow/lib/ai_helpers.yaml.backup
+rm .workflow_core/config/ai_helpers.yaml.backup
 rm src/workflow/steps/step_01_documentation.sh.backup
 
 # Verify they're properly gitignored

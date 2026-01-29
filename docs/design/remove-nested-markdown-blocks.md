@@ -16,7 +16,7 @@ Remove nested markdown code blocks from YAML prompt templates to eliminate parsi
 
 ### Current State
 
-The `consistency_prompt` in `src/workflow/lib/ai_helpers.yaml` contains nested markdown code blocks within the YAML structure:
+The `consistency_prompt` in `.workflow_core/config/ai_helpers.yaml` contains nested markdown code blocks within the YAML structure:
 
 ```yaml
 **Output Format Requirements**:
@@ -132,8 +132,8 @@ with open('ai_helpers.yaml') as f:
 
 **Scanning**:
 ```bash
-grep -n '```markdown' src/workflow/lib/ai_helpers.yaml
-grep -n '```' src/workflow/config/ai_prompts_project_kinds.yaml
+grep -n '```markdown' .workflow_core/config/ai_helpers.yaml
+grep -n '```' .workflow_core/config/ai_prompts_project_kinds.yaml
 ```
 
 ## Non-Functional Requirements
@@ -225,7 +225,7 @@ approach: |
 ```bash
 python3 << 'EOF'
 import yaml
-with open('src/workflow/lib/ai_helpers.yaml') as f:
+with open('.workflow_core/config/ai_helpers.yaml') as f:
     data = yaml.safe_load(f)
 print("✅ YAML valid")
 EOF
@@ -238,11 +238,11 @@ EOF
 
 ```bash
 # Find triple backticks in YAML
-grep -n '```' src/workflow/lib/ai_helpers.yaml
-grep -n '```' src/workflow/config/ai_prompts_project_kinds.yaml
+grep -n '```' .workflow_core/config/ai_helpers.yaml
+grep -n '```' .workflow_core/config/ai_prompts_project_kinds.yaml
 
 # Check for markdown keyword
-grep -n 'markdown' src/workflow/lib/ai_helpers.yaml
+grep -n 'markdown' .workflow_core/config/ai_helpers.yaml
 ```
 
 **Expected**: List of line numbers with nested blocks
@@ -295,7 +295,7 @@ approach=$(awk '/^consistency_prompt:/,/^[a-z_]+:/ {
     if (/approach: \|/) { flag=1; next }
     if (flag && /^[a-z_]+:/) { exit }
     if (flag) print
-}' src/workflow/lib/ai_helpers.yaml)
+}' .workflow_core/config/ai_helpers.yaml)
 
 echo "$approach"
 
@@ -413,7 +413,7 @@ echo "$prompt" | grep -q "**Problem**:" && echo "✅ Problem format"
 - **YAML Multi-line Strings**: https://yaml-multiline.info/
 - **Markdown Specification**: https://spec.commonmark.org/
 - **Token Counting**: Approximate with word count (1 word ≈ 1.3 tokens)
-- **AI Helpers Module**: `src/workflow/lib/ai_helpers.yaml`
+- **AI Helpers Module**: `.workflow_core/config/ai_helpers.yaml`
 
 ## Appendix A: Scanning Results
 
@@ -422,8 +422,8 @@ echo "$prompt" | grep -q "**Problem**:" && echo "✅ Problem format"
 **To be filled during implementation**:
 ```bash
 # Find all instances
-grep -n '```markdown' src/workflow/lib/ai_helpers.yaml
-grep -n '```' src/workflow/lib/ai_helpers.yaml | grep -v '^#'
+grep -n '```markdown' .workflow_core/config/ai_helpers.yaml
+grep -n '```' .workflow_core/config/ai_helpers.yaml | grep -v '^#'
 ```
 
 Expected locations:

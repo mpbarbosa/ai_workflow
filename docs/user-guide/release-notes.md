@@ -1,4 +1,4 @@
-# Release Notes: Version 2.4.0
+# Release Notes: Version 3.0.0
 
 **Release Date**: 2025-12-23  
 **Status**: ✅ Complete  
@@ -64,7 +64,7 @@ New specialized AI persona with expertise in:
 
 ### Modified Files
 
-1. **`src/workflow/config/ai_prompts_project_kinds.yaml`**
+1. **`.workflow_core/config/ai_prompts_project_kinds.yaml`**
    - Added `ux_designer` persona for `web_application`
    - Added `ux_designer` persona for `documentation_site`
 
@@ -81,7 +81,7 @@ New specialized AI persona with expertise in:
 4. **`src/workflow/execute_tests_docs_workflow.sh`**
    - Updated `TOTAL_STEPS` from 14 to 15
    - Added Step 14 execution block with checkpoint support
-   - Updated version to 2.4.0
+   - Updated version to 3.0.0
    - Added Step 14 to AI enhancements list
 
 5. **`.github/copilot-instructions.md`**
@@ -227,7 +227,7 @@ For comprehensive migration information, including:
 - Rollback instructions
 - API compatibility matrix
 
-See: **[Migration Guide: v2.3.x → v2.4.0](migration-guide.md)**
+See: **[Migration Guide: v2.3.x → v3.0.0](migration-guide.md)**
 
 ## 🐛 Bug Fixes
 
@@ -287,7 +287,7 @@ Implemented following workflow automation best practices:
 
 ---
 
-**Version**: 2.4.0  
+**Version**: 3.0.0  
 **Status**: ✅ Production Ready  
 **Tested**: ✅ All tests passing  
 **Documented**: ✅ Complete  

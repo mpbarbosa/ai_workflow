@@ -324,7 +324,7 @@ architecture documentation, API documentation, and developer experience (DX) opt
 # Test YAML loading
 source src/workflow/lib/ai_prompt_builder.sh
 SCRIPT_DIR="src/workflow"
-get_yq_value "src/workflow/lib/ai_helpers.yaml" "doc_analysis_prompt.role_prefix" | head -2
+get_yq_value ".workflow_core/config/ai_helpers.yaml" "doc_analysis_prompt.role_prefix" | head -2
 
 # Output: "You are a senior technical documentation specialist with expertise in software"
 ```
@@ -448,7 +448,7 @@ Fixes: Critical workflow execution quality regression since v2.3.1
 
 - **Bug Report**: `PROMPT_BUILDER_BUG_FIX.md`
 - **Test Suite**: `test_prompt_builder_fix.sh`
-- **YAML Config**: `src/workflow/lib/ai_helpers.yaml`
+- **YAML Config**: `.workflow_core/config/ai_helpers.yaml`
 - **Prompt Builder**: `src/workflow/lib/ai_prompt_builder.sh`
 - **Example Generated Prompt**: `/home/mpb/Documents/GitHub/monitora_vagas/.ai_workflow/prompts/workflow_20251225_151512/step01_documentation_specialist_20251225_151622.md` (broken version)
 

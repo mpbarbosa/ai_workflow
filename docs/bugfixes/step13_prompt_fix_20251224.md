@@ -34,7 +34,7 @@ step13_prompt_engineer_prompt:
 
 ### Problem 2: Duplicate Prompt Content Placeholder
 
-**Location**: `src/workflow/lib/ai_helpers.yaml` lines 1366-1367
+**Location**: `.workflow_core/config/ai_helpers.yaml` lines 1366-1367
 
 The task_template contained a placeholder for prompt content:
 ```yaml
@@ -97,7 +97,7 @@ Applied the same fix to `task_template` and `approach` extractions.
 
 ### Fix 2: Removed Duplicate Placeholder
 
-Removed lines 1366-1367 from `src/workflow/lib/ai_helpers.yaml`:
+Removed lines 1366-1367 from `.workflow_core/config/ai_helpers.yaml`:
 
 ```diff
   **Current Personas:**
@@ -139,7 +139,7 @@ After the fix, the prompt is correctly formatted:
 
 **Context:**
 - Project: AI Workflow Automation (bash-automation-framework)
-- Configuration File: src/workflow/lib/ai_helpers.yaml
+- Configuration File: .workflow_core/config/ai_helpers.yaml
 - Total Personas: {persona_count}
 - Analysis Scope: All persona prompt templates (role, task_template, approach)
 
@@ -170,7 +170,7 @@ For each improvement opportunity identified, provide:
    - Lines 128-142: Fixed approach extraction (multiline block scalar)
    - Line 126-127: Updated comment for clarity
 
-2. `src/workflow/lib/ai_helpers.yaml`
+2. `.workflow_core/config/ai_helpers.yaml`
    - Lines 1366-1367: Removed duplicate `{prompts_content}` placeholder from task_template
 
 ## Testing

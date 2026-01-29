@@ -316,7 +316,7 @@ Documentation variously claims:
 #### Actual Count Verification
 ```bash
 # Base personas in ai_helpers.yaml
-grep "^[a-z_]*:" src/workflow/lib/ai_helpers.yaml | wc -l
+grep "^[a-z_]*:" .workflow_core/config/ai_helpers.yaml | wc -l
 # Result: 9 base templates
 
 # Project-kind personas in ai_prompts_project_kinds.yaml
@@ -345,10 +345,10 @@ The system has:
 ## AI Integration Architecture
 
 ### Base Layer: 9 Prompt Templates
-Core templates in `src/workflow/lib/ai_helpers.yaml`
+Core templates in `.workflow_core/config/ai_helpers.yaml`
 
 ### Enhancement Layer: 4 Project-Kind Adaptations
-Specialized enhancements in `src/workflow/config/ai_prompts_project_kinds.yaml`
+Specialized enhancements in `.workflow_core/config/ai_prompts_project_kinds.yaml`
 
 ### Functional Layer: 14 AI Personas
 How the system uses AI across 15 workflow steps:

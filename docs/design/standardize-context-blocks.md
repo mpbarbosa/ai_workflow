@@ -1,7 +1,7 @@
 # Functional Requirements: Standardize Context Block Structure
 
 **Feature ID**: FRQ-2024-003  
-**Version**: 1.0.0  
+**Version**: 2.0.0  
 **Date**: 2025-12-24  
 **Author**: AI Workflow Automation Team  
 **Status**: Draft  
@@ -16,7 +16,7 @@ Standardize context block structure and parameter naming across all workflow ste
 
 ### Current State
 
-The AI prompt templates in `src/workflow/lib/ai_helpers.yaml` use inconsistent context formatting:
+The AI prompt templates in `.workflow_core/config/ai_helpers.yaml` use inconsistent context formatting:
 
 **Inconsistencies Identified**:
 1. **Parameter Name Variations**: 
@@ -152,7 +152,7 @@ Unified, predictable context block structure:
 **Validation Script**:
 ```bash
 # Extract context blocks and verify consistency
-python3 check_prompt_consistency.py src/workflow/lib/ai_helpers.yaml
+python3 check_prompt_consistency.py .workflow_core/config/ai_helpers.yaml
 ```
 
 ## Non-Functional Requirements
@@ -233,7 +233,7 @@ These functions will substitute `{parameter_name}` with actual values.
 import yaml
 import re
 
-with open('src/workflow/lib/ai_helpers.yaml') as f:
+with open('.workflow_core/config/ai_helpers.yaml') as f:
     data = yaml.safe_load(f)
 
 # Extract context blocks
@@ -365,7 +365,7 @@ echo "$prompt" | grep -q "{primary_language}" && echo "✅ primary_language para
 **Objective**: Ensure YAML remains valid
 
 ```bash
-python3 -c "import yaml; yaml.safe_load(open('src/workflow/lib/ai_helpers.yaml'))" && echo "✅ YAML valid"
+python3 -c "import yaml; yaml.safe_load(open('.workflow_core/config/ai_helpers.yaml'))" && echo "✅ YAML valid"
 ```
 
 **Expected**: No parsing errors
@@ -444,7 +444,7 @@ python3 -c "import yaml; yaml.safe_load(open('src/workflow/lib/ai_helpers.yaml')
 
 ## References
 
-- **YAML Prompts**: `src/workflow/lib/ai_helpers.yaml`
+- **YAML Prompts**: `.workflow_core/config/ai_helpers.yaml`
 - **Prompt Builders**: `src/workflow/lib/ai_helpers.sh`
 - **Step Scripts**: `src/workflow/steps/step_*.sh`
 
@@ -462,7 +462,7 @@ Example inconsistencies found:
 
 ```yaml
 # Standard context block for all step prompts
-# Version: 1.0.0
+# Version: 2.0.0
 # Required fields (always include):
 **Context:**
 - Project: {project_name} ({project_description})

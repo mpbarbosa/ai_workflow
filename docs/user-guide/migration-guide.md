@@ -50,7 +50,7 @@ Specialized expertise in:
 
 The following configurations are updated automatically:
 
-1. **`src/workflow/config/ai_prompts_project_kinds.yaml`**
+1. **`.workflow_core/config/ai_prompts_project_kinds.yaml`**
    - New `ux_designer` persona added for `web_application` projects
    - New `ux_designer` persona added for `documentation_site` projects
 
@@ -318,7 +318,7 @@ git checkout v2.3.1
 **Solution**:
 1. Verify configuration file update:
    ```bash
-   grep -A 2 "ux_designer:" src/workflow/config/ai_prompts_project_kinds.yaml
+   grep -A 2 "ux_designer:" .workflow_core/config/ai_prompts_project_kinds.yaml
    ```
 
 2. If missing, pull latest changes:

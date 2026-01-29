@@ -243,7 +243,7 @@ build_step11_git_commit_prompt() {
 **Objective**: Verify YAML parses correctly
 
 ```bash
-python3 -c "import yaml; yaml.safe_load(open('src/workflow/lib/ai_helpers.yaml'))" && echo "✅ YAML valid"
+python3 -c "import yaml; yaml.safe_load(open('.workflow_core/config/ai_helpers.yaml'))" && echo "✅ YAML valid"
 ```
 
 **Expected**: No parsing errors
@@ -254,7 +254,7 @@ python3 -c "import yaml; yaml.safe_load(open('src/workflow/lib/ai_helpers.yaml')
 ```python
 import yaml
 
-with open('src/workflow/lib/ai_helpers.yaml') as f:
+with open('.workflow_core/config/ai_helpers.yaml') as f:
     data = yaml.safe_load(f)
 
 gcp = data['step11_git_commit_prompt']
@@ -277,7 +277,7 @@ print("✅ All 9 commit types present")
 ```python
 import yaml
 
-with open('src/workflow/lib/ai_helpers.yaml') as f:
+with open('.workflow_core/config/ai_helpers.yaml') as f:
     data = yaml.safe_load(f)
 
 role = data['step11_git_commit_prompt']['role']
@@ -301,7 +301,7 @@ print("✅ Role simplified")
 source src/workflow/lib/ai_helpers.sh
 
 # Test extraction (simplified)
-yaml_file="src/workflow/lib/ai_helpers.yaml"
+yaml_file=".workflow_core/config/ai_helpers.yaml"
 commit_types=$(sed -n '/^step11_git_commit_prompt:/,/^[a-z_]/p' "$yaml_file" | awk '
     /commit_types: \|/ {flag=1; next}
     /^[[:space:]]+task_template:/ {flag=0}
@@ -322,7 +322,7 @@ echo "$commit_types" | grep -q "feat:" && echo "✅ Can extract commit_types"
 ```python
 import yaml
 
-with open('src/workflow/lib/ai_helpers.yaml') as f:
+with open('.workflow_core/config/ai_helpers.yaml') as f:
     data = yaml.safe_load(f)
 
 gcp = data['step11_git_commit_prompt']
@@ -342,7 +342,7 @@ print("✅ All required fields present")
 ```python
 import yaml
 
-with open('src/workflow/lib/ai_helpers.yaml') as f:
+with open('.workflow_core/config/ai_helpers.yaml') as f:
     data = yaml.safe_load(f)
 
 commit_types = data['step11_git_commit_prompt']['commit_types']
@@ -435,7 +435,7 @@ Use these conventional commit types: feat (new feature), fix (bug fix), docs (do
 
 ## References
 
-- **YAML File**: `src/workflow/lib/ai_helpers.yaml`
+- **YAML File**: `.workflow_core/config/ai_helpers.yaml`
 - **Prompt Builder**: `src/workflow/lib/ai_helpers.sh::build_step11_git_commit_prompt()`
 - **Usage**: Step 11 (git commit message generation)
 

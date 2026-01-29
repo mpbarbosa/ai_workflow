@@ -20,14 +20,14 @@
 ### Key Statistics
 
 - **Total Lines**: 26,562 (22,411 shell + 4,151 YAML)
-- **Total Modules**: 61 (33 libraries + 16 steps + 7 configs + 4 orchestrators + 1 pre-commit)
+- **Total Modules**: 87 (62 libraries + 17 steps + 4 configs + 4 orchestrators)
 - **Test Coverage**: 100% (37+ automated tests)
 - **Performance**: Up to 93% faster with ML optimization
 
 ## Core Features (v3.0.0)
 
 ### Workflow Pipeline
-- **16-Step Automated Pipeline**: Complete workflow from analysis to finalization
+- **17-Step Automated Pipeline**: Complete workflow from pre-analysis to finalization (includes step_0a pre-processing and step_15 post-processing)
 - **Checkpoint Resume**: Automatic continuation from last completed step
 - **Dry Run Mode**: Preview execution without changes
 
@@ -66,9 +66,9 @@
 
 ## Module Inventory
 
-### Library Modules (33 total in src/workflow/lib/)
+### Library Modules (62 total in src/workflow/lib/)
 
-> **Note**: Module count updated 2026-01-28 to reflect actual inventory including recent additions.
+> **Note**: Module count updated 2026-01-29 to reflect actual inventory (62 modules verified via `ls src/workflow/lib/*.sh | wc -l`).
 
 #### Core Modules (12 modules)
 - `ai_helpers.sh` (102K) - AI integration with 14 functional personas
@@ -84,7 +84,7 @@
 - `health_check.sh` (15K) - System validation
 - `file_operations.sh` (15K) - Safe file operations
 
-#### Supporting Modules (21 modules)
+#### Supporting Modules (50 modules)
 - `edit_operations.sh` (14K) - File editing operations
 - `project_kind_detection.sh` (14K) - Project type detection
 - `doc_template_validator.sh` (13K) - Template validation
@@ -106,8 +106,9 @@
 - `test_broken_reference_analysis.sh` (2.4K) - Reference validation testing
 - `config.sh` (2.1K) - YAML configuration
 - `colors.sh` (637 bytes) - Terminal formatting
+- _(+29 additional modules - see src/workflow/lib/ for complete list)_
 
-### Step Modules (15 total in src/workflow/steps/)
+### Step Modules (17 total in src/workflow/steps/)
 
 **Execution Order** (Step 11 MUST be last):
 
@@ -126,16 +127,27 @@
 13. `step_12_markdown_lint.sh` - Markdown linting
 14. `step_13_prompt_engineer.sh` - Prompt engineering (ai_workflow only)
 15. `step_14_ux_analysis.sh` - UX/UI analysis (NEW v2.4.0)
-16. `step_11_git.sh` - **Git operations [FINAL STEP - commits all changes]**
+16. `step_15_version_update.sh` - **AI-powered version updates (POST-PROCESSING - runs after 10,12,13,14)**
+17. `step_11_git.sh` - **Git operations [FINAL STEP - commits all changes]**
 
-### Configuration Files (6 total in src/workflow/config/)
+### Configuration Files (4 total in .workflow_core/config/)
+
+> **Note**: Configuration migrated to `.workflow_core` submodule in v3.0.0
 
 1. `paths.yaml` - Path configuration
 2. `ai_helpers.yaml` - Base AI prompt templates (9 templates)
 3. `ai_prompts_project_kinds.yaml` - Project-specific AI prompts
 4. `project_kinds.yaml` - Project type definitions
-5. `step_relevance.yaml` - Step applicability matrix
-6. `.workflow-config.yaml` - Project-specific configuration (in project root)
+
+**Project Configuration**:
+- `.workflow-config.yaml` - Project-specific configuration (in project root)
+
+### Orchestrators (4 total in src/workflow/orchestrators/)
+
+1. `pre_flight.sh` - Pre-execution validation and setup
+2. `validation_orchestrator.sh` - Validation phase coordination
+3. `quality_orchestrator.sh` - Quality checks coordination
+4. `finalization_orchestrator.sh` - Finalization phase coordination
 
 ## AI Personas (14 total)
 
@@ -159,10 +171,10 @@
 The AI Workflow uses a **flexible persona system** with dynamic prompt construction:
 
 **System Design**:
-- **9 Base Prompt Templates** in `src/workflow/lib/ai_helpers.yaml`
+- **9 Base Prompt Templates** in `.workflow_core/config/ai_helpers.yaml`
   - doc_analysis_prompt, consistency_prompt, test_strategy_prompt, quality_prompt, issue_extraction_prompt, markdown_lint_prompt, language_specific_documentation, language_specific_quality, language_specific_testing
 
-- **4 Specialized Persona Types** in `src/workflow/config/ai_prompts_project_kinds.yaml`
+- **4 Specialized Persona Types** in `.workflow_core/config/ai_prompts_project_kinds.yaml`
   - documentation_specialist (adapts per project kind)
   - code_reviewer (adapts per project kind)
   - test_engineer (adapts per project kind)

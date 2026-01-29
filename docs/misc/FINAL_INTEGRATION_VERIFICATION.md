@@ -38,7 +38,7 @@
 |------|---------|--------|
 | `src/workflow/lib/dependency_graph.sh` | Added Step 15 dependencies | ✅ Complete |
 | `src/workflow/execute_tests_docs_workflow.sh` | Added Step 15 execution block | ✅ Complete |
-| `src/workflow/lib/ai_helpers.yaml` | Added version_manager persona | ✅ Complete |
+| `.workflow_core/config/ai_helpers.yaml` | Added version_manager persona | ✅ Complete |
 
 ---
 

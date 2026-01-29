@@ -376,7 +376,7 @@ yq -i '.tech_stack.primary_language = "javascript"' .workflow-config.yaml
 
 - **Main Config**: `docs/TECH_STACK_ADAPTIVE_FRAMEWORK.md`
 - **Project Reference**: `docs/PROJECT_REFERENCE.md`
-- **AI Prompts**: `src/workflow/lib/ai_helpers.yaml`
+- **AI Prompts**: `.workflow_core/config/ai_helpers.yaml`
 
 ## Conclusion
 

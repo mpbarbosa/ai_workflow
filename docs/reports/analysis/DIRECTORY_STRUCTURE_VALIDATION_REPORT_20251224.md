@@ -283,8 +283,8 @@ Workflow config: src/workflow/config/*.yaml   # ✅ Application-specific configs
 **Backup Files Found** (should be cleaned up):
 ```
 ./src/workflow/steps/step_01_documentation.sh.backup
-./src/workflow/lib/ai_helpers.yaml.backup
-./src/workflow/lib/ai_helpers.yaml.bak
+./.workflow_core/config/ai_helpers.yaml.backup
+./.workflow_core/config/ai_helpers.yaml.bak
 ./src/workflow/execute_tests_docs_workflow.sh.bak
 ./src/workflow/execute_tests_docs_workflow.sh.backup
 ./src/workflow/execute_tests_docs_workflow.sh.before_step1_removal

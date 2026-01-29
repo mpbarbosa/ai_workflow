@@ -43,7 +43,7 @@ Successfully implemented **Step 15: AI-Powered Semantic Version Update** with co
   - Integration (5 tests)
 
 ### 3. AI Persona
-- **File**: `src/workflow/lib/ai_helpers.yaml`
+- **File**: `.workflow_core/config/ai_helpers.yaml`
 - **Addition**: 24 lines
 - **Persona**: `version_manager_prompt`
 - **Capabilities**:
@@ -254,7 +254,7 @@ type step15_version_update | head -2
 # Expected: Function definition shown
 
 # 3. Check AI persona added
-grep -A 10 "version_manager_prompt:" src/workflow/lib/ai_helpers.yaml
+grep -A 10 "version_manager_prompt:" .workflow_core/config/ai_helpers.yaml
 # Expected: Persona definition visible
 ```
 
@@ -264,7 +264,7 @@ grep -A 10 "version_manager_prompt:" src/workflow/lib/ai_helpers.yaml
 
 1. ✅ **Step 15 Module** - `src/workflow/steps/step_15_version_update.sh`
 2. ✅ **Unit Tests** - `tests/test_step_15_version_update.sh`
-3. ✅ **AI Persona** - Added to `src/workflow/lib/ai_helpers.yaml`
+3. ✅ **AI Persona** - Added to `.workflow_core/config/ai_helpers.yaml`
 4. ✅ **Implementation Summary** - `STEP_15_IMPLEMENTATION_SUMMARY.md`
 5. ✅ **Completion Report** - `IMPLEMENTATION_COMPLETE.md` (this file)
 

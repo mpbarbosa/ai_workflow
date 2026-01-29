@@ -99,7 +99,7 @@ Lines > 80 chars: 0 ✅
 ### YAML Syntax Validation
 
 ```bash
-$ python3 -c "import yaml; yaml.safe_load(open('src/workflow/lib/ai_helpers.yaml'))"
+$ python3 -c "import yaml; yaml.safe_load(open('.workflow_core/config/ai_helpers.yaml'))"
 ✓ YAML syntax valid
 ```
 
@@ -165,8 +165,8 @@ role_prefix: |
 
 | File | Section | Changes |
 |------|---------|---------|
-| `src/workflow/lib/ai_helpers.yaml` | step11_git_commit_prompt | 7 line wraps |
-| `src/workflow/lib/ai_helpers.yaml` | markdown_lint_prompt | 10 line wraps |
+| `.workflow_core/config/ai_helpers.yaml` | step11_git_commit_prompt | 7 line wraps |
+| `.workflow_core/config/ai_helpers.yaml` | markdown_lint_prompt | 10 line wraps |
 
 **Total lines affected**: ~17 sections across 2 prompts  
 **Total lines added**: ~15 (from wrapping)

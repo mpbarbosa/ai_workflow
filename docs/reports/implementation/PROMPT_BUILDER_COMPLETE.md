@@ -272,7 +272,7 @@ cd /home/mpb/Documents/GitHub/ai_workflow
 # 1. Test YAML loading
 source src/workflow/lib/ai_prompt_builder.sh
 SCRIPT_DIR="src/workflow"
-get_yq_value "src/workflow/lib/ai_helpers.yaml" "doc_analysis_prompt.role_prefix" | head -3
+get_yq_value ".workflow_core/config/ai_helpers.yaml" "doc_analysis_prompt.role_prefix" | head -3
 
 # Expected output:
 # You are a senior technical documentation specialist with expertise in software 

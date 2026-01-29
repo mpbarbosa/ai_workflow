@@ -246,7 +246,7 @@ step5_test_review_prompt:
 **Objective**: Verify YAML parses correctly
 
 ```bash
-python3 -c "import yaml; yaml.safe_load(open('src/workflow/lib/ai_helpers.yaml'))" && echo "✅ YAML valid"
+python3 -c "import yaml; yaml.safe_load(open('.workflow_core/config/ai_helpers.yaml'))" && echo "✅ YAML valid"
 ```
 
 **Expected**: No parsing errors
@@ -257,7 +257,7 @@ python3 -c "import yaml; yaml.safe_load(open('src/workflow/lib/ai_helpers.yaml')
 ```python
 import yaml
 
-with open('src/workflow/lib/ai_helpers.yaml') as f:
+with open('.workflow_core/config/ai_helpers.yaml') as f:
     data = yaml.safe_load(f)
 
 # Check test_strategy_prompt
@@ -298,7 +298,7 @@ echo "$prompt2" | grep -q "hands-on\|test engineer" && echo "✅ step5_test_revi
 ```python
 import yaml
 
-with open('src/workflow/lib/ai_helpers.yaml') as f:
+with open('.workflow_core/config/ai_helpers.yaml') as f:
     data = yaml.safe_load(f)
 
 ts_role = data['test_strategy_prompt']['role'].lower()
@@ -323,8 +323,8 @@ else:
 **Objective**: Verify inline comments added
 
 ```bash
-grep -B3 "^test_strategy_prompt:" src/workflow/lib/ai_helpers.yaml | grep -q "# Test Strategy" && echo "✅ test_strategy comment present"
-grep -B3 "^step5_test_review_prompt:" src/workflow/lib/ai_helpers.yaml | grep -q "# Test Review" && echo "✅ step5 comment present"
+grep -B3 "^test_strategy_prompt:" .workflow_core/config/ai_helpers.yaml | grep -q "# Test Strategy" && echo "✅ test_strategy comment present"
+grep -B3 "^step5_test_review_prompt:" .workflow_core/config/ai_helpers.yaml | grep -q "# Test Review" && echo "✅ step5 comment present"
 ```
 
 **Expected**: Comments present before each prompt
@@ -395,7 +395,7 @@ grep -B3 "^step5_test_review_prompt:" src/workflow/lib/ai_helpers.yaml | grep -q
 
 ## References
 
-- **YAML File**: `src/workflow/lib/ai_helpers.yaml`
+- **YAML File**: `.workflow_core/config/ai_helpers.yaml`
 - **Prompt Builders**: `src/workflow/lib/ai_helpers.sh`
 - **Usage**: 11 files use test_strategy_prompt, 7 use step5_test_review_prompt
 

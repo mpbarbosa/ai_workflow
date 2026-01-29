@@ -219,8 +219,8 @@ EOF
 build_doc_analysis_prompt() {
     local changed_files="$1"
     local doc_files="$2"
-    local yaml_file="${AI_HELPERS_DIR}/ai_helpers.yaml"
-    local yaml_project_kind_file="${AI_HELPERS_WORKFLOW_DIR}/config/ai_prompts_project_kinds.yaml"
+    local yaml_file="${AI_HELPERS_DIR}/../../../.workflow_core/config/ai_helpers.yaml"
+    local yaml_project_kind_file="${AI_HELPERS_WORKFLOW_DIR}/../../.workflow_core/config/ai_prompts_project_kinds.yaml"
 
     local role=""
     local task_context=""
@@ -460,7 +460,7 @@ Documentation to review: ${doc_files}" \
 # Step 2: Build a documentation consistency analysis prompt
 build_consistency_prompt() {
     local files_to_check="$1"
-    local yaml_file="${AI_HELPERS_DIR}/ai_helpers.yaml"
+    local yaml_file="${AI_HELPERS_DIR}/../../../.workflow_core/config/ai_helpers.yaml"
     
     # Read from YAML config if available
     if [[ -f "$yaml_file" ]]; then
@@ -519,7 +519,7 @@ Check for:
 build_test_strategy_prompt() {
     local coverage_stats="$1"
     local test_files="$2"
-    local yaml_file="${AI_HELPERS_DIR}/ai_helpers.yaml"
+    local yaml_file="${AI_HELPERS_DIR}/../../../.workflow_core/config/ai_helpers.yaml"
     
     # Read from YAML config if available
     if [[ -f "$yaml_file" ]]; then
@@ -579,7 +579,7 @@ Recommend:
 # Usage: build_quality_prompt <files_to_review>
 build_quality_prompt() {
     local files_to_review="$1"
-    local yaml_file="${AI_HELPERS_DIR}/ai_helpers.yaml"
+    local yaml_file="${AI_HELPERS_DIR}/../../../.workflow_core/config/ai_helpers.yaml"
     
     # Read from YAML config if available
     if [[ -f "$yaml_file" ]]; then
@@ -639,7 +639,7 @@ Analyze:
 build_issue_extraction_prompt() {
     local log_file="$1"
     local log_content="$2"
-    local yaml_file="${AI_HELPERS_DIR}/ai_helpers.yaml"
+    local yaml_file="${AI_HELPERS_DIR}/../../../.workflow_core/config/ai_helpers.yaml"
     
     # Read from YAML config if available
     if [[ -f "$yaml_file" ]]; then
@@ -719,7 +719,7 @@ build_step2_consistency_prompt() {
     local modified_count="$3"
     local broken_refs_content="$4"
     local doc_files="$5"
-    local yaml_file="${AI_HELPERS_DIR}/ai_helpers.yaml"
+    local yaml_file="${AI_HELPERS_DIR}/../../../.workflow_core/config/ai_helpers.yaml"
     
     # Read from YAML config if available
     if [[ -f "$yaml_file" ]]; then
@@ -852,7 +852,7 @@ build_step3_script_refs_prompt() {
     local script_issues_content="$4"
     local all_scripts="$5"
     local modified_count="${6:-0}"
-    local yaml_file="${AI_HELPERS_DIR}/ai_helpers.yaml"
+    local yaml_file="${AI_HELPERS_DIR}/../../../.workflow_core/config/ai_helpers.yaml"
     
     # Read from YAML config if available
     if [[ -f "$yaml_file" ]]; then
@@ -1017,7 +1017,7 @@ build_step4_directory_prompt() {
     local structure_issues_content="$6"
     local dir_tree="$7"
     local modified_count="${8:-0}"
-    local yaml_file="${AI_HELPERS_DIR}/ai_helpers.yaml"
+    local yaml_file="${AI_HELPERS_DIR}/../../../.workflow_core/config/ai_helpers.yaml"
     
     # Calculate modified_count if not provided or is 0
     if [[ "$modified_count" == "0" ]] && command -v git &>/dev/null && git rev-parse --git-dir &>/dev/null 2>&1; then
@@ -1211,7 +1211,7 @@ build_step5_test_review_prompt() {
     local coverage_exists="$7"
     local test_issues_content="$8"
     local test_files="$9"
-    local yaml_file="${AI_HELPERS_DIR}/ai_helpers.yaml"
+    local yaml_file="${AI_HELPERS_DIR}/../../../.workflow_core/config/ai_helpers.yaml"
     
     # Read from YAML config if available
     if [[ -f "$yaml_file" ]]; then
@@ -1380,7 +1380,7 @@ build_step7_test_exec_prompt() {
     local execution_summary="$5"
     local test_output="$6"
     local failed_test_list="$7"
-    local yaml_file="${AI_HELPERS_DIR}/ai_helpers.yaml"
+    local yaml_file="${AI_HELPERS_DIR}/../../../.workflow_core/config/ai_helpers.yaml"
     
     # Read from YAML config if available
     if [[ -f "$yaml_file" ]]; then
@@ -1537,7 +1537,7 @@ build_step8_dependencies_prompt() {
     local dev_deps="$9"
     local audit_summary="${10}"
     local outdated_list="${11}"
-    local yaml_file="${AI_HELPERS_DIR}/ai_helpers.yaml"
+    local yaml_file="${AI_HELPERS_DIR}/../../../.workflow_core/config/ai_helpers.yaml"
     
     # Read from YAML config if available
     if [[ -f "$yaml_file" ]]; then
@@ -1703,7 +1703,7 @@ build_step9_code_quality_prompt() {
     local quality_report_content="$6"
     local large_files_list="$7"
     local sample_code="$8"
-    local yaml_file="${AI_HELPERS_DIR}/ai_helpers.yaml"
+    local yaml_file="${AI_HELPERS_DIR}/../../../.workflow_core/config/ai_helpers.yaml"
     local language="${PRIMARY_LANGUAGE:-javascript}"
     
     # Read from YAML config if available
@@ -1888,7 +1888,7 @@ build_step11_git_commit_prompt() {
     local diff_summary="$5"
     local git_analysis_content="$6"
     local diff_sample="$7"
-    local yaml_file="${AI_HELPERS_DIR}/ai_helpers.yaml"
+    local yaml_file="${AI_HELPERS_DIR}/../../../.workflow_core/config/ai_helpers.yaml"
     
     # Read from YAML config if available
     if [[ -f "$yaml_file" ]]; then
@@ -2486,7 +2486,7 @@ export -f extract_and_save_issues_from_log
 
 ################################################################################
 # PHASE 4: LANGUAGE-SPECIFIC PROMPT GENERATION
-# Version: 4.0.0
+# Version: 5.0.0
 # Added: 2025-12-18
 ################################################################################
 
@@ -2764,7 +2764,7 @@ get_project_kind_prompt() {
     local project_kind="$1"
     local persona="$2"
     local field="$3"
-    local yaml_file="${AI_HELPERS_WORKFLOW_DIR}/config/ai_prompts_project_kinds.yaml"
+    local yaml_file="${AI_HELPERS_WORKFLOW_DIR}/../../.workflow_core/config/ai_prompts_project_kinds.yaml"
     
     if [[ ! -f "$yaml_file" ]]; then
         return 1

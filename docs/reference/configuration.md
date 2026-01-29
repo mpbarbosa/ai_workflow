@@ -28,14 +28,14 @@ The AI Workflow Automation system uses multiple YAML configuration files for dif
 | File | Purpose | Location | Lines | User Editable |
 |------|---------|----------|-------|---------------|
 | `.workflow-config.yaml` | Per-project workflow configuration | Project root | Variable | ✅ Yes |
-| `paths.yaml` | Centralized path management | `src/workflow/config/` | 85 | ⚠️ Advanced |
-| `project_kinds.yaml` | Project type definitions | `src/workflow/config/` | 730 | ⚠️ Advanced |
-| `ai_prompts_project_kinds.yaml` | Project-specific AI prompts | `src/workflow/config/` | 468 | ⚠️ Advanced |
-| `step_relevance.yaml` | Step relevance matrix | `src/workflow/config/` | 559 | ⚠️ Advanced |
-| `tech_stack_definitions.yaml` | Technology stack definitions | `src/workflow/config/` | 568 | ⚠️ Advanced |
-| `workflow_config_schema.yaml` | Schema validation rules | `src/workflow/config/` | 306 | ❌ No |
+| `paths.yaml` | Centralized path management | `.workflow_core/config/` | 85 | ⚠️ Advanced |
+| `project_kinds.yaml` | Project type definitions | `.workflow_core/config/` | 730 | ⚠️ Advanced |
+| `ai_prompts_project_kinds.yaml` | Project-specific AI prompts | `.workflow_core/config/` | 468 | ⚠️ Advanced |
+| `ai_helpers.yaml` | Base AI prompt templates | `.workflow_core/config/` | 762 | ⚠️ Advanced |
 
-**Total Configuration**: 2,716 lines of YAML
+**Total Configuration**: ~2,700 lines of YAML (migrated to `.workflow_core` submodule in v3.0.0)
+
+> **Note**: Configuration files migrated from `src/workflow/config/` to `.workflow_core/config/` submodule in v3.0.0 for better modularity and reusability.
 
 ---
 
@@ -351,7 +351,7 @@ The workflow validates configurations against these rules:
 ## 2. paths.yaml
 
 **Purpose**: Centralized path management for portability  
-**Location**: `src/workflow/config/paths.yaml`  
+**Location**: `.workflow_core/config/paths.yaml`  
 **User Editable**: ⚠️ Advanced users only
 
 ### 2.1 Schema
@@ -474,7 +474,7 @@ environment:
 ## 3. project_kinds.yaml
 
 **Purpose**: Define validation rules, test commands, and quality standards per project kind  
-**Location**: `src/workflow/config/project_kinds.yaml`  
+**Location**: `.workflow_core/config/project_kinds.yaml`  
 **User Editable**: ⚠️ Advanced users only (730 lines)
 
 ### 3.1 Schema
@@ -626,7 +626,7 @@ project_kinds:
 ## 4. ai_prompts_project_kinds.yaml
 
 **Purpose**: Project kind-specific AI prompt templates for workflow steps  
-**Location**: `src/workflow/config/ai_prompts_project_kinds.yaml`  
+**Location**: `.workflow_core/config/ai_prompts_project_kinds.yaml`  
 **User Editable**: ⚠️ Advanced users only (468 lines)
 
 ### 4.1 Schema

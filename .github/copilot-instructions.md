@@ -14,8 +14,8 @@ AI Workflow Automation is an intelligent workflow system for validating and enha
 > 📋 **Reference**: See [docs/PROJECT_REFERENCE.md](../docs/PROJECT_REFERENCE.md) for authoritative project statistics, features, and module inventory.
 
 **Core Features**:
-- **16-Step Automated Pipeline** with 14 AI personas
-- **33 Library Modules** (15,500+ lines) + **16 Step Modules** (4,777 lines)
+- **17-Step Automated Pipeline** with 14 AI personas
+- **62 Library Modules** + **17 Step Modules** + **4 Orchestrators**
 - **Smart Execution**: 40-85% faster | **Parallel Execution**: 33% faster
 - **AI Response Caching**: 60-80% token reduction
 - **Pre-Commit Hooks** (NEW v3.0.0): Fast validation checks to prevent broken commits
@@ -55,9 +55,10 @@ AI Workflow Automation is an intelligent workflow system for validating and enha
 
 **Quick Reference**:
 - **Core Modules** (12): ai_helpers.sh, tech_stack.sh, workflow_optimization.sh, change_detection.sh, etc.
-- **Supporting Modules** (21): edit_operations.sh, ai_cache.sh, session_manager.sh, ai_personas.sh, ai_prompt_builder.sh, etc.
-- **Step Modules** (16): step_00_analyze.sh through step_15_version_update.sh
-- **Configuration Files** (7): YAML-based prompt templates and project configuration
+- **Supporting Modules** (50): edit_operations.sh, ai_cache.sh, session_manager.sh, ai_personas.sh, ai_prompt_builder.sh, etc.
+- **Step Modules** (17): step_00_analyze.sh through step_15_version_update.sh (includes step_0a pre-processing)
+- **Orchestrators** (4): pre_flight, validation, quality, finalization
+- **Configuration Files** (4): YAML-based prompt templates and project configuration in .workflow_core/config/
 
 ## Key Files and Directories
 
@@ -75,14 +76,16 @@ src/workflow/execute_tests_docs_workflow.sh
 ### Configuration Files
 
 ```
-src/workflow/config/
-├── paths.yaml                 # Path configuration
-└── ai_helpers.yaml           # AI prompt templates (762 lines)
+.workflow_core/config/              # Submodule with shared configuration
+├── paths.yaml                      # Path configuration
+├── ai_helpers.yaml                 # AI prompt templates (762 lines)
+├── ai_prompts_project_kinds.yaml   # Project-specific prompts
+└── project_kinds.yaml              # Project type definitions
 ```
 
 ### Library and Step Modules
 
-> 📋 **Complete List**: See [docs/PROJECT_REFERENCE.md#module-inventory](../docs/PROJECT_REFERENCE.md#module-inventory for all 33 library modules and 16 step modules with line counts.
+> 📋 **Complete List**: See [docs/PROJECT_REFERENCE.md#module-inventory](../docs/PROJECT_REFERENCE.md#module-inventory for all 62 library modules, 17 step modules, and 4 orchestrators with line counts.
 
 ### Documentation Structure
 
@@ -281,12 +284,12 @@ cd ../
 The system uses **14 specialized AI personas** including documentation_specialist, code_reviewer, test_engineer, and ux_designer (NEW v2.4.0).
 
 Personas are implemented through:
-- **9 base prompt templates** in `src/workflow/lib/ai_helpers.yaml`
-- **4 project-kind specific personas** in `src/workflow/config/ai_prompts_project_kinds.yaml` (documentation_specialist, code_reviewer, test_engineer, ux_designer)
+- **9 base prompt templates** in `.workflow_core/config/ai_helpers.yaml`
+- **4 project-kind specific personas** in `.workflow_core/config/ai_prompts_project_kinds.yaml` (documentation_specialist, code_reviewer, test_engineer, ux_designer)
 - **Language-aware enhancements**: When `PRIMARY_LANGUAGE` is set in `.workflow-config.yaml`, AI prompts are automatically enhanced with language-specific conventions (documentation standards, testing practices, code quality rules) from `ai_helpers.yaml`. This happens silently in Steps 2 and 5.
 
 The documentation_specialist persona is project-aware and references:
-- **`src/workflow/config/project_kinds.yaml`** - Defines project types (shell_script_automation, nodejs_api, static_website, client_spa, react_spa, python_app, generic) with quality standards, testing frameworks, and documentation requirements
+- **`.workflow_core/config/project_kinds.yaml`** - Defines project types (shell_script_automation, nodejs_api, static_website, client_spa, react_spa, python_app, generic) with quality standards, testing frameworks, and documentation requirements
 - **`.workflow-config.yaml`** - Project-specific configuration including:
   - `project.kind` - Explicitly set project kind (shell_automation, nodejs_api, nodejs_cli, nodejs_library, static_website, client_spa, react_spa, vue_spa, python_api, python_cli, python_library, documentation)
   - `tech_stack.primary_language` - Primary programming language

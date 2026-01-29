@@ -14,7 +14,7 @@ Implement YAML anchors and aliases to deduplicate common behavioral guidelines a
 
 ### Current State
 
-The AI prompt configuration in `src/workflow/lib/ai_helpers.yaml` contains duplicated behavioral guidelines across multiple personas:
+The AI prompt configuration in `.workflow_core/config/ai_helpers.yaml` contains duplicated behavioral guidelines across multiple personas:
 
 1. **doc_analysis_prompt** (lines 8-18): 9 lines of guidelines
 2. **consistency_prompt** (lines 76-84): 8 lines of guidelines  
@@ -97,10 +97,10 @@ doc_analysis_prompt:
 **Testing Commands**:
 ```bash
 # Test YAML validity
-yq eval '.doc_analysis_prompt.role' src/workflow/lib/ai_helpers.yaml
+yq eval '.doc_analysis_prompt.role' .workflow_core/config/ai_helpers.yaml
 
 # Test anchor resolution
-yq eval '._behavioral_guidelines_actionable' src/workflow/lib/ai_helpers.yaml
+yq eval '._behavioral_guidelines_actionable' .workflow_core/config/ai_helpers.yaml
 ```
 
 ### FR-4: Backward Compatibility
@@ -188,7 +188,7 @@ some_key: |
 
 ### Files to Modify
 
-1. **`src/workflow/lib/ai_helpers.yaml`** (Primary)
+1. **`.workflow_core/config/ai_helpers.yaml`** (Primary)
    - Add anchor definitions (top of file)
    - Update persona definitions to reference anchors
    - Add explanatory comments
@@ -210,10 +210,10 @@ some_key: |
 
 ```bash
 # Test anchor definition
-yq eval '._behavioral_guidelines_actionable' src/workflow/lib/ai_helpers.yaml | grep -q "Critical Behavioral Guidelines"
+yq eval '._behavioral_guidelines_actionable' .workflow_core/config/ai_helpers.yaml | grep -q "Critical Behavioral Guidelines"
 
 # Test anchor resolution in persona
-yq eval '.doc_analysis_prompt.role' src/workflow/lib/ai_helpers.yaml | grep -q "Critical Behavioral Guidelines"
+yq eval '.doc_analysis_prompt.role' .workflow_core/config/ai_helpers.yaml | grep -q "Critical Behavioral Guidelines"
 ```
 
 **Expected Result**: Both commands succeed, content matches
@@ -240,10 +240,10 @@ diff /tmp/prompt_before.txt /tmp/prompt_after.txt
 
 ```bash
 # Count tokens in original file
-wc -w src/workflow/lib/ai_helpers.yaml.backup
+wc -w .workflow_core/config/ai_helpers.yaml.backup
 
 # Count tokens in anchored file
-wc -w src/workflow/lib/ai_helpers.yaml
+wc -w .workflow_core/config/ai_helpers.yaml
 
 # Verify reduction
 ```
@@ -272,10 +272,10 @@ grep "Critical Behavioral Guidelines" .ai_workflow/prompts/*/step*.md
 
 ```bash
 # Test doc_analysis_prompt
-yq eval '.doc_analysis_prompt.role' src/workflow/lib/ai_helpers.yaml | grep -q "actionable output"
+yq eval '.doc_analysis_prompt.role' .workflow_core/config/ai_helpers.yaml | grep -q "actionable output"
 
 # Test consistency_prompt  
-yq eval '.consistency_prompt.role' src/workflow/lib/ai_helpers.yaml | grep -q "actionable output"
+yq eval '.consistency_prompt.role' .workflow_core/config/ai_helpers.yaml | grep -q "actionable output"
 ```
 
 **Expected Result**: Both contain anchor content
@@ -331,7 +331,7 @@ yq eval '.consistency_prompt.role' src/workflow/lib/ai_helpers.yaml | grep -q "a
 ## References
 
 - **YAML Anchors Spec**: https://yaml.org/spec/1.2.2/#3222-anchors-and-aliases
-- **Project Context**: `src/workflow/lib/ai_helpers.yaml`
+- **Project Context**: `.workflow_core/config/ai_helpers.yaml`
 - **Related Features**: AI Prompt System (Phase 4), Language-Aware Prompts
 - **Version**: AI Workflow Automation v2.4.0
 

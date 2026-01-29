@@ -362,7 +362,7 @@ find docs/reports/ -type f -mtime +30 -exec mv {} docs/archive/reports/ \;
   ./src/workflow/execute_tests_docs_workflow.sh.bak
   ./src/workflow/execute_tests_docs_workflow.sh.before_step1_removal
   ./src/workflow/steps/step_01_documentation.sh.backup
-  ./src/workflow/lib/ai_helpers.yaml.backup
+  ./.workflow_core/config/ai_helpers.yaml.backup
   ```
 
 **Recommendation** (URGENT):
@@ -372,7 +372,7 @@ git rm src/workflow/execute_tests_docs_workflow.sh.backup
 git rm src/workflow/execute_tests_docs_workflow.sh.bak
 git rm src/workflow/execute_tests_docs_workflow.sh.before_step1_removal
 git rm src/workflow/steps/step_01_documentation.sh.backup
-git rm src/workflow/lib/ai_helpers.yaml.backup
+git rm .workflow_core/config/ai_helpers.yaml.backup
 
 # 2. Update .gitignore (already has *.bak, add more patterns)
 cat >> .gitignore << 'EOF'

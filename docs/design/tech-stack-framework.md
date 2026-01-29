@@ -2018,7 +2018,7 @@ should_use_language_aware_prompts()       # Feature control
 
 **Files Modified**:
 
-- `src/workflow/lib/ai_helpers.yaml` (v2.0.0 → v3.0.0)
+- `.workflow_core/config/ai_helpers.yaml` (v2.0.0 → v3.0.0)
   - Added 532 lines (+63% growth)
   - 3 new template sections
   - Complete coverage for 8 languages

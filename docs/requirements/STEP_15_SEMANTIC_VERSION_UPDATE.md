@@ -1,7 +1,7 @@
 # Functional Requirements: Step 15 - AI-Powered Semantic Version Update
 
 **Feature ID**: WF-2026-002  
-**Version**: 2.0.0  
+**Version**: 3.0.0  
 **Status**: Draft  
 **Created**: 2026-01-15  
 **Author**: AI Workflow Automation Team  
@@ -299,7 +299,7 @@ update_project_version() {
 ```text
 src/workflow/steps/step_15_version_update.sh
 ├── Header comment block (purpose, version, dependencies)
-├── Version constants (STEP15_VERSION="2.0.0")
+├── Version constants (STEP15_VERSION="3.0.0")
 ├── Library sourcing (colors.sh, utils.sh, ai_helpers.sh)
 ├── Helper functions
 │   ├── detect_version_patterns()
@@ -330,13 +330,13 @@ set -euo pipefail
 # Step 15: AI-Powered Semantic Version Update
 # Purpose: Update semantic versions in modified files and project metadata
 # Part of: Tests & Documentation Workflow Automation v2.13.0
-# Version: 2.0.0
+# Version: 3.0.0
 # Position: Runs after all analysis (10,12,13,14), before Git Finalization (11)
 # Dependencies: Steps 10, 12, 13, 14
 ################################################################################
 
 # Module version information
-readonly STEP15_VERSION="2.0.0"
+readonly STEP15_VERSION="3.0.0"
 readonly STEP15_VERSION_MAJOR=1
 readonly STEP15_VERSION_MINOR=0
 readonly STEP15_VERSION_PATCH=0
@@ -369,7 +369,7 @@ readonly STEP15_VERSION_PATCH=0
   
   Would update file versions:
     src/workflow/execute_tests_docs_workflow.sh: 2.12.0 → 2.13.0
-    src/workflow/steps/step_15_version_update.sh: 2.0.0 → 2.0.0 (no change)
+    src/workflow/steps/step_15_version_update.sh: 3.0.0 → 3.0.0 (no change)
     README.md: 2.12.0 → 2.13.0
   
   Total: 3 files would be updated
@@ -439,7 +439,7 @@ new test capabilities). No breaking changes detected.
 
 ### Updated (3 files)
 - `src/workflow/execute_tests_docs_workflow.sh`: 2.12.0 → 2.13.0 ✅
-- `src/workflow/steps/step_15_version_update.sh`: 2.0.0 → 2.0.0 (no change) ✅
+- `src/workflow/steps/step_15_version_update.sh`: 3.0.0 → 3.0.0 (no change) ✅
 - `README.md`: 2.12.0 → 2.13.0 ✅
 
 ### Skipped (2 files)
@@ -784,7 +784,7 @@ test_step15_checkpoint_resume()
 - [STEP_15_VERSION_UPDATE_IMPLEMENTATION.md](../../STEP_15_VERSION_UPDATE_IMPLEMENTATION.md) - Step 0a implementation (for comparison)
 - [docs/PROJECT_REFERENCE.md](../PROJECT_REFERENCE.md) - Project statistics and module inventory
 - [src/workflow/lib/dependency_graph.sh](../../src/workflow/lib/dependency_graph.sh) - Step dependencies
-- [src/workflow/lib/ai_helpers.yaml](../../src/workflow/lib/ai_helpers.yaml) - AI persona prompts
+- [.workflow_core/config/ai_helpers.yaml](../../.workflow_core/config/ai_helpers.yaml) - AI persona prompts
 
 ### Technical Resources
 
@@ -798,7 +798,7 @@ test_step15_checkpoint_resume()
 
 | Version | Date | Author | Changes |
 |---------|------|--------|---------|
-| 2.0.0 | 2026-01-15 | AI Workflow Team | Initial draft |
+| 3.0.0 | 2026-01-15 | AI Workflow Team | Initial draft |
 
 ---
 

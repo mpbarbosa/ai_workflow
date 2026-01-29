@@ -64,7 +64,7 @@ This guide defines **formatting conventions** for all AI Workflow Automation doc
 ✅ **Correct**:
 ```markdown
 The `src/workflow/lib/ai_helpers.sh` module provides AI integration.
-Configuration lives in `src/workflow/config/paths.yaml`.
+Configuration lives in `.workflow_core/config/paths.yaml`.
 Edit `.workflow-config.yaml` to set project kind.
 Logs stored in `src/workflow/logs/`.
 ```
@@ -72,7 +72,7 @@ Logs stored in `src/workflow/logs/`.
 ❌ **Incorrect**:
 ```markdown
 The src/workflow/lib/ai_helpers.sh module provides AI integration.
-Configuration lives in **src/workflow/config/paths.yaml**.
+Configuration lives in **.workflow_core/config/paths.yaml**.
 Edit .workflow-config.yaml to set project kind.
 Logs stored in src/workflow/logs/.
 ```

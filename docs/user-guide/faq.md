@@ -25,11 +25,11 @@
 
 ### What is AI Workflow Automation?
 
-AI Workflow Automation is a comprehensive, modular workflow system that validates and enhances documentation, code, and tests using AI support. It provides a 15-step automated pipeline with features like smart execution, parallel processing, AI response caching, and UX analysis.
+AI Workflow Automation is a comprehensive, modular workflow system that validates and enhances documentation, code, and tests using AI support. It provides a 17-step automated pipeline with features like smart execution, parallel processing, AI response caching, and UX analysis.
 
 **Key Features**:
-- 15-step automated pipeline
-- 28 library modules + 15 step modules
+- 17-step automated pipeline with checkpoint resume
+- 62 library modules + 17 step modules + 4 orchestrators
 - 14 AI personas using GitHub Copilot CLI
 - 100% test coverage with 37+ automated tests
 
@@ -500,12 +500,13 @@ gh copilot --version
 - `.workflow-config.yaml` - Project-specific settings (in project root)
 
 **System Configuration**:
-- `src/workflow/config/paths.yaml` - Path configuration
-- `src/workflow/config/ai_helpers.yaml` - AI prompt templates
-- `src/workflow/config/project_kinds.yaml` - Project type definitions
-- `src/workflow/config/step_relevance.yaml` - Step applicability
+- `.workflow_core/config/paths.yaml` - Path configuration
+- `.workflow_core/config/ai_helpers.yaml` - AI prompt templates
+- `.workflow_core/config/project_kinds.yaml` - Project type definitions
 
 See [Configuration Schema](../reference/configuration.md).
+
+> **Note**: Configuration files migrated to `.workflow_core` submodule in v3.0.0.
 
 ### How do I skip certain steps?
 
@@ -528,8 +529,8 @@ Some steps automatically skip based on project type (e.g., UX analysis skips for
 
 **Yes!** Prompts are externalized in YAML files.
 
-**Base Prompts**: `src/workflow/config/ai_helpers.yaml`
-**Project-Specific**: `src/workflow/config/ai_prompts_project_kinds.yaml`
+**Base Prompts**: `.workflow_core/config/ai_helpers.yaml`
+**Project-Specific**: `.workflow_core/config/ai_prompts_project_kinds.yaml`
 
 **Customization**:
 1. Copy template from config files

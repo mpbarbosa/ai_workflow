@@ -178,8 +178,8 @@ EOF
 build_doc_analysis_prompt() {
     local changed_files="$1"
     local doc_files="$2"
-    local yaml_file="${SCRIPT_DIR}/lib/ai_helpers.yaml"
-    local yaml_project_kind_file="${SCRIPT_DIR}/config/ai_prompts_project_kinds.yaml"
+    local yaml_file="${SCRIPT_DIR}/../../../.workflow_core/config/ai_helpers.yaml"
+    local yaml_project_kind_file="${SCRIPT_DIR}/../../../.workflow_core/config/ai_prompts_project_kinds.yaml"
 
     local role_prefix=""
     local behavioral_guidelines=""
@@ -261,7 +261,7 @@ ${behavioral_guidelines}"
 # Usage: build_consistency_prompt <doc_directory>
 build_consistency_prompt() {
     local doc_directory="$1"
-    local yaml_file="${SCRIPT_DIR}/lib/ai_helpers.yaml"
+    local yaml_file="${SCRIPT_DIR}/../../../.workflow_core/config/ai_helpers.yaml"
     
     local role_prefix=""
     local behavioral_guidelines=""
@@ -337,7 +337,7 @@ Check for: broken references, version mismatches, terminology inconsistencies, f
 build_test_strategy_prompt() {
     local code_files="$1"
     local test_framework="${2:-}"
-    local yaml_file="${SCRIPT_DIR}/lib/ai_helpers.yaml"
+    local yaml_file="${SCRIPT_DIR}/../../../.workflow_core/config/ai_helpers.yaml"
     
     local role_prefix=""
     local behavioral_guidelines=""
@@ -419,7 +419,7 @@ Focus on portfolio-level strategy, not tactical implementation"
 build_quality_prompt() {
     local code_files="$1"
     local language="${2:-}"
-    local yaml_file="${SCRIPT_DIR}/lib/ai_helpers.yaml"
+    local yaml_file="${SCRIPT_DIR}/../../../.workflow_core/config/ai_helpers.yaml"
     
     local role_prefix=""
     local behavioral_guidelines=""
@@ -508,7 +508,7 @@ Analyze:
 # Usage: build_issue_extraction_prompt <log_file>
 build_issue_extraction_prompt() {
     local log_file="$1"
-    local yaml_file="${SCRIPT_DIR}/lib/ai_helpers.yaml"
+    local yaml_file="${SCRIPT_DIR}/../../../.workflow_core/config/ai_helpers.yaml"
     
     local role_prefix=""
     local behavioral_guidelines=""

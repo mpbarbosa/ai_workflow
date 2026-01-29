@@ -2,7 +2,7 @@
 ################################################################################
 # Step 14: UX Analysis
 # Purpose: Analyze UI code for bugs, usability issues, and suggest improvements
-# Part of: Tests & Documentation Workflow Automation v2.3.1
+# Part of: Tests & Documentation Workflow Automation v3.0.0
 # Version: 1.0.0
 # Scope: Only runs for projects with UI components (web apps, SPAs, static sites)
 ################################################################################
@@ -198,7 +198,7 @@ build_ux_analysis_prompt() {
     local persona_approach=""
     
     # Try to load from ai_prompts_project_kinds.yaml
-    local ai_prompts_file="${SCRIPT_DIR}/config/ai_prompts_project_kinds.yaml"
+    local ai_prompts_file="${SCRIPT_DIR}/../../../.workflow_core/config/ai_prompts_project_kinds.yaml"
     if [[ -f "$ai_prompts_file" ]]; then
         # Extract role, task_context, and approach for ux_designer persona
         persona_role=$(awk -v kind="$project_kind" '

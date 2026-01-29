@@ -337,7 +337,7 @@ fi
 cd /home/mpb/Documents/GitHub/ai_workflow
 
 # Test with Python yq
-yq -r '.doc_analysis_prompt.role_prefix' src/workflow/lib/ai_helpers.yaml | head -5
+yq -r '.doc_analysis_prompt.role_prefix' .workflow_core/config/ai_helpers.yaml | head -5
 
 # Should output:
 # You are a senior technical documentation specialist with expertise in software 

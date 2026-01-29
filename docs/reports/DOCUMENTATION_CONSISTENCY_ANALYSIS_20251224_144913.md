@@ -643,7 +643,7 @@ The AI Workflow Automation project demonstrates **excellent documentation qualit
 | docs/design/remove-nested-*.md | Design | Added | 1 minor |
 | src/workflow/README.md | Developer | Modified | 1 critical |
 | src/workflow/lib/ai_helpers.sh | Source | Modified | None |
-| src/workflow/lib/ai_helpers.yaml | Source | Modified | None |
+| .workflow_core/config/ai_helpers.yaml | Source | Modified | None |
 | src/workflow/lib/test_broken_*.sh | Test | Added | None |
 
 **Analysis**: Most modified files are new design documents with no consistency issues. The two issues found are in existing files that need minor updates.

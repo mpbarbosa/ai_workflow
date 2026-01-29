@@ -71,10 +71,10 @@ This comprehensive analysis identified **4 primary categories** of documentation
 
 ### 2.1 Actual Persona Count
 
-**Base Prompts** (`src/workflow/lib/ai_helpers.yaml`):
+**Base Prompts** (`.workflow_core/config/ai_helpers.yaml`):
 - 9 base prompt templates defined
 
-**Project-Kind Specific** (`src/workflow/config/ai_prompts_project_kinds.yaml`):
+**Project-Kind Specific** (`.workflow_core/config/ai_prompts_project_kinds.yaml`):
 - 23 persona references across project kinds
 - 4 core persona types: documentation_specialist, code_reviewer, test_engineer, ux_designer
 

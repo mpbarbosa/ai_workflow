@@ -5,8 +5,8 @@ The workflow system uses 14 specialized AI personas for different validation and
 ## Overview
 
 AI personas are implemented through:
-- 9 base prompt templates in `src/workflow/lib/ai_helpers.yaml`
-- 4 project-kind specific personas in `src/workflow/config/ai_prompts_project_kinds.yaml`
+- 9 base prompt templates in `.workflow_core/config/ai_helpers.yaml`
+- 4 project-kind specific personas in `.workflow_core/config/ai_prompts_project_kinds.yaml`
 - Language-aware enhancements based on `PRIMARY_LANGUAGE` setting
 
 ## Core Personas
@@ -88,7 +88,7 @@ When `PRIMARY_LANGUAGE` is set in `.workflow-config.yaml`, personas automaticall
 
 ## Project-Kind Awareness
 
-Personas reference `src/workflow/config/project_kinds.yaml` for:
+Personas reference `.workflow_core/config/project_kinds.yaml` for:
 - Quality standards by project type
 - Testing framework requirements
 - Documentation requirements

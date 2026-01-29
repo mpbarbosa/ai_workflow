@@ -67,7 +67,7 @@ echo ""
 
 # Test 4: Check AI persona
 echo "Test 4: Checking AI persona..."
-if grep -q 'version_manager_prompt:' src/workflow/lib/ai_helpers.yaml; then
+if grep -q 'version_manager_prompt:' .workflow_core/config/ai_helpers.yaml; then
     echo "  ✅ version_manager persona defined"
 else
     echo "  ❌ version_manager persona missing"

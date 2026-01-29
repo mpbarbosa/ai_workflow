@@ -29,7 +29,7 @@
 
 ### 2.1 Current Implementation
 
-**Location**: `src/workflow/lib/ai_helpers.yaml` (lines 363-370)
+**Location**: `.workflow_core/config/ai_helpers.yaml` (lines 363-370)
 
 ```yaml
 4. **Broken References Found:**
@@ -214,7 +214,7 @@
 
 ### 5.1 Changes Required
 
-**File**: `src/workflow/lib/ai_helpers.yaml`
+**File**: `.workflow_core/config/ai_helpers.yaml`
 
 **Location**: Line 363-370 (Task 4 in `step2_consistency_prompt`)
 
@@ -226,7 +226,7 @@
 
 1. **Backup current configuration**
    ```bash
-   cp src/workflow/lib/ai_helpers.yaml src/workflow/lib/ai_helpers.yaml.backup
+   cp .workflow_core/config/ai_helpers.yaml .workflow_core/config/ai_helpers.yaml.backup
    ```
 
 2. **Update Task 4** in `step2_consistency_prompt.task_template`
@@ -236,7 +236,7 @@
 
 3. **Validate YAML syntax**
    ```bash
-   python3 -c "import yaml; yaml.safe_load(open('src/workflow/lib/ai_helpers.yaml'))"
+   python3 -c "import yaml; yaml.safe_load(open('.workflow_core/config/ai_helpers.yaml'))"
    ```
 
 4. **Test prompt generation**
@@ -321,8 +321,8 @@
 ### 7.2 Rollback Plan
 
 If issues arise:
-1. Restore from backup: `cp src/workflow/lib/ai_helpers.yaml.backup src/workflow/lib/ai_helpers.yaml`
-2. Verify restoration: `python3 -c "import yaml; yaml.safe_load(open('src/workflow/lib/ai_helpers.yaml'))"`
+1. Restore from backup: `cp .workflow_core/config/ai_helpers.yaml.backup .workflow_core/config/ai_helpers.yaml`
+2. Verify restoration: `python3 -c "import yaml; yaml.safe_load(open('.workflow_core/config/ai_helpers.yaml'))"`
 3. Re-run tests: `./test_modules.sh`
 4. Document issues for future enhancement
 
@@ -362,7 +362,7 @@ If issues arise:
 - `docs/design/yaml-anchors-behavioral-guidelines.md` - Feature #1
 - `docs/design/remove-nested-markdown-blocks.md` - Feature #2
 - `docs/design/standardize-context-blocks.md` - Feature #3
-- `src/workflow/lib/ai_helpers.yaml` - Main configuration file
+- `.workflow_core/config/ai_helpers.yaml` - Main configuration file
 - `src/workflow/steps/step_02_consistency.sh` - Step implementation
 
 ### 9.2 Related Issues

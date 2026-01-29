@@ -7,7 +7,7 @@
 
 ## Context
 
-The AI prompt configuration in `src/workflow/lib/ai_helpers.yaml` contains duplicated behavioral guidelines across multiple personas. The same "Critical Behavioral Guidelines" block (~50-60 words) was repeated verbatim in:
+The AI prompt configuration in `.workflow_core/config/ai_helpers.yaml` contains duplicated behavioral guidelines across multiple personas. The same "Critical Behavioral Guidelines" block (~50-60 words) was repeated verbatim in:
 
 1. `doc_analysis_prompt` - 54 words
 2. `consistency_prompt` - 60 words  
@@ -145,7 +145,7 @@ We will use **YAML anchors and aliases** to define common behavioral guidelines 
 
 ### Files Modified
 
-1. **`src/workflow/lib/ai_helpers.yaml`**:
+1. **`.workflow_core/config/ai_helpers.yaml`**:
    - Added anchor definitions (`_behavioral_actionable`, `_behavioral_structured`)
    - Split personas into `role_prefix` + `behavioral_guidelines` + `role` (legacy)
    - Updated version to 3.1.0
@@ -216,7 +216,7 @@ After one stable release (v2.4.1 or v2.5.0):
 - **YAML 1.2 Specification**: https://yaml.org/spec/1.2.2/
 - **Python yaml Module**: https://pyyaml.org/wiki/PyYAMLDocumentation
 - **AI Helpers Module**: `src/workflow/lib/ai_helpers.sh`
-- **Prompt Configuration**: `src/workflow/lib/ai_helpers.yaml`
+- **Prompt Configuration**: `.workflow_core/config/ai_helpers.yaml`
 
 ---
 

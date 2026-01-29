@@ -215,10 +215,10 @@ $ wc -l src/workflow/steps/*.sh | tail -1
 **Problem**: PROJECT_REFERENCE.md claims "6 configs" but there are 7 YAML files:
 
 **Actual Configuration Files**:
-1. `src/workflow/lib/ai_helpers.yaml` (762 lines)
+1. `.workflow_core/config/ai_helpers.yaml` (762 lines)
 2. `src/workflow/config/paths.yaml`
 3. `src/workflow/config/project_kinds.yaml`
-4. `src/workflow/config/ai_prompts_project_kinds.yaml`
+4. `.workflow_core/config/ai_prompts_project_kinds.yaml`
 5. `src/workflow/config/tech_stack_patterns.yaml`
 6. `src/workflow/config/third_party_patterns.yaml`
 7. `src/workflow/config/validation_rules.yaml`

@@ -18,7 +18,7 @@ set -euo pipefail
 get_project_kind_prompt() {
     local persona_name="$1"
     local project_kind="$2"
-    local yaml_file="${SCRIPT_DIR}/config/ai_prompts_project_kinds.yaml"
+    local yaml_file="${SCRIPT_DIR}/../../../.workflow_core/config/ai_prompts_project_kinds.yaml"
     
     if [[ ! -f "$yaml_file" ]]; then
         return 1
@@ -99,7 +99,7 @@ build_project_kind_review_prompt() {
 # Usage: should_use_project_kind_prompts
 # Returns: 0 if should use, 1 if not
 should_use_project_kind_prompts() {
-    local yaml_file="${SCRIPT_DIR}/config/ai_prompts_project_kinds.yaml"
+    local yaml_file="${SCRIPT_DIR}/../../../.workflow_core/config/ai_prompts_project_kinds.yaml"
     
     # Check if YAML file exists
     if [[ ! -f "$yaml_file" ]]; then

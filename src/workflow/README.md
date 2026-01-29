@@ -1,13 +1,12 @@
 # Workflow Automation Module Documentation
 
-**Version:** 2.3.1 (Critical Fixes & Checkpoint Control) | 2.4.0 (Orchestrator Architecture) 🚧
+**Version:** 3.0.0 (Submodule Architecture & Pre-Commit Hooks) ✅
 **Status:** Smart Execution, Parallel Processing, AI Caching, Checkpoint Resume ✅
-**Last Updated:** 2025-12-24
-**Modules:** 68 total (51 libraries + 4 orchestrators + 13 test suites) + 15 steps + 3 utilities
-**Total Lines:** ~32,976 total (~28,782 shell + ~4,194 YAML)
-**Documentation:** 100% coverage (all 62 scripts documented) ✅
+**Last Updated:** 2026-01-29
+**Modules:** 87 total (62 libraries + 17 steps + 4 orchestrators + 4 configs)
+**Documentation:** 100% coverage (all modules documented) ✅
 **Tests:** 50 total tests (37 unit + 13 integration), 100% pass rate ✅
-**Performance:** Up to 90% faster with optimization flags
+**Performance:** Up to 93% faster with ML + multi-stage optimization
 
 > 📊 See [docs/PROJECT_REFERENCE.md](../../docs/PROJECT_REFERENCE.md) for comprehensive project statistics.
 
@@ -25,61 +24,63 @@ The Tests & Documentation Workflow Automation script has been modularized to imp
 
 ```
 src/workflow/
-├── execute_tests_docs_workflow.sh   # Main orchestrator (1,884 lines)
-├── lib/                              # Core library modules ✅ COMPLETE (40 modules)
-│   ├── config.sh                     # Configuration and constants (57 lines)
-│   ├── colors.sh                     # ANSI color definitions (20 lines)
-│   ├── utils.sh                      # Utility functions (233 lines)
-│   ├── git_cache.sh                  # Git state caching (146 lines)
-│   ├── validation.sh                 # Pre-flight checks (280 lines)
-│   ├── backlog.sh                    # Backlog tracking (91 lines)
-│   ├── summary.sh                    # Summary generation (134 lines)
-│   ├── ai_helpers.sh                 # AI integration (14 functional personas) Project-aware
-│   ├── ai_helpers.yaml               # AI prompt templates (1,520 lines) ⭐ Project-aware personas
-│   ├── ai_cache.sh                   # AI response caching (352 lines) 🚀 NEW v2.3.0
-│   ├── session_manager.sh            # Bash session management (376 lines)
-│   ├── file_operations.sh            # File resilience operations (496 lines)
-│   ├── performance.sh                # Performance optimization (563 lines)
-│   ├── step_execution.sh             # Step execution patterns (247 lines)
-│   ├── metrics.sh                    # Performance tracking (511 lines) 🚀 v2.2.0
-│   ├── change_detection.sh           # Change analysis (448 lines) 🚀 v2.2.0
-│   ├── dependency_graph.sh           # Dependency visualization (429 lines) 🚀 v2.2.0
-│   ├── workflow_optimization.sh      # Smart & parallel execution (572 lines) 🚀 v2.3.0
-│   ├── health_check.sh               # System validation (464 lines)
-│   ├── metrics_validation.sh         # Metrics validation utilities (310 lines)
-│   ├── project_kind_config.sh        # Project kind configuration (757 lines)
-│   ├── project_kind_detection.sh     # Project kind detection (384 lines)
-│   └── tech_stack.sh                 # Tech stack detection (1,606 lines)
-└── steps/                            # Step modules ✅ COMPLETE (15 modules)
-    ├── step_00_analyze.sh            # Pre-workflow change analysis (113 lines)
-    ├── step_01_documentation.sh      # Documentation updates (425 lines)
-    ├── step_02_consistency.sh        # Consistency analysis (179 lines) 🔄 REFACTORED
-    ├── step_03_script_refs.sh        # Script reference validation (320 lines) 🔄 REFACTORED
-    ├── step_04_directory.sh          # Directory structure validation (376 lines)
-    ├── step_05_test_review.sh        # Test review (133 lines)
-    ├── step_06_test_gen.sh           # Test generation (118 lines)
-    ├── step_07_test_exec.sh          # Test execution (325 lines)
-    ├── step_08_dependencies.sh       # Dependency validation (469 lines)
-    ├── step_09_code_quality.sh       # Code quality validation (294 lines)
-    ├── step_10_context.sh            # Context analysis (346 lines)
-    ├── step_11_git.sh                # Git finalization (367 lines) ✅
-    ├── step_12_markdown_lint.sh      # Markdown linting (219 lines) ✨
-    ├── step_13_prompt_engineer.sh    # Prompt engineering (509 lines) ✨
-    └── step_14_ux_analysis.sh        # UX/accessibility analysis (604 lines) ✨
+├── execute_tests_docs_workflow.sh   # Main orchestrator (2,009 lines)
+├── lib/                              # Core library modules ✅ (62 modules)
+│   ├── config.sh                     # Configuration and constants
+│   ├── colors.sh                     # ANSI color definitions
+│   ├── utils.sh                      # Utility functions
+│   ├── git_cache.sh                  # Git state caching
+│   ├── validation.sh                 # Pre-flight checks
+│   ├── backlog.sh                    # Backlog tracking
+│   ├── summary.sh                    # Summary generation
+│   ├── ai_helpers.sh                 # AI integration (14 functional personas)
+│   ├── ai_cache.sh                   # AI response caching (v2.3.0)
+│   ├── session_manager.sh            # Bash session management
+│   ├── file_operations.sh            # File resilience operations
+│   ├── performance.sh                # Performance optimization
+│   ├── step_execution.sh             # Step execution patterns
+│   ├── metrics.sh                    # Performance tracking (v2.2.0)
+│   ├── change_detection.sh           # Change analysis (v2.2.0)
+│   ├── dependency_graph.sh           # Dependency visualization (v2.2.0)
+│   ├── workflow_optimization.sh      # Smart & parallel execution (v2.3.0)
+│   ├── health_check.sh               # System validation
+│   ├── metrics_validation.sh         # Metrics validation utilities
+│   ├── project_kind_config.sh        # Project kind configuration
+│   ├── project_kind_detection.sh     # Project kind detection
+│   ├── tech_stack.sh                 # Tech stack detection
+│   └── (38 additional modules...)    # See lib/ directory for complete list
+└── steps/                            # Step modules ✅ (17 modules)
+    ├── step_00_analyze.sh            # Pre-workflow change analysis
+    ├── step_0a_version_update.sh     # Semantic version pre-processing (v2.6.0)
+    ├── step_01_documentation.sh      # Documentation updates
+    ├── step_02_consistency.sh        # Consistency analysis
+    ├── step_03_script_refs.sh        # Script reference validation
+    ├── step_04_directory.sh          # Directory structure validation
+    ├── step_05_test_review.sh        # Test review
+    ├── step_06_test_gen.sh           # Test generation
+    ├── step_07_test_exec.sh          # Test execution
+    ├── step_08_dependencies.sh       # Dependency validation
+    ├── step_09_code_quality.sh       # Code quality validation
+    ├── step_10_context.sh            # Context analysis
+    ├── step_12_markdown_lint.sh      # Markdown linting
+    ├── step_13_prompt_engineer.sh    # Prompt engineering
+    ├── step_14_ux_analysis.sh        # UX/accessibility analysis (v2.4.0)
+    ├── step_15_version_update.sh     # AI-powered version post-processing (v3.0.0)
+    └── step_11_git.sh                # Git finalization [FINAL STEP]
 ```
 
 ### Additional Scripts & Orchestrators
 
-#### Version 2.4.0 Orchestrators (630 lines total)
+#### Version 3.0.0 Orchestrators (630 lines total)
 ```
 orchestrators/
-├── pre_flight.sh                    # Pre-flight orchestration (227 lines) 🚀 v2.4.0
-├── validation_orchestrator.sh       # Validation phase orchestration (228 lines) 🚀 v2.4.0
-├── finalization_orchestrator.sh     # Finalization phase orchestration (93 lines) 🚀 v2.4.0
-└── quality_orchestrator.sh          # Quality phase orchestration (82 lines) 🚀 v2.4.0
+├── pre_flight.sh                    # Pre-flight orchestration (227 lines) 🚀 v3.0.0
+├── validation_orchestrator.sh       # Validation phase orchestration (228 lines) 🚀 v3.0.0
+├── finalization_orchestrator.sh     # Finalization phase orchestration (93 lines) 🚀 v3.0.0
+└── quality_orchestrator.sh          # Quality phase orchestration (82 lines) 🚀 v3.0.0
 ```
 
-**Purpose**: Phase-based orchestration pattern for v2.4.0 architecture
+**Purpose**: Phase-based orchestration pattern for v3.0.0 architecture
 - **pre_flight.sh**: Pre-execution validation and setup
 - **validation_orchestrator.sh**: Coordinates validation steps (0-4)
 - **quality_orchestrator.sh**: Coordinates quality checks (5-10)
@@ -102,7 +103,7 @@ lib/
 - **step_adaptation.sh**: Dynamic step behavior based on project kind
 - **doc_template_validator.sh**: Template consistency validation
 
-#### AI Integration Modules (1,384 lines total) 🆕 v2.3.0-v2.4.0
+#### AI Integration Modules (1,384 lines total) 🆕 v2.3.0-v3.0.0
 ```
 lib/
 ├── ai_personas.sh                   # AI persona management (217 lines) 🆕
@@ -149,7 +150,7 @@ lib/
 #### Utility Scripts (984 lines total)
 ```
 src/workflow/
-├── execute_tests_docs_workflow_v2.4.sh  # v2.4.0 orchestrator-based (481 lines) 🚀
+├── execute_tests_docs_workflow_v2.4.sh  # v3.0.0 orchestrator-based (481 lines) 🚀
 ├── benchmark_performance.sh             # Performance benchmarking (243 lines)
 └── example_session_manager.sh           # Session manager examples (260 lines)
 ```
@@ -615,7 +616,7 @@ The workflow now supports externalized AI prompt templates via `lib/ai_helpers.y
 
 ### Configuration File Structure
 
-**Location:** `src/workflow/lib/ai_helpers.yaml` (1,520 lines)
+**Location:** `.workflow_core/config/ai_helpers.yaml` (1,520 lines)
 
 **Format:**
 ```yaml
@@ -1123,10 +1124,10 @@ apply_template_fixes "docs/templates/"
 
 ---
 
-## Orchestrator Architecture (v2.4.0) 🚧
+## Orchestrator Architecture (v3.0.0) 🚧
 
 ### Overview
-Version 2.4.0 introduces a **phase-based orchestrator architecture** that separates workflow execution into distinct phases with dedicated orchestrators.
+Version 3.0.0 introduces a **phase-based orchestrator architecture** that separates workflow execution into distinct phases with dedicated orchestrators.
 
 ### Architecture Pattern
 ```
@@ -1137,7 +1138,7 @@ execute_tests_docs_workflow_v2.4.sh (Main Controller)
 └── finalization_orchestrator.sh     # Phase 3: Finalization (Steps 11-13)
 ```
 
-### 22. `orchestrators/pre_flight.sh` (227 lines) 🚀 v2.4.0
+### 22. `orchestrators/pre_flight.sh` (227 lines) 🚀 v3.0.0
 **Purpose:** Pre-execution validation and environment setup
 
 **Responsibilities:**
@@ -1166,7 +1167,7 @@ execute_tests_docs_workflow_v2.4.sh (Main Controller)
 - Insufficient disk space
 ```
 
-### 23. `orchestrators/validation_orchestrator.sh` (228 lines) 🚀 v2.4.0
+### 23. `orchestrators/validation_orchestrator.sh` (228 lines) 🚀 v3.0.0
 **Purpose:** Coordinate validation phase (Steps 0-4)
 
 **Managed Steps:**
@@ -1193,7 +1194,7 @@ execute_tests_docs_workflow_v2.4.sh (Main Controller)
 - Step 2 (Consistency - checks docs)
 ```
 
-### 24. `orchestrators/quality_orchestrator.sh` (82 lines) 🚀 v2.4.0
+### 24. `orchestrators/quality_orchestrator.sh` (82 lines) 🚀 v3.0.0
 **Purpose:** Coordinate quality assurance phase (Steps 5-10)
 
 **Managed Steps:**
@@ -1219,7 +1220,7 @@ execute_tests_docs_workflow_v2.4.sh (Main Controller)
 - Context analysis reveals blockers
 ```
 
-### 25. `orchestrators/finalization_orchestrator.sh` (93 lines) 🚀 v2.4.0
+### 25. `orchestrators/finalization_orchestrator.sh` (93 lines) 🚀 v3.0.0
 **Purpose:** Coordinate finalization phase (Steps 11-13)
 
 **Managed Steps:**
@@ -1310,7 +1311,7 @@ Total: 36 tests, 36 passed, 0 failed
 
 ## Utility Scripts
 
-### `execute_tests_docs_workflow_v2.4.sh` (481 lines) 🚀 v2.4.0
+### `execute_tests_docs_workflow_v2.4.sh` (481 lines) 🚀 v3.0.0
 **Purpose:** Next-generation orchestrator-based workflow execution
 
 **Architecture:**

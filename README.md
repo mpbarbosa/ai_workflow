@@ -25,8 +25,8 @@ This repository provides a comprehensive, modular workflow automation system tha
 > 📋 See [Project Reference](docs/PROJECT_REFERENCE.md) for complete feature list, module inventory, and version history.
 
 **Highlights**:
-- **15-Step Automated Pipeline** with checkpoint resume
-- **33 Library Modules** (15,500+ lines) + **15 Step Modules** (4,777 lines)
+- **17-Step Automated Pipeline** with checkpoint resume
+- **62 Library Modules** + **17 Step Modules** + **4 Orchestrators**
 - **14 AI Personas** with GitHub Copilot CLI integration
 - **Smart Execution**: 40-85% faster (change-based step skipping)
 - **Parallel Execution**: 33% faster (independent steps run simultaneously)
@@ -290,7 +290,7 @@ This project is licensed under the **MIT License** - see the [LICENSE](LICENSE) 
 - **Created**: 2025-12-14
 - **Repository**: [github.com/mpbarbosa/ai_workflow](https://github.com/mpbarbosa/ai_workflow)
 - **Migrated From**: mpbarbosa_site (2025-12-18)
-- **Current Version**: v2.6.0 (2025-12-24)
+- **Current Version**: v3.0.0 (2026-01-28)
 
 ### Contributing
 

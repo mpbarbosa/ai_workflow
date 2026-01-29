@@ -262,7 +262,7 @@ step9_code_quality_prompt:
 **Objective**: Verify YAML parses correctly
 
 ```bash
-python3 -c "import yaml; yaml.safe_load(open('src/workflow/lib/ai_helpers.yaml'))" && echo "✅ YAML valid"
+python3 -c "import yaml; yaml.safe_load(open('.workflow_core/config/ai_helpers.yaml'))" && echo "✅ YAML valid"
 ```
 
 **Expected**: No parsing errors
@@ -273,7 +273,7 @@ python3 -c "import yaml; yaml.safe_load(open('src/workflow/lib/ai_helpers.yaml')
 ```python
 import yaml
 
-with open('src/workflow/lib/ai_helpers.yaml') as f:
+with open('.workflow_core/config/ai_helpers.yaml') as f:
     data = yaml.safe_load(f)
 
 # Check quality_prompt
@@ -312,7 +312,7 @@ echo "$prompt2" | grep -qi "comprehensive\|architectural" && echo "✅ step9_cod
 ```python
 import yaml
 
-with open('src/workflow/lib/ai_helpers.yaml') as f:
+with open('.workflow_core/config/ai_helpers.yaml') as f:
     data = yaml.safe_load(f)
 
 qp_role = data['quality_prompt']['role'].lower()
@@ -335,8 +335,8 @@ print("✅ Roles have clear distinction")
 **Objective**: Verify inline comments added
 
 ```bash
-grep -B3 "^quality_prompt:" src/workflow/lib/ai_helpers.yaml | grep -q "# Quality Prompt" && echo "✅ quality_prompt comment present"
-grep -B3 "^step9_code_quality_prompt:" src/workflow/lib/ai_helpers.yaml | grep -q "# Step 9" && echo "✅ step9 comment present"
+grep -B3 "^quality_prompt:" .workflow_core/config/ai_helpers.yaml | grep -q "# Quality Prompt" && echo "✅ quality_prompt comment present"
+grep -B3 "^step9_code_quality_prompt:" .workflow_core/config/ai_helpers.yaml | grep -q "# Step 9" && echo "✅ step9 comment present"
 ```
 
 **Expected**: Comments present before each prompt
@@ -347,7 +347,7 @@ grep -B3 "^step9_code_quality_prompt:" src/workflow/lib/ai_helpers.yaml | grep -
 ```python
 import yaml
 
-with open('src/workflow/lib/ai_helpers.yaml') as f:
+with open('.workflow_core/config/ai_helpers.yaml') as f:
     data = yaml.safe_load(f)
 
 # quality_prompt
@@ -437,7 +437,7 @@ print("✅ step9_code_quality_prompt structure preserved")
 
 ## References
 
-- **YAML File**: `src/workflow/lib/ai_helpers.yaml`
+- **YAML File**: `.workflow_core/config/ai_helpers.yaml`
 - **Prompt Builders**: `src/workflow/lib/ai_helpers.sh`
   - `build_quality_prompt()` - 13 usages
   - `build_step9_code_quality_prompt()` - 8 usages
