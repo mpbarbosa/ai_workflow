@@ -4,7 +4,7 @@ set -euo pipefail
 ################################################################################
 # Argument Parser Module
 # Purpose: Extract command-line argument parsing logic from main workflow script
-# Version: 2.0.0
+# Version: 3.0.0
 # Part of: Technical Debt Reduction Phase 1
 ################################################################################
 

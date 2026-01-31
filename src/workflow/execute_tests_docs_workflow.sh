@@ -4,7 +4,7 @@ set -euo pipefail
 
 ################################################################################
 # Tests & Documentation Workflow Automation Script
-# Version: 4.0.0
+# Version: 5.0.0
 # Purpose: Automate the complete tests and documentation update workflow
 # Related: /prompts/tests_documentation_update_enhanced.txt
 #
@@ -203,7 +203,7 @@ INSTALL_HOOKS=false
 UNINSTALL_HOOKS=false
 TEST_HOOKS=false
 
-# Fast Track Control (v4.0.0)
+# Fast Track Control (v5.0.0)
 DISABLE_FAST_TRACK=false
 
 # Workflow Dashboard (v2.11.0) - NEW
@@ -2161,7 +2161,7 @@ OPTIONS:
     --no-resume        Start from step 0, ignore any checkpoints
                        Default: Resume from last completed step
     
-    --no-fast-track    Disable docs-only fast track optimization (NEW v4.0.0)
+    --no-fast-track    Disable docs-only fast track optimization (NEW v5.0.0)
                        Forces standard execution for documentation-only changes
                        Default: Auto-enabled for docs-only changes (93% faster)
     

@@ -4,7 +4,7 @@ set -euo pipefail
 ################################################################################
 # Step 0b: Documentation Gap Analysis & Generation
 # Purpose: Identify missing documentation and generate it using AI
-# Part of: Tests & Documentation Workflow Automation v4.0.0
+# Part of: Tests & Documentation Workflow Automation v5.0.0
 # Version: 2.0.0 (Updated to focus on gap analysis)
 #
 # AI PERSONA: Technical Writer
