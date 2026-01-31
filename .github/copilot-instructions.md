@@ -14,8 +14,8 @@ AI Workflow Automation is an intelligent workflow system for validating and enha
 > 📋 **Reference**: See [docs/PROJECT_REFERENCE.md](../docs/PROJECT_REFERENCE.md) for authoritative project statistics, features, and module inventory.
 
 **Core Features**:
-- **17-Step Automated Pipeline** with 14 AI personas
-- **62 Library Modules** + **17 Step Modules** + **4 Orchestrators**
+- **18-Step Automated Pipeline** with 15 AI personas
+- **62 Library Modules** + **18 Step Modules** + **4 Orchestrators**
 - **Smart Execution**: 40-85% faster | **Parallel Execution**: 33% faster
 - **AI Response Caching**: 60-80% token reduction
 - **Pre-Commit Hooks** (NEW v3.0.0): Fast validation checks to prevent broken commits
@@ -56,7 +56,7 @@ AI Workflow Automation is an intelligent workflow system for validating and enha
 **Quick Reference**:
 - **Core Modules** (12): ai_helpers.sh, tech_stack.sh, workflow_optimization.sh, change_detection.sh, etc.
 - **Supporting Modules** (50): edit_operations.sh, ai_cache.sh, session_manager.sh, ai_personas.sh, ai_prompt_builder.sh, etc.
-- **Step Modules** (17): step_00_analyze.sh through step_15_version_update.sh (includes step_0a pre-processing)
+- **Step Modules** (18): step_00_analyze.sh through step_15_version_update.sh (includes step_0a pre-processing and step_0b bootstrap docs)
 - **Orchestrators** (4): pre_flight, validation, quality, finalization
 - **Configuration Files** (4): YAML-based prompt templates and project configuration in .workflow_core/config/
 
@@ -68,7 +68,7 @@ AI Workflow Automation is an intelligent workflow system for validating and enha
 src/workflow/execute_tests_docs_workflow.sh
 ├── Main orchestrator script (2,009 lines)
 ├── Handles all command-line options
-├── Coordinates 16-step workflow execution
+├── Coordinates 18-step workflow execution
 ├── Manages parallel execution and metrics
 └── Orchestrator modules (630 lines in orchestrators/): pre_flight, validation, quality, finalization
 ```
@@ -85,7 +85,7 @@ src/workflow/execute_tests_docs_workflow.sh
 
 ### Library and Step Modules
 
-> 📋 **Complete List**: See [docs/PROJECT_REFERENCE.md#module-inventory](../docs/PROJECT_REFERENCE.md#module-inventory for all 62 library modules, 17 step modules, and 4 orchestrators with line counts.
+> 📋 **Complete List**: See [docs/PROJECT_REFERENCE.md#module-inventory](../docs/PROJECT_REFERENCE.md#module-inventory for all 62 library modules, 18 step modules, and 4 orchestrators with line counts.
 
 ### Documentation Structure
 
@@ -279,9 +279,9 @@ cd ../
 
 ### AI Personas
 
-> 📋 **Complete List**: See [docs/PROJECT_REFERENCE.md#ai-personas-14-total](../docs/PROJECT_REFERENCE.md#ai-personas-14-total for all 14 functional AI personas.
+> 📋 **Complete List**: See [docs/PROJECT_REFERENCE.md#ai-personas-15-total](../docs/PROJECT_REFERENCE.md#ai-personas-15-total for all 15 functional AI personas.
 
-The system uses **14 specialized AI personas** including documentation_specialist, code_reviewer, test_engineer, and ux_designer (NEW v2.4.0).
+The system uses **15 specialized AI personas** including documentation_specialist, code_reviewer, test_engineer, ux_designer (NEW v2.4.0), and technical_writer (NEW v3.1.0).
 
 Personas are implemented through:
 - **9 base prompt templates** in `.workflow_core/config/ai_helpers.yaml`

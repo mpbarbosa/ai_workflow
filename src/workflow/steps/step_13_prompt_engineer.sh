@@ -79,11 +79,11 @@ build_prompt_engineer_analysis_prompt() {
     local persona_count="$2"
     local prompts_content="$3"
     
-    local yaml_file="${SCRIPT_DIR}/../../.workflow_core/config/ai_helpers.yaml"
+    local yaml_file="$AI_HELPERS_YAML"
     
     # Read from YAML config
     if [[ ! -f "$yaml_file" ]]; then
-        print_error "AI helpers configuration not found"
+        print_error "AI helpers configuration not found: $yaml_file"
         return 1
     fi
     

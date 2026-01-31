@@ -4,7 +4,7 @@ set -euo pipefail
 
 ################################################################################
 # Tests & Documentation Workflow Automation Script
-# Version: 3.0.0
+# Version: 4.0.0
 # Purpose: Automate the complete tests and documentation update workflow
 # Related: /prompts/tests_documentation_update_enhanced.txt
 #
@@ -203,6 +203,9 @@ INSTALL_HOOKS=false
 UNINSTALL_HOOKS=false
 TEST_HOOKS=false
 
+# Fast Track Control (v4.0.0)
+DISABLE_FAST_TRACK=false
+
 # Workflow Dashboard (v2.11.0) - NEW
 GENERATE_DASHBOARD=false            # Generate HTML dashboard
 SERVE_DASHBOARD=false               # Serve dashboard on HTTP server
@@ -234,6 +237,7 @@ export GENERATE_API_DOCS
 export INSTALL_HOOKS
 export UNINSTALL_HOOKS
 export TEST_HOOKS
+export DISABLE_FAST_TRACK
 
 # Step execution control
 EXECUTE_STEPS="all"  # Default: execute all steps
@@ -1499,7 +1503,8 @@ execute_full_workflow() {
     
     # Check for docs-only fast track (v2.7.0 - HIGHEST PRIORITY)
     # This is the fastest execution path for documentation-only changes (~1.5 min)
-    if [[ "${DOCS_ONLY_FAST_TRACK:-false}" == "true" && "$DRY_RUN" != true ]]; then
+    # Can be disabled with --no-fast-track flag
+    if [[ "${DOCS_ONLY_FAST_TRACK:-false}" == "true" && "$DRY_RUN" != true && "${DISABLE_FAST_TRACK:-false}" != "true" ]]; then
         print_info "🚀🚀🚀 Docs-Only Fast Track Enabled"
         print_info "Expected time: 90-120 seconds (93% faster than baseline)"
         echo ""
@@ -1510,6 +1515,9 @@ execute_full_workflow() {
         else
             print_warning "execute_docs_only_fast_track function not found - falling back to standard execution"
         fi
+    elif [[ "${DOCS_ONLY_FAST_TRACK:-false}" == "true" && "${DISABLE_FAST_TRACK:-false}" == "true" ]]; then
+        print_info "Fast track mode available but disabled via --no-fast-track flag"
+        log_to_workflow "INFO" "Docs-only fast track disabled by user"
     fi
     
     # Check for 4-track parallel execution (v2.7.0 - SECOND PRIORITY)
@@ -2153,6 +2161,10 @@ OPTIONS:
     --no-resume        Start from step 0, ignore any checkpoints
                        Default: Resume from last completed step
     
+    --no-fast-track    Disable docs-only fast track optimization (NEW v4.0.0)
+                       Forces standard execution for documentation-only changes
+                       Default: Auto-enabled for docs-only changes (93% faster)
+    
     --cleanup-days N   Remove artifacts older than N days (default: 7)
                        Runs automatically after successful completion
     --no-cleanup       Disable automatic artifact cleanup
@@ -2282,6 +2294,9 @@ EXAMPLES:
     
     # Force fresh start (ignore checkpoints)
     $0 --no-resume --auto
+    
+    # Disable fast track mode (force standard execution for docs changes)
+    $0 --no-fast-track --smart-execution --parallel
     
     # Interactive configuration wizard
     $0 --init-config

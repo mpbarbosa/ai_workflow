@@ -4,7 +4,7 @@ set -euo pipefail
 ################################################################################
 # Argument Parser Module
 # Purpose: Extract command-line argument parsing logic from main workflow script
-# Version: 1.0.0
+# Version: 2.0.0
 # Part of: Technical Debt Reduction Phase 1
 ################################################################################
 
@@ -258,6 +258,12 @@ parse_workflow_arguments() {
                 print_info "Pre-commit hooks will be tested"
                 shift
                 ;;
+            --no-fast-track)
+                DISABLE_FAST_TRACK=true
+                export DISABLE_FAST_TRACK
+                print_info "Fast track mode disabled - standard execution will be used"
+                shift
+                ;;
             --help)
                 show_usage
                 exit 0
@@ -363,6 +369,7 @@ OPTIONS:
   --parallel             Enable parallel execution of independent steps
   --parallel-tracks      Enable 3-track parallel execution (optimal mode)
   --no-resume            Start fresh, ignore checkpoints
+  --no-fast-track        Disable docs-only fast track optimization
   
   --show-graph           Display dependency graph and exit
   --show-tech-stack      Display tech stack configuration and exit
