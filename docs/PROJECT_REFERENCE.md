@@ -1,8 +1,8 @@
 # AI Workflow Automation - Project Reference
 
 **SINGLE SOURCE OF TRUTH**  
-**Version**: v3.0.0  
-**Last Updated**: 2026-01-28
+**Version**: v3.1.0  
+**Last Updated**: 2026-01-30
 
 > ⚠️ **Important**: This document is the authoritative source for project statistics, features, and module lists. All other documentation should reference this file, not duplicate its content.
 
@@ -12,7 +12,7 @@
 
 - **Repository**: [github.com/mpbarbosa/ai_workflow](https://github.com/mpbarbosa/ai_workflow)
 - **License**: MIT
-- **Current Version**: v3.0.0
+- **Current Version**: v3.1.0 ⭐ NEW
 - **Previous Repository**: mpbarbosa_site (migrated 2025-12-18)
 - **Primary Maintainer**: Marcelo Pereira Barbosa ([@mpbarbosa](https://github.com/mpbarbosa))
 - **Contact**: mpbarbosa@gmail.com
@@ -20,19 +20,19 @@
 ### Key Statistics
 
 - **Total Lines**: 26,562 (22,411 shell + 4,151 YAML)
-- **Total Modules**: 87 (62 libraries + 17 steps + 4 configs + 4 orchestrators)
+- **Total Modules**: 88 (62 libraries + 18 steps + 4 configs + 4 orchestrators) ⭐ NEW
 - **Test Coverage**: 100% (37+ automated tests)
 - **Performance**: Up to 93% faster with ML optimization
 
 ## Core Features (v3.0.0)
 
 ### Workflow Pipeline
-- **17-Step Automated Pipeline**: Complete workflow from pre-analysis to finalization (includes step_0a pre-processing and step_15 post-processing)
+- **18-Step Automated Pipeline**: Complete workflow from pre-analysis to finalization (includes step_0a pre-processing, step_0b bootstrap docs, and step_15 post-processing) ⭐ NEW
 - **Checkpoint Resume**: Automatic continuation from last completed step
 - **Dry Run Mode**: Preview execution without changes
 
 ### AI Integration
-- **14 Functional AI Personas**: Specialized roles across 16 workflow steps
+- **15 Functional AI Personas**: Specialized roles across 18 workflow steps (includes Technical Writer persona for bootstrap documentation) ⭐ NEW
 - **GitHub Copilot CLI**: Primary AI integration
 - **AI Response Caching**: 60-80% token usage reduction (24-hour TTL)
 - **Dynamic Prompt Construction**: Context-aware AI interactions
@@ -108,27 +108,28 @@
 - `colors.sh` (637 bytes) - Terminal formatting
 - _(+29 additional modules - see src/workflow/lib/ for complete list)_
 
-### Step Modules (17 total in src/workflow/steps/)
+### Step Modules (18 total in src/workflow/steps/) ⭐ NEW
 
 **Execution Order** (Step 11 MUST be last):
 
 1. `step_00_analyze.sh` - Pre-flight analysis
-2. `step_0a_version_update.sh` - Semantic version updates (PRE-PROCESSING - NEW v2.6.0)
-3. `step_01_documentation.sh` - Documentation updates
-4. `step_02_consistency.sh` - Cross-reference validation
-5. `step_03_script_refs.sh` - Script reference validation
-6. `step_04_directory.sh` - Directory structure validation
-7. `step_05_test_review.sh` - Test coverage review
-8. `step_06_test_gen.sh` - Test case generation
-9. `step_07_test_exec.sh` - Test execution
-10. `step_08_dependencies.sh` - Dependency validation
-11. `step_09_code_quality.sh` - Code quality checks
-12. `step_10_context.sh` - Context analysis
-13. `step_12_markdown_lint.sh` - Markdown linting
-14. `step_13_prompt_engineer.sh` - Prompt engineering (ai_workflow only)
-15. `step_14_ux_analysis.sh` - UX/UI analysis (NEW v2.4.0)
-16. `step_15_version_update.sh` - **AI-powered version updates (POST-PROCESSING - runs after 10,12,13,14)**
-17. `step_11_git.sh` - **Git operations [FINAL STEP - commits all changes]**
+2. `step_0a_version_update.sh` - Semantic version updates (PRE-PROCESSING - v2.6.0)
+3. `step_0b_bootstrap_docs.sh` - Bootstrap documentation (NEW v3.1.0) ⭐ NEW
+4. `step_01_documentation.sh` - Documentation updates
+5. `step_02_consistency.sh` - Cross-reference validation
+6. `step_03_script_refs.sh` - Script reference validation
+7. `step_04_directory.sh` - Directory structure validation
+8. `step_05_test_review.sh` - Test coverage review
+9. `step_06_test_gen.sh` - Test case generation
+10. `step_07_test_exec.sh` - Test execution
+11. `step_08_dependencies.sh` - Dependency validation
+12. `step_09_code_quality.sh` - Code quality checks
+13. `step_10_context.sh` - Context analysis
+14. `step_12_markdown_lint.sh` - Markdown linting
+15. `step_13_prompt_engineer.sh` - Prompt engineering (ai_workflow only)
+16. `step_14_ux_analysis.sh` - UX/UI analysis (v2.4.0)
+17. `step_15_version_update.sh` - **AI-powered version updates (POST-PROCESSING - runs after 10,12,13,14)**
+18. `step_11_git.sh` - **Git operations [FINAL STEP - commits all changes]**
 
 ### Configuration Files (4 total in .workflow_core/config/)
 
@@ -149,7 +150,7 @@
 3. `quality_orchestrator.sh` - Quality checks coordination
 4. `finalization_orchestrator.sh` - Finalization phase coordination
 
-## AI Personas (14 total)
+## AI Personas (15 total) ⭐ NEW
 
 1. **documentation_specialist** - Documentation updates (context-aware)
 2. **consistency_analyst** - Cross-reference checks
@@ -164,15 +165,16 @@
 11. **script_validator** - Shell script validation
 12. **directory_validator** - Directory validation
 13. **test_execution_analyst** - Test execution analysis
-14. **ux_designer** - UX/UI analysis (NEW v2.4.0)
+14. **ux_designer** - UX/UI analysis (v2.4.0)
+15. **technical_writer** - Bootstrap documentation from scratch (NEW v3.1.0) ⭐ NEW
 
 ### AI Persona Architecture
 
 The AI Workflow uses a **flexible persona system** with dynamic prompt construction:
 
 **System Design**:
-- **9 Base Prompt Templates** in `.workflow_core/config/ai_helpers.yaml`
-  - doc_analysis_prompt, consistency_prompt, test_strategy_prompt, quality_prompt, issue_extraction_prompt, markdown_lint_prompt, language_specific_documentation, language_specific_quality, language_specific_testing
+- **10 Base Prompt Templates** in `.workflow_core/config/ai_helpers.yaml` ⭐ NEW
+  - doc_analysis_prompt, consistency_prompt, test_strategy_prompt, quality_prompt, issue_extraction_prompt, markdown_lint_prompt, technical_writer_prompt (NEW v3.1.0), language_specific_documentation, language_specific_quality, language_specific_testing
 
 - **4 Specialized Persona Types** in `.workflow_core/config/ai_prompts_project_kinds.yaml`
   - documentation_specialist (adapts per project kind)

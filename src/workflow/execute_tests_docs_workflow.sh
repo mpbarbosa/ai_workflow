@@ -15,6 +15,7 @@ set -euo pipefail
 # AI personas using the modern 'copilot -p' command.
 #
 # Enhanced Steps with AI Personas:
+#   Step 0b: Bootstrap Documentation (Technical Writer) ⭐ NEW v3.1.0
 #   Step 1:  Documentation Updates (Technical Documentation Specialist)
 #   Step 2:  Consistency Analysis (Documentation Specialist + Information Architect)
 #   Step 3:  Script Reference Validation (DevOps Documentation Expert)
@@ -120,7 +121,7 @@ set -euo pipefail
 # CONFIGURATION & CONSTANTS
 # ==============================================================================
 
-SCRIPT_VERSION="3.0.0"  # Step 0a: Semantic Version Update (Pre-Processing) - Auto-updates versions before docs analysis
+SCRIPT_VERSION="3.1.0"  # Step 0b: Bootstrap Documentation - Generates comprehensive docs from scratch
 SCRIPT_NAME="Tests & Documentation Workflow Automation"
 WORKFLOW_HOME="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
 PROJECT_ROOT="$(pwd)"  # Default: current directory; can be overridden with --target option
@@ -1230,8 +1231,8 @@ validate_dependencies() {
 # ------------------------------------------------------------------------------
 validate_and_parse_steps() {
     if [[ "$EXECUTE_STEPS" == "all" ]]; then
-        SELECTED_STEPS=(0 1 2 3 4 5 6 7 8 9 10 11 12 13)
-        print_info "Step selection: All steps (0-13)"
+        SELECTED_STEPS=(0 0a 0b 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15)
+        print_info "Step selection: All steps (0, 0a, 0b, 1-15)"
         return 0
     fi
     
@@ -1240,8 +1241,9 @@ validate_and_parse_steps() {
     
     # Validate each step number
     for step in "${SELECTED_STEPS[@]}"; do
-        if ! [[ "$step" =~ ^[0-9]+$ ]] || [[ $step -lt 0 ]] || [[ $step -gt 13 ]]; then
-            print_error "Invalid step number: $step (valid range: 0-13)"
+        # Allow alphanumeric steps like 0a, 0b
+        if ! [[ "$step" =~ ^[0-9]+[a-z]?$ ]]; then
+            print_error "Invalid step number: $step (valid: 0-15 or 0a, 0b)"
             exit 1
         fi
     done
@@ -1286,6 +1288,18 @@ execute_step() {
         0)
             step_name="Pre-Analysis"
             if step0_analyze_changes; then
+                update_workflow_status "$step_num" "✅"
+                log_step_complete "$step_num" "$step_name" "SUCCESS"
+                return 0
+            else
+                update_workflow_status "$step_num" "❌"
+                log_step_complete "$step_num" "$step_name" "FAILED"
+                return 1
+            fi
+            ;;
+        0b)
+            step_name="Bootstrap Documentation"
+            if step0b_bootstrap_documentation; then
                 update_workflow_status "$step_num" "✅"
                 log_step_complete "$step_num" "$step_name" "SUCCESS"
                 return 0
@@ -1579,6 +1593,25 @@ execute_full_workflow() {
         fi
     elif [[ $resume_from -gt 0 ]]; then
         print_info "Skipping Step 0a (resuming from checkpoint)"
+        ((skipped_steps++)) || true
+    fi
+    
+    # Execute Step 0b (Bootstrap Documentation) - runs after 0a, before 1
+    # NEW in v3.1.0: Generate comprehensive documentation from scratch
+    if [[ -z "$failed_step" && $resume_from -le 0 ]] && should_execute_step 0; then
+        log_step_start "0b" "Bootstrap Documentation"
+        if step0b_bootstrap_documentation; then
+            update_workflow_status "0b" "✅"
+            log_step_complete "0b" "Bootstrap Documentation" "SUCCESS"
+            ((executed_steps++)) || true
+            save_checkpoint "0b"
+        else
+            failed_step="Step 0b"
+            update_workflow_status "0b" "❌"
+            log_step_complete "0b" "Bootstrap Documentation" "FAILED"
+        fi
+    elif [[ $resume_from -gt 0 ]]; then
+        print_info "Skipping Step 0b (resuming from checkpoint)"
         ((skipped_steps++)) || true
     fi
     
@@ -2177,6 +2210,7 @@ DESCRIPTION:
 
 WORKFLOW STEPS:
     Step 0:  Pre-Analysis - Analyzing Recent Changes
+    Step 0b: Bootstrap Documentation (NEW v3.1.0)
     Step 1:  Update Related Documentation
     Step 2:  Check Documentation Consistency
     Step 3:  Validate Script References
@@ -2555,8 +2589,10 @@ main() {
         export ML_RECOMMENDATIONS
         
         # Apply parallelization recommendation
+        # NOTE: Only applies if user hasn't explicitly disabled parallel execution with --no-parallel
+        # We check if PARALLEL_EXECUTION was explicitly set by the user via command-line
         local ml_parallel=$(echo "$ML_RECOMMENDATIONS" | jq -r '.parallelization.recommend_parallel // false')
-        if [[ "$ml_parallel" == "true" ]] && [[ "${PARALLEL_EXECUTION}" == "false" ]]; then
+        if [[ "$ml_parallel" == "true" ]] && [[ "${PARALLEL_EXECUTION}" == "false" ]] && [[ "${USER_DISABLED_PARALLEL:-false}" != "true" ]]; then
             print_info "ML recommendation: Enabling parallel execution"
             PARALLEL_EXECUTION=true
             export PARALLEL_EXECUTION

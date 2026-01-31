@@ -71,6 +71,13 @@ Dry run mode enabled. No actual git operations performed.
     # PHASE 1: Automated git analysis (use cached git state)
     print_info "Phase 1: Analyzing git repository state..."
     
+    # Refresh git cache to get current state (fixes stale cache issue)
+    if command -v refresh_git_cache &>/dev/null; then
+        refresh_git_cache
+    else
+        print_warning "refresh_git_cache not available - using potentially stale cache"
+    fi
+    
     # Check 1: Repository state (from cache)
     print_info "Checking repository state..."
     local current_branch=$(get_git_current_branch)

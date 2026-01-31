@@ -225,66 +225,111 @@ execute_docs_only_fast_track() {
         save_checkpoint 0 "success"
     fi
     
-    print_success "Step 0 complete - launching parallel documentation track"
+    print_success "Step 0 complete - launching documentation track"
     
-    # PARALLEL GROUP: Steps 1, 2, 12 (Documentation, Consistency, Markdown)
-    if should_execute_step 1; then
-        (
-            if step1_update_documentation > "${parallel_dir}/step1.log" 2>&1; then
-                echo "SUCCESS" > "${parallel_dir}/step1.status"
-                exit 0
-            else
-                echo "FAILED" > "${parallel_dir}/step1.status"
-                exit 1
-            fi
-        ) &
-        step_pids[1]=$!
-        print_info "→ Step 1: Documentation (PID: ${step_pids[1]})"
-    fi
+    # Count steps that will run
+    local parallel_count=0
+    should_execute_step 1 && ((parallel_count++)) || true
+    should_execute_step 2 && ((parallel_count++)) || true
+    should_execute_step 12 && ((parallel_count++)) || true
     
-    if should_execute_step 2; then
-        (
-            if step2_check_consistency > "${parallel_dir}/step2.log" 2>&1; then
-                echo "SUCCESS" > "${parallel_dir}/step2.status"
-                exit 0
-            else
-                echo "FAILED" > "${parallel_dir}/step2.status"
-                exit 1
-            fi
-        ) &
-        step_pids[2]=$!
-        print_info "→ Step 2: Consistency (PID: ${step_pids[2]})"
-    fi
-    
-    if should_execute_step 12; then
-        (
-            if step12_markdown_lint > "${parallel_dir}/step12.log" 2>&1; then
-                echo "SUCCESS" > "${parallel_dir}/step12.status"
-                exit 0
-            else
-                echo "FAILED" > "${parallel_dir}/step12.status"
-                exit 1
-            fi
-        ) &
-        step_pids[12]=$!
-        print_info "→ Step 12: Markdown Linting (PID: ${step_pids[12]})"
-    fi
-    
-    # Wait for parallel steps
-    print_info "Waiting for parallel documentation steps..."
     local all_success=true
     
-    for step_num in 1 2 12; do
-        if [[ -n "${step_pids[$step_num]:-}" ]]; then
-            if wait ${step_pids[$step_num]}; then
-                print_success "✓ Step $step_num complete"
-                save_checkpoint "$step_num" "success"
+    # Run in parallel only if 2+ steps AND parallel execution is enabled
+    # Respect user's --no-parallel flag (PARALLEL_EXECUTION variable)
+    if [[ $parallel_count -gt 1 ]] && [[ "${PARALLEL_EXECUTION:-true}" == "true" ]]; then
+        # PARALLEL MODE: Steps 1, 2, 12
+        print_info "Running $parallel_count documentation steps in parallel..."
+        
+        if should_execute_step 1; then
+            (
+                if step1_update_documentation > "${parallel_dir}/step1.log" 2>&1; then
+                    echo "SUCCESS" > "${parallel_dir}/step1.status"
+                    exit 0
+                else
+                    echo "FAILED" > "${parallel_dir}/step1.status"
+                    exit 1
+                fi
+            ) &
+            step_pids[1]=$!
+            print_info "→ Step 1: Documentation (PID: ${step_pids[1]})"
+        fi
+        
+        if should_execute_step 2; then
+            (
+                if step2_check_consistency > "${parallel_dir}/step2.log" 2>&1; then
+                    echo "SUCCESS" > "${parallel_dir}/step2.status"
+                    exit 0
+                else
+                    echo "FAILED" > "${parallel_dir}/step2.status"
+                    exit 1
+                fi
+            ) &
+            step_pids[2]=$!
+            print_info "→ Step 2: Consistency (PID: ${step_pids[2]})"
+        fi
+        
+        if should_execute_step 12; then
+            (
+                if step12_markdown_lint > "${parallel_dir}/step12.log" 2>&1; then
+                    echo "SUCCESS" > "${parallel_dir}/step12.status"
+                    exit 0
+                else
+                    echo "FAILED" > "${parallel_dir}/step12.status"
+                    exit 1
+                fi
+            ) &
+            step_pids[12]=$!
+            print_info "→ Step 12: Markdown Linting (PID: ${step_pids[12]})"
+        fi
+        
+        # Wait for parallel steps
+        for step_num in 1 2 12; do
+            if [[ -n "${step_pids[$step_num]:-}" ]]; then
+                if wait ${step_pids[$step_num]}; then
+                    print_success "✓ Step $step_num complete"
+                    save_checkpoint "$step_num" "success"
+                else
+                    print_error "✗ Step $step_num failed"
+                    all_success=false
+                fi
+            fi
+        done
+    else
+        # SEQUENTIAL MODE: Run single step directly
+        if should_execute_step 1; then
+            print_info "→ Step 1: Documentation"
+            if step1_update_documentation > "${parallel_dir}/step1.log" 2>&1; then
+                print_success "✓ Step 1 complete"
+                save_checkpoint 1 "success"
             else
-                print_error "✗ Step $step_num failed"
+                print_error "✗ Step 1 failed"
                 all_success=false
             fi
         fi
-    done
+        
+        if should_execute_step 2; then
+            print_info "→ Step 2: Consistency"
+            if step2_check_consistency > "${parallel_dir}/step2.log" 2>&1; then
+                print_success "✓ Step 2 complete"
+                save_checkpoint 2 "success"
+            else
+                print_error "✗ Step 2 failed"
+                all_success=false
+            fi
+        fi
+        
+        if should_execute_step 12; then
+            print_info "→ Step 12: Markdown Linting"
+            if step12_markdown_lint > "${parallel_dir}/step12.log" 2>&1; then
+                print_success "✓ Step 12 complete"
+                save_checkpoint 12 "success"
+            else
+                print_error "✗ Step 12 failed"
+                all_success=false
+            fi
+        fi
+    fi
     
     if [[ "$all_success" != "true" ]]; then
         print_error "Documentation track failed - aborting"

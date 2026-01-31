@@ -22,6 +22,10 @@ set -euo pipefail
 #   test_cmd=$(get_test_command)
 #   execute_language_command "$test_cmd"
 
+# Prevent multiple sourcing
+[[ -n "${_TECH_STACK_SH_LOADED:-}" ]] && return 0
+readonly _TECH_STACK_SH_LOADED=1
+
 set -euo pipefail
 
 # Global configuration cache

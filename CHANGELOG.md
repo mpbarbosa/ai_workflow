@@ -7,6 +7,44 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [3.1.0] - 2026-01-30
+
+### Added
+- **Step 0b: Bootstrap Documentation** - New workflow step using technical_writer AI persona
+  - Generates comprehensive documentation from scratch for undocumented/minimally documented projects
+  - Uses technical_writer_prompt template from ai_workflow_core submodule (v4.1.0)
+  - Covers API docs, architecture, user guides, developer guides, and code documentation
+  - Positioned after Step 0a (Version Update) and before Step 1 (Documentation Updates)
+  - Complements existing documentation personas:
+    - Step 0b (technical_writer): Comprehensive from-scratch documentation
+    - Step 1 (doc_analysis): Incremental change-driven updates
+    - Step 2 (consistency): Documentation quality assurance
+- **15th AI Persona**: technical_writer for bootstrap documentation generation
+- **Module Count**: Increased to 88 total modules (62 libraries + 18 steps + 4 orchestrators + 4 configs)
+
+### Changed
+- Updated dependency graph with Step 0b execution flow (0 → 0a → 0b → 1)
+- Modified 3-track parallel execution structure to include Step 0b in documentation track
+- Updated all documentation to reflect 18-step workflow (was 17 steps)
+- Updated step time estimates (Step 0b: 120 seconds with AI)
+
+### Documentation
+- Updated `src/workflow/README.md` with Step 0b information
+- Updated `docs/PROJECT_REFERENCE.md` with new module counts and AI persona list
+- Updated workflow orchestrator header with Step 0b in AI personas list
+- Updated usage documentation with Step 0b in workflow steps list
+
+### Technical Details
+- File: `src/workflow/steps/step_0b_bootstrap_docs.sh` (430 lines)
+- AI Persona: technical_writer (from .workflow_core/config/ai_helpers.yaml)
+- Dependencies: Step 0a (Version Update)
+- Dependents: Step 1 (Documentation Updates)
+- Execution Time: ~120 seconds (with AI)
+- Auto-sourced via STEPS_DIR pattern
+- No breaking changes - 100% backward compatible
+
+## [3.0.0] - 2026-01-28 (Previously Unreleased)
+
 ### Fixed
 - **Step 0 Project Kind Detection**: Config file now takes priority over auto-detection (#critical-bugfix)
   - Previously: Auto-detection always ran and could override config file settings

@@ -70,6 +70,12 @@ parse_workflow_log() {
         fi
     done < "$log_file"
     
+    # Validate steps_json is valid JSON
+    if ! echo "$steps_json" | jq -e . >/dev/null 2>&1; then
+        print_error "Failed to build valid steps JSON"
+        steps_json="[]"
+    fi
+    
     # Build complete JSON
     output=$(jq -n \
         --arg id "$workflow_id" \

@@ -17,7 +17,8 @@ declare -A STEP_DEPENDENCIES
 STEP_DEPENDENCIES=(
     [0]=""                # Pre-Analysis has no dependencies
     [0a]="0"              # Version Update depends on Pre-Analysis (runs before docs)
-    [1]="0a"              # Documentation depends on Version Update
+    [0b]="0a"             # Bootstrap Documentation depends on Version Update (NEW v3.1.0)
+    [1]="0b"              # Documentation depends on Bootstrap Documentation
     [2]="1"               # Consistency depends on Documentation
     [3]="0"               # Script Refs depends on Pre-Analysis
     [4]="0"               # Directory Structure depends on Pre-Analysis
@@ -35,23 +36,24 @@ STEP_DEPENDENCIES=(
 )
 
 # Define parallelizable step groups (steps that can run simultaneously)
-# Updated v2.13.0: Step 15 (AI Version Update) runs after all analysis, before Step 11
+# Updated v3.1.0: Step 0b (Bootstrap Documentation) runs after Step 0a, before Step 1
 declare -a PARALLEL_GROUPS
 PARALLEL_GROUPS=(
     "0a"                  # Group 1: Version Update (runs after Step 0)
-    "3,4,5,8,13,14"       # Group 2: Can run after Version Update (parallel with Step 1)
-    "2,12"                # Group 3: Consistency checks
-    "6"                   # Group 4: Test Generation
-    "7,9"                 # Group 5: Test Execution and Code Quality
-    "10"                  # Group 6: Context Analysis
-    "15"                  # Group 7: AI-Powered Version Update (after all analysis)
-    "11"                  # Group 8: Git Finalization (MUST BE LAST)
+    "0b"                  # Group 2: Bootstrap Documentation (runs after 0a)
+    "3,4,5,8,13,14"       # Group 3: Can run in parallel with Step 1
+    "2,12"                # Group 4: Consistency checks
+    "6"                   # Group 5: Test Generation
+    "7,9"                 # Group 6: Test Execution and Code Quality
+    "10"                  # Group 7: Context Analysis
+    "15"                  # Group 8: AI-Powered Version Update (after all analysis)
+    "11"                  # Group 9: Git Finalization (MUST BE LAST)
 )
 
-# 3-Track Parallel Execution Structure (v2.13.0)
+# 3-Track Parallel Execution Structure (v3.1.0)
 # Track 1 (Analysis):       0 → (3,4,13 parallel) → 10 ┐
 # Track 2 (Validation):     5 → 6 → 7 → 9 (+ 8 parallel) ├─→ 15 → 11 (FINAL)
-# Track 3 (Documentation):  1 → 2 → 12 → 14 ────────────┘
+# Track 3 (Documentation):  0a → 0b → 1 → 2 → 12 → 14 ──┘
 #
 # Synchronization Points:
 # - All tracks wait for Step 0 completion
@@ -64,6 +66,8 @@ PARALLEL_GROUPS=(
 declare -A STEP_TIME_ESTIMATES
 STEP_TIME_ESTIMATES=(
     [0]=30    # Pre-Analysis
+    [0a]=45   # Version Update (automated, pre-processing)
+    [0b]=120  # Bootstrap Documentation (with AI) - NEW v3.1.0
     [1]=120   # Documentation (with AI)
     [2]=90    # Consistency
     [3]=60    # Script Refs
@@ -78,7 +82,6 @@ STEP_TIME_ESTIMATES=(
     [12]=45   # Markdown Linting
     [13]=150  # Prompt Engineer Analysis (with AI)
     [14]=180  # UX Analysis (with AI)
-    [0a]=45   # Version Update (automated, pre-processing)
     [15]=60   # AI-Powered Version Update (with AI, final validation)
 )
 

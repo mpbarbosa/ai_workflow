@@ -327,6 +327,9 @@ update_current_run_step() {
 finalize_metrics() {
     local final_status="${1:-failed}"
     
+    # Ensure start epoch is valid before doing arithmetic
+    [[ -z "$WORKFLOW_START_EPOCH" || ! "$WORKFLOW_START_EPOCH" =~ ^[0-9]+$ ]] && WORKFLOW_START_EPOCH=0
+    
     WORKFLOW_END_EPOCH=$(date +%s)
     WORKFLOW_DURATION=$((WORKFLOW_END_EPOCH - WORKFLOW_START_EPOCH))
     WORKFLOW_SUCCESS=$([[ "${final_status}" == "success" ]] && echo "true" || echo "false")

@@ -177,9 +177,15 @@ predict_step_duration() {
     [[ "${ML_ENABLED:-false}" != "true" ]] && echo "0" && return 1
     
     # Extract relevant features
-    local change_type=$(echo "$features" | jq -r '.change_type')
-    local total_files=$(echo "$features" | jq -r '.total_files')
-    local lines_changed=$(echo "$features" | jq -r '.lines_changed')
+    local change_type=$(echo "$features" | jq -r '.change_type // "mixed"')
+    local total_files=$(echo "$features" | jq -r '.total_files // 0')
+    local lines_changed=$(echo "$features" | jq -r '.lines_changed // 0')
+    
+    # Ensure numeric values are valid
+    total_files=${total_files//[^0-9]/}
+    total_files=${total_files:-0}
+    lines_changed=${lines_changed//[^0-9]/}
+    lines_changed=${lines_changed:-0}
     
     # Check if training data exists
     if [[ ! -f "$ML_TRAINING_DATA" ]]; then
@@ -641,6 +647,13 @@ apply_ml_optimization() {
     
     # Extract features from current changes
     local features=$(extract_change_features)
+    
+    # Validate features is valid JSON
+    if ! echo "$features" | jq -e . >/dev/null 2>&1; then
+        print_error "Failed to extract valid features JSON"
+        echo '{"ml_enabled": false, "error": "invalid_features"}'
+        return 1
+    fi
     
     echo "Features detected:" >&2
     echo "$features" | jq . >&2

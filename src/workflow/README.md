@@ -1,9 +1,9 @@
 # Workflow Automation Module Documentation
 
-**Version:** 3.0.0 (Submodule Architecture & Pre-Commit Hooks) ✅
+**Version:** 3.1.0 (Bootstrap Documentation Step) ✅
 **Status:** Smart Execution, Parallel Processing, AI Caching, Checkpoint Resume ✅
-**Last Updated:** 2026-01-29
-**Modules:** 87 total (62 libraries + 17 steps + 4 orchestrators + 4 configs)
+**Last Updated:** 2026-01-30
+**Modules:** 88 total (62 libraries + 18 steps + 4 orchestrators + 4 configs) ⭐ NEW
 **Documentation:** 100% coverage (all modules documented) ✅
 **Tests:** 50 total tests (37 unit + 13 integration), 100% pass rate ✅
 **Performance:** Up to 93% faster with ML + multi-stage optimization
@@ -49,9 +49,10 @@ src/workflow/
 │   ├── project_kind_detection.sh     # Project kind detection
 │   ├── tech_stack.sh                 # Tech stack detection
 │   └── (38 additional modules...)    # See lib/ directory for complete list
-└── steps/                            # Step modules ✅ (17 modules)
+└── steps/                            # Step modules ✅ (18 modules) ⭐ NEW v3.1.0
     ├── step_00_analyze.sh            # Pre-workflow change analysis
     ├── step_0a_version_update.sh     # Semantic version pre-processing (v2.6.0)
+    ├── step_0b_bootstrap_docs.sh     # Bootstrap documentation (v3.1.0) ⭐ NEW
     ├── step_01_documentation.sh      # Documentation updates
     ├── step_02_consistency.sh        # Consistency analysis
     ├── step_03_script_refs.sh        # Script reference validation

@@ -117,7 +117,8 @@ parse_workflow_arguments() {
                 ;;
             --no-parallel)
                 PARALLEL_EXECUTION=false
-                export PARALLEL_EXECUTION
+                USER_DISABLED_PARALLEL=true  # Track that user explicitly disabled parallel
+                export PARALLEL_EXECUTION USER_DISABLED_PARALLEL
                 print_info "Parallel execution disabled - sequential execution"
                 shift
                 ;;

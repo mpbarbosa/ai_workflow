@@ -1,26 +1,32 @@
 {
   "ml_enabled": true,
   "features": {
-    "change_type": "config_change",
-    "total_files": 54,
-    "doc_files": 40,
-    "code_files": 7,
-    "test_files": 3,
+    "change_type": "docs_only",
+    "total_files": 11,
+    "doc_files": 7,
+    "code_files": 0,
+    "test_files": 0,
     "config_files": 4,
-    "lines_added": 2170,
-    "lines_deleted": 2955,
-    "lines_changed": 5125,
-    "max_depth": 4,
-    "hour_of_day": 1,
-    "day_of_week": 4
+    "lines_added": 831,
+    "lines_deleted": 419,
+    "lines_changed": 1250,
+    "max_depth": 3,
+    "hour_of_day": 21,
+    "day_of_week": 5
   },
   "parallelization": {
-    "recommend_parallel": false,
-    "strategy": "sequential",
-    "confidence": "low",
+    "recommend_parallel": true,
+    "strategy": "3-way-parallel",
+    "confidence": "high",
     "expected_benefit_pct": "0"
   },
-  "skip_steps": [],
+  "skip_steps": [
+    5,
+    6,
+    7,
+    8,
+    9
+  ],
   "predicted_duration": 7168816222,
   "confidence": "high"
 }

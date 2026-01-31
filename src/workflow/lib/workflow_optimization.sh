@@ -569,105 +569,180 @@ EOF
 # NOTE: This is the legacy function, prefer execute_parallel_tracks() for full workflow
 # Returns: 0 if all succeed, 1 if any fail
 execute_parallel_validation() {
-    print_header "Parallel Validation Execution"
-    log_to_workflow "INFO" "Starting parallel execution of validation steps (1-4)"
+    print_header "Validation Execution"
+    log_to_workflow "INFO" "Starting validation steps (1-4)"
     
-    # Create temporary directory for parallel execution
+    # Create temporary directory for execution
     local parallel_dir="${BACKLOG_RUN_DIR}/parallel_validation"
     mkdir -p "$parallel_dir"
+    
+    # Count steps that will run
+    local step_count=0
+    should_execute_step 1 && ((step_count++)) || true
+    should_execute_step 2 && ((step_count++)) || true
+    should_execute_step 3 && ((step_count++)) || true
+    should_execute_step 4 && ((step_count++)) || true
     
     # Track PIDs and status
     local pids=()
     local step_names=("" "Update_Documentation" "Consistency_Analysis" "Script_Reference_Validation" "Directory_Structure_Validation")
+    local all_success=true
     
-    print_info "Launching validation steps in parallel..."
-    
-    # Launch Step 1 in background
-    if should_execute_step 1; then
-        (
+    # Run in parallel only if 2+ steps, otherwise sequential
+    if [[ $step_count -gt 1 ]]; then
+        print_info "Running $step_count validation steps in parallel..."
+        
+        # Launch Step 1 in background
+        if should_execute_step 1; then
+            (
+                log_step_start 1 "Documentation Updates"
+                if step1_update_documentation > "${parallel_dir}/step1.log" 2>&1; then
+                    echo "SUCCESS" > "${parallel_dir}/step1.status"
+                    exit 0
+                else
+                    echo "FAILED" > "${parallel_dir}/step1.status"
+                    exit 1
+                fi
+            ) &
+            pids[1]=$!
+            print_info "Step 1 launched (PID: ${pids[1]})"
+        fi
+        
+        # Launch Step 2 in background
+        if should_execute_step 2; then
+            (
+                log_step_start 2 "Consistency Analysis"
+                if step2_check_consistency > "${parallel_dir}/step2.log" 2>&1; then
+                    echo "SUCCESS" > "${parallel_dir}/step2.status"
+                    exit 0
+                else
+                    echo "FAILED" > "${parallel_dir}/step2.status"
+                    exit 1
+                fi
+            ) &
+            pids[2]=$!
+            print_info "Step 2 launched (PID: ${pids[2]})"
+        fi
+        
+        # Launch Step 3 in background
+        if should_execute_step 3; then
+            (
+                log_step_start 3 "Script Reference Validation"
+                if step3_validate_script_references > "${parallel_dir}/step3.log" 2>&1; then
+                    echo "SUCCESS" > "${parallel_dir}/step3.status"
+                    exit 0
+                else
+                    echo "FAILED" > "${parallel_dir}/step3.status"
+                    exit 1
+                fi
+            ) &
+            pids[3]=$!
+            print_info "Step 3 launched (PID: ${pids[3]})"
+        fi
+        
+        # Launch Step 4 in background
+        if should_execute_step 4; then
+            (
+                log_step_start 4 "Directory Structure Validation"
+                if step4_validate_directory_structure > "${parallel_dir}/step4.log" 2>&1; then
+                    echo "SUCCESS" > "${parallel_dir}/step4.status"
+                    exit 0
+                else
+                    echo "FAILED" > "${parallel_dir}/step4.status"
+                    exit 1
+                fi
+            ) &
+            pids[4]=$!
+            print_info "Step 4 launched (PID: ${pids[4]})"
+        fi
+        
+        # Wait for parallel steps
+        echo ""
+        for step_num in 1 2 3 4; do
+            if [[ -n "${pids[$step_num]:-}" ]]; then
+                if wait ${pids[$step_num]}; then
+                    log_step_complete $step_num "${step_names[$step_num]}"
+                    print_success "Step $step_num completed successfully"
+                else
+                    print_error "Step $step_num failed"
+                    all_success=false
+                fi
+                
+                # Show log if exists
+                if [[ -f "${parallel_dir}/step${step_num}.log" ]]; then
+                    local log_lines=$(wc -l < "${parallel_dir}/step${step_num}.log")
+                    print_info "Step $step_num log: $log_lines lines (see ${parallel_dir}/step${step_num}.log)"
+                fi
+            fi
+        done
+    else
+        # SEQUENTIAL MODE: Run single step directly
+        print_info "Running validation step sequentially..."
+        
+        if should_execute_step 1; then
             log_step_start 1 "Documentation Updates"
             if step1_update_documentation > "${parallel_dir}/step1.log" 2>&1; then
-                echo "SUCCESS" > "${parallel_dir}/step1.status"
-                exit 0
+                log_step_complete 1 "${step_names[1]}"
+                print_success "Step 1 completed successfully"
             else
-                echo "FAILED" > "${parallel_dir}/step1.status"
-                exit 1
-            fi
-        ) &
-        pids[1]=$!
-        print_info "Step 1 launched (PID: ${pids[1]})"
-    fi
-    
-    # Launch Step 2 in background
-    if should_execute_step 2; then
-        (
-            log_step_start 2 "Consistency Analysis"
-            if step2_check_consistency > "${parallel_dir}/step2.log" 2>&1; then
-                echo "SUCCESS" > "${parallel_dir}/step2.status"
-                exit 0
-            else
-                echo "FAILED" > "${parallel_dir}/step2.status"
-                exit 1
-            fi
-        ) &
-        pids[2]=$!
-        print_info "Step 2 launched (PID: ${pids[2]})"
-    fi
-    
-    # Launch Step 3 in background
-    if should_execute_step 3; then
-        (
-            log_step_start 3 "Script Reference Validation"
-            if step3_validate_script_references > "${parallel_dir}/step3.log" 2>&1; then
-                echo "SUCCESS" > "${parallel_dir}/step3.status"
-                exit 0
-            else
-                echo "FAILED" > "${parallel_dir}/step3.status"
-                exit 1
-            fi
-        ) &
-        pids[3]=$!
-        print_info "Step 3 launched (PID: ${pids[3]})"
-    fi
-    
-    # Launch Step 4 in background
-    if should_execute_step 4; then
-        (
-            log_step_start 4 "Directory Structure Validation"
-            if step4_validate_directory_structure > "${parallel_dir}/step4.log" 2>&1; then
-                echo "SUCCESS" > "${parallel_dir}/step4.status"
-                exit 0
-            else
-                echo "FAILED" > "${parallel_dir}/step4.status"
-                exit 1
-            fi
-        ) &
-        pids[4]=$!
-        print_info "Step 4 launched (PID: ${pids[4]})"
-    fi
-    
-    # Wait for all background processes with progress indicator
-    echo ""
-    print_info "Waiting for parallel validation steps to complete..."
-    
-    local all_success=true
-    for step_num in 1 2 3 4; do
-        if [[ -n "${pids[$step_num]}" ]]; then
-            if wait ${pids[$step_num]}; then
-                log_step_complete $step_num "${step_names[$step_num]}"
-                print_success "Step $step_num completed successfully"
-            else
-                print_error "Step $step_num failed"
+                print_error "Step 1 failed"
                 all_success=false
             fi
             
-            # Show log if exists
-            if [[ -f "${parallel_dir}/step${step_num}.log" ]]; then
-                local log_lines=$(wc -l < "${parallel_dir}/step${step_num}.log")
-                print_info "Step $step_num log: $log_lines lines (see ${parallel_dir}/step${step_num}.log)"
+            if [[ -f "${parallel_dir}/step1.log" ]]; then
+                local log_lines=$(wc -l < "${parallel_dir}/step1.log")
+                print_info "Step 1 log: $log_lines lines (see ${parallel_dir}/step1.log)"
             fi
         fi
-    done
+        
+        if should_execute_step 2; then
+            log_step_start 2 "Consistency Analysis"
+            if step2_check_consistency > "${parallel_dir}/step2.log" 2>&1; then
+                log_step_complete 2 "${step_names[2]}"
+                print_success "Step 2 completed successfully"
+            else
+                print_error "Step 2 failed"
+                all_success=false
+            fi
+            
+            if [[ -f "${parallel_dir}/step2.log" ]]; then
+                local log_lines=$(wc -l < "${parallel_dir}/step2.log")
+                print_info "Step 2 log: $log_lines lines (see ${parallel_dir}/step2.log)"
+            fi
+        fi
+        
+        if should_execute_step 3; then
+            log_step_start 3 "Script Reference Validation"
+            if step3_validate_script_references > "${parallel_dir}/step3.log" 2>&1; then
+                log_step_complete 3 "${step_names[3]}"
+                print_success "Step 3 completed successfully"
+            else
+                print_error "Step 3 failed"
+                all_success=false
+            fi
+            
+            if [[ -f "${parallel_dir}/step3.log" ]]; then
+                local log_lines=$(wc -l < "${parallel_dir}/step3.log")
+                print_info "Step 3 log: $log_lines lines (see ${parallel_dir}/step3.log)"
+            fi
+        fi
+        
+        if should_execute_step 4; then
+            log_step_start 4 "Directory Structure Validation"
+            if step4_validate_directory_structure > "${parallel_dir}/step4.log" 2>&1; then
+                log_step_complete 4 "${step_names[4]}"
+                print_success "Step 4 completed successfully"
+            else
+                print_error "Step 4 failed"
+                all_success=false
+            fi
+            
+            if [[ -f "${parallel_dir}/step4.log" ]]; then
+                local log_lines=$(wc -l < "${parallel_dir}/step4.log")
+                print_info "Step 4 log: $log_lines lines (see ${parallel_dir}/step4.log)"
+            fi
+        fi
+    fi
     
     # Generate parallel execution report
     local parallel_report="${BACKLOG_RUN_DIR}/PARALLEL_VALIDATION_REPORT.md"

@@ -21,6 +21,11 @@ step10_context_analysis() {
     
     cd "$PROJECT_ROOT" || return 1
     
+    # Refresh git cache to get current state before analysis
+    if command -v refresh_git_cache &>/dev/null; then
+        refresh_git_cache
+    fi
+    
     local context_report
     context_report=$(mktemp)
     TEMP_FILES+=("$context_report")
