@@ -5,11 +5,28 @@ set -euo pipefail
 # Step 1 AI Integration Module
 # Purpose: AI prompt building, Copilot CLI interaction, response processing
 # Part of: Step 1 Refactoring Phase 4 - High Cohesion, Low Coupling
-# Version: 3.0.0 - Migrated to centralized ai_helpers.yaml templates
+# Version: 3.1.0 - Added parallel documentation analysis (Phase 2 optimization)
 ################################################################################
 
 # Get script directory for sourcing dependencies
 STEP1_AI_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
+# ==============================================================================
+# CONFIGURATION - Parallel Processing
+# ==============================================================================
+
+# Parallel execution configuration
+DOC_PARALLEL_THRESHOLD=${DOC_PARALLEL_THRESHOLD:-4}  # Min files to enable parallelization
+DOC_MAX_PARALLEL_JOBS=${DOC_MAX_PARALLEL_JOBS:-4}   # Max concurrent AI jobs
+
+# Documentation category patterns
+declare -A DOC_CATEGORIES=(
+    ["root"]="^README|^CHANGELOG|^CONTRIBUTING|^LICENSE|^CODE_OF_CONDUCT"
+    ["guides"]="getting-started|quickstart|guide|workflow|tutorial"
+    ["architecture"]="architecture|design|adr|technical"
+    ["reference"]="api|reference|module|function|class"
+    ["examples"]="example|sample"
+)
 
 # ==============================================================================
 # AI AVAILABILITY CHECKING
@@ -270,6 +287,224 @@ validate_ai_response_step1() {
 }
 
 # ==============================================================================
+# PARALLEL PROCESSING - Phase 2 Optimization
+# ==============================================================================
+
+# Categorize a documentation file based on path and name
+# Usage: categorize_doc_file <file_path>
+# Returns: Category name (architecture|reference|examples|guides|root|other)
+categorize_doc_file() {
+    local file="$1"
+    local basename
+    basename=$(basename "$file" .md)
+    local dirname
+    dirname=$(dirname "$file")
+    
+    # Check categories in priority order: root, guides, architecture, reference, examples
+    for category in root guides architecture reference examples; do
+        local pattern="${DOC_CATEGORIES[$category]}"
+        # Check filename or directory path against pattern
+        if [[ "$basename" =~ $pattern ]] || [[ "$dirname" =~ $pattern ]]; then
+            echo "$category"
+            return 0
+        fi
+    done
+    
+    echo "other"
+}
+
+# Split files into categories for parallel processing
+# Usage: categorize_docs <file1> [file2] [...]
+# Returns: JSON object with category->files mappings
+categorize_docs() {
+    local files=("$@")
+    
+    # Initialize category arrays
+    declare -A category_files
+    category_files["architecture"]=""
+    category_files["reference"]=""
+    category_files["examples"]=""
+    category_files["guides"]=""
+    category_files["root"]=""
+    category_files["other"]=""
+    
+    # Categorize each file
+    for file in "${files[@]}"; do
+        [[ -z "$file" ]] && continue
+        [[ ! -f "$file" ]] && continue
+        
+        local category
+        category=$(categorize_doc_file "$file")
+        
+        if [[ -n "${category_files[$category]}" ]]; then
+            category_files[$category]+=$'\n'"$file"
+        else
+            category_files[$category]="$file"
+        fi
+    done
+    
+    # Build JSON output (simple format)
+    local json_parts=()
+    for category in "${!category_files[@]}"; do
+        local files_list="${category_files[$category]}"
+        if [[ -n "$files_list" ]]; then
+            local count
+            count=$(echo "$files_list" | grep -c . || echo 0)
+            if [[ $count -gt 0 ]]; then
+                json_parts+=("\"$category\": $count")
+            fi
+        fi
+    done
+    
+    echo "{$(IFS=,; echo "${json_parts[*]}")}"
+}
+
+# Analyze documentation category in parallel
+# Usage: analyze_doc_category <category> <files_list> <output_file> <context>
+# Returns: 0 on success, writes analysis to output_file
+analyze_doc_category() {
+    local category="$1"
+    local files_list="$2"
+    local output_file="$3"
+    local context="${4:-}"
+    
+    # Build category-specific prompt
+    local file_count
+    file_count=$(echo "$files_list" | grep -c . || echo 0)
+    
+    local prompt="You are analyzing ${file_count} documentation file(s) in the '${category}' category.
+
+## Files to Analyze
+${files_list}
+
+## Context
+${context}
+
+## Task
+Analyze these ${category} documentation files for:
+1. Accuracy and completeness
+2. Consistency with code changes
+3. Clarity and organization
+4. Missing or outdated information
+
+Provide specific, actionable recommendations for improvements."
+    
+    # Execute AI analysis for this category
+    if execute_ai_documentation_analysis_step1 "$prompt" "$output_file"; then
+        return 0
+    else
+        return 1
+    fi
+}
+
+# Run parallel documentation analysis across categories
+# Usage: parallel_doc_analysis <files> <context> <output_dir>
+# Returns: 0 on success, creates per-category output files
+parallel_doc_analysis_step1() {
+    local files="$1"
+    local context="${2:-}"
+    local output_dir="${3:-.}"
+    
+    # Convert newline-separated list to array
+    local file_array=()
+    while IFS= read -r file; do
+        [[ -z "$file" ]] && continue
+        [[ ! -f "$file" ]] && continue
+        file_array+=("$file")
+    done <<< "$files"
+    
+    local total_files=${#file_array[@]}
+    
+    # Check threshold for parallelization
+    if [[ $total_files -lt $DOC_PARALLEL_THRESHOLD ]]; then
+        print_info "File count ($total_files) below parallel threshold ($DOC_PARALLEL_THRESHOLD)"
+        return 1  # Signal to use sequential processing
+    fi
+    
+    print_info "Parallel mode: Processing $total_files files across categories"
+    
+    # Categorize files
+    declare -A category_files
+    for file in "${file_array[@]}"; do
+        local category
+        category=$(categorize_doc_file "$file")
+        
+        if [[ -n "${category_files[$category]:-}" ]]; then
+            category_files[$category]+=$'\n'"$file"
+        else
+            category_files[$category]="$file"
+        fi
+    done
+    
+    # Create temp directory for job outputs
+    local temp_dir
+    temp_dir=$(mktemp -d)
+    
+    # Launch parallel jobs (one per category with files)
+    local pids=()
+    local job_count=0
+    
+    for category in "${!category_files[@]}"; do
+        local files_in_category="${category_files[$category]}"
+        [[ -z "$files_in_category" ]] && continue
+        
+        local count
+        count=$(echo "$files_in_category" | grep -c . || echo 0)
+        [[ $count -eq 0 ]] && continue
+        
+        print_info "  - $category: $count files"
+        
+        # Launch background job for this category
+        local output_file="${temp_dir}/${category}_analysis.md"
+        {
+            analyze_doc_category "$category" "$files_in_category" "$output_file" "$context"
+        } &
+        
+        pids+=($!)
+        ((job_count++))
+        
+        # Limit concurrent jobs
+        if [[ $job_count -ge $DOC_MAX_PARALLEL_JOBS ]]; then
+            wait -n  # Wait for any job to complete
+            ((job_count--))
+        fi
+    done
+    
+    # Wait for all remaining jobs
+    print_info "Waiting for $job_count parallel analysis jobs to complete..."
+    for pid in "${pids[@]}"; do
+        wait "$pid" 2>/dev/null || true
+    done
+    
+    # Aggregate results
+    local aggregated_output="${output_dir}/documentation_analysis_parallel.md"
+    {
+        echo "# Documentation Analysis Results (Parallel Processing)"
+        echo ""
+        echo "**Categories Analyzed**: ${#category_files[@]}"
+        echo "**Total Files**: $total_files"
+        echo "**Processing Mode**: Parallel ($DOC_MAX_PARALLEL_JOBS max jobs)"
+        echo ""
+        
+        for category in architecture reference examples guides root other; do
+            local category_file="${temp_dir}/${category}_analysis.md"
+            if [[ -f "$category_file" ]]; then
+                echo "## ${category^} Documentation"
+                echo ""
+                cat "$category_file"
+                echo ""
+            fi
+        done
+    } > "$aggregated_output"
+    
+    # Cleanup temp files
+    rm -rf "$temp_dir"
+    
+    print_success "Parallel analysis complete: $aggregated_output"
+    return 0
+}
+
+# ==============================================================================
 # HIGH-LEVEL WORKFLOW FUNCTIONS
 # ==============================================================================
 
@@ -283,6 +518,37 @@ run_ai_documentation_workflow_step1() {
     
     # Create output dir
     mkdir -p "$output_dir"
+    
+    # Count files for parallel decision
+    local file_count
+    file_count=$(echo "$changed_files" | grep -c . || echo 0)
+    
+    # Try parallel processing if enabled and threshold met
+    if [[ "${ENABLE_DOC_PARALLEL:-true}" == "true" ]] && [[ $file_count -ge $DOC_PARALLEL_THRESHOLD ]]; then
+        print_info "Attempting parallel documentation analysis ($file_count files)..."
+        
+        # Build context for parallel jobs
+        local context="Code changes detected. Validation: ${validation_results:-None}"
+        
+        if parallel_doc_analysis_step1 "$changed_files" "$context" "$output_dir"; then
+            # Parallel processing succeeded
+            print_success "Parallel documentation analysis completed"
+            
+            # Copy parallel output to standard location for backward compatibility
+            if [[ -f "${output_dir}/documentation_analysis_parallel.md" ]]; then
+                cp "${output_dir}/documentation_analysis_parallel.md" \
+                   "${output_dir}/documentation_updates.md"
+            fi
+            
+            return 0
+        else
+            # Parallel processing not applicable or failed, fall through to sequential
+            print_info "Falling back to sequential processing"
+        fi
+    fi
+    
+    # Sequential processing (original logic)
+    print_info "Running sequential documentation analysis..."
     
     # Build prompt using centralized function with full persona definition
     print_info "Building AI prompt with full persona context..."
@@ -368,4 +634,8 @@ export -f execute_ai_with_retry_step1
 export -f process_ai_response_step1
 export -f extract_documentation_section_step1
 export -f validate_ai_response_step1
+export -f categorize_doc_file
+export -f categorize_docs
+export -f analyze_doc_category
+export -f parallel_doc_analysis_step1
 export -f run_ai_documentation_workflow_step1

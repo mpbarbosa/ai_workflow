@@ -432,3 +432,4 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for how to contribute.
 ---
 
 For detailed architecture information, see [Architecture Decision Records](docs/design/adr/) and [PROJECT_REFERENCE.md](docs/PROJECT_REFERENCE.md)
+

@@ -47,6 +47,58 @@ if [[ -f "${WORKFLOW_LIB_DIR}/tech_stack.sh" ]]; then
 fi
 
 # ==============================================================================
+# VALIDATION FUNCTIONS
+# ==============================================================================
+
+# Validate if step 0b should run
+# Returns: 0 if should run, 1 if should skip
+validate_step_0b() {
+    # Check if explicitly skipped
+    if [[ "${SKIP_STEP_0B:-false}" == "true" ]]; then
+        print_info "Step 0b skipped (SKIP_STEP_0B=true)"
+        return 1
+    fi
+    
+    # Check if bootstrapping is needed based on documentation count
+    if declare -f count_documentation_files &>/dev/null; then
+        local doc_count
+        doc_count=$(count_documentation_files)
+        
+        # Skip if project has substantial documentation (5+ files)
+        if [[ $doc_count -ge 5 ]]; then
+            print_info "Step 0b: Sufficient documentation exists ($doc_count files) - skipping bootstrap"
+            return 1
+        fi
+    fi
+    
+    return 0  # Ready to run
+}
+
+# Determine if documentation bootstrapping is needed
+# Returns: 0 if should bootstrap, 1 otherwise
+should_bootstrap() {
+    local doc_count
+    doc_count=$(count_documentation_files)
+    
+    # Check README.md
+    if [[ ! -f "README.md" ]] || [[ $(wc -c < "README.md" 2>/dev/null || echo 0) -lt 500 ]]; then
+        return 0  # Need to bootstrap
+    fi
+    
+    # Check docs/ directory
+    if [[ ! -d "docs" ]] || [[ $doc_count -lt 2 ]]; then
+        return 0  # Need to bootstrap
+    fi
+    
+    # Check CHANGELOG.md
+    if [[ ! -f "CHANGELOG.md" ]]; then
+        return 0  # Need to bootstrap
+    fi
+    
+    return 1  # No bootstrap needed
+}
+
+# ==============================================================================
 # HELPER FUNCTIONS
 # ==============================================================================
 
@@ -261,10 +313,11 @@ EOF
 }
 
 # Execute AI documentation generation
-# Usage: execute_ai_bootstrap_documentation <output_file>
+# Usage: execute_ai_bootstrap_documentation <output_file> <log_file>
 # Returns: 0 on success, 1 on failure
 execute_ai_bootstrap_documentation() {
-    local output_file="${1:-${BACKLOG_STEP_DIR}/step0b_bootstrap_documentation.md}"
+    local output_file="${1:-${BACKLOG_RUN_DIR}/step0b_bootstrap_documentation.md}"
+    local log_file="${2:-}"
     
     # Build AI prompt
     local prompt
@@ -277,6 +330,9 @@ execute_ai_bootstrap_documentation() {
     
     print_info "Executing AI documentation gap analysis..."
     print_info "Output will be saved to: $output_file"
+    if [[ -n "$log_file" ]]; then
+        print_info "Log file: $log_file"
+    fi
     
     # Use AI cache if available
     local cache_key=""
@@ -294,32 +350,27 @@ execute_ai_bootstrap_documentation() {
         fi
     fi
     
-    # Execute AI call
-    local ai_response=""
-    if command -v copilot &>/dev/null; then
-        # Use copilot CLI with full prompt (includes behavioral guidelines about not asking questions)
-        ai_response=$(echo "$prompt" | copilot 2>&1 || true)
-        
-        if [[ -n "$ai_response" ]]; then
-            echo "$ai_response" > "$output_file"
-            
-            # Cache the response if caching is available
-            if [[ -n "$cache_key" ]] && declare -f cache_response &>/dev/null; then
-                cache_response "$cache_key" "$ai_response"
+    # Use standard execute_copilot_prompt function for consistency
+    # This handles AUTO_MODE, logging, and error handling
+    if declare -f execute_copilot_prompt &>/dev/null; then
+        if execute_copilot_prompt "$prompt" "$log_file" "0b" "technical_writer"; then
+            # If log file was created, save it to output file as well
+            if [[ -n "$log_file" && -f "$log_file" ]]; then
+                cp "$log_file" "$output_file"
             fi
-            
             print_success "AI documentation gap analysis completed"
             return 0
         else
-            print_error "AI analysis returned empty response"
-            return 1
+            print_warning "AI analysis not available or failed"
+            # Fall through to create placeholder
         fi
-    else
-        print_warning "GitHub Copilot CLI not available"
-        print_info "Skipping AI-powered documentation gap analysis"
-        
-        # Create placeholder report
-        cat > "$output_file" <<EOF
+    fi
+    
+    # Fallback: Create placeholder report if Copilot not available
+    print_warning "GitHub Copilot CLI not available"
+    print_info "Creating placeholder documentation gap report"
+    
+    cat > "$output_file" <<EOF
 # Documentation Gap Analysis - Step 0b
 
 **Status**: ⚠️ Skipped (Copilot CLI not available)
@@ -347,8 +398,7 @@ Consider reviewing these common documentation gaps:
 - [ ] User guides and tutorials
 - [ ] Troubleshooting and FAQ sections
 EOF
-        return 0
-    fi
+    return 0
 }
 
 # ==============================================================================
@@ -361,6 +411,17 @@ EOF
 step0b_bootstrap_documentation() {
     print_section "Step 0b: Documentation Gap Analysis & Generation"
     
+    # Set up cleanup for temporary files
+    local temp_files=()
+    
+    # Cleanup function
+    cleanup_step0b() {
+        for file in "${temp_files[@]}"; do
+            rm -f "$file" 2>/dev/null || true
+        done
+    }
+    trap cleanup_step0b EXIT
+    
     # Get project context
     local doc_count
     local source_count
@@ -371,8 +432,10 @@ step0b_bootstrap_documentation() {
     print_info "Source files found: $source_count"
     print_info "Primary language: ${PRIMARY_LANGUAGE:-Not detected}"
     
-    # Always run gap analysis, even if documentation exists
-    if [[ $doc_count -eq 0 ]]; then
+    # Determine if bootstrapping is needed
+    local bootstrap_needed=false
+    if should_bootstrap; then
+        bootstrap_needed=true
         print_warning "No documentation found - will generate from scratch"
     else
         print_info "Analyzing existing documentation for gaps..."
@@ -387,22 +450,49 @@ step0b_bootstrap_documentation() {
         print_success "GitHub Copilot CLI detected"
     fi
     
-    # Determine output directory
-    local output_dir="${BACKLOG_STEP_DIR:-.}"
+    # Determine output directories (use BACKLOG_RUN_DIR, not BACKLOG_STEP_DIR)
+    local output_dir="${BACKLOG_RUN_DIR:-.}"
+    local log_dir="${LOGS_RUN_DIR:-.}"
     local output_file="${output_dir}/step0b_bootstrap_documentation.md"
     
-    # Create output directory if it doesn't exist
-    if [[ ! -d "$output_dir" ]]; then
-        mkdir -p "$output_dir" 2>/dev/null || true
-    fi
+    # Create log file with unique timestamp (following standard pattern)
+    local log_timestamp
+    log_timestamp=$(date +%Y%m%d_%H%M%S_%N | cut -c1-21)
+    local log_file="${log_dir}/step0b_copilot_bootstrap_docs_${log_timestamp}.log"
     
-    # Execute AI bootstrap analysis
-    if execute_ai_bootstrap_documentation "$output_file"; then
+    # Create output directories if they don't exist
+    mkdir -p "$output_dir" 2>/dev/null || true
+    mkdir -p "$log_dir" 2>/dev/null || true
+    
+    # Execute AI bootstrap analysis with log file
+    local execution_status="✅"
+    local status_message=""
+    
+    if execute_ai_bootstrap_documentation "$output_file" "$log_file"; then
         print_success "Documentation gap analysis completed"
         print_info "Results saved to: $output_file"
+        if [[ -f "$log_file" ]]; then
+            print_info "Session log: $log_file"
+        fi
+        
+        execution_status="✅"
+        if [[ "$bootstrap_needed" == true ]]; then
+            status_message="Generated bootstrap documentation for project with ${doc_count} existing doc files"
+        else
+            status_message="Analyzed ${doc_count} documentation files, identified gaps and provided recommendations"
+        fi
     else
         print_warning "Documentation gap analysis encountered issues"
         print_info "Check the output file for details: $output_file"
+        execution_status="⚠️"
+        status_message="Documentation gap analysis completed with warnings (Copilot may not be available)"
+    fi
+    
+    # Generate standardized step summary
+    if declare -f save_step_summary &>/dev/null; then
+        local summary_content
+        summary_content="Documentation Analysis: ${doc_count} doc files, ${source_count} source files. ${status_message}. Primary language: ${PRIMARY_LANGUAGE:-Not detected}."
+        save_step_summary "0b" "Bootstrap_Documentation" "$summary_content" "$execution_status"
     fi
     
     # User confirmation (if interactive mode)
@@ -415,6 +505,7 @@ step0b_bootstrap_documentation() {
         fi
     fi
     
+    # Return success (step completed, even if with warnings)
     return 0
 }
 
@@ -424,6 +515,8 @@ step0b_bootstrap_documentation() {
 
 # Export primary step functions
 export -f step0b_bootstrap_documentation
+export -f validate_step_0b
+export -f should_bootstrap
 export -f step0b_get_version
 export -f build_technical_writer_prompt
 export -f execute_ai_bootstrap_documentation

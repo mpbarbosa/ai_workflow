@@ -127,6 +127,19 @@ Validation focused on system tools and git repository health.
     dependency_report=$(mktemp)
     TEMP_FILES+=("$dependency_report")
     
+    # Initialize variables used in Phase 2 (may not be set for all languages)
+    local dep_count=0
+    local dev_dep_count=0
+    local total_deps=0
+    local node_version="N/A"
+    local npm_version="N/A"
+    local audit_output
+    audit_output=$(mktemp)
+    TEMP_FILES+=("$audit_output")
+    local outdated_output
+    outdated_output=$(mktemp)
+    TEMP_FILES+=("$outdated_output")
+    
     # PHASE 1: Automated dependency analysis (ADAPTIVE - Phase 3)
     print_info "Phase 1: Automated dependency analysis (${language})..."
     
@@ -180,9 +193,7 @@ CRITICAL: Invalid ${package_file} syntax. Cannot validate dependencies.
             fi
     # Check 2: Run npm audit for security vulnerabilities
     print_info "Running npm audit for security vulnerabilities..."
-    local audit_output
-    audit_output=$(mktemp)
-    TEMP_FILES+=("$audit_output")
+    # audit_output already initialized at top
     
     local vuln_count=0
     if npm audit --json > "$audit_output" 2>&1; then
@@ -198,9 +209,7 @@ CRITICAL: Invalid ${package_file} syntax. Cannot validate dependencies.
     fi
     
     print_info "Checking for outdated packages..."
-    local outdated_output
-    outdated_output=$(mktemp)
-    TEMP_FILES+=("$outdated_output")
+    # outdated_output already initialized at top
     
     local outdated_count=0
     if npm outdated --json > "$outdated_output" 2>&1; then

@@ -45,6 +45,9 @@ source "${STEP1_DIR}/step_01_lib/validation.sh"
 # shellcheck source=step_01_lib/ai_integration.sh
 source "${STEP1_DIR}/step_01_lib/ai_integration.sh"
 
+# shellcheck source=step_01_lib/incremental.sh
+source "${STEP1_DIR}/step_01_lib/incremental.sh"
+
 # ==============================================================================
 # BACKWARD COMPATIBILITY ALIASES
 # ==============================================================================
@@ -351,8 +354,9 @@ test_documentation_consistency() {
 step1_update_documentation() {
     print_section "Step 1: Update Related Documentation"
     
-    # Phase 1: Initialize
+    # Phase 1: Initialize (includes incremental cache)
     init_performance_cache
+    init_doc_hash_cache
     
     # Phase 2: Detect changes
     local changed_files
@@ -366,6 +370,44 @@ step1_update_documentation() {
     print_info "Changed files detected: $(echo "$changed_files" | wc -l) files"
     echo "$changed_files" | head -5
     [[ $(echo "$changed_files" | wc -l) -gt 5 ]] && print_info "... and more (see logs)"
+    
+    # Phase 2b: Incremental doc detection (NEW - Phase 1 optimization)
+    local doc_files=()
+    while IFS= read -r file; do
+        [[ -z "$file" ]] && continue
+        # Only track markdown files for incremental processing
+        if [[ "$file" =~ \.md$ ]] && [[ -f "$file" ]]; then
+            doc_files+=("$file")
+        fi
+    done <<< "$changed_files"
+    
+    local changed_docs=""
+    local doc_stats=""
+    if [[ ${#doc_files[@]} -gt 0 ]] && [[ "${ENABLE_DOC_INCREMENTAL:-true}" == "true" ]]; then
+        print_info "Checking documentation file changes (incremental mode)..."
+        
+        # Get cache statistics before detection
+        doc_stats=$(get_doc_cache_stats "${doc_files[@]}")
+        
+        # Detect which docs actually changed
+        changed_docs=$(detect_and_cache_changed_docs "${doc_files[@]}")
+        
+        local changed_count
+        changed_count=$(echo "$changed_docs" | grep -c . || echo 0)
+        local total_count=${#doc_files[@]}
+        local skipped_count=$((total_count - changed_count))
+        
+        if [[ $changed_count -eq 0 ]]; then
+            print_success "All $total_count documentation files unchanged - skipping AI analysis"
+            return 0
+        elif [[ $skipped_count -gt 0 ]]; then
+            print_success "Incremental: $skipped_count of $total_count docs unchanged (skipped)"
+            print_info "Processing $changed_count changed documentation files"
+        fi
+    else
+        # Incremental mode disabled or no docs to check
+        changed_docs=$(printf '%s\n' "${doc_files[@]}")
+    fi
     
     # Phase 3: Run validation (parallel execution)
     print_info "Running documentation consistency validation..."
@@ -381,9 +423,19 @@ step1_update_documentation() {
         # Determine output directory (use backlog if available)
         local output_dir="${BACKLOG_STEP_DIR:-.}"
         
-        # Execute AI workflow
-        if run_ai_documentation_workflow "$changed_files" "$validation_results" "$output_dir"; then
+        # Execute AI workflow (passes changed docs if incremental, otherwise all changed files)
+        local files_to_analyze="${changed_docs:-$changed_files}"
+        if run_ai_documentation_workflow "$files_to_analyze" "$validation_results" "$output_dir"; then
             print_success "AI documentation analysis completed"
+            
+            # Log cache statistics if available
+            if [[ -n "$doc_stats" ]] && command -v jq &>/dev/null; then
+                local unchanged
+                unchanged=$(echo "$doc_stats" | jq -r '.unchanged // 0')
+                if [[ "$unchanged" -gt 0 ]]; then
+                    print_info "Cache efficiency: $unchanged files skipped via incremental detection"
+                fi
+            fi
         else
             print_warning "AI analysis not available - manual review recommended"
         fi
