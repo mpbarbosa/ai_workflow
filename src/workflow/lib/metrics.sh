@@ -355,6 +355,15 @@ finalize_metrics() {
     local temp_file="${METRICS_CURRENT}.tmp"
     
     if command -v jq &> /dev/null; then
+        # Final safety check: ensure all numeric values are valid before passing to jq
+        # This prevents "invalid JSON text passed to --argjson" errors
+        [[ -z "$WORKFLOW_DURATION" || "$WORKFLOW_DURATION" == "" ]] && WORKFLOW_DURATION=0
+        [[ -z "$WORKFLOW_STEPS_COMPLETED" || "$WORKFLOW_STEPS_COMPLETED" == "" ]] && WORKFLOW_STEPS_COMPLETED=0
+        [[ -z "$WORKFLOW_STEPS_FAILED" || "$WORKFLOW_STEPS_FAILED" == "" ]] && WORKFLOW_STEPS_FAILED=0
+        [[ -z "$WORKFLOW_STEPS_SKIPPED" || "$WORKFLOW_STEPS_SKIPPED" == "" ]] && WORKFLOW_STEPS_SKIPPED=0
+        [[ -z "$WORKFLOW_END_EPOCH" || "$WORKFLOW_END_EPOCH" == "" ]] && WORKFLOW_END_EPOCH=0
+        [[ -z "$WORKFLOW_SUCCESS" || "$WORKFLOW_SUCCESS" == "" ]] && WORKFLOW_SUCCESS="false"
+        
         jq --arg status "${final_status}" \
            --argjson duration "${WORKFLOW_DURATION}" \
            --argjson completed "${WORKFLOW_STEPS_COMPLETED}" \
