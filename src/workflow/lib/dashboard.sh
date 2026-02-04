@@ -62,6 +62,14 @@ parse_workflow_log() {
             
             local status=$(grep -A 5 "Step $step_num:" "$log_file" | grep -oP 'Status: \K\w+' | head -1 || echo "unknown")
             
+            # Log jq arguments for debugging (only once per workflow to avoid spam)
+            if [[ "${DEBUG:-false}" == "true" ]] && [[ "$step_num" == "1" ]] && [[ "${WORKFLOW_LOG_FILE:-}" != "" ]]; then
+                {
+                    echo "[DEBUG] dashboard step builder jq arguments (step ${step_num}):"
+                    echo "  num=${step_num}, name=${step_name}, dur=${duration}, stat=${status}"
+                } >> "${WORKFLOW_LOG_FILE:-/dev/null}" 2>/dev/null
+            fi
+            
             steps_json=$(echo "$steps_json" | jq --arg num "$step_num" \
                 --arg name "$step_name" \
                 --argjson dur "$duration" \
@@ -77,6 +85,15 @@ parse_workflow_log() {
     fi
     
     # Build complete JSON
+    # Log jq arguments for debugging
+    if [[ "${DEBUG:-false}" == "true" ]] || [[ "${WORKFLOW_LOG_FILE:-}" != "" ]]; then
+        {
+            echo "[DEBUG] dashboard final JSON builder jq arguments:"
+            echo "  id=${workflow_id}, start=${start_time}, mode=${mode}"
+            echo "  steps_json length=$(echo "$steps_json" | jq 'length' 2>/dev/null || echo 0)"
+        } >> "${WORKFLOW_LOG_FILE:-/dev/null}" 2>/dev/null
+    fi
+    
     output=$(jq -n \
         --arg id "$workflow_id" \
         --arg start "$start_time" \

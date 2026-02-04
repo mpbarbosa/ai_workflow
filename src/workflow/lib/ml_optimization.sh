@@ -132,6 +132,18 @@ extract_change_features() {
     [[ ! "$day_of_week" =~ ^[0-9]+$ ]] && day_of_week=1
     
     # Build feature vector
+    # Log jq arguments for debugging
+    if [[ "${DEBUG:-false}" == "true" ]] || [[ "${WORKFLOW_LOG_FILE:-}" != "" ]]; then
+        {
+            echo "[DEBUG] extract_change_features jq arguments:"
+            echo "  change_type=${change_type}"
+            echo "  total_files=${total_files}, doc_files=${doc_files}, code_files=${code_files}"
+            echo "  test_files=${test_files}, config_files=${config_files}"
+            echo "  lines_added=${total_lines_added}, lines_deleted=${total_lines_deleted}, lines_changed=${total_lines_changed}"
+            echo "  max_depth=${max_depth}, hour=${hour_of_day}, day=${day_of_week}"
+        } >> "${WORKFLOW_LOG_FILE:-/dev/null}" 2>/dev/null
+    fi
+    
     features=$(jq -n \
         --arg change_type "$change_type" \
         --argjson total_files "$total_files" \
@@ -194,6 +206,15 @@ predict_step_duration() {
     fi
     
     # Query historical data for similar patterns
+    # Log jq arguments for debugging
+    if [[ "${DEBUG:-false}" == "true" ]] || [[ "${WORKFLOW_LOG_FILE:-}" != "" ]]; then
+        {
+            echo "[DEBUG] predict_step_duration jq arguments:"
+            echo "  step=${step}, change_type=${change_type}"
+            echo "  total_files=${total_files}, lines_changed=${lines_changed}"
+        } >> "${WORKFLOW_LOG_FILE:-/dev/null}" 2>/dev/null
+    fi
+    
     local similar_runs=$(jq -s --arg step "$step" \
         --arg change_type "$change_type" \
         --argjson total_files "$total_files" \
@@ -352,6 +373,15 @@ recommend_parallelization() {
     fi
     
     # Build recommendation
+    # Log jq arguments for debugging
+    if [[ "${DEBUG:-false}" == "true" ]] || [[ "${WORKFLOW_LOG_FILE:-}" != "" ]]; then
+        {
+            echo "[DEBUG] recommend_parallelization jq arguments:"
+            echo "  recommend=${recommend_parallel}, strategy=${strategy}"
+            echo "  confidence=${confidence}, benefit=${parallel_benefit}"
+        } >> "${WORKFLOW_LOG_FILE:-/dev/null}" 2>/dev/null
+    fi
+    
     jq -n \
         --argjson recommend "$recommend_parallel" \
         --arg strategy "$strategy" \
@@ -481,6 +511,15 @@ log_anomaly() {
     [[ ! "$predicted" =~ ^[0-9]+$ ]] && predicted=0
     
     local anomaly_log="${ML_DATA_DIR}/anomalies.jsonl"
+    
+    # Log jq arguments for debugging
+    if [[ "${DEBUG:-false}" == "true" ]] || [[ "${WORKFLOW_LOG_FILE:-}" != "" ]]; then
+        {
+            echo "[DEBUG] log_anomaly jq arguments:"
+            echo "  step=${step}, actual=${actual}, predicted=${predicted}"
+            echo "  deviation=${deviation}, timestamp=$(date +%s)"
+        } >> "${WORKFLOW_LOG_FILE:-/dev/null}" 2>/dev/null
+    fi
     
     jq -n \
         --argjson step "$step" \

@@ -171,6 +171,15 @@ save_doc_hash_cache() {
     now=$(date -Iseconds 2>/dev/null || date +%Y-%m-%dT%H:%M:%S%z)
     
     if command -v jq &>/dev/null; then
+        # Log jq arguments for debugging
+        if [[ "${DEBUG:-false}" == "true" ]] || [[ "${WORKFLOW_LOG_FILE:-}" != "" ]]; then
+            {
+                echo "[DEBUG] save_doc_hash_cache jq arguments:"
+                echo "  now=${now}"
+                echo "  files_json (first 200 chars)=${files_json:0:200}..."
+            } >> "${WORKFLOW_LOG_FILE:-/dev/null}" 2>/dev/null
+        fi
+        
         # Use jq for proper JSON merging
         jq --arg now "$now" --argjson files "$files_json" \
            '.last_updated = $now | .files = (.files + $files)' \

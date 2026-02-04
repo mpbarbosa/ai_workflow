@@ -364,6 +364,20 @@ finalize_metrics() {
         [[ -z "$WORKFLOW_END_EPOCH" || "$WORKFLOW_END_EPOCH" == "" ]] && WORKFLOW_END_EPOCH=0
         [[ -z "$WORKFLOW_SUCCESS" || "$WORKFLOW_SUCCESS" == "" ]] && WORKFLOW_SUCCESS="false"
         
+        # Log jq arguments for debugging (only if DEBUG or error occurs)
+        if [[ "${DEBUG:-false}" == "true" ]] || [[ "${WORKFLOW_LOG_FILE:-}" != "" ]]; then
+            {
+                echo "[DEBUG] finalize_metrics jq arguments:"
+                echo "  status=${final_status}"
+                echo "  duration=${WORKFLOW_DURATION}"
+                echo "  completed=${WORKFLOW_STEPS_COMPLETED}"
+                echo "  failed=${WORKFLOW_STEPS_FAILED}"
+                echo "  skipped=${WORKFLOW_STEPS_SKIPPED}"
+                echo "  success=${WORKFLOW_SUCCESS}"
+                echo "  end_epoch=${WORKFLOW_END_EPOCH}"
+            } >> "${WORKFLOW_LOG_FILE:-/dev/null}" 2>/dev/null
+        fi
+        
         jq --arg status "${final_status}" \
            --argjson duration "${WORKFLOW_DURATION}" \
            --argjson completed "${WORKFLOW_STEPS_COMPLETED}" \
