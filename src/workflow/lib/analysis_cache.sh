@@ -3,7 +3,7 @@ set -euo pipefail
 
 ################################################################################
 # Advanced Analysis Caching Module
-# Version: 2.7.0
+# Version: 2.7.1
 # Purpose: Cache analysis results for unchanged files to speed up subsequent runs
 #
 # Features:
@@ -42,7 +42,7 @@ init_analysis_cache() {
     if [[ ! -f "${ANALYSIS_CACHE_INDEX}" ]]; then
         cat > "${ANALYSIS_CACHE_INDEX}" << 'EOF'
 {
-  "version": "2.7.0",
+  "version": "2.7.1",
   "created": "",
   "last_cleanup": "",
   "cache_hits": 0,

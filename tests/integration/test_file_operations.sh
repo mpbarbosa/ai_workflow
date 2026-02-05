@@ -123,8 +123,11 @@ test_check_file_exists_fail_strategy() {
     local testfile="$TEST_DIR/existing.txt"
     echo "test" > "$testfile"
     
+    # Disable errexit for this check since we expect it to return non-zero
+    set +e
     check_file_exists "$testfile" "fail" > /dev/null 2>&1
     local result=$?
+    set -e
     
     assert_equals "1" "$result" "check_file_exists returns 1 with fail strategy"
 }
@@ -143,8 +146,10 @@ test_check_file_exists_append_timestamp_strategy() {
     local testfile="$TEST_DIR/timestamp.txt"
     echo "test" > "$testfile"
     
+    set +e
     check_file_exists "$testfile" "append_timestamp" > /dev/null 2>&1
     local result=$?
+    set -e
     
     assert_equals "2" "$result" "check_file_exists returns 2 with append_timestamp strategy"
 }
@@ -209,8 +214,10 @@ test_safe_create_file_fail_on_existing() {
     local testfile="$TEST_DIR/fail_existing.txt"
     echo "original" > "$testfile"
     
+    set +e
     safe_create_file "$testfile" "new content" "fail" false > /dev/null 2>&1
     local result=$?
+    set -e
     
     assert_equals "1" "$result" "safe_create_file fails when file exists (fail strategy)"
 }
@@ -305,9 +312,11 @@ test_atomic_update_file() {
     atomic_update_file "$testfile" "$content" "fail" > /dev/null 2>&1
     
     if [[ -f "$testfile" ]] && [[ "$(cat "$testfile")" == "$content" ]]; then
-        # Check no temp files left
+        # Check no temp files left (disable errexit for ls glob that may not match)
         local temp_count
+        set +e
         temp_count=$(ls "$TEST_DIR"/atomic.txt.tmp.* 2>/dev/null | wc -l)
+        set -e
         
         if [[ $temp_count -eq 0 ]]; then
             assert_equals "true" "true" "atomic_update_file creates file and cleans up temp"

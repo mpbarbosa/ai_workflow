@@ -3,7 +3,7 @@ set -euo pipefail
 
 ################################################################################
 # Auto-Documentation Module
-# Version: 3.0.0
+# Version: 3.0.1
 # Purpose: Automatically generate documentation from workflow execution
 #
 # Features:

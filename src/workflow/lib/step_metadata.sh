@@ -5,7 +5,7 @@ set -euo pipefail
 # Step Metadata Module
 # Purpose: Comprehensive metadata for workflow steps enabling smart execution
 # Part of: Tests & Documentation Workflow Automation v2.6.1
-# Version: 1.0.0
+# Version: 1.0.1
 ################################################################################
 
 # ==============================================================================

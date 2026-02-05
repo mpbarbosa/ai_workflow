@@ -216,8 +216,10 @@ test_execute_with_session_sync_failure() {
     SESSION_CLEANUP_QUEUE=()
     
     local exit_code
+    set +e
     execute_with_session "99" "test_fail" "exit 1" 5 "sync" > /dev/null 2>&1
     exit_code=$?
+    set -e
     
     assert_equals "1" "$exit_code" "Sync command returns non-zero on failure"
 }
@@ -229,8 +231,10 @@ test_execute_with_session_timeout() {
     
     local exit_code
     # Command that sleeps longer than timeout
+    set +e
     execute_with_session "99" "test_timeout" "sleep 10" 2 "sync" > /dev/null 2>&1
     exit_code=$?
+    set -e
     
     # Timeout command returns 124
     assert_equals "124" "$exit_code" "Timed out command returns 124"

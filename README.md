@@ -1,19 +1,19 @@
 # AI Workflow Automation
 
-[![Version](https://img.shields.io/badge/version-3.0.0-blue.svg)](https://github.com/mpbarbosa/ai_workflow/releases)
-[![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
-[![Code Quality](https://img.shields.io/badge/quality-B%2B%20(87%2F100)-brightgreen.svg)](src/COMPREHENSIVE_CODE_QUALITY_REPORT.md)
-[![Tests](https://img.shields.io/badge/tests-37%2B%20passing-brightgreen.svg)](tests/)
-[![Documentation](https://img.shields.io/badge/docs-comprehensive-blue.svg)](docs/)
-[![Test Coverage](https://img.shields.io/badge/coverage-100%25-brightgreen.svg)](tests/)
-[![Shell Scripts](https://img.shields.io/badge/shell-bash%204.0%2B-blue.svg)](https://www.gnu.org/software/bash/)
-[![Maintained](https://img.shields.io/badge/maintained-yes-brightgreen.svg)](https://github.com/mpbarbosa/ai_workflow/graphs/commit-activity)
-[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
+[![Current version is 3.1.0](https://img.shields.io/badge/version-3.1.0-blue.svg)](https://github.com/mpbarbosa/ai_workflow/releases)
+[![License is MIT](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
+[![Code quality score is B+ with 87 out of 100 points](https://img.shields.io/badge/quality-B%2B%20(87%2F100)-brightgreen.svg)](src/COMPREHENSIVE_CODE_QUALITY_REPORT.md)
+[![37 or more tests are passing](https://img.shields.io/badge/tests-37%2B%20passing-brightgreen.svg)](tests/)
+[![Comprehensive documentation available](https://img.shields.io/badge/docs-comprehensive-blue.svg)](docs/)
+[![Test coverage is 100 percent](https://img.shields.io/badge/coverage-100%25-brightgreen.svg)](tests/)
+[![Requires Bash version 4.0 or higher](https://img.shields.io/badge/shell-bash%204.0%2B-blue.svg)](https://www.gnu.org/software/bash/)
+[![Project is actively maintained](https://img.shields.io/badge/maintained-yes-brightgreen.svg)](https://github.com/mpbarbosa/ai_workflow/graphs/commit-activity)
+[![Pull requests are welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
 
 Intelligent workflow automation system for validating and enhancing documentation, code, and tests with AI support.
 
 **Migrated from**: mpbarbosa_site repository (2025-12-18)  
-**Version**: v3.0.0  
+**Version**: v3.1.0  
 **Repository**: [github.com/mpbarbosa/ai_workflow](https://github.com/mpbarbosa/ai_workflow)
 
 ## Overview
@@ -26,10 +26,15 @@ This repository provides a comprehensive, modular workflow automation system tha
 
 **Highlights**:
 - **18-Step Automated Pipeline** with checkpoint resume
-- **62 Library Modules** + **18 Step Modules** + **4 Orchestrators**
+- **62 Library Modules** + **18 Step Modules** + **4 Orchestrators** + **4 Configs**
 - **15 AI Personas** with GitHub Copilot CLI integration
 - **Smart Execution**: 40-85% faster (change-based step skipping)
 - **Parallel Execution**: 33% faster (independent steps run simultaneously)
+- **Step 0b: Bootstrap Documentation** (NEW v3.1.0): Generate comprehensive docs from scratch
+- **Step 1 Optimization** (NEW v3.2.0): 75-85% faster documentation analysis
+  - Incremental processing: Skip unchanged docs (96% savings)
+  - Parallel analysis: Concurrent AI processing (71% savings)
+  - Average: 14.5 min → 3 min
 - **AI Response Caching**: 60-80% token reduction
 - **Pre-Commit Hooks** (NEW v2.10.0): Fast validation checks to prevent broken commits
 - **Auto-Documentation** (v2.9.0): Generate reports and CHANGELOG from workflow execution
@@ -151,6 +156,10 @@ cd /path/to/target/project
 - Use `--smart-execution` for 40-85% faster execution
 - Use `--parallel` for 33% additional speed improvement
 - Use `--ml-optimize` for 15-30% ML-driven improvements (requires 10+ runs)
+- **Step 1 optimizations** (NEW): Automatic 75-85% faster documentation analysis
+  - Incremental: Skips unchanged docs (96% when no changes)
+  - Parallel: Concurrent AI processing (71% with 4+ files)
+  - Control: `ENABLE_DOC_INCREMENTAL=true`, `ENABLE_DOC_PARALLEL=true`
 - **📊 See [Performance Benchmarks](docs/reference/performance-benchmarks.md) for detailed methodology and raw data**
 - AI responses cached automatically (60-80% token savings)
 - Checkpoint resume enabled by default (use `--no-resume` for fresh start)
@@ -159,6 +168,8 @@ cd /path/to/target/project
 ## Documentation
 
 **📚 Complete Documentation** - See [docs/README.md](docs/README.md) and [docs/PROJECT_REFERENCE.md](docs/PROJECT_REFERENCE.md) ⭐
+
+> **For Developers**: Detailed API reference and module documentation available at [src/workflow/README.md](src/workflow/README.md)
 
 ### Quick Start
 - **[docs/ROADMAP.md](docs/ROADMAP.md)**: Future plans and development roadmap

@@ -54,3 +54,17 @@ node_modules/
 # Environment files
 .env
 .env.local
+
+# ML artifacts (added 2026-02-04)
+.ml_data/
+.ai_workflow/ml_models/
+.ai_workflow/.incremental_cache/
+src/.ml_data/
+*.model
+*.pkl
+*.h5
+*.joblib
+
+# Additional cache directories (added 2026-02-04)
+.analysis_cache/
+.deps_cache/

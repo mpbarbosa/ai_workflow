@@ -10,6 +10,12 @@
 
 The v2.4.0 refactoring introduced a **phase-based orchestrator architecture** that breaks the monolithic 5,294-line main script into focused, maintainable components. This guide explains the architecture and how to work with it.
 
+> **See Also**:
+> - [ADR-001: Modular Architecture](../design/adr/001-modular-architecture.md) - Architecture decision rationale
+> - [Module Development Guide](MODULE_DEVELOPMENT.md) - Creating new modules
+> - [API Reference](api-reference.md) - Complete module API documentation
+> - [Project Reference](../PROJECT_REFERENCE.md) - Authoritative feature and module inventory
+
 ---
 
 ## Architecture Diagram
@@ -606,7 +612,13 @@ After familiarizing yourself with the orchestrator architecture:
 4. **Test your changes** in isolation and integration
 5. **Contribute improvements** following best practices
 
-For questions or contributions, see `/docs/CONTRIBUTING.md`.
+> **Related Documentation**:
+> - [Testing Guide](testing.md) - Comprehensive testing documentation
+> - [Contributing Guide](../../CONTRIBUTING.md) - Contribution guidelines
+> - [Orchestrator README](../../src/workflow/orchestrators/README.md) - Implementation details
+> - [Workflow Diagrams](../reference/workflow-diagrams.md) - Visual execution flows
+
+For questions or contributions, see [CONTRIBUTING.md](../../CONTRIBUTING.md).
 
 ---
 

@@ -4,12 +4,12 @@ set -euo pipefail
 ################################################################################
 # Batch AI Commit Message Generation Library
 # Purpose: Generate AI-powered commit messages in non-interactive mode
-# Version: 1.0.0 (v2.7.0-alpha)
+# Version: 1.0.1 (v2.7.0-alpha)
 # Created: 2025-12-31
 ################################################################################
 
 # Module version
-readonly BATCH_AI_COMMIT_VERSION="1.0.0"
+readonly BATCH_AI_COMMIT_VERSION="1.0.1"
 
 ################################################################################
 # CONFIGURATION

@@ -2,7 +2,7 @@
 ################################################################################
 # Test Suite for Workflow Enhancement Modules
 # Purpose: Comprehensive tests for metrics, change detection, and dependency graph
-# Part of: Tests & Documentation Workflow Automation v2.0.0
+# Part of: Tests & Documentation Workflow Automation v2.0.1
 # Created: December 18, 2025
 ################################################################################
 
@@ -127,10 +127,14 @@ test_metrics_module() {
     # Setup test environment
     export PROJECT_ROOT="${PROJECT_ROOT}"
     export WORKFLOW_RUN_ID="test_$(date +%Y%m%d_%H%M%S)"
-    export SCRIPT_VERSION="2.0.0"
+    export SCRIPT_VERSION="2.0.1"
     export DRY_RUN=false
     export AUTO_MODE=false
     export INTERACTIVE_MODE=true
+    
+    # Set METRICS_DIR before init_metrics (required)
+    export METRICS_DIR="${PROJECT_ROOT}/.ai_workflow/metrics"
+    mkdir -p "${METRICS_DIR}"
     
     # Source config and metrics modules
     source "${WORKFLOW_LIB_DIR}/config.sh"
@@ -344,7 +348,7 @@ test_module_integration() {
     # Setup test environment
     export PROJECT_ROOT="${PROJECT_ROOT}"
     export WORKFLOW_RUN_ID="test_integration_$(date +%Y%m%d_%H%M%S)"
-    export SCRIPT_VERSION="2.0.0"
+    export SCRIPT_VERSION="2.0.1"
     
     # Source all modules
     source "${WORKFLOW_LIB_DIR}/config.sh"

@@ -4,10 +4,10 @@ set -euo pipefail
 ################################################################################
 # Step 11: AI-Powered Git Finalization & Commit Message Generation
 # Purpose: Stage changes, generate conventional commit messages, push to remote
-# Part of: Tests & Documentation Workflow Automation v2.7.0
+# Part of: Tests & Documentation Workflow Automation v2.7.1
 # Version: 2.2.0
 #
-# NEW IN v2.7.0 (2025-12-31):
+# NEW IN v2.7.1 (2025-12-31):
 # - AI Batch Mode: Automatic AI commit message generation in --ai-batch mode
 # - Non-interactive AI invocation using Copilot CLI
 # - Enhanced fallback messages with full context
@@ -30,6 +30,130 @@ readonly STEP11_VERSION_MAJOR=2
 readonly STEP11_VERSION_MINOR=2
 readonly STEP11_VERSION_PATCH=0
 
+# Push to remote if local is ahead
+# Args:
+#   $1 - commit_was_made (true/false) - whether a commit was just created
+#   $2 - commit_type - type of commit (for backlog)
+#   $3 - commit_scope - scope of commit (for backlog)
+#   $4 - commit_message - commit message (for backlog)
+#   $5 - modified_count - number of modified files (for backlog)
+#   $6 - total_changes - total number of changes (for backlog)
+# Returns: 0 for success, 1 for failure
+push_if_ahead() {
+    local commit_was_made="${1:-false}"
+    local commit_type="${2:-}"
+    local commit_scope="${3:-}"
+    local commit_message="${4:-}"
+    local modified_count="${5:-0}"
+    local total_changes="${6:-0}"
+    
+    local commits_ahead=$(get_git_commits_ahead)
+    local current_branch=$(git branch --show-current)
+    
+    # Check if local is ahead of remote
+    if [[ "$commits_ahead" -eq 0 ]]; then
+        print_info "Local branch is up to date with origin/$current_branch"
+        
+        if [[ "$commit_was_made" == "false" ]]; then
+            # No commit made and nothing to push
+            local step_issues="### Git Finalization Summary
+
+**Status:** No changes to commit
+**Branch:** ${current_branch}
+**Commits Ahead:** 0
+
+No changes were detected. Repository is up to date with remote.
+"
+            save_step_issues "11" "Git_Finalization" "$step_issues"
+            save_step_summary "11" "Git_Finalization" "No changes to commit. Repository up to date with origin/${current_branch}." "✅"
+        fi
+        
+        update_workflow_status "step11" "✅"
+        return 0
+    fi
+    
+    # Local is ahead - push needed
+    echo ""
+    if [[ "$commit_was_made" == "true" ]]; then
+        print_warning "🔴 CRITICAL: Ready to push newly created commit to origin"
+    else
+        print_warning "🔴 CRITICAL: Local branch is ${commits_ahead} commit(s) ahead of origin"
+        print_info "No new commit created, but existing commits need to be pushed"
+    fi
+    
+    if [[ "$INTERACTIVE_MODE" == true ]]; then
+        if ! confirm_action "Push to remote repository?"; then
+            print_warning "Push skipped - workflow incomplete"
+            return 0
+        fi
+    fi
+    
+    # Save to backlog BEFORE push (in case push fails)
+    local step_issues
+    if [[ "$commit_was_made" == "true" ]]; then
+        step_issues="### Git Finalization Summary
+
+**Commit Type:** ${commit_type}
+**Commit Scope:** ${commit_scope}
+**Branch:** ${current_branch}
+**Modified Files:** ${modified_count}
+**Total Changes:** ${total_changes}
+
+### Commit Message
+
+\`\`\`
+${commit_message}
+\`\`\`
+
+### Git Changes
+
+\`\`\`
+$(git show --stat HEAD 2>/dev/null || echo "Latest commit details unavailable")
+\`\`\`
+"
+    else
+        step_issues="### Git Finalization Summary
+
+**Status:** No new commit (no changes detected)
+**Branch:** ${current_branch}
+**Commits Ahead:** ${commits_ahead}
+
+No changes were detected, so no commit was created.
+Pushing ${commits_ahead} existing commit(s) to remote.
+
+### Latest Commit
+
+\`\`\`
+$(git show --stat HEAD 2>/dev/null || echo "Latest commit details unavailable")
+\`\`\`
+"
+    fi
+    save_step_issues "11" "Git_Finalization" "$step_issues"
+    
+    if git push origin "$current_branch"; then
+        print_success "Successfully pushed to origin/$current_branch ✅"
+        
+        if [[ "$commit_was_made" == "true" ]]; then
+            save_step_summary "11" "Git_Finalization" "Changes committed and pushed successfully to ${current_branch}. ${modified_count} files modified. Commit: ${commit_type}(${commit_scope})." "✅"
+        else
+            save_step_summary "11" "Git_Finalization" "Pushed ${commits_ahead} existing commit(s) to ${current_branch}. No new changes to commit." "✅"
+        fi
+        update_workflow_status "step11" "✅"
+    else
+        print_error "PUSH FAILED - workflow incomplete ❌"
+        
+        if [[ "$commit_was_made" == "true" ]]; then
+            save_step_summary "11" "Git_Finalization" "FAILED: Push to ${current_branch} failed. Changes committed locally but not pushed to remote." "❌"
+        else
+            save_step_summary "11" "Git_Finalization" "FAILED: Push to ${current_branch} failed. ${commits_ahead} commit(s) remain unpushed." "❌"
+        fi
+        update_workflow_status "step11" "❌"
+        return 1
+    fi
+    
+    return 0
+}
+
 # Main step function - finalizes git operations with AI-generated commit messages
 # Returns: 0 for success, 1 for failure
 step11_git_finalization() {
@@ -43,10 +167,11 @@ step11_git_finalization() {
     # Dry-run preview
     if [[ "$DRY_RUN" == true ]]; then
         print_info "[DRY RUN] Git operations preview:"
-        print_info "  - Would stage all changes"
-        print_info "  - Would generate AI commit message"
-        print_info "  - Would commit with comprehensive message"
-        print_info "  - Would push to origin"
+        print_info "  - Would check for changes to commit"
+        print_info "  - Would stage changes if any exist"
+        print_info "  - Would generate AI commit message if changes exist"
+        print_info "  - Would commit with comprehensive message if changes exist"
+        print_info "  - Would push to origin if local is ahead"
         
         # Save dry-run status to backlog
         local step_issues="### Git Finalization - DRY RUN
@@ -56,10 +181,11 @@ step11_git_finalization() {
 Dry run mode enabled. No actual git operations performed.
 
 ### Planned Operations
-- Stage all changes
-- Generate AI commit message
-- Commit with comprehensive message
-- Push to origin
+- Check for changes to commit
+- Stage changes if any exist
+- Generate AI commit message if changes exist
+- Commit with comprehensive message if changes exist
+- Push to origin if local is ahead of remote
 "
         save_step_issues "11" "Git_Finalization" "$step_issues"
         save_step_summary "11" "Git_Finalization" "Dry run mode - no git operations performed." "✅"
@@ -156,6 +282,30 @@ Dry run mode enabled. No actual git operations performed.
     
     print_info "Inferred commit type: $commit_type($commit_scope)"
     
+    # CHECK: Early detection of no changes to commit
+    echo ""
+    print_info "Checking for changes to commit..."
+    
+    if [[ "$total_changes" -eq 0 ]] && [[ "$staged_count" -eq 0 ]]; then
+        print_info "No changes detected - skipping commit phase"
+        echo ""
+        
+        # Check if we need to push existing commits
+        print_info "Checking for unpushed commits..."
+        push_if_ahead "false" "" "" "" "0" "0"
+        
+        # Set executable permissions on shell scripts (only if workflow directory exists)
+        if [[ -d "${WORKFLOW_ROOT:-}/src/workflow" ]]; then
+            print_info "Setting executable permissions on shell scripts..."
+            find "${WORKFLOW_ROOT}/src/workflow" -name "*.sh" -exec chmod +x {} \; 2>/dev/null || true
+            print_success "Permissions updated"
+        fi
+        
+        return 0
+    fi
+    
+    print_success "Changes detected: ${total_changes} files to commit"
+    
     # Pre-commit diff review
     print_info "Reviewing changes to be committed..."
     git diff --stat
@@ -210,7 +360,7 @@ Dry run mode enabled. No actual git operations performed.
     echo -e "${CYAN}GitHub Copilot CLI Commit Message Generation Prompt:${NC}"
     echo -e "${YELLOW}${copilot_prompt}${NC}\n"
     
-    # Stage changes (v2.7.0: Atomic staging strategy)
+    # Stage changes (v2.7.1: Atomic staging strategy)
     echo ""
     print_info "Determining staging strategy..."
     
@@ -264,7 +414,7 @@ Dry run mode enabled. No actual git operations performed.
     if is_copilot_available; then
         print_info "GitHub Copilot CLI detected - ready for commit message generation..."
         
-        # Check if AI batch mode (with Copilot available) - NEW v2.7.0
+        # Check if AI batch mode (with Copilot available) - NEW v2.7.1
         if [[ "${AI_BATCH_MODE:-false}" == "true" ]]; then
             # AI BATCH MODE: Generate AI commit message non-interactively
             print_info "AI Batch Mode: Generating commit message automatically..."
@@ -383,52 +533,9 @@ Total changes: $total_changes files
         return 1
     fi
     
-    # Push to remote with confirmation
-    echo ""
-    print_warning "🔴 CRITICAL: Ready to push to origin"
-    
-    if [[ "$INTERACTIVE_MODE" == true ]]; then
-        if ! confirm_action "Push to remote repository?"; then
-            print_warning "Push skipped - workflow incomplete"
-            return 0
-        fi
-    fi
-    
-    local current_branch=$(git branch --show-current)
-    
-    # Save to backlog BEFORE push (in case push fails)
-    local step_issues="### Git Finalization Summary
-
-**Commit Type:** ${commit_type}
-**Commit Scope:** ${commit_scope}
-**Branch:** ${current_branch}
-**Modified Files:** ${modified_count}
-**Total Changes:** ${total_changes}
-
-### Commit Message
-
-\`\`\`
-${commit_message}
-\`\`\`
-
-### Git Changes
-
-\`\`\`
-$(git show --stat HEAD 2>/dev/null || echo "Latest commit details unavailable")
-\`\`\`
-"
-    save_step_issues "11" "Git_Finalization" "$step_issues"
-    
-    if git push origin "$current_branch"; then
-        print_success "Successfully pushed to origin/$current_branch ✅"
-        save_step_summary "11" "Git_Finalization" "Changes committed and pushed successfully to ${current_branch}. ${modified_count} files modified. Commit: ${commit_type}(${commit_scope})." "✅"
-        update_workflow_status "step11" "✅"
-    else
-        print_error "PUSH FAILED - workflow incomplete ❌"
-        save_step_summary "11" "Git_Finalization" "FAILED: Push to ${current_branch} failed. Changes committed locally but not pushed to remote." "❌"
-        update_workflow_status "step11" "❌"
-        return 1
-    fi
+    # Push to remote using extracted function
+    push_if_ahead "true" "$commit_type" "$commit_scope" "$commit_message" "$modified_count" "$total_changes"
+    local push_result=$?
     
     # Set executable permissions on shell scripts (only if workflow directory exists)
     if [[ -d "${WORKFLOW_ROOT:-}/src/workflow" ]]; then
@@ -436,7 +543,10 @@ $(git show --stat HEAD 2>/dev/null || echo "Latest commit details unavailable")
         find "${WORKFLOW_ROOT}/src/workflow" -name "*.sh" -exec chmod +x {} \; 2>/dev/null || true
         print_success "Permissions updated"
     fi
+    
+    return $push_result
 }
 
-# Export step function
+# Export functions
+export -f push_if_ahead
 export -f step11_git_finalization

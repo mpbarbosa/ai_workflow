@@ -5,7 +5,7 @@ set -euo pipefail
 # Test Smoke Test Module
 # Purpose: Quick validation of test infrastructure before full workflow
 # Part of: Tests & Documentation Workflow Automation v2.6.1
-# Version: 1.0.0
+# Version: 1.0.1
 ################################################################################
 
 # Perform a quick smoke test of the test infrastructure

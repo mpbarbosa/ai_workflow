@@ -3,7 +3,7 @@ set -euo pipefail
 
 ################################################################################
 # Step Validation Cache Module
-# Version: 1.0.0
+# Version: 1.0.1
 # Purpose: Cache validation results between workflow runs to skip unchanged files
 # Part of: Tests & Documentation Workflow Automation v2.7.0
 # Expected Benefit: 60% reduction in repeated workflow runs
@@ -25,7 +25,7 @@ WORKFLOW_HOME=${WORKFLOW_HOME:-$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pw
 VALIDATION_CACHE_DIR="${WORKFLOW_HOME}/src/workflow/.validation_cache"
 VALIDATION_CACHE_INDEX="${VALIDATION_CACHE_DIR}/index.json"
 VALIDATION_CACHE_TTL=86400  # 24 hours in seconds
-VALIDATION_CACHE_VERSION="1.0.0"
+VALIDATION_CACHE_VERSION="1.0.1"
 
 # Enable/disable validation caching
 USE_VALIDATION_CACHE=${USE_VALIDATION_CACHE:-true}
@@ -51,7 +51,7 @@ init_validation_cache() {
     if [[ ! -f "${VALIDATION_CACHE_INDEX}" ]]; then
         cat > "${VALIDATION_CACHE_INDEX}" << 'EOF'
 {
-  "version": "1.0.0",
+  "version": "1.0.1",
   "created": "",
   "last_cleanup": "",
   "entries": {}

@@ -43,6 +43,13 @@ Historical documentation and deprecated guides:
 - Superseded implementation notes
 - Historical project statistics
 
+### 📊 [Workflow Reports](workflow-reports/)
+Execution reports and analysis from workflow runs:
+- Workflow execution summaries
+- Performance analysis reports
+- Step-by-step execution documentation
+- Generated during automated workflow runs
+
 ## Quick Links
 
 - **[Project Reference](PROJECT_REFERENCE.md)** - Single source of truth for project statistics

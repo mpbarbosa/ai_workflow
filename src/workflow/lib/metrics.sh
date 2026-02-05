@@ -284,9 +284,13 @@ update_current_run_step() {
     local end_time="${STEP_END_TIMES[${step_num}]:-0}"
     
     # Ensure numeric values (fallback to 0 if empty or non-numeric)
-    [[ -z "$start_time" || ! "$start_time" =~ ^[0-9]+$ ]] && start_time=0
-    [[ -z "$end_time" || ! "$end_time" =~ ^[0-9]+$ ]] && end_time=0
-    [[ -z "$duration" || ! "$duration" =~ ^[0-9]+$ ]] && duration=0
+    # Strip whitespace to prevent jq --argjson errors
+    start_time=$(echo "$start_time" | tr -d '[:space:]')
+    end_time=$(echo "$end_time" | tr -d '[:space:]')
+    duration=$(echo "$duration" | tr -d '[:space:]')
+    [[ -z "$start_time" || ! "$start_time" =~ ^[0-9]+(\.[0-9]+)?$ ]] && start_time=0
+    [[ -z "$end_time" || ! "$end_time" =~ ^[0-9]+(\.[0-9]+)?$ ]] && end_time=0
+    [[ -z "$duration" || ! "$duration" =~ ^[0-9]+(\.[0-9]+)?$ ]] && duration=0
     
     step_obj=$(jq -n \
         --arg name "${step_name}" \

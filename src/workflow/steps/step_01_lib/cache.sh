@@ -5,7 +5,7 @@ set -euo pipefail
 # Step 1 Cache Module
 # Purpose: Performance caching for Step 1 documentation operations
 # Part of: Step 1 Refactoring - Phase 1
-# Version: 1.0.0
+# Version: 1.0.1
 ################################################################################
 
 # Prevent double-loading
@@ -14,7 +14,7 @@ if [[ "${STEP1_CACHE_MODULE_LOADED:-}" == "true" ]]; then
 fi
 
 # Module version
-readonly STEP1_CACHE_VERSION="1.0.0"
+readonly STEP1_CACHE_VERSION="1.0.1"
 
 # Performance cache for expensive operations
 # Stores results of expensive operations to avoid recomputation
@@ -57,7 +57,7 @@ get_or_cache_step1() {
     # Execute function and cache result
     local result
     result=$("$@")
-    STEP1_CACHE[$cache_key]="$result"
+    STEP1_CACHE["$cache_key"]="$result"
     echo "$result"
     return 0
 }
@@ -83,7 +83,7 @@ get_cached_git_diff_step1() {
     # Get fresh git diff and cache it
     local diff_output
     diff_output=$(get_git_diff_files_output)
-    STEP1_CACHE[$cache_key]="$diff_output"
+    STEP1_CACHE["$cache_key"]="$diff_output"
     echo "$diff_output"
     return 0
 }

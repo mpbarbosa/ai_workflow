@@ -1,7 +1,7 @@
 # GitHub Copilot Instructions - AI Workflow Automation
 
 **Repository**: ai_workflow  
-**Version**: v3.0.0  
+**Version**: v3.1.0  
 **Last Updated**: 2026-01-28  
 **Maintainer**: Marcelo Pereira Barbosa ([@mpbarbosa](https://github.com/mpbarbosa))
 
@@ -15,7 +15,7 @@ AI Workflow Automation is an intelligent workflow system for validating and enha
 
 **Core Features**:
 - **18-Step Automated Pipeline** with 15 AI personas
-- **62 Library Modules** + **18 Step Modules** + **4 Orchestrators**
+- **62 Library Modules** + **18 Step Modules** + **4 Orchestrators** + **4 Configs**
 - **Smart Execution**: 40-85% faster | **Parallel Execution**: 33% faster
 - **AI Response Caching**: 60-80% token reduction
 - **Pre-Commit Hooks** (NEW v3.0.0): Fast validation checks to prevent broken commits
@@ -282,6 +282,10 @@ cd ../
 > 📋 **Complete List**: See [docs/PROJECT_REFERENCE.md#ai-personas-15-total](../docs/PROJECT_REFERENCE.md#ai-personas-15-total for all 15 functional AI personas.
 
 The system uses **15 specialized AI personas** including documentation_specialist, code_reviewer, test_engineer, ux_designer (NEW v2.4.0), and technical_writer (NEW v3.1.0).
+
+**Key Steps Using AI**:
+- **Step 0b: Bootstrap Documentation** (NEW v3.1.0): technical_writer persona generates comprehensive documentation from scratch
+- **Step 1-15**: Various specialized personas for documentation, testing, code quality, and finalization
 
 Personas are implemented through:
 - **9 base prompt templates** in `.workflow_core/config/ai_helpers.yaml`

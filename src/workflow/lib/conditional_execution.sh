@@ -3,7 +3,7 @@ set -euo pipefail
 
 ################################################################################
 # Conditional Step Execution Module
-# Version: 2.7.0
+# Version: 2.7.1
 # Purpose: Smart step execution based on file changes and conditions
 #
 # Features:

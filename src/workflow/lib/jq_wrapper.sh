@@ -4,7 +4,7 @@
 
 ################################################################################
 # JQ Wrapper Module
-# Version: 1.0.0
+# Version: 1.0.1
 # Purpose: Safe wrapper for jq command with validation, logging, and error handling
 # Part of: Tests & Documentation Workflow Automation v3.0.0+
 # Created: February 3, 2026

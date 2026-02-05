@@ -3,7 +3,7 @@ set -euo pipefail
 
 ################################################################################
 # Performance Monitoring and Thresholds Module
-# Version: 2.7.0
+# Version: 2.7.1
 # Purpose: Real-time performance monitoring with threshold alerts
 #
 # Features:

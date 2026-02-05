@@ -1004,6 +1004,10 @@ export WORKFLOW_DEBUG=1
 **Last Updated**: 2025-12-23
 
 For complete documentation, see:
-- **Main README**: `README.md`
-- **Feature Guide**: `V2.4.0_COMPLETE_FEATURE_GUIDE.md`
-- **All Guides**: `docs/*_GUIDE.md`
+- **Main README**: [README.md](../../README.md)
+- **Project Reference**: [docs/PROJECT_REFERENCE.md](../PROJECT_REFERENCE.md) - Authoritative source for features and modules
+- **Performance Benchmarks**: [docs/reference/performance-benchmarks.md](../reference/performance-benchmarks.md) - Detailed methodology and raw data
+- **Architecture Guide**: [docs/developer-guide/architecture.md](../developer-guide/architecture.md) - System design and patterns
+- **Troubleshooting**: [docs/user-guide/troubleshooting.md](troubleshooting.md)
+- **Feature Guide**: [docs/user-guide/feature-guide.md](feature-guide.md)
+- **FAQ**: [docs/user-guide/faq.md](faq.md)

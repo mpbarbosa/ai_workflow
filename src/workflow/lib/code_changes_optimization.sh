@@ -3,7 +3,7 @@ set -euo pipefail
 
 ################################################################################
 # Code Changes Workflow Optimization Module
-# Version: 2.7.0
+# Version: 2.7.1
 # Purpose: Ultra-fast execution for code changes with smart test optimization
 #
 # Features:

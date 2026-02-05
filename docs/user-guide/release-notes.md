@@ -1,7 +1,8 @@
-# Release Notes: Version 3.0.0
+# Release Notes: Version 2.4.1 (UX Designer Feature)
 
 **Release Date**: 2025-12-23  
 **Status**: ✅ Complete  
+**Feature**: Step 14 UX Analysis  
 **Branch**: `copilot/add-ux-designer-persona`
 
 ---

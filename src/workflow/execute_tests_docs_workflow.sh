@@ -4,7 +4,7 @@ set -euo pipefail
 
 ################################################################################
 # Tests & Documentation Workflow Automation Script
-# Version: 5.0.0
+# Version: 3.1.1
 # Purpose: Automate the complete tests and documentation update workflow
 # Related: /prompts/tests_documentation_update_enhanced.txt
 #
@@ -15,7 +15,7 @@ set -euo pipefail
 # AI personas using the modern 'copilot -p' command.
 #
 # Enhanced Steps with AI Personas:
-#   Step 0b: Bootstrap Documentation (Technical Writer) ⭐ NEW v3.1.0
+#   Step 0b: Bootstrap Documentation (Technical Writer) ⭐ NEW v3.1.1
 #   Step 1:  Documentation Updates (Technical Documentation Specialist)
 #   Step 2:  Consistency Analysis (Documentation Specialist + Information Architect)
 #   Step 3:  Script Reference Validation (DevOps Documentation Expert)
@@ -121,7 +121,7 @@ set -euo pipefail
 # CONFIGURATION & CONSTANTS
 # ==============================================================================
 
-SCRIPT_VERSION="3.1.0"  # Step 0b: Bootstrap Documentation - Generates comprehensive docs from scratch
+SCRIPT_VERSION="3.1.1"  # Step 0b: Bootstrap Documentation - Generates comprehensive docs from scratch
 SCRIPT_NAME="Tests & Documentation Workflow Automation"
 WORKFLOW_HOME="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
 PROJECT_ROOT="$(pwd)"  # Default: current directory; can be overridden with --target option
@@ -1605,7 +1605,7 @@ execute_full_workflow() {
     fi
     
     # Execute Step 0b (Bootstrap Documentation) - runs after 0a, before 1
-    # NEW in v3.1.0: Generate comprehensive documentation from scratch
+    # NEW in v3.1.1: Generate comprehensive documentation from scratch
     if [[ -z "$failed_step" && $resume_from -le 0 ]] && should_execute_step 0; then
         log_step_start "0b" "Bootstrap Documentation"
         if step0b_bootstrap_documentation; then
@@ -2222,7 +2222,7 @@ DESCRIPTION:
 
 WORKFLOW STEPS:
     Step 0:  Pre-Analysis - Analyzing Recent Changes
-    Step 0b: Bootstrap Documentation (NEW v3.1.0)
+    Step 0b: Bootstrap Documentation (NEW v3.1.1)
     Step 1:  Update Related Documentation
     Step 2:  Check Documentation Consistency
     Step 3:  Validate Script References

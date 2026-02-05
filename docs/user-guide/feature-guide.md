@@ -4,6 +4,12 @@
 **Status**: Production Ready ✅  
 **Upgrade Path**: Backward compatible from v2.3.x
 
+> **Related Documentation**:
+> - [Quick Start Guide](quick-start.md) - Get started quickly with your project type
+> - [Architecture Guide](../developer-guide/architecture.md) - System design and patterns
+> - [Performance Benchmarks](../reference/performance-benchmarks.md) - Detailed performance data
+> - [Release Notes](release-notes.md) - Version-specific changes
+
 ---
 
 ## 🎯 Overview
@@ -629,10 +635,12 @@ Security:
 
 ## 📞 Support
 
-- **Documentation**: [docs/](../)
+- **Documentation**: [docs/](../) | [Project Reference](../PROJECT_REFERENCE.md)
+- **Quick Start**: [quick-start.md](quick-start.md)
+- **Troubleshooting**: [troubleshooting.md](troubleshooting.md)
+- **FAQ**: [faq.md](faq.md)
 - **Issues**: GitHub Issues
 - **Discussions**: GitHub Discussions
-- **Email**: project-maintainer@example.com
 
 ---
 

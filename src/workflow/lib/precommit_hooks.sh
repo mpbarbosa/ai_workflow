@@ -3,7 +3,7 @@ set -euo pipefail
 
 ################################################################################
 # Pre-Commit Hooks Module
-# Version: 3.0.0
+# Version: 3.0.1
 # Purpose: Fast validation checks before commits to prevent workflow failures
 #
 # Features:
@@ -462,7 +462,7 @@ create_hook_config() {
     
     cat > "$config_file" << 'EOF'
 # AI Workflow Pre-Commit Configuration
-# Version: 3.0.0
+# Version: 3.0.1
 
 # Enable/disable specific checks
 checks:

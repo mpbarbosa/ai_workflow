@@ -2,16 +2,16 @@
 set -euo pipefail
 
 ################################################################################
-# Step 1: AI-Powered Documentation Updates (Refactored)
+# Step 1: AI-Powered Documentation Updates (Optimized)
 # Purpose: Update documentation based on code changes with AI assistance  
-# Part of: Tests & Documentation Workflow Automation v3.0.0
-# Version: 3.0.0 (Refactored - All Phases Complete)
+# Part of: Tests & Documentation Workflow Automation v3.2.1
+# Version: 3.2.1 (Optimized - Incremental + Parallel Processing)
 ################################################################################
 
 # Module version information
-readonly STEP1_VERSION="3.0.0"
-readonly STEP1_VERSION_MAJOR=2
-readonly STEP1_VERSION_MINOR=0
+readonly STEP1_VERSION="3.2.1"
+readonly STEP1_VERSION_MAJOR=3
+readonly STEP1_VERSION_MINOR=2
 readonly STEP1_VERSION_PATCH=0
 
 # Get script directory for sourcing modules

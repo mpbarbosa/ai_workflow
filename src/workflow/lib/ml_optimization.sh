@@ -3,7 +3,7 @@ set -euo pipefail
 
 ################################################################################
 # Machine Learning Optimization Module
-# Version: 3.0.0
+# Version: 3.0.1
 # Purpose: Predictive optimization using historical workflow data
 #
 # Features:

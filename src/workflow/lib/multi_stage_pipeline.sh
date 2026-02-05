@@ -3,7 +3,7 @@ set -euo pipefail
 
 ################################################################################
 # Multi-Stage Pipeline Module
-# Version: 2.7.0
+# Version: 2.7.1
 # Purpose: Intelligent pipeline staging with progressive validation
 #
 # Features:

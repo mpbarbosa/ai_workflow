@@ -3,7 +3,7 @@ set -euo pipefail
 
 ################################################################################
 # Enhanced Validation Module
-# Version: 1.0.0
+# Version: 1.0.1
 # Purpose: Additional validation checks for production workflows
 # Part of: Tests & Documentation Workflow Automation v2.7.0
 # Created: December 31, 2025
