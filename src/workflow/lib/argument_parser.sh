@@ -174,6 +174,12 @@ parse_workflow_arguments() {
                 print_info "Fresh start enabled - ignoring any checkpoints"
                 shift
                 ;;
+            --skip-submodules)
+                SKIP_SUBMODULES=true
+                export SKIP_SUBMODULES
+                print_info "Git submodule operations disabled"
+                shift
+                ;;
             --cleanup-days)
                 if [[ -z "${2:-}" ]] || [[ "$2" == --* ]]; then
                     print_error "--cleanup-days requires a number argument"

@@ -4,8 +4,18 @@ set -euo pipefail
 ################################################################################
 # Step 11: AI-Powered Git Finalization & Commit Message Generation
 # Purpose: Stage changes, generate conventional commit messages, push to remote
-# Part of: Tests & Documentation Workflow Automation v2.7.1
-# Version: 2.2.0
+# Part of: Tests & Documentation Workflow Automation v3.1.0
+# Version: 2.3.0
+#
+# NEW IN v2.3.0 (2026-02-06):
+# - Git Submodule Support: Full lifecycle management for submodules
+#   * Automatic detection and initialization
+#   * Update to latest remote commits
+#   * AI-powered commit messages for submodule changes
+#   * Push submodule changes and update pointers in parent
+#   * Error handling with rollback support
+# - --skip-submodules flag to opt-out of submodule operations
+# - Comprehensive submodule status logging
 #
 # NEW IN v2.7.1 (2025-12-31):
 # - AI Batch Mode: Automatic AI commit message generation in --ai-batch mode
@@ -22,12 +32,22 @@ set -euo pipefail
 # - Interactive Mode: User pastes AI-generated message (manual)
 # - AI Batch Mode (--ai-batch): Automatic AI generation (NEW)
 # - Auto Mode (--auto): Default conventional message
+#
+# SUBMODULE WORKFLOW:
+# 1. Detect and validate all submodules
+# 2. Initialize submodules if needed
+# 3. Update each submodule to latest remote
+# 4. Detect and stage changes within submodules
+# 5. Generate AI commit messages for submodule changes
+# 6. Commit and push submodule changes
+# 7. Stage submodule pointer updates in parent
+# 8. Commit and push parent repository
 ################################################################################
 
 # Module version information
-readonly STEP11_VERSION="2.2.0"
+readonly STEP11_VERSION="2.3.0"
 readonly STEP11_VERSION_MAJOR=2
-readonly STEP11_VERSION_MINOR=2
+readonly STEP11_VERSION_MINOR=3
 readonly STEP11_VERSION_PATCH=0
 
 # Push to remote if local is ahead
@@ -154,6 +174,198 @@ $(git show --stat HEAD 2>/dev/null || echo "Latest commit details unavailable")
     return 0
 }
 
+################################################################################
+# SUBMODULE WORKFLOW ORCHESTRATION
+################################################################################
+
+# Process all submodules: update, commit, push
+# Returns: 0 on success, 1 on failure
+# Usage: process_submodules
+process_submodules() {
+    local project_root="${PROJECT_ROOT:-.}"
+    
+    cd "$project_root"
+    
+    # Check for --skip-submodules flag
+    if [[ "${SKIP_SUBMODULES:-false}" == "true" ]]; then
+        print_info "Submodule operations skipped (--skip-submodules flag)"
+        return 0
+    fi
+    
+    # Check if submodules exist
+    if ! has_submodules; then
+        print_info "No submodules configured - skipping submodule processing"
+        return 0
+    fi
+    
+    local submodule_count
+    submodule_count=$(get_submodule_count)
+    
+    print_info "═══════════════════════════════════════════════════════════"
+    print_info "Processing ${submodule_count} submodule(s)..."
+    print_info "═══════════════════════════════════════════════════════════"
+    
+    local submodules
+    submodules=$(detect_submodules)
+    
+    local processed=0
+    local failed=0
+    local skipped=0
+    
+    while IFS= read -r submodule_path; do
+        print_info ""
+        print_info "─────────────────────────────────────────────────────────"
+        print_info "Submodule: ${submodule_path}"
+        print_info "─────────────────────────────────────────────────────────"
+        
+        # Validate submodule state
+        if ! validate_submodule_state "$submodule_path"; then
+            print_error "Submodule validation failed: ${submodule_path}"
+            ((failed++))
+            return 1  # Stop on validation error
+        fi
+        
+        # Initialize if needed
+        if ! is_submodule_initialized "$submodule_path"; then
+            print_info "Initializing submodule..."
+            if ! init_submodule "$submodule_path"; then
+                print_error "Failed to initialize submodule: ${submodule_path}"
+                ((failed++))
+                return 1
+            fi
+        fi
+        
+        # Update submodule to latest remote
+        print_info "Updating submodule from remote..."
+        if ! update_submodule "$submodule_path"; then
+            print_error "Failed to update submodule: ${submodule_path}"
+            ((failed++))
+            return 1
+        fi
+        
+        # Check for changes within submodule
+        if ! has_submodule_changes "$submodule_path"; then
+            print_info "No changes in submodule - skipping commit"
+            ((skipped++))
+            
+            # Check if pointer changed in parent
+            if has_submodule_pointer_change "$submodule_path"; then
+                print_info "Submodule pointer updated (will be committed in parent)"
+            fi
+            
+            ((processed++))
+            continue
+        fi
+        
+        # Display submodule status
+        print_submodule_status "$submodule_path"
+        echo ""
+        
+        # Stage changes in submodule
+        print_info "Staging changes in submodule..."
+        if ! stage_submodule_changes "$submodule_path"; then
+            print_error "Failed to stage submodule changes: ${submodule_path}"
+            ((failed++))
+            return 1
+        fi
+        
+        # Generate commit message for submodule
+        print_info "Generating AI commit message for submodule..."
+        local submodule_commit_msg=""
+        
+        # Try AI generation if in AI batch mode
+        if [[ "${AI_BATCH_MODE:-false}" == "true" ]] && command -v copilot &>/dev/null; then
+            local ai_start
+            ai_start=$(date +%s)
+            
+            if submodule_commit_msg=$(generate_submodule_commit_message "$submodule_path" 2>&1); then
+                local ai_end
+                ai_end=$(date +%s)
+                local ai_duration=$((ai_end - ai_start))
+                
+                print_success "AI generated submodule commit message (${ai_duration}s)"
+                echo ""
+                print_info "Generated Message:"
+                echo -e "${CYAN}${submodule_commit_msg}${NC}"
+                echo ""
+            else
+                print_warning "AI generation failed for submodule, using fallback"
+                submodule_commit_msg=$(generate_submodule_fallback_message "$submodule_path")
+                echo ""
+                print_info "Fallback Message:"
+                echo -e "${YELLOW}${submodule_commit_msg}${NC}"
+                echo ""
+            fi
+        else
+            # Use fallback message
+            submodule_commit_msg=$(generate_submodule_fallback_message "$submodule_path")
+            print_info "Using fallback commit message for submodule:"
+            echo -e "${YELLOW}${submodule_commit_msg}${NC}"
+            echo ""
+        fi
+        
+        # Confirm commit in interactive mode
+        if [[ "$INTERACTIVE_MODE" == true ]]; then
+            if ! confirm_action "Commit changes in submodule ${submodule_path}?"; then
+                print_warning "Submodule commit cancelled by user"
+                ((skipped++))
+                continue
+            fi
+        fi
+        
+        # Commit changes in submodule
+        print_info "Committing changes in submodule..."
+        if ! commit_submodule_changes "$submodule_path" "$submodule_commit_msg"; then
+            print_error "Failed to commit submodule changes: ${submodule_path}"
+            ((failed++))
+            return 1
+        fi
+        
+        print_success "Submodule committed successfully"
+        
+        # Push submodule to remote
+        print_info "Pushing submodule to remote..."
+        if ! push_submodule "$submodule_path"; then
+            print_error "Failed to push submodule: ${submodule_path}"
+            print_error "Changes are committed locally but not pushed"
+            ((failed++))
+            return 1
+        fi
+        
+        print_success "Submodule pushed successfully ✅"
+        
+        # Stage submodule pointer update in parent
+        print_info "Staging submodule pointer update in parent..."
+        if ! git add "$submodule_path"; then
+            print_error "Failed to stage submodule pointer: ${submodule_path}"
+            ((failed++))
+            return 1
+        fi
+        
+        print_success "Submodule pointer staged in parent repository"
+        
+        ((processed++))
+        
+    done <<< "$submodules"
+    
+    # Summary
+    print_info ""
+    print_info "═══════════════════════════════════════════════════════════"
+    print_info "Submodule Processing Complete"
+    print_info "═══════════════════════════════════════════════════════════"
+    print_info "Total:     ${submodule_count}"
+    print_info "Processed: ${processed}"
+    print_info "Skipped:   ${skipped} (no changes)"
+    print_info "Failed:    ${failed}"
+    print_info "═══════════════════════════════════════════════════════════"
+    
+    if [[ $failed -gt 0 ]]; then
+        return 1
+    fi
+    
+    return 0
+}
+
 # Main step function - finalizes git operations with AI-generated commit messages
 # Returns: 0 for success, 1 for failure
 step11_git_finalization() {
@@ -167,6 +379,7 @@ step11_git_finalization() {
     # Dry-run preview
     if [[ "$DRY_RUN" == true ]]; then
         print_info "[DRY RUN] Git operations preview:"
+        print_info "  - Would check for submodules and process them"
         print_info "  - Would check for changes to commit"
         print_info "  - Would stage changes if any exist"
         print_info "  - Would generate AI commit message if changes exist"
@@ -181,7 +394,10 @@ step11_git_finalization() {
 Dry run mode enabled. No actual git operations performed.
 
 ### Planned Operations
-- Check for changes to commit
+- Detect and process all git submodules
+- Update submodules to latest remote
+- Commit and push submodule changes
+- Check for changes to commit in parent
 - Stage changes if any exist
 - Generate AI commit message if changes exist
 - Commit with comprehensive message if changes exist
@@ -281,6 +497,25 @@ Dry run mode enabled. No actual git operations performed.
     echo "Inferred Scope: $commit_scope" >> "$git_analysis"
     
     print_info "Inferred commit type: $commit_type($commit_scope)"
+    
+    # PHASE 1.5: Process submodules (if any)
+    echo ""
+    print_info "Phase 1.5: Processing git submodules..."
+    
+    # Process submodules before committing parent
+    if ! process_submodules; then
+        print_error "Submodule processing failed"
+        update_workflow_status "step11" "❌"
+        return 1
+    fi
+    
+    # Refresh git cache after submodule operations (may have staged submodule pointers)
+    if command -v refresh_git_cache &>/dev/null; then
+        refresh_git_cache
+        # Update counts after submodule processing
+        total_changes=$(get_git_total_changes)
+        staged_count=$(get_git_staged_count)
+    fi
     
     # CHECK: Early detection of no changes to commit
     echo ""
@@ -549,4 +784,5 @@ Total changes: $total_changes files
 
 # Export functions
 export -f push_if_ahead
+export -f process_submodules
 export -f step11_git_finalization

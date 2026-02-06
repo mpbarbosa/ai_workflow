@@ -4,7 +4,7 @@ set -euo pipefail
 
 ################################################################################
 # Tests & Documentation Workflow Automation Script
-# Version: 3.2.1
+# Version: 3.2.0
 # Purpose: Automate the complete tests and documentation update workflow
 # Related: /prompts/tests_documentation_update_enhanced.txt
 #
@@ -121,7 +121,7 @@ set -euo pipefail
 # CONFIGURATION & CONSTANTS
 # ==============================================================================
 
-SCRIPT_VERSION="3.1.1"  # Step 0b: Bootstrap Documentation - Generates comprehensive docs from scratch
+SCRIPT_VERSION="3.2.0"  # Git Submodule Support in Step 11
 SCRIPT_NAME="Tests & Documentation Workflow Automation"
 WORKFLOW_HOME="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
 PROJECT_ROOT="$(pwd)"  # Default: current directory; can be overridden with --target option
@@ -2225,6 +2225,10 @@ OPTIONS:
                        Prevents broken commits, auto-stages generated files
     --uninstall-hooks  Remove pre-commit hooks (NEW v2.10.0)
     --test-hooks       Test pre-commit hooks without committing (NEW v2.10.0)
+    
+    --skip-submodules  Skip git submodule operations in Step 11 (NEW v3.1.0)
+                       Default: Process all submodules automatically
+                       Use when you want to manage submodules manually
     
     --help             Show this help message
     --version          Show script version

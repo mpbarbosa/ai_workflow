@@ -5,7 +5,68 @@ All notable changes to the AI Workflow Automation project will be documented in 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
 ## [3.2.0] - 2026-02-06
+
+### Added
+- **Git Submodule Support in Step 11** - Full lifecycle management
+  - Automatic detection and initialization of submodules
+  - Update to latest remote commits before parent operations
+  - AI-powered commit message generation for submodule changes
+  - Push submodule changes and update pointers in parent repository
+  - Comprehensive error handling with immediate failure on errors
+  - New module: `src/workflow/lib/git_submodule_helpers.sh` (500+ lines, 21 functions)
+  - Enhanced module: `src/workflow/lib/batch_ai_commit.sh` (v1.1.0)
+    - `assemble_submodule_context_for_ai()` - Context assembly for submodules
+    - `build_submodule_commit_prompt()` - AI prompt builder for submodules
+    - `generate_submodule_commit_message()` - AI-powered submodule commits
+    - `generate_submodule_fallback_message()` - Fallback messages for submodules
+  - `process_submodules()` function in Step 11 - Orchestrates full workflow
+- **CLI Flag**: `--skip-submodules` - Opt-out of automatic submodule operations
+- **Submodule Helper Functions** (21 total):
+  - Detection: `detect_submodules()`, `has_submodules()`, `get_submodule_count()`
+  - Status: `get_submodule_status()`, `has_submodule_changes()`, `get_submodule_branch()`
+  - Operations: `init_submodule()`, `update_submodule()`, `update_all_submodules()`
+  - Commit: `stage_submodule_changes()`, `commit_submodule_changes()`, `push_submodule()`
+  - Analysis: `get_submodule_diff()`, `get_submodule_change_summary()`, `print_submodule_status()`
+  - Validation: `validate_submodule_state()`, `is_submodule_initialized()`
+
+### Changed
+- **Step 11 (Git Finalization)**: v2.2.0 → v2.3.0
+  - Added Phase 1.5: Process submodules before parent commit
+  - Integrated `process_submodules()` into main workflow
+  - Enhanced dry-run preview to include submodule operations
+  - Refreshes git cache after submodule processing
+- **Main Workflow Script**: v3.1.1 → v3.2.0
+  - Updated help text with `--skip-submodules` documentation
+  - Added submodule support to feature list
+- **Argument Parser**: Enhanced with `--skip-submodules` flag handling
+
+### Technical Details
+- **Submodule Workflow Sequence**:
+  1. Detect and validate all configured submodules
+  2. Initialize submodules if not already initialized
+  3. Update each submodule to latest remote (merge strategy)
+  4. Detect changes within each submodule
+  5. Stage and commit changes with AI-generated messages
+  6. Push submodule changes to remote
+  7. Stage submodule pointer updates in parent repository
+  8. Continue with normal parent repository commit workflow
+- **Error Handling**: Fail-fast approach - stops on any submodule error
+- **Backward Compatibility**: No breaking changes - works transparently with/without submodules
+- **Performance**: Minimal overhead (~2-5 seconds per submodule)
+- **AI Integration**: Uses same AI personas and caching as parent commits
+
+### Use Cases
+- Managing shared configuration repositories (`.workflow_core`)
+- Multi-repo projects with library dependencies
+- Plugin/extension architectures
+- Shared documentation repositories
+
+---
+
+## [3.1.1] - 2026-01-28
 
 ### Added
 - **Intelligent AI Model Selection** based on change complexity

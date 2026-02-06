@@ -4,12 +4,13 @@ set -euo pipefail
 ################################################################################
 # Batch AI Commit Message Generation Library
 # Purpose: Generate AI-powered commit messages in non-interactive mode
-# Version: 1.0.1 (v2.7.0-alpha)
+# Version: 1.1.0 (v3.1.0)
 # Created: 2025-12-31
+# Updated: 2026-02-06 - Added submodule commit message support
 ################################################################################
 
 # Module version
-readonly BATCH_AI_COMMIT_VERSION="1.0.1"
+readonly BATCH_AI_COMMIT_VERSION="1.1.0"
 
 ################################################################################
 # CONFIGURATION
@@ -440,6 +441,259 @@ generate_batch_ai_commit_message() {
 }
 
 ################################################################################
+# SUBMODULE COMMIT MESSAGE GENERATION
+################################################################################
+
+# Assemble git context for submodule commit message generation
+# Args: $1 - submodule path
+# Returns: Context string suitable for AI prompt
+# Usage: context=$(assemble_submodule_context_for_ai ".workflow_core")
+assemble_submodule_context_for_ai() {
+    local submodule_path="${1:?Submodule path required}"
+    local project_root="${PROJECT_ROOT:-.}"
+    
+    cd "$project_root"
+    
+    # Get submodule details
+    local submodule_name
+    submodule_name=$(basename "$submodule_path")
+    
+    local submodule_url
+    submodule_url=$(get_submodule_url "$submodule_path" || echo "unknown")
+    
+    local submodule_branch
+    submodule_branch=$(get_submodule_branch "$submodule_path" || echo "unknown")
+    
+    # Get change summary
+    local change_summary
+    change_summary=$(get_submodule_change_summary "$submodule_path" || echo "no changes")
+    
+    # Get modified files
+    local modified_files
+    modified_files=$(get_submodule_modified_files "$submodule_path" || echo "")
+    
+    # Get diff sample (limited)
+    local diff_sample
+    diff_sample=$(get_submodule_diff "$submodule_path" "${MAX_DIFF_LINES}" || echo "")
+    
+    # Count file types in submodule
+    local docs_count=0
+    local test_count=0
+    local code_count=0
+    local config_count=0
+    
+    while IFS= read -r file; do
+        if [[ "$file" =~ \.(md|txt|rst)$ ]] || [[ "$file" =~ docs/ ]]; then
+            ((docs_count++))
+        elif [[ "$file" =~ \.(test|spec)\. ]] || [[ "$file" =~ __tests__/ ]]; then
+            ((test_count++))
+        elif [[ "$file" =~ \.(yaml|yml|json|toml|ini|conf)$ ]]; then
+            ((config_count++))
+        else
+            ((code_count++))
+        fi
+    done <<< "$modified_files"
+    
+    # Assemble context
+    local context="Submodule: ${submodule_name}
+Path: ${submodule_path}
+Repository: ${submodule_url}
+Branch: ${submodule_branch}
+
+Change Summary:
+${change_summary}
+
+File Categories:
+- Documentation: ${docs_count} files
+- Tests: ${test_count} files
+- Code: ${code_count} files
+- Configuration: ${config_count} files
+
+Modified Files:
+${modified_files}
+
+Diff Sample (first ${MAX_DIFF_LINES} lines):
+${diff_sample}"
+    
+    echo "$context"
+}
+
+# Build AI prompt for submodule commit message generation
+# Args: $1 - submodule git context
+#       $2 - submodule path
+# Returns: Formatted prompt for Copilot CLI
+build_submodule_commit_prompt() {
+    local submodule_context="$1"
+    local submodule_path="${2:?Submodule path required}"
+    
+    local prompt="You are an expert Git workflow specialist. Generate a professional conventional commit message for changes within a git submodule.
+
+${submodule_context}
+
+CONTEXT:
+- This is a commit WITHIN the submodule repository (not the parent)
+- Changes are to shared/library code used by the parent project
+- Focus on the submodule's own scope and purpose
+
+REQUIREMENTS:
+1. Follow Conventional Commits specification strictly
+2. Format: <type>(<scope>): <subject>
+3. Subject line maximum 72 characters
+4. Include detailed body with:
+   - What changed and why (not how)
+   - Key changes as bullet points
+   - Impact on projects using this submodule
+5. Use present tense (\"add\" not \"added\")
+6. Be specific and descriptive
+7. Mention this is submodule update if relevant
+
+COMMIT MESSAGE STRUCTURE:
+<type>(<scope>): <clear, descriptive subject line>
+
+<detailed body paragraph explaining what and why>
+
+Key Changes:
+- <important change 1>
+- <important change 2>
+- <important change 3>
+
+Impact: <how this affects projects using this submodule>
+
+Generate ONLY the commit message, no additional commentary."
+    
+    echo "$prompt"
+}
+
+# Generate commit message for submodule using AI
+# Args: $1 - submodule path
+# Returns: 0 on success with message in stdout, 1 on failure
+# Usage: message=$(generate_submodule_commit_message ".workflow_core")
+generate_submodule_commit_message() {
+    local submodule_path="${1:?Submodule path required}"
+    
+    # Check if Copilot CLI is available
+    if ! command -v copilot &> /dev/null; then
+        echo "ERROR: Copilot CLI not available" >&2
+        return 1
+    fi
+    
+    # Assemble submodule context
+    local submodule_context
+    submodule_context=$(assemble_submodule_context_for_ai "$submodule_path")
+    
+    if [[ -z "$submodule_context" ]]; then
+        echo "ERROR: Failed to assemble submodule context" >&2
+        return 1
+    fi
+    
+    # Build prompt
+    local prompt
+    prompt=$(build_submodule_commit_prompt "$submodule_context" "$submodule_path")
+    
+    # Create temporary output file
+    local output_file
+    output_file=$(mktemp)
+    
+    # Log prompt (if logging enabled)
+    if [[ "${VERBOSE:-false}" == "true" ]]; then
+        echo "[DEBUG] Submodule AI Prompt length: ${#prompt} chars" >&2
+    fi
+    
+    # Execute Copilot CLI with timeout
+    local start_time
+    start_time=$(date +%s)
+    
+    local success=false
+    if timeout ${AI_GENERATION_TIMEOUT} bash -c "echo '$prompt' | copilot -p 'git_workflow_specialist' > '$output_file' 2>&1"; then
+        success=true
+    fi
+    
+    local end_time
+    end_time=$(date +%s)
+    local duration=$((end_time - start_time))
+    
+    if [[ "${VERBOSE:-false}" == "true" ]]; then
+        echo "[DEBUG] Submodule AI generation took ${duration}s" >&2
+    fi
+    
+    if [[ "$success" != "true" ]]; then
+        echo "ERROR: Submodule AI generation failed or timed out after ${duration}s" >&2
+        rm -f "$output_file"
+        return 1
+    fi
+    
+    # Read response
+    local ai_response
+    ai_response=$(cat "$output_file" 2>/dev/null || echo "")
+    rm -f "$output_file"
+    
+    if [[ -z "$ai_response" ]]; then
+        echo "ERROR: AI returned empty response for submodule" >&2
+        return 1
+    fi
+    
+    # Parse response
+    local commit_message
+    commit_message=$(parse_ai_commit_response "$ai_response")
+    
+    if [[ -z "$commit_message" ]]; then
+        echo "ERROR: Failed to parse AI submodule response" >&2
+        return 1
+    fi
+    
+    # Output the commit message
+    echo "$commit_message"
+    return 0
+}
+
+# Generate fallback commit message for submodule
+# Args: $1 - submodule path
+# Returns: Conventional commit message
+generate_submodule_fallback_message() {
+    local submodule_path="${1:?Submodule path required}"
+    
+    local submodule_name
+    submodule_name=$(basename "$submodule_path")
+    
+    local change_summary
+    change_summary=$(get_submodule_change_summary "$submodule_path" || echo "updates")
+    
+    local modified_files
+    modified_files=$(get_submodule_modified_files "$submodule_path" | head -3 | awk '{print "- " $1}')
+    
+    # Determine commit type based on files
+    local commit_type="chore"
+    local commit_scope="config"
+    
+    if echo "$modified_files" | grep -qi "\.md\|docs/"; then
+        commit_type="docs"
+        commit_scope="documentation"
+    elif echo "$modified_files" | grep -qi "test"; then
+        commit_type="test"
+        commit_scope="testing"
+    elif echo "$modified_files" | grep -qi "\.yaml\|\.yml\|\.json"; then
+        commit_type="chore"
+        commit_scope="config"
+    else
+        commit_type="feat"
+        commit_scope="core"
+    fi
+    
+    local message="${commit_type}(${commit_scope}): update ${submodule_name} configuration
+
+Automated update from parent repository workflow.
+
+Changes:
+${modified_files}
+
+Summary: ${change_summary}
+
+[submodule: ${submodule_path}]"
+    
+    echo "$message"
+}
+
+################################################################################
 # EXPORTS
 ################################################################################
 
@@ -449,3 +703,7 @@ export -f generate_ai_commit_message_batch
 export -f parse_ai_commit_response
 export -f generate_enhanced_fallback_message
 export -f generate_batch_ai_commit_message
+export -f assemble_submodule_context_for_ai
+export -f build_submodule_commit_prompt
+export -f generate_submodule_commit_message
+export -f generate_submodule_fallback_message
