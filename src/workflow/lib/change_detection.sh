@@ -467,8 +467,55 @@ EOF
     echo "${output_file}"
 }
 
+# ==============================================================================
+# FILE CLASSIFICATION FOR MODEL SELECTION (v3.2.0)
+# ==============================================================================
+
+# Classify changed files into code, documentation, and tests
+# Usage: classify_files_by_nature
+# Returns: Three space-separated lists: "code_files|doc_files|test_files"
+classify_files_by_nature() {
+    local modified_files=$(git diff --name-only HEAD 2>/dev/null)
+    local staged_files=$(git diff --cached --name-only 2>/dev/null)
+    local untracked_files=$(git ls-files --others --exclude-standard 2>/dev/null)
+    
+    # Combine all changed files
+    local all_changes=$(echo -e "${modified_files}\n${staged_files}\n${untracked_files}" | sort -u | grep -v '^$')
+    
+    # Filter out workflow artifacts
+    all_changes=$(filter_workflow_artifacts "$all_changes")
+    
+    local code_files=""
+    local doc_files=""
+    local test_files=""
+    
+    while IFS= read -r file; do
+        [[ -z "$file" ]] && continue
+        
+        # Priority: tests > docs > code (to handle ambiguous files)
+        if matches_pattern "$file" "${FILE_PATTERNS[tests]}"; then
+            test_files="${test_files}${file} "
+        elif matches_pattern "$file" "${FILE_PATTERNS[docs]}"; then
+            doc_files="${doc_files}${file} "
+        elif matches_pattern "$file" "${FILE_PATTERNS[code]}"; then
+            code_files="${code_files}${file} "
+        elif matches_pattern "$file" "${FILE_PATTERNS[scripts]}"; then
+            # Treat scripts as code
+            code_files="${code_files}${file} "
+        fi
+    done <<< "$all_changes"
+    
+    # Trim trailing spaces
+    code_files=$(echo "$code_files" | xargs)
+    doc_files=$(echo "$doc_files" | xargs)
+    test_files=$(echo "$test_files" | xargs)
+    
+    # Return pipe-delimited
+    echo "${code_files}|${doc_files}|${test_files}"
+}
+
 # Export functions for use in workflow
 export -f filter_workflow_artifacts is_workflow_artifact
 export -f detect_change_type analyze_changes get_recommended_steps
 export -f should_execute_step display_execution_plan assess_change_impact
-export -f generate_change_report
+export -f generate_change_report classify_files_by_nature

@@ -4,7 +4,7 @@ set -euo pipefail
 ################################################################################
 # Argument Parser Module
 # Purpose: Extract command-line argument parsing logic from main workflow script
-# Version: 3.0.0
+# Version: 3.0.1
 # Part of: Technical Debt Reduction Phase 1
 ################################################################################
 
@@ -96,6 +96,39 @@ parse_workflow_arguments() {
                 SMART_EXECUTION=true
                 export SMART_EXECUTION
                 print_info "Smart execution enabled - steps will be skipped based on change detection"
+                shift
+                ;;
+            --force-model)
+                if [[ -z "${2:-}" ]] || [[ "$2" == --* ]]; then
+                    print_error "--force-model requires a model name argument"
+                    exit 1
+                fi
+                
+                # Validate model name if model_selector is available
+                local model_valid=true
+                if command -v validate_model_name &>/dev/null; then
+                    if ! validate_model_name "$2"; then
+                        model_valid=false
+                        print_error "Invalid model name: $2"
+                        echo ""
+                        echo "Supported models:"
+                        list_supported_models | tr ' ' '\n' | sed 's/^/  - /'
+                        echo ""
+                        echo "Did you mean one of these?"
+                        suggest_similar_models "$2" | tr ' ' '\n' | sed 's/^/  - /'
+                        exit 1
+                    fi
+                fi
+                
+                FORCE_MODEL="$2"
+                export FORCE_MODEL
+                print_info "Force model enabled - all AI steps will use: $FORCE_MODEL"
+                shift 2
+                ;;
+            --show-model-plan)
+                SHOW_MODEL_PLAN=true
+                export SHOW_MODEL_PLAN
+                print_info "Show model plan mode - will display model assignments and exit"
                 shift
                 ;;
             --no-smart-execution)

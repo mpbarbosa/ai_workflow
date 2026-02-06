@@ -141,8 +141,7 @@ EOF
 # ==============================================================================
 
 # User confirmation prompt with auto-mode bypass
-# Usage: confirm_action <prompt> [default_answer]
-# Returns: 0 for yes (always), 1 for no (Ctrl+C)
+# Updated: Simplified to "Enter to continue or Ctrl+C to exit" pattern
 confirm_action() {
     local prompt="$1"
     local default_answer="${2:-}"  # Optional: kept for compatibility but not used
@@ -150,6 +149,11 @@ confirm_action() {
     # Auto mode always returns true (yes)
     if [[ "$AUTO_MODE" == true ]]; then
         return 0
+    fi
+    
+    # Play audio notification if available (v3.1.0)
+    if type -t play_notification_sound > /dev/null 2>&1; then
+        play_notification_sound "continue_prompt" 2>/dev/null || true
     fi
     
     # Display the prompt message

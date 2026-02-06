@@ -20,3 +20,7 @@ structure:
     - tests
   docs_dirs:
     - docs
+audio:
+  enabled: true
+  continue_prompt_sound: /home/mpb/Downloads/emircanalp-beep-125033.mp3
+  completion_sound: /home/mpb/Downloads/freesound_community-beep-beep-beep-beep-80262.mp3

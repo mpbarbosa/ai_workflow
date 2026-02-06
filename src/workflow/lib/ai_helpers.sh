@@ -2135,6 +2135,64 @@ EOF
 
 # Execute Copilot prompt in batch (non-interactive) mode
 # This function runs AI analysis without user interaction, capturing the full response
+# ==============================================================================
+# MODEL SELECTION SUPPORT (v3.2.0)
+# ==============================================================================
+
+# Get model for specific workflow step from model definitions
+# Usage: get_model_for_step <step_id>
+# Returns: model name or "default"
+get_model_for_step() {
+    local step_id="$1"
+    local definitions_file="${PROJECT_ROOT:-.}/.ai_workflow/model_definitions.json"
+    
+    # Check for override first
+    if [[ -n "${FORCE_MODEL:-}" ]]; then
+        echo "$FORCE_MODEL"
+        return 0
+    fi
+    
+    # Load from JSON if available
+    if [[ -f "$definitions_file" ]]; then
+        if command -v jq &>/dev/null; then
+            local model=$(jq -r ".model_definitions[\"$step_id\"].model // \"default\"" "$definitions_file" 2>/dev/null || echo "default")
+            if [[ "$model" != "null" ]] && [[ "$model" != "default" ]]; then
+                echo "$model"
+                return 0
+            fi
+        fi
+    fi
+    
+    echo "default"
+}
+
+# Get current step ID from environment or call stack
+# Usage: get_current_step_id
+# Returns: step ID (e.g., "step_01_documentation")
+get_current_step_id() {
+    # Try to extract from CURRENT_STEP environment variable
+    if [[ -n "${CURRENT_STEP:-}" ]]; then
+        echo "$CURRENT_STEP"
+        return 0
+    fi
+    
+    # Try to extract from caller script name
+    local caller_script="${BASH_SOURCE[2]:-}"
+    if [[ -n "$caller_script" ]]; then
+        local step_name=$(basename "$caller_script" .sh)
+        if [[ "$step_name" =~ ^step_[0-9]+[a-z]?_.* ]]; then
+            echo "$step_name"
+            return 0
+        fi
+    fi
+    
+    echo "unknown_step"
+}
+
+# ==============================================================================
+# AI EXECUTION WITH MODEL SELECTION
+# ==============================================================================
+
 # Usage: execute_copilot_batch <prompt_text> <log_file> [timeout_seconds] [step_name] [persona]
 execute_copilot_batch() {
     local prompt_text="$1"
@@ -2153,6 +2211,16 @@ execute_copilot_batch() {
         return 1
     fi
     
+    # Get model for this step (NEW in v3.2.0)
+    local model=$(get_model_for_step "$step_name")
+    local model_flag=""
+    if [[ "$model" != "default" ]]; then
+        model_flag="--model $model"
+        print_info "Using AI model: $model (selected for $step_name)"
+    else
+        print_info "Using default AI model"
+    fi
+    
     print_info "Executing AI analysis in batch mode (timeout: ${timeout}s)..."
     
     # Log the prompt before execution
@@ -2166,9 +2234,9 @@ execute_copilot_batch() {
     temp_prompt_file=$(mktemp)
     echo "$prompt_text" > "$temp_prompt_file"
     
-    # Execute with timeout and non-interactive flags
+    # Execute with timeout, model selection, and non-interactive flags
     local exit_code=0
-    if timeout "${timeout}s" bash -c "cat '$temp_prompt_file' | copilot --allow-all-tools --allow-all-paths --enable-all-github-mcp-tools 2>&1 | tee '$log_file'"; then
+    if timeout "${timeout}s" bash -c "cat '$temp_prompt_file' | copilot $model_flag --allow-all-tools --allow-all-paths --enable-all-github-mcp-tools 2>&1 | tee '$log_file'"; then
         print_success "AI batch analysis completed"
         exit_code=0
     else
@@ -2234,6 +2302,14 @@ execute_copilot_prompt() {
     
     print_info "Executing Copilot CLI prompt..."
     
+    # Get model for this step (NEW in v3.2.0)
+    local model=$(get_model_for_step "$step_name")
+    local model_flag=""
+    if [[ "$model" != "default" ]]; then
+        model_flag="--model $model"
+        print_info "Using AI model: $model"
+    fi
+    
     # Log the prompt before execution
     log_ai_prompt "$step_name" "$persona" "$prompt_text"
     
@@ -2251,9 +2327,9 @@ execute_copilot_prompt() {
         # Use stdin to avoid ARG_MAX: read prompt from file and pipe to copilot
         # Use --allow-all-paths to enable access to target project files
         # Use --enable-all-github-mcp-tools for repository analysis capabilities
-        cat "$temp_prompt_file" | copilot --allow-all-tools --allow-all-paths --enable-all-github-mcp-tools 2>&1 | tee "$log_file"
+        cat "$temp_prompt_file" | copilot $model_flag --allow-all-tools --allow-all-paths --enable-all-github-mcp-tools 2>&1 | tee "$log_file"
     else
-        cat "$temp_prompt_file" | copilot --allow-all-tools --allow-all-paths --enable-all-github-mcp-tools
+        cat "$temp_prompt_file" | copilot $model_flag --allow-all-tools --allow-all-paths --enable-all-github-mcp-tools
     fi
     
     local exit_code=$?
@@ -2271,6 +2347,8 @@ execute_copilot_prompt() {
 }
 
 export -f log_ai_prompt
+export -f get_model_for_step
+export -f get_current_step_id
 export -f execute_copilot_batch
 
 # Trigger an AI-enhanced step with confirmation
@@ -2486,7 +2564,7 @@ export -f extract_and_save_issues_from_log
 
 ################################################################################
 # PHASE 4: LANGUAGE-SPECIFIC PROMPT GENERATION
-# Version: 5.0.0
+# Version: 5.0.1
 # Added: 2025-12-18
 ################################################################################
 

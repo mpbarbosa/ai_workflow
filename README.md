@@ -30,6 +30,7 @@ This repository provides a comprehensive, modular workflow automation system tha
 - **15 AI Personas** with GitHub Copilot CLI integration
 - **Smart Execution**: 40-85% faster (change-based step skipping)
 - **Parallel Execution**: 33% faster (independent steps run simultaneously)
+- **Audio Notifications** (NEW v3.1.0): Sound alerts for continue prompts and workflow completion
 - **Step 0b: Bootstrap Documentation** (NEW v3.1.0): Generate comprehensive docs from scratch
 - **Step 1 Optimization** (NEW v3.2.0): 75-85% faster documentation analysis
   - Incremental processing: Skip unchanged docs (96% savings)
@@ -165,6 +166,38 @@ cd /path/to/target/project
 - Checkpoint resume enabled by default (use `--no-resume` for fresh start)
 - Combined optimizations: Up to 90% faster for simple changes
 
+## Configuration
+
+The workflow is configurable via `.workflow-config.yaml` in your project root. Create one using:
+
+```bash
+./src/workflow/execute_tests_docs_workflow.sh --init-config
+```
+
+### Audio Notifications (NEW v3.1.0)
+
+Configure sound alerts for workflow events:
+
+```yaml
+audio:
+  enabled: true  # Enable/disable audio notifications
+  continue_prompt_sound: "/path/to/continue-beep.mp3"  # Sound for continue prompts
+  completion_sound: "/path/to/completion-beep.mp3"     # Sound for workflow completion
+```
+
+**Features**:
+- Plays sound when continue prompt appears (requires user interaction)
+- Plays sound when workflow completes (success or failure)
+- Automatically skipped in `--auto` mode
+- Graceful degradation if audio player unavailable
+- Supports: ffplay (recommended), mpg123, paplay, aplay
+
+**Requirements**: One of ffplay, mpg123, paplay, or aplay must be installed. Most systems have at least one.
+
+### Other Configuration Options
+
+See [docs/reference/init-config-wizard.md](docs/reference/init-config-wizard.md) for complete configuration guide.
+
 ## Documentation
 
 **📚 Complete Documentation** - See [docs/README.md](docs/README.md) and [docs/PROJECT_REFERENCE.md](docs/PROJECT_REFERENCE.md) ⭐
@@ -221,6 +254,9 @@ ai_workflow/
 - Bash 4.0+
 - Git
 - Node.js v25.2.1+ (for test execution in target projects)
+- yq (YAML processor for configuration parsing)
+- ShellCheck (for shell script linting - optional but recommended)
+- shellmetrics (for shell script complexity analysis - optional, v3.1.0+)
 - GitHub Copilot CLI (optional, for AI features)
 
 ## CI/CD Integration

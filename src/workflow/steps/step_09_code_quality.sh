@@ -4,7 +4,7 @@ set -euo pipefail
 ################################################################################
 # Step 9: AI-Powered Code Quality Validation
 # Purpose: Validate code quality, detect anti-patterns, assess maintainability (adaptive)
-# Part of: Tests & Documentation Workflow Automation v2.3.1
+# Part of: Tests & Documentation Workflow Automation v2.3.2
 # Version: 2.1.0 (Phase 3 - Adaptive)
 ################################################################################
 
@@ -113,14 +113,74 @@ step9_code_quality_validation() {
     local large_files_count=0
     local large_files_list=""
     
+    # NEW: Shell script complexity analysis with shellmetrics (v3.1.0)
+    if [[ "$language" == "bash" ]] && command -v shellmetrics >/dev/null 2>&1; then
+        print_info "Running shellmetrics for bash script complexity analysis..."
+        local shellmetrics_output=$(mktemp)
+        TEMP_FILES+=("$shellmetrics_output")
+        
+        # Find all shell scripts
+        local shell_scripts=$(find . -type f -name "*.sh" ! -path "*/node_modules/*" ! -path "*/.git/*" 2>/dev/null)
+        
+        if [[ -n "$shell_scripts" ]]; then
+            # Run shellmetrics and capture output
+            echo "$shell_scripts" | xargs shellmetrics --no-color 2>/dev/null > "$shellmetrics_output" || true
+            
+            if [[ -s "$shellmetrics_output" ]]; then
+                print_success "Shellmetrics analysis complete"
+                
+                # Extract key metrics
+                local total_functions=$(grep "function(s) analyzed" "$shellmetrics_output" | grep -o '[0-9]\+ function' | cut -d' ' -f1)
+                local avg_ccn=$(tail -3 "$shellmetrics_output" | grep -o 'CCN.*avg' | awk '{print $2}' | head -1)
+                local avg_lloc=$(tail -3 "$shellmetrics_output" | grep -o 'LLOC.*avg' | awk '{print $2}' | head -1)
+                
+                echo "Shell Script Complexity Metrics:" >> "$quality_report"
+                echo "  Total functions: ${total_functions:-0}" >> "$quality_report"
+                echo "  Average CCN (Cyclomatic Complexity): ${avg_ccn:-N/A}" >> "$quality_report"
+                echo "  Average LLOC (Logical Lines of Code): ${avg_lloc:-N/A}" >> "$quality_report"
+                
+                # Check for high complexity functions (CCN > 10 or LLOC > 100)
+                local high_complexity=$(awk '/LLOC  CCN  Location/,/^-+$/ {if ($2 > 10 || $1 > 100) print}' "$shellmetrics_output" | grep -v "^-" | grep -v "LLOC  CCN")
+                if [[ -n "$high_complexity" ]]; then
+                    print_warning "Found functions with high complexity (CCN>10 or LLOC>100)"
+                    echo "" >> "$quality_report"
+                    echo "High Complexity Functions:" >> "$quality_report"
+                    echo "$high_complexity" >> "$quality_report"
+                    ((quality_issues++))
+                else
+                    print_success "All functions have acceptable complexity"
+                fi
+                
+                # Append full shellmetrics report
+                echo "" >> "$quality_report"
+                echo "=== Full Shellmetrics Report ===" >> "$quality_report"
+                cat "$shellmetrics_output" >> "$quality_report"
+            fi
+        else
+            print_info "No shell scripts found for complexity analysis"
+        fi
+    elif [[ "$language" == "bash" ]]; then
+        print_warning "shellmetrics not found - install from https://github.com/ko1nksm/shellmetrics"
+        print_info "Falling back to basic line counting..."
+    fi
+    
     # Count file types for summary
     local js_files=$(find . -type f \( -name "*.js" -o -name "*.mjs" \) ! -path "*/node_modules/*" ! -path "*/.git/*" 2>/dev/null | wc -l)
     local html_files=$(find . -type f -name "*.html" ! -path "*/node_modules/*" ! -path "*/.git/*" 2>/dev/null | wc -l)
     local css_files=$(find . -type f -name "*.css" ! -path "*/node_modules/*" ! -path "*/.git/*" 2>/dev/null | wc -l)
-    local total_files=$((js_files + html_files + css_files))
+    local sh_files=$(find . -type f -name "*.sh" ! -path "*/node_modules/*" ! -path "*/.git/*" 2>/dev/null | wc -l)
+    local total_files=$((js_files + html_files + css_files + sh_files))
     
-    # Find JavaScript files over 300 lines (cache results for reuse)
-    local all_js_files=$(fast_find "." "*.js" 10 "node_modules" ".git" "coverage" && fast_find "." "*.mjs" 10 "node_modules" ".git" "coverage")
+    
+    # Find JavaScript/Shell files over 300 lines (cache results for reuse)
+    if [[ "$language" == "bash" ]]; then
+        # For shell scripts
+        local all_source_files=$(fast_find "." "*.sh" 10 "node_modules" ".git" "coverage")
+    else
+        # For JavaScript
+        local all_source_files=$(fast_find "." "*.js" 10 "node_modules" ".git" "coverage" && fast_find "." "*.mjs" 10 "node_modules" ".git" "coverage")
+    fi
+    
     while IFS= read -r file; do
         [[ -z "$file" ]] && continue
         local line_count=$(wc -l < "$file" 2>/dev/null || echo 0)
@@ -129,7 +189,7 @@ step9_code_quality_validation() {
             large_files_list+="  - $file ($line_count lines)\n"
             echo "Large file: $file ($line_count lines)" >> "$quality_report"
         fi
-    done <<< "$all_js_files"
+    done <<< "$all_source_files"
     
     if [[ $large_files_count -gt 0 ]]; then
         print_warning "Found $large_files_count large files (>300 lines) - may need refactoring"
@@ -164,13 +224,23 @@ step9_code_quality_validation() {
     local duplicate_patterns=0
     
     # Look for common duplicate patterns
-    if command -v grep &> /dev/null; then
-        # Count function declarations
+    if [[ "$language" == "javascript" ]]; then
+        # Count function declarations (JavaScript-specific)
         local function_count=$(grep -r "^function\|^const.*=.*function\|^export function" . --include="*.js" --include="*.mjs" 2>/dev/null | wc -l)
         echo "Function declarations: $function_count" >> "$quality_report"
         
         # Basic check: if too many functions in small codebase
         if [[ $function_count -gt 100 ]] && [[ $js_files -lt 10 ]]; then
+            print_warning "High function count relative to file count - check for duplication"
+            ((duplicate_patterns++))
+        fi
+    elif [[ "$language" == "bash" ]] && [[ -s "${shellmetrics_output:-}" ]]; then
+        # Use shellmetrics data for bash projects
+        local function_count=$(grep "function(s) analyzed" "$shellmetrics_output" 2>/dev/null | grep -o '[0-9]\+ function' | cut -d' ' -f1)
+        echo "Function count (from shellmetrics): ${function_count:-0}" >> "$quality_report"
+        
+        # Check function count relative to file count
+        if [[ ${function_count:-0} -gt 100 ]] && [[ $sh_files -lt 10 ]]; then
             print_warning "High function count relative to file count - check for duplication"
             ((duplicate_patterns++))
         fi

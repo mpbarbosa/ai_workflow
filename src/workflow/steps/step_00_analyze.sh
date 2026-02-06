@@ -5,7 +5,7 @@ set -euo pipefail
 # Step 0: Pre-Analysis - Analyzing Recent Changes
 # Purpose: Analyze git state and capture change context before workflow execution (adaptive)
 # Part of: Tests & Documentation Workflow Automation v2.6.1
-# Version: 3.0.0 (Added test infrastructure smoke test)
+# Version: 3.0.1 (Added test infrastructure smoke test)
 ################################################################################
 
 # Source test smoke test module
@@ -116,6 +116,99 @@ step0_analyze_changes() {
         fi
         print_info "=========================================="
         print_info ""
+    fi
+    
+    # AI MODEL SELECTION ANALYSIS (NEW in v3.2.0)
+    # Intelligent model selection based on change complexity
+    local model_selection_status="⚠️ Skipped"
+    local model_selection_details="Model selection not run"
+    
+    # Check if model selector module is available
+    if [[ -f "${STEP0_DIR}/../lib/model_selector.sh" ]]; then
+        source "${STEP0_DIR}/../lib/model_selector.sh"
+        
+        # Check if model selection is enabled (default: true)
+        local enable_model_selection="${ENABLE_MODEL_SELECTION:-true}"
+        
+        if [[ "$enable_model_selection" == "true" ]]; then
+            print_info ""
+            print_info "=== AI Model Selection Analysis ==="
+            
+            # Classify files by nature
+            local classified_files=$(classify_files_by_nature)
+            local code_files=$(echo "$classified_files" | cut -d'|' -f1)
+            local doc_files=$(echo "$classified_files" | cut -d'|' -f2)
+            local test_files=$(echo "$classified_files" | cut -d'|' -f3)
+            
+            # Count files
+            local code_count=$(echo "$code_files" | wc -w)
+            local docs_count=$(echo "$doc_files" | wc -w)
+            local tests_count=$(echo "$test_files" | wc -w)
+            
+            print_info "Change classification:"
+            print_info "  • Code files: $code_count"
+            print_info "  • Documentation: $docs_count"
+            print_info "  • Tests: $tests_count"
+            
+            # Calculate complexities
+            print_info ""
+            print_info "Calculating complexity scores..."
+            
+            local code_complexity=$(calculate_code_complexity "$code_files")
+            local docs_complexity=$(calculate_docs_complexity "$doc_files")
+            local tests_complexity=$(calculate_tests_complexity "$test_files")
+            
+            # Extract scores and tiers
+            local code_score=$(echo "$code_complexity" | jq -r '.score' 2>/dev/null || echo "0")
+            local code_tier=$(echo "$code_complexity" | jq -r '.tier' 2>/dev/null || echo "low")
+            local docs_score=$(echo "$docs_complexity" | jq -r '.score' 2>/dev/null || echo "0")
+            local docs_tier=$(echo "$docs_complexity" | jq -r '.tier' 2>/dev/null || echo "low")
+            local tests_score=$(echo "$tests_complexity" | jq -r '.score' 2>/dev/null || echo "0")
+            local tests_tier=$(echo "$tests_complexity" | jq -r '.tier' 2>/dev/null || echo "low")
+            
+            print_info "Complexity analysis:"
+            print_info "  • Code: $code_score → $(echo $code_tier | tr '[:lower:]' '[:upper:]')"
+            print_info "  • Documentation: $docs_score → $(echo $docs_tier | tr '[:lower:]' '[:upper:]')"
+            print_info "  • Tests: $tests_score → $(echo $tests_tier | tr '[:lower:]' '[:upper:]')"
+            
+            # Generate model definitions
+            print_info ""
+            print_info "Generating model assignments..."
+            
+            local model_definitions=$(generate_model_definitions "$code_files" "$doc_files" "$test_files")
+            
+            # Save to file
+            if save_model_definitions "$model_definitions"; then
+                model_selection_status="✅ Complete"
+                model_selection_details="Model definitions generated and saved"
+                print_success "Model definitions saved: .ai_workflow/model_definitions.json"
+                
+                # Display key model assignments
+                print_info ""
+                print_info "Key model assignments:"
+                local step1_model=$(echo "$model_definitions" | jq -r '.model_definitions.step_01_documentation.model' 2>/dev/null || echo "N/A")
+                local step5_model=$(echo "$model_definitions" | jq -r '.model_definitions.step_05_test_review.model' 2>/dev/null || echo "N/A")
+                local step9_model=$(echo "$model_definitions" | jq -r '.model_definitions.step_09_code_quality.model' 2>/dev/null || echo "N/A")
+                
+                print_info "  • Step 1 (Documentation): $step1_model"
+                print_info "  • Step 5 (Test Review): $step5_model"
+                print_info "  • Step 9 (Code Quality): $step9_model"
+                
+                # Check for override
+                if [[ -n "${FORCE_MODEL:-}" ]]; then
+                    print_warning "⚠️  Model override active: All steps will use '$FORCE_MODEL'"
+                fi
+            else
+                model_selection_status="❌ Failed"
+                model_selection_details="Failed to save model definitions"
+                print_warning "Failed to save model definitions - using defaults"
+            fi
+            
+            print_info "=========================================="
+            print_info ""
+        else
+            print_info "Model selection disabled in configuration"
+        fi
     fi
     
     export ANALYSIS_COMMITS=$commits_ahead

@@ -4,7 +4,7 @@ set -euo pipefail
 
 ################################################################################
 # Tests & Documentation Workflow Automation Script
-# Version: 3.1.1
+# Version: 3.2.1
 # Purpose: Automate the complete tests and documentation update workflow
 # Related: /prompts/tests_documentation_update_enhanced.txt
 #
@@ -566,6 +566,11 @@ confirm_action() {
     
     if [[ "$AUTO_MODE" == true ]]; then
         return 0
+    fi
+    
+    # Play audio notification if available (v3.1.0)
+    if type -t play_notification_sound > /dev/null 2>&1; then
+        play_notification_sound "continue_prompt" 2>/dev/null || true
     fi
     
     echo -e "${CYAN}ℹ️  ${prompt}${NC}"
@@ -1971,6 +1976,11 @@ execute_full_workflow() {
         log_to_workflow "ERROR" "Workflow FAILED at: $failed_step"
         show_progress
         
+        # Play completion sound notification (v3.1.0)
+        if type -t play_notification_sound > /dev/null 2>&1; then
+            play_notification_sound "completion" 2>/dev/null || true
+        fi
+        
         # Run health check to document failure point
         verify_workflow_health || true
         
@@ -1979,6 +1989,12 @@ execute_full_workflow() {
         print_header "🎉 Workflow Completed Successfully!"
         log_to_workflow "SUCCESS" "Workflow completed successfully"
         show_progress
+        
+        # Play completion sound notification (v3.1.0)
+        if type -t play_notification_sound > /dev/null 2>&1; then
+            play_notification_sound "completion" 2>/dev/null || true
+        fi
+        
         print_success "All selected steps completed successfully"
         print_info "Backlog reports saved to: $BACKLOG_RUN_DIR"
         print_info "Summaries saved to: $SUMMARIES_RUN_DIR"
@@ -2138,6 +2154,14 @@ OPTIONS:
                        ✅ ENABLED BY DEFAULT in v2.5.0+
                        Performance: 40-85% faster for incremental changes
                        Use --no-smart-execution to disable
+    
+    --force-model MODEL   Override AI model selection for all steps (NEW v3.2.1)
+                          Force specific GitHub Copilot model regardless of complexity
+                          Examples: claude-opus-4.6, gpt-5.2, claude-haiku-4.5
+                          
+    --show-model-plan     Preview AI model assignments without executing (NEW v3.2.1)
+                          Displays which model will be used for each step based on
+                          change complexity analysis, then exits
     
     --no-smart-execution  Disable smart execution (run all steps)
     
@@ -2537,6 +2561,17 @@ main() {
         echo ""
         print_success "Tech stack display complete"
         exit 0
+    fi
+    
+    # Load audio notification configuration (v3.1.0)
+    if [[ -f "${PROJECT_ROOT}/.workflow-config.yaml" ]]; then
+        local audio_enabled=$(yq '.audio.enabled // true' "${PROJECT_ROOT}/.workflow-config.yaml" 2>/dev/null || echo "true")
+        local continue_sound=$(yq '.audio.continue_prompt_sound // ""' "${PROJECT_ROOT}/.workflow-config.yaml" 2>/dev/null | tr -d '"' || echo "")
+        local completion_sound=$(yq '.audio.completion_sound // ""' "${PROJECT_ROOT}/.workflow-config.yaml" 2>/dev/null | tr -d '"' || echo "")
+        
+        export AUDIO_NOTIFICATIONS_ENABLED="${audio_enabled}"
+        [[ -n "$continue_sound" ]] && export AUDIO_CONTINUE_PROMPT_SOUND="$continue_sound"
+        [[ -n "$completion_sound" ]] && export AUDIO_COMPLETION_SOUND="$completion_sound"
     fi
     
     # Initialize AI cache (v2.3.0)
