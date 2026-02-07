@@ -1294,6 +1294,28 @@ execute_step() {
     local step_num="$1"
     local step_name=""
     
+    # Check intelligent skip prediction before executing
+    if [[ "${INTELLIGENT_SKIP:-false}" == "true" ]] && [[ -n "${SKIP_PREDICTIONS:-}" ]]; then
+        local prediction=$(echo "$SKIP_PREDICTIONS" | jq -r ".[] | select(.step == $step_num)")
+        
+        if [[ -n "$prediction" ]]; then
+            local should_skip=$(echo "$prediction" | jq -r '.should_skip // false')
+            local confidence=$(echo "$prediction" | jq -r '.confidence // 0')
+            local reason=$(echo "$prediction" | jq -r '.reason // "unknown"')
+            
+            if [[ "$should_skip" == "true" ]]; then
+                print_info "⏭️  Skipping Step $step_num (ML prediction: $reason, confidence: $confidence)"
+                update_workflow_status "$step_num" "⏭️"
+                log_to_workflow "INFO" "Step $step_num skipped by intelligent prediction (reason: $reason, confidence: $confidence)"
+                
+                # Record skip decision
+                record_skip_decision "$WORKFLOW_RUN_ID" "$step_num" "true" "${CHANGE_FEATURES:-{}}" "$confidence" "$reason"
+                
+                return 0
+            fi
+        fi
+    fi
+    
     case "$step_num" in
         0)
             step_name="Pre-Analysis"
@@ -2664,6 +2686,57 @@ main() {
         log_to_workflow "INFO" "ML optimization applied"
     fi
     
+    # Initialize Intelligent Skip Prediction if enabled (v3.2.0)
+    if [[ "${INTELLIGENT_SKIP:-false}" == "true" ]]; then
+        print_header "Intelligent Skip Prediction"
+        
+        # Initialize skip predictor
+        if init_skip_predictor; then
+            print_success "Skip prediction system initialized"
+            
+            # Extract change features (reuse ML features if available)
+            if [[ -z "${ML_FEATURES:-}" ]]; then
+                CHANGE_FEATURES=$(extract_change_features)
+            else
+                CHANGE_FEATURES="$ML_FEATURES"
+            fi
+            export CHANGE_FEATURES
+            
+            # Generate predictions for all steps
+            declare -a skip_predictions_array
+            for step in {0..15}; do
+                local prediction=$(predict_step_necessity "$step" "$CHANGE_FEATURES")
+                skip_predictions_array+=("$prediction")
+            done
+            
+            # Combine into JSON array
+            SKIP_PREDICTIONS=$(printf '%s\n' "${skip_predictions_array[@]}" | jq -s '.')
+            export SKIP_PREDICTIONS
+            
+            # Generate and display report
+            echo ""
+            generate_skip_report "$SKIP_PREDICTIONS"
+            echo ""
+            
+            # Calculate expected time savings
+            local total_skips=$(echo "$SKIP_PREDICTIONS" | jq '[.[] | select(.should_skip == true)] | length')
+            local est_time_saved=$((total_skips * 120))  # 2 min per step
+            if [[ $total_skips -gt 0 ]]; then
+                print_success "Expected to skip $total_skips steps, saving ~$((est_time_saved / 60)) minutes"
+            else
+                print_info "No steps recommended for skipping (high-impact changes detected)"
+            fi
+            
+            log_to_workflow "INFO" "Intelligent skip prediction enabled (predicted skips: $total_skips)"
+        else
+            print_warning "Skip prediction system not ready - insufficient training data"
+            print_info "Need 10+ workflow executions before ML skip prediction activates"
+            INTELLIGENT_SKIP=false
+            export INTELLIGENT_SKIP
+            log_to_workflow "WARNING" "Skip prediction disabled - insufficient data"
+        fi
+    fi
+    
     # Enable docs-only fast track optimization if applicable (v2.7.0)
     if type -t enable_docs_only_optimization > /dev/null 2>&1; then
         if enable_docs_only_optimization; then
@@ -2740,6 +2813,27 @@ main() {
         else
             on_workflow_complete "failure"
         fi
+    fi
+    
+    # Update skip prediction outcomes if enabled (v3.2.0)
+    if [[ "${INTELLIGENT_SKIP:-false}" == "true" ]] && [[ -n "${SKIP_PREDICTIONS:-}" ]]; then
+        print_info "Updating skip prediction outcomes..."
+        
+        # Check if workflow failed
+        local workflow_failed="false"
+        [[ $workflow_result -ne 0 ]] && workflow_failed="true"
+        
+        # Update outcomes for skipped steps
+        echo "$SKIP_PREDICTIONS" | jq -r '.[] | select(.should_skip == true) | .step' | while read -r step; do
+            local outcome="success"
+            if [[ "$workflow_failed" == "true" ]]; then
+                outcome="should_have_run"
+            fi
+            
+            update_skip_outcome "$WORKFLOW_RUN_ID" "$step" "$outcome" "$workflow_failed"
+        done
+        
+        log_to_workflow "INFO" "Skip prediction outcomes updated"
     fi
     
     # Auto-generate documentation (v2.9.0)

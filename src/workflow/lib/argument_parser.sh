@@ -239,6 +239,12 @@ parse_workflow_arguments() {
                 print_info "ML optimization enabled - predictive workflow optimization"
                 shift
                 ;;
+            --intelligent-skip)
+                INTELLIGENT_SKIP=true
+                export INTELLIGENT_SKIP
+                print_info "Intelligent skip prediction enabled - ML-powered step necessity analysis"
+                shift
+                ;;
             --show-ml-status)
                 SHOW_ML_STATUS=true
                 export SHOW_ML_STATUS
@@ -436,6 +442,9 @@ OPTIONS:
 EXAMPLES:
   # Run on current directory with all optimizations
   ./execute_tests_docs_workflow.sh --smart-execution --parallel --auto
+  
+  # Run with intelligent skip prediction (ML-powered)
+  ./execute_tests_docs_workflow.sh --intelligent-skip --smart-execution --parallel
   
   # Run on different project
   ./execute_tests_docs_workflow.sh --target /path/to/project
