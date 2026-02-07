@@ -39,11 +39,36 @@ jobs:
           ./scripts/validate_docs.sh
         continue-on-error: false
       
+      - name: Validate API Documentation
+        id: validate-api
+        run: |
+          chmod +x scripts/validate_api_docs.py
+          python3 scripts/validate_api_docs.py docs/api/
+        continue-on-error: true
+      
+      - name: Check Documentation Links
+        id: check-links
+        run: |
+          chmod +x scripts/check_doc_links.py
+          python3 scripts/check_doc_links.py docs/
+        continue-on-error: true
+      
+      - name: Check Documentation Drift
+        id: check-drift
+        run: |
+          chmod +x scripts/doc_diff_checker.sh
+          ./scripts/doc_diff_checker.sh
+        continue-on-error: true
+      
       - name: Report Failure
         if: failure()
         run: |
           echo "::error::Documentation validation failed!"
-          echo "::error::Please run './scripts/validate_docs.sh' locally to see detailed errors"
+          echo "::error::Please run validation scripts locally:"
+          echo "::error::  ./scripts/validate_docs.sh"
+          echo "::error::  python3 scripts/validate_api_docs.py docs/api/"
+          echo "::error::  python3 scripts/check_doc_links.py docs/"
+          echo "::error::  ./scripts/doc_diff_checker.sh"
           echo "::error::Ensure PROJECT_STATISTICS.md is up to date and all documentation references it correctly"
           exit 1
       
