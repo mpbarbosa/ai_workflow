@@ -228,7 +228,7 @@ generate_ai_commit_message_batch() {
     start_time=$(date +%s)
     
     local success=false
-    if timeout ${AI_GENERATION_TIMEOUT} bash -c "echo '$prompt' | copilot -p 'git_workflow_specialist' > '$output_file' 2>&1"; then
+    if timeout ${AI_GENERATION_TIMEOUT} bash -c "echo '$prompt' | copilot --allow-all-tools --allow-all-paths --enable-all-github-mcp-tools > '$output_file' 2>&1"; then
         success=true
     fi
     
@@ -604,7 +604,7 @@ generate_submodule_commit_message() {
     start_time=$(date +%s)
     
     local success=false
-    if timeout ${AI_GENERATION_TIMEOUT} bash -c "echo '$prompt' | copilot -p 'git_workflow_specialist' > '$output_file' 2>&1"; then
+    if timeout ${AI_GENERATION_TIMEOUT} bash -c "echo '$prompt' | copilot --allow-all-tools --allow-all-paths --enable-all-github-mcp-tools > '$output_file' 2>&1"; then
         success=true
     fi
     
