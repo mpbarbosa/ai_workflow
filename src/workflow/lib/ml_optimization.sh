@@ -18,6 +18,15 @@ set -euo pipefail
 
 # Set defaults with safe fallbacks for test environments
 WORKFLOW_HOME=${WORKFLOW_HOME:-$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)}
+
+# Source jq wrapper for safe jq execution with validation
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+if [[ -f "${SCRIPT_DIR}/jq_wrapper.sh" ]]; then
+    source "${SCRIPT_DIR}/jq_wrapper.sh"
+else
+    # Fallback: define jq_safe as alias to jq if wrapper not found
+    jq_safe() { jq "$@"; }
+fi
 ML_DATA_DIR="${ML_DATA_DIR:-${WORKFLOW_HOME}/.ml_data}"
 ML_TRAINING_DATA="${ML_TRAINING_DATA:-${ML_DATA_DIR}/training_data.jsonl}"
 ML_MODEL_DIR="${ML_MODEL_DIR:-${ML_DATA_DIR}/models}"
@@ -144,7 +153,7 @@ extract_change_features() {
         } >> "${WORKFLOW_LOG_FILE:-/dev/null}" 2>/dev/null
     fi
     
-    features=$(jq -n \
+    features=$(jq_safe -n \
         --arg change_type "$change_type" \
         --argjson total_files "$total_files" \
         --argjson doc_files "$doc_files" \
@@ -215,7 +224,7 @@ predict_step_duration() {
         } >> "${WORKFLOW_LOG_FILE:-/dev/null}" 2>/dev/null
     fi
     
-    local similar_runs=$(jq -s --arg step "$step" \
+    local similar_runs=$(jq_safe -s --arg step "$step" \
         --arg change_type "$change_type" \
         --argjson total_files "$total_files" \
         --argjson lines_changed "$lines_changed" \
@@ -238,7 +247,7 @@ predict_step_duration() {
     
     if [[ $sample_count -lt 3 ]]; then
         # Not enough similar samples - fall back to overall average
-        local avg_duration=$(jq -s --arg step "$step" \
+        local avg_duration=$(jq_safe -s --arg step "$step" \
             '[.[] | select(.step == ($step | tonumber)) | .duration] | 
             if length > 0 then (add / length | floor) else 0 end' \
             "$ML_TRAINING_DATA" 2>/dev/null)
@@ -313,7 +322,7 @@ recommend_parallelization() {
     # Check if training data exists
     if [[ ! -f "$ML_TRAINING_DATA" ]]; then
         # Return safe defaults when no training data
-        jq -n '{
+        jq_safe -n '{
             recommend_parallel: false,
             strategy: "sequential",
             confidence: "low",
@@ -323,14 +332,14 @@ recommend_parallelization() {
     fi
     
     # Analyze historical performance with/without parallelization
-    local parallel_avg=$(jq -s --arg change_type "$change_type" \
+    local parallel_avg=$(jq_safe -s --arg change_type "$change_type" \
         '[.[] | select(.features.change_type == $change_type and .parallel == true) | .total_duration] | 
         if length > 0 then (add / length) else 0 end' \
         "$ML_TRAINING_DATA" 2>/dev/null)
     parallel_avg=${parallel_avg//[^0-9.]/}
     parallel_avg=${parallel_avg:-0}
     
-    local serial_avg=$(jq -s --arg change_type "$change_type" \
+    local serial_avg=$(jq_safe -s --arg change_type "$change_type" \
         '[.[] | select(.features.change_type == $change_type and .parallel == false) | .total_duration] | 
         if length > 0 then (add / length) else 0 end' \
         "$ML_TRAINING_DATA" 2>/dev/null)
@@ -382,7 +391,7 @@ recommend_parallelization() {
         } >> "${WORKFLOW_LOG_FILE:-/dev/null}" 2>/dev/null
     fi
     
-    jq -n \
+    jq_safe -n \
         --argjson recommend "$recommend_parallel" \
         --arg strategy "$strategy" \
         --arg confidence "$confidence" \
@@ -417,7 +426,7 @@ recommend_skip_steps() {
     # Learn from historical patterns - which steps had no impact?
     # For each step, check if it ever found issues for similar change patterns
     for step in {0..14}; do
-        local issues_found=$(jq -s --arg step "$step" \
+        local issues_found=$(jq_safe -s --arg step "$step" \
             --arg change_type "$change_type" \
             '[.[] | select(
                 .step == ($step | tonumber) and 
@@ -425,7 +434,7 @@ recommend_skip_steps() {
                 .issues_found > 0
             )] | length' "$ML_TRAINING_DATA" 2>/dev/null || echo "0")
         
-        local total_runs=$(jq -s --arg step "$step" \
+        local total_runs=$(jq_safe -s --arg step "$step" \
             --arg change_type "$change_type" \
             '[.[] | select(
                 .step == ($step | tonumber) and 
@@ -521,7 +530,7 @@ log_anomaly() {
         } >> "${WORKFLOW_LOG_FILE:-/dev/null}" 2>/dev/null
     fi
     
-    jq -n \
+    jq_safe -n \
         --argjson step "$step" \
         --argjson actual "$actual" \
         --argjson predicted "$predicted" \
@@ -579,7 +588,7 @@ record_step_execution() {
     local features_compact
     features_compact=$(echo "$features" | jq -c '.' 2>/dev/null || echo "{}")
     
-    local record=$(jq -nc \
+    local record=$(jq_safe -nc \
         --argjson step "$step" \
         --argjson duration "$duration" \
         --argjson features "$features_compact" \
@@ -651,7 +660,7 @@ calculate_model_statistics() {
     local stats_file="${ML_MODEL_DIR}/statistics.json"
     
     # Calculate statistics per change_type and step
-    jq -s 'group_by(.features.change_type) | 
+    jq_safe -s 'group_by(.features.change_type) | 
         map({
             change_type: .[0].features.change_type,
             steps: (group_by(.step) | 
@@ -723,7 +732,7 @@ apply_ml_optimization() {
     echo "" >&2
     
     # Build complete recommendation
-    local recommendations=$(jq -n \
+    local recommendations=$(jq_safe -n \
         --argjson features "$features" \
         --argjson parallel "$parallel_rec" \
         --argjson skip "$skip_rec" \
