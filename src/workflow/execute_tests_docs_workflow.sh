@@ -4,7 +4,7 @@ set -euo pipefail
 
 ################################################################################
 # Tests & Documentation Workflow Automation Script
-# Version: 3.2.0
+# Version: 3.2.1
 # Purpose: Automate the complete tests and documentation update workflow
 # Related: /prompts/tests_documentation_update_enhanced.txt
 #
@@ -18,6 +18,7 @@ set -euo pipefail
 #   Step 0b: Bootstrap Documentation (Technical Writer) ⭐ NEW v3.1.1
 #   Step 1:  Documentation Updates (Technical Documentation Specialist)
 #   Step 2:  Consistency Analysis (Documentation Specialist + Information Architect)
+#   Step 2.5: Documentation Optimization (Documentation Architect + AI Optimizer) ⭐ NEW v3.2.1
 #   Step 3:  Script Reference Validation (DevOps Documentation Expert)
 #   Step 4:  Directory Structure Validation (Software Architect + Documentation Specialist)
 #   Step 5:  Test Review (QA Engineer + Test Automation Specialist)
@@ -121,7 +122,7 @@ set -euo pipefail
 # CONFIGURATION & CONSTANTS
 # ==============================================================================
 
-SCRIPT_VERSION="3.2.0"  # Git Submodule Support in Step 11
+SCRIPT_VERSION="3.2.1"  # Git Submodule Support in Step 11
 SCRIPT_NAME="Tests & Documentation Workflow Automation"
 WORKFLOW_HOME="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
 PROJECT_ROOT="$(pwd)"  # Default: current directory; can be overridden with --target option
@@ -2253,6 +2254,7 @@ WORKFLOW STEPS:
     Step 0b: Bootstrap Documentation (NEW v3.1.1)
     Step 1:  Update Related Documentation
     Step 2:  Check Documentation Consistency
+    Step 2.5: Documentation Optimization & Consolidation (NEW v3.2.1)
     Step 3:  Validate Script References
     Step 4:  Validate Directory Structure
     Step 5:  Review Existing Tests

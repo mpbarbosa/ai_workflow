@@ -13,6 +13,7 @@ src/workflow/logs/
 src/workflow/metrics/
 src/workflow/.checkpoints/
 src/workflow/.ai_cache/
+src/workflow/.dependency_cache/
 src/workflow/src/
 
 # Workflow artifacts in any project (when using --target)
@@ -22,6 +23,7 @@ src/workflow/src/
 */.ai_workflow/metrics/
 */.ai_workflow/checkpoints/
 */.ai_workflow/.ai_cache/
+*/.ai_workflow/.dependency_cache/
 
 # Test execution reports
 test-results/

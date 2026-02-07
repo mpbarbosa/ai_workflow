@@ -4,14 +4,14 @@ set -euo pipefail
 ################################################################################
 # Step 3: AI-Powered Script Reference Validation (Language-Aware)
 # Purpose: Validate script/code references and documentation accuracy (adaptive)
-# Part of: Tests & Documentation Workflow Automation v2.6.0
-# Version: 2.1.0 (Phase 5 Final - Language-aware script detection)
+# Part of: Tests & Documentation Workflow Automation v2.6.1
+# Version: 2.2.0 (Auto-skip for non-shell projects)
 ################################################################################
 
 # Module version information
-readonly STEP3_VERSION="2.1.0"
+readonly STEP3_VERSION="2.2.0"
 readonly STEP3_VERSION_MAJOR=2
-readonly STEP3_VERSION_MINOR=1
+readonly STEP3_VERSION_MINOR=2
 readonly STEP3_VERSION_PATCH=0
 
 # Get script/source file patterns based on language
@@ -169,11 +169,43 @@ step3_validate_script_references() {
     
     cd "$PROJECT_ROOT" || return 1
     
-    # Skip validation if this is not an ai_workflow project
-    if [[ ! -d "src/workflow" ]]; then
-        print_info "Not an ai_workflow project - skipping script reference validation"
+    # Determine if this step should be skipped based on project type
+    local project_kind="${PROJECT_KIND:-unknown}"
+    local should_skip=false
+    local skip_reason=""
+    
+    # Step 3 is primarily for shell script projects
+    # Skip for Node.js, Python, and other non-shell projects
+    case "$project_kind" in
+        nodejs_api|nodejs_cli|nodejs_library|react_spa|vue_spa)
+            should_skip=true
+            skip_reason="Script reference validation is not applicable to Node.js/JavaScript projects"
+            ;;
+        python_api|python_cli|python_library)
+            should_skip=true
+            skip_reason="Script reference validation is not applicable to Python projects"
+            ;;
+        static_website|documentation)
+            should_skip=true
+            skip_reason="Script reference validation is not applicable to static/documentation projects"
+            ;;
+        shell_automation)
+            should_skip=false
+            ;;
+        unknown)
+            # Fallback: check if this is an ai_workflow project
+            if [[ ! -d "src/workflow" ]]; then
+                should_skip=true
+                skip_reason="Not a shell script automation project - skipping script reference validation"
+            fi
+            ;;
+    esac
+    
+    # Skip if determined not applicable
+    if [[ "$should_skip" == true ]]; then
+        print_info "$skip_reason"
         save_summary "step3" "Validate_Script_References" "Skipped" \
-            "Script reference validation only applies to ai_workflow projects. This validation was skipped."
+            "$skip_reason This step is primarily for shell script automation projects."
         return 0
     fi
     

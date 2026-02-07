@@ -2,8 +2,8 @@
 
 ################################################################################
 # Validation Orchestrator
-# Version: 2.3.1
-# Purpose: Orchestrate documentation and structure validation (Steps 0-4)
+# Version: 2.4.1
+# Purpose: Orchestrate documentation and structure validation (Steps 0-4 + 2.5)
 # Part of: Workflow Automation Modularization Phase 3
 ################################################################################
 
@@ -129,6 +129,19 @@ execute_validation_steps() {
         print_info "Skipping Step 2 (not selected)"
     else
         print_info "Skipping Step 2 (resuming from checkpoint)"
+    fi
+    
+    # Step 2.5: Documentation Optimization & Consolidation
+    if [[ $resume_from -le 2 ]] && should_execute_step 2; then
+        log_step_start "2.5" "Documentation Optimization"
+        if ! step2_5_doc_optimize; then
+            return 1
+        fi
+        save_checkpoint "2.5"
+    elif [[ $resume_from -le 2 ]]; then
+        print_info "Skipping Step 2.5 (not selected)"
+    else
+        print_info "Skipping Step 2.5 (resuming from checkpoint)"
     fi
     
     # Step 3: Script Reference Validation

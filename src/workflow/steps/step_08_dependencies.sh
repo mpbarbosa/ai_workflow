@@ -4,15 +4,21 @@ set -euo pipefail
 ################################################################################
 # Step 8: AI-Powered Dependency Validation
 # Purpose: Validate dependencies and environment configuration (adaptive)
-# Part of: Tests & Documentation Workflow Automation v2.0.0
-# Version: 2.1.0
+# Part of: Tests & Documentation Workflow Automation v3.3.1
+# Version: 2.2.0 (Added dependency caching for npm audit/outdated)
 ################################################################################
 
 # Module version information
-readonly STEP8_VERSION="2.1.0"
+readonly STEP8_VERSION="2.2.0"
 readonly STEP8_VERSION_MAJOR=2
-readonly STEP8_VERSION_MINOR=1
+readonly STEP8_VERSION_MINOR=2
 readonly STEP8_VERSION_PATCH=0
+
+# Source dependency cache module
+STEP8_LIB_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/../lib" && pwd)"
+if [[ -f "${STEP8_LIB_DIR}/dependency_cache.sh" ]]; then
+    source "${STEP8_LIB_DIR}/dependency_cache.sh"
+fi
 
 # Detect project tech stack
 detect_project_tech_stack_step8() {
@@ -127,6 +133,11 @@ Validation focused on system tools and git repository health.
     dependency_report=$(mktemp)
     TEMP_FILES+=("$dependency_report")
     
+    # Initialize dependency cache
+    if command -v init_dependency_cache &>/dev/null; then
+        init_dependency_cache
+    fi
+    
     # Initialize variables used in Phase 2 (may not be set for all languages)
     local dep_count=0
     local dev_dep_count=0
@@ -196,31 +207,88 @@ CRITICAL: Invalid ${package_file} syntax. Cannot validate dependencies.
     # audit_output already initialized at top
     
     local vuln_count=0
-    if npm audit --json > "$audit_output" 2>&1; then
-        print_success "No security vulnerabilities found"
-    else
-        local vulnerabilities
-        vulnerabilities=$(jq -r '.metadata.vulnerabilities | to_entries[] | "\(.key): \(.value)"' "$audit_output" 2>/dev/null || echo "Unable to parse")
+    local audit_cache_key=""
+    local used_cache=false
+    
+    # Try to use cached audit results if available
+    if command -v generate_dependency_cache_key &>/dev/null && command -v check_dependency_cache &>/dev/null; then
+        audit_cache_key=$(generate_dependency_cache_key "$package_file" "audit")
+        
+        if check_dependency_cache "$audit_cache_key"; then
+            if get_cached_dependency_result "$audit_cache_key" "$audit_output"; then
+                print_success "Using cached npm audit results (1 hour TTL)"
+                used_cache=true
+            fi
+        fi
+    fi
+    
+    # Run npm audit if not cached
+    if [[ "$used_cache" == false ]]; then
+        if npm audit --json > "$audit_output" 2>&1; then
+            print_success "No security vulnerabilities found"
+        else
+            print_warning "npm audit completed with warnings"
+        fi
+        
+        # Save to cache if caching is available
+        if [[ -n "$audit_cache_key" ]] && command -v save_to_dependency_cache &>/dev/null; then
+            save_to_dependency_cache "$audit_cache_key" "$audit_output" "audit"
+        fi
+    fi
+    
+    # Parse audit results (whether from cache or fresh)
+    local vulnerabilities
+    vulnerabilities=$(jq -r '.metadata.vulnerabilities | to_entries[] | "\(.key): \(.value)"' "$audit_output" 2>/dev/null || echo "")
+    
+    if [[ -n "$vulnerabilities" ]]; then
         vuln_count=$(echo "$vulnerabilities" | grep -c ":" || echo "0")
-        print_warning "Security vulnerabilities detected"
-        echo "Security vulnerabilities:" >> "$dependency_report"
-        echo "$vulnerabilities" >> "$dependency_report"
-        ((issues++))
+        if [[ $vuln_count -gt 0 ]]; then
+            print_warning "Security vulnerabilities detected: $vuln_count"
+            echo "Security vulnerabilities:" >> "$dependency_report"
+            echo "$vulnerabilities" >> "$dependency_report"
+            ((issues++))
+        fi
     fi
     
     print_info "Checking for outdated packages..."
     # outdated_output already initialized at top
     
     local outdated_count=0
-    if npm outdated --json > "$outdated_output" 2>&1; then
-        print_success "All packages are up to date"
-    else
-        outdated_count=$(jq 'length' "$outdated_output" 2>/dev/null || echo "0")
-        if [[ $outdated_count -gt 0 ]]; then
-            print_warning "$outdated_count packages are outdated"
-            echo "Outdated packages: $outdated_count" >> "$dependency_report"
-            jq -r 'to_entries[] | "\(.key): \(.value.current) -> \(.value.latest)"' "$outdated_output" >> "$dependency_report" 2>/dev/null
+    local outdated_cache_key=""
+    local used_outdated_cache=false
+    
+    # Try to use cached outdated results if available
+    if command -v generate_dependency_cache_key &>/dev/null && command -v check_dependency_cache &>/dev/null; then
+        outdated_cache_key=$(generate_dependency_cache_key "$package_file" "outdated")
+        
+        if check_dependency_cache "$outdated_cache_key"; then
+            if get_cached_dependency_result "$outdated_cache_key" "$outdated_output"; then
+                print_success "Using cached npm outdated results (1 hour TTL)"
+                used_outdated_cache=true
+            fi
         fi
+    fi
+    
+    # Run npm outdated if not cached
+    if [[ "$used_outdated_cache" == false ]]; then
+        if npm outdated --json > "$outdated_output" 2>&1; then
+            print_success "All packages are up to date"
+        else
+            print_info "npm outdated completed"
+        fi
+        
+        # Save to cache if caching is available
+        if [[ -n "$outdated_cache_key" ]] && command -v save_to_dependency_cache &>/dev/null; then
+            save_to_dependency_cache "$outdated_cache_key" "$outdated_output" "outdated"
+        fi
+    fi
+    
+    # Parse outdated results (whether from cache or fresh)
+    outdated_count=$(jq 'length' "$outdated_output" 2>/dev/null || echo "0")
+    if [[ $outdated_count -gt 0 ]]; then
+        print_warning "$outdated_count packages are outdated"
+        echo "Outdated packages: $outdated_count" >> "$dependency_report"
+        jq -r 'to_entries[] | "\(.key): \(.value.current) -> \(.value.latest)"' "$outdated_output" >> "$dependency_report" 2>/dev/null
     fi
     
     # Check 4: Verify lockfile integrity
