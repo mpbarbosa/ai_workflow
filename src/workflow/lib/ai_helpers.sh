@@ -2214,12 +2214,21 @@ execute_copilot_batch() {
     # Get model for this step (NEW in v3.2.0)
     local model=$(get_model_for_step "$step_name")
     local model_flag=""
+    local model_display=""
+    
     if [[ "$model" != "default" ]]; then
         model_flag="--model $model"
-        print_info "Using AI model: $model (selected for $step_name)"
+        model_display="$model"
+        print_info "🤖 AI Model: $model (configured for $step_name)"
     else
-        print_info "Using default AI model"
+        # No model flag means GitHub Copilot CLI will use its default
+        # As of v0.0.406, the default is typically claude-sonnet-4.5
+        model_display="claude-sonnet-4.5 (default)"
+        print_info "🤖 AI Model: claude-sonnet-4.5 (default)"
     fi
+    
+    # Log model selection
+    log_to_workflow "INFO" "AI Model: $model_display for step: $step_name"
     
     print_info "Executing AI analysis in batch mode (timeout: ${timeout}s)..."
     
@@ -2305,10 +2314,21 @@ execute_copilot_prompt() {
     # Get model for this step (NEW in v3.2.0)
     local model=$(get_model_for_step "$step_name")
     local model_flag=""
+    local model_display=""
+    
     if [[ "$model" != "default" ]]; then
         model_flag="--model $model"
-        print_info "Using AI model: $model"
+        model_display="$model"
+        print_info "🤖 AI Model: $model (configured for $step_name)"
+    else
+        # No model flag means GitHub Copilot CLI will use its default
+        # As of v0.0.406, the default is typically claude-sonnet-4.5
+        model_display="claude-sonnet-4.5 (default)"
+        print_info "🤖 AI Model: claude-sonnet-4.5 (default)"
     fi
+    
+    # Log model selection
+    log_to_workflow "INFO" "AI Model: $model_display for step: $step_name"
     
     # Log the prompt before execution
     log_ai_prompt "$step_name" "$persona" "$prompt_text"
@@ -2538,6 +2558,7 @@ extract_and_save_issues_from_log() {
         if confirm_action "Run GitHub Copilot CLI to extract and organize issues from the log?" "y"; then
             sleep 1
             print_info "Starting Copilot CLI session for issue extraction..."
+            print_info "🤖 AI Model: claude-sonnet-4.5 (default) - Interactive mode"
             # Use --allow-all-paths to enable access to target project files
             # Use --enable-all-github-mcp-tools for repository analysis capabilities
             copilot -p "$extract_prompt" --allow-all-tools --allow-all-paths --enable-all-github-mcp-tools
