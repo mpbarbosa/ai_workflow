@@ -1,0 +1,6438 @@
+
+> ai-workflow@1.2.0 test
+> node --experimental-vm-modules node_modules/jest/bin/jest.js
+
+(node:998352) ExperimentalWarning: VM Modules is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:998358) ExperimentalWarning: VM Modules is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:998349) ExperimentalWarning: VM Modules is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:998350) ExperimentalWarning: VM Modules is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:998364) ExperimentalWarning: VM Modules is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:998349) Warning: `--localstorage-file` was provided without a valid path
+PASS test/lib/session_manager.test.js
+(node:998366) ExperimentalWarning: VM Modules is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:998351) ExperimentalWarning: VM Modules is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:998358) Warning: `--localstorage-file` was provided without a valid path
+PASS test/lib/metrics.test.js
+(node:998366) Warning: `--localstorage-file` was provided without a valid path
+PASS test/orchestrator/checkpoint_manager.test.js
+  ● Console
+
+    console.log
+      Checkpoint saved: test-wf-1770573857650
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Checkpoint saved: test-wf-1770573857655
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Checkpoint saved: test-wf-1770573857659
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Checkpoint saved: test-wf-1770573857660
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Checkpoint loaded: test-wf-1770573857660
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Checkpoint saved: wf1-1770573857665
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Checkpoint saved: wf2-1770573857666
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Checkpoint saved: wf1-1770573857668
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Checkpoint saved: wf2-1770573857668
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Checkpoint saved: wf1-1770573857669
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Checkpoint saved: wf1-1000
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Checkpoint saved: wf1-2000
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Checkpoint saved: wf1-1770573857683
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Checkpoint saved: wf1-1770573857685
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.warn
+      ⚠ Failed to read checkpoint invalid.json: Unexpected token 'i', "invalid" is not valid JSON
+
+      65 |   warn(message) {
+      66 |     const formatted = this._format(message, 'warn');
+    > 67 |     console.warn(formatted);
+         |             ^
+      68 |   }
+      69 |
+      70 |   /**
+
+      at Logger.warn (src/core/logger.js:67:13)
+      at CheckpointManager.list (src/orchestrator/checkpoint_manager.js:373:18)
+      at Object.<anonymous> (test/orchestrator/checkpoint_manager.test.js:652:27)
+
+    console.log
+      Checkpoint saved: wf1-1770573857687
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Checkpoint saved: wf1-1770573857688
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Checkpoint deleted: wf1-1770573857688
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Checkpoint saved: wf1-1000
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Checkpoint saved: wf1-1770573857690
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Checkpoint deleted: wf1-1000
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Cleaned up 1 old checkpoints
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Checkpoint saved: wf1-1770573856692
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Checkpoint deleted: wf1-1770573856692
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Cleaned up 1 old checkpoints
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Checkpoint saved: wf1-1770573857694
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Checkpoint saved: wf1-1770573857696
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Checkpoint loaded: wf1-1770573857696
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Checkpoint saved: wf1-1000
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Checkpoint saved: wf1-2000
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Checkpoint loaded: wf1-2000
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Checkpoint saved: wf1-1000
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Checkpoint saved: wf2-2000
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Checkpoint loaded: wf1-1000
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Checkpoint saved: wf1-1770573857714
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Checkpoint loaded: wf1-1770573857714
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Resuming workflow from checkpoint: wf1-1770573857714
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Checkpoint saved: wf1-1770573857715
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Checkpoint loaded: wf1-1770573857715
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Resuming workflow from checkpoint: wf1-1770573857715
+
+      at Logger.info (src/core/logger.js:48:15)
+
+jq: invalid JSON text passed to --argjson
+Use jq --help for help with command-line options,
+or see the jq manpage, or online docs  at https://jqlang.org
+(node:998364) Warning: `--localstorage-file` was provided without a valid path
+PASS test/lib/multi_stage_pipeline.test.js
+  ● Console
+
+    console.log
+      Pipeline: Running all stages
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Pipeline planned: 2 stages, estimated 1h 55m
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Pipeline stages selected by time budget (300s): quick
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Pipeline planned: 1 stages, estimated 5m 0s
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Pipeline stages selected by changes: quick
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Pipeline planned: 1 stages, estimated 5m 0s
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Pipeline: Running all stages
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Pipeline planned: 2 stages, estimated 1h 55m
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Pipeline stages selected by time budget (300s): quick
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Pipeline planned: 1 stages, estimated 5m 0s
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Pipeline execution started
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Pipeline: Executing stage 'quick' (2 steps)
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Pipeline: Stage 'quick' completed (0s)
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Pipeline execution completed: 1/1 stages (0s)
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Pipeline: Running all stages
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Pipeline planned: 2 stages, estimated 1h 55m
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Pipeline execution started
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Pipeline: Executing stage 'quick' (2 steps)
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Pipeline: Stage 'quick' failed (0s)
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.warn
+      ⚠ Pipeline: Stopping execution due to stage failure (fail-fast enabled)
+
+      65 |   warn(message) {
+      66 |     const formatted = this._format(message, 'warn');
+    > 67 |     console.warn(formatted);
+         |             ^
+      68 |   }
+      69 |
+      70 |   /**
+
+      at Logger.warn (src/core/logger.js:67:13)
+      at MultiStagePipeline.execute (src/lib/multi_stage_pipeline.js:379:18)
+      at Object.<anonymous> (test/lib/multi_stage_pipeline.test.js:358:25)
+
+    console.log
+      Pipeline execution failed: 0/3 stages (0s)
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Pipeline: Running all stages
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Pipeline planned: 2 stages, estimated 1h 55m
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Pipeline execution started
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Pipeline: Executing stage 'quick' (2 steps)
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Pipeline: Stage 'quick' failed (0s)
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.warn
+      ⚠ Pipeline: Skipping stage 'medium' due to previous failures
+
+      65 |   warn(message) {
+      66 |     const formatted = this._format(message, 'warn');
+    > 67 |     console.warn(formatted);
+         |             ^
+      68 |   }
+      69 |
+      70 |   /**
+
+      at Logger.warn (src/core/logger.js:67:13)
+      at MultiStagePipeline.execute (src/lib/multi_stage_pipeline.js:349:16)
+      at Object.<anonymous> (test/lib/multi_stage_pipeline.test.js:374:25)
+
+    console.log
+      Pipeline execution failed: 0/3 stages (0s)
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Pipeline: Running all stages
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Pipeline planned: 1 stages, estimated 1h 55m
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Pipeline stages selected by time budget (300s): quick
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Pipeline planned: 1 stages, estimated 5m 0s
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Pipeline execution started
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Pipeline: Executing stage 'quick' (1 steps)
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.error
+      ✗ Pipeline: Stage 'quick' failed with error: Execution failed
+
+      73 |   error(message) {
+      74 |     const formatted = this._format(message, 'error');
+    > 75 |     console.error(formatted);
+         |             ^
+      76 |   }
+      77 |
+      78 |   /**
+
+      at Logger.error (src/core/logger.js:75:13)
+      at MultiStagePipeline.execute (src/lib/multi_stage_pipeline.js:392:16)
+      at Object.<anonymous> (test/lib/multi_stage_pipeline.test.js:404:25)
+
+    console.log
+      Pipeline execution failed: 0/1 stages (0s)
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Pipeline: Running all stages
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Pipeline planned: 3 stages, estimated 1h 55m
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Pipeline execution started
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Pipeline: Executing stage 'quick' (2 steps)
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Pipeline: Stage 'quick' completed (0s)
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Pipeline: Executing stage 'medium' (2 steps)
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Pipeline: Stage 'medium' failed (0s)
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.warn
+      ⚠ Pipeline: Skipping stage 'full' due to previous failures
+
+      65 |   warn(message) {
+      66 |     const formatted = this._format(message, 'warn');
+    > 67 |     console.warn(formatted);
+         |             ^
+      68 |   }
+      69 |
+      70 |   /**
+
+      at Logger.warn (src/core/logger.js:67:13)
+      at MultiStagePipeline.execute (src/lib/multi_stage_pipeline.js:349:16)
+      at Object.<anonymous> (test/lib/multi_stage_pipeline.test.js:421:25)
+
+    console.log
+      Pipeline execution failed: 1/3 stages (0s)
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Pipeline stages selected by time budget (300s): quick
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Pipeline planned: 1 stages, estimated 5m 0s
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Pipeline execution started
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Pipeline: Executing stage 'quick' (1 steps)
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Pipeline: Stage 'quick' completed (0s)
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Pipeline execution completed: 1/1 stages (0s)
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Pipeline: Running all stages
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Pipeline planned: 1 stages, estimated 1h 55m
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Pipeline stages selected by time budget (300s): quick
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Pipeline planned: 1 stages, estimated 5m 0s
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Pipeline execution started
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Pipeline: Executing stage 'quick' (1 steps)
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Pipeline: Stage 'quick' completed (0s)
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Pipeline execution completed: 1/1 stages (0s)
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Pipeline: Running all stages
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Pipeline planned: 1 stages, estimated 1h 55m
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Pipeline execution started
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Pipeline: Executing stage 'quick' (1 steps)
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Pipeline: Stage 'quick' completed (0s)
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Pipeline execution failed: 1/3 stages (0s)
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Pipeline: State reset
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Pipeline: Running all stages
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Pipeline planned: 3 stages, estimated 1h 55m
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Pipeline execution started
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Pipeline: Executing stage 'quick' (2 steps)
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Pipeline: Stage 'quick' completed (0s)
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Pipeline: Executing stage 'medium' (2 steps)
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Pipeline: Stage 'medium' completed (0s)
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Pipeline: Executing stage 'full' (1 steps)
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Pipeline: Stage 'full' completed (0s)
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Pipeline execution completed: 3/3 stages (0s)
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Pipeline stages selected by changes: quick
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Pipeline planned: 1 stages, estimated 5m 0s
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Pipeline execution started
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Pipeline: Executing stage 'quick' (2 steps)
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Pipeline: Stage 'quick' completed (0s)
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Pipeline execution completed: 1/1 stages (0s)
+
+      at Logger.info (src/core/logger.js:48:15)
+
+PASS test/lib/jq_wrapper.test.js
+  ● Console
+
+    console.error
+      ✗ jq_safe validation failed in test:
+        - --argjson variable "count" has empty value
+
+      73 |   error(message) {
+      74 |     const formatted = this._format(message, 'error');
+    > 75 |     console.error(formatted);
+         |             ^
+      76 |   }
+      77 |
+      78 |   /**
+
+      at Logger.error (src/core/logger.js:75:13)
+      at JqWrapper.execute (src/lib/jq_wrapper.js:268:14)
+      at test/lib/jq_wrapper.test.js:361:17
+      at Object.<anonymous> (node_modules/expect/build/index.js:1824:9)
+      at Object.throwingMatcher [as toThrow] (node_modules/expect/build/index.js:2235:93)
+      at Object.<anonymous> (test/lib/jq_wrapper.test.js:362:10)
+
+    console.error
+      ✗ jq_safe failed in test: Command failed: jq -n --argjson data {invalid} '{data: $data}'
+      jq: invalid JSON text passed to --argjson
+      Use jq --help for help with command-line options,
+      or see the jq manpage, or online docs  at https://jqlang.org
+
+      73 |   error(message) {
+      74 |     const formatted = this._format(message, 'error');
+    > 75 |     console.error(formatted);
+         |             ^
+      76 |   }
+      77 |
+      78 |   /**
+
+      at Logger.error (src/core/logger.js:75:13)
+      at JqWrapper.execute (src/lib/jq_wrapper.js:313:14)
+      at test/lib/jq_wrapper.test.js:367:17
+      at Object.<anonymous> (node_modules/expect/build/index.js:1824:9)
+      at Object.throwingMatcher [as toThrow] (node_modules/expect/build/index.js:2235:93)
+      at Object.<anonymous> (test/lib/jq_wrapper.test.js:368:10)
+
+    console.error
+      ✗ jq_safe validation failed in test:
+        - --argjson variable "count" has empty value
+
+      73 |   error(message) {
+      74 |     const formatted = this._format(message, 'error');
+    > 75 |     console.error(formatted);
+         |             ^
+      76 |   }
+      77 |
+      78 |   /**
+
+      at Logger.error (src/core/logger.js:75:13)
+      at JqWrapper.execute (src/lib/jq_wrapper.js:268:14)
+      at Object.<anonymous> (test/lib/jq_wrapper.test.js:372:30)
+
+    console.error
+      ✗ jq_safe validation failed in test:
+        - --argjson variable "x" has empty value
+
+      73 |   error(message) {
+      74 |     const formatted = this._format(message, 'error');
+    > 75 |     console.error(formatted);
+         |             ^
+      76 |   }
+      77 |
+      78 |   /**
+
+      at Logger.error (src/core/logger.js:75:13)
+      at JqWrapper.execute (src/lib/jq_wrapper.js:268:14)
+      at Object.<anonymous> (test/lib/jq_wrapper.test.js:458:15)
+
+(node:998352) Warning: `--localstorage-file` was provided without a valid path
+FAIL test/lib/performance.test.js
+  ● Console
+
+    console.warn
+      ⚠ [Performance] Timer not found: unknown-op
+
+      65 |   warn(message) {
+      66 |     const formatted = this._format(message, 'warn');
+    > 67 |     console.warn(formatted);
+         |             ^
+      68 |   }
+      69 |
+      70 |   /**
+
+      at Logger.warn (src/core/logger.js:67:13)
+      at PerformanceTracker.endTimer (src/lib/performance.js:339:14)
+      at Object.<anonymous> (test/lib/performance.test.js:312:31)
+
+    console.warn
+      ⚠ [Performance] Invalid operation ID
+
+      65 |   warn(message) {
+      66 |     const formatted = this._format(message, 'warn');
+    > 67 |     console.warn(formatted);
+         |             ^
+      68 |   }
+      69 |
+      70 |   /**
+
+      at Logger.warn (src/core/logger.js:67:13)
+      at PerformanceTracker.startTimer (src/lib/performance.js:315:14)
+      at Object.<anonymous> (test/lib/performance.test.js:317:15)
+
+    console.warn
+      ⚠ [Performance] Invalid operation ID
+
+      65 |   warn(message) {
+      66 |     const formatted = this._format(message, 'warn');
+    > 67 |     console.warn(formatted);
+         |             ^
+      68 |   }
+      69 |
+      70 |   /**
+
+      at Logger.warn (src/core/logger.js:67:13)
+      at PerformanceTracker.endTimer (src/lib/performance.js:333:14)
+      at Object.<anonymous> (test/lib/performance.test.js:320:31)
+
+    console.log
+      [Performance] Metrics exported to /home/mpb/Documents/GitHub/ai_workflow.js/.test-tmp/performance-test.json
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      [Performance] Metrics exported to /home/mpb/Documents/GitHub/ai_workflow.js/.test-tmp/performance-test.json
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      [Performance] Metrics imported from /home/mpb/Documents/GitHub/ai_workflow.js/.test-tmp/performance-test.json
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.error
+      ✗ [Performance] Invalid file path
+
+      73 |   error(message) {
+      74 |     const formatted = this._format(message, 'error');
+    > 75 |     console.error(formatted);
+         |             ^
+      76 |   }
+      77 |
+      78 |   /**
+
+      at Logger.error (src/core/logger.js:75:13)
+      at PerformanceTracker.exportToFile (src/lib/performance.js:420:14)
+      at Object.<anonymous> (test/lib/performance.test.js:452:28)
+
+    console.error
+      ✗ [Performance] Failed to import metrics: ENOENT: no such file or directory, open '/nonexistent/file.json'
+
+      73 |   error(message) {
+      74 |     const formatted = this._format(message, 'error');
+    > 75 |     console.error(formatted);
+         |             ^
+      76 |   }
+      77 |
+      78 |   /**
+
+      at Logger.error (src/core/logger.js:75:13)
+      at PerformanceTracker.importFromFile (src/lib/performance.js:461:14)
+      at Object.<anonymous> (test/lib/performance.test.js:456:7)
+
+    console.error
+      ✗ [Performance] Failed to import metrics: Unexpected token 'i', "invalid json" is not valid JSON
+
+      73 |   error(message) {
+      74 |     const formatted = this._format(message, 'error');
+    > 75 |     console.error(formatted);
+         |             ^
+      76 |   }
+      77 |
+      78 |   /**
+
+      at Logger.error (src/core/logger.js:75:13)
+      at PerformanceTracker.importFromFile (src/lib/performance.js:461:14)
+      at Object.<anonymous> (test/lib/performance.test.js:461:7)
+
+  ● Performance Module - PerformanceTracker Class › getMetrics › retrieves recorded metrics
+
+    expect(received).toBeGreaterThanOrEqual(expected)
+
+    Expected: >= 50
+    Received:    49
+
+      339 |       const metrics = tracker.getMetrics('test-op');
+      340 |       expect(metrics).not.toBeNull();
+    > 341 |       expect(metrics.duration).toBeGreaterThanOrEqual(50);
+          |                                ^
+      342 |     });
+      343 |
+      344 |     test('returns null for unknown operation', () => {
+
+      at Object.<anonymous> (test/lib/performance.test.js:341:32)
+
+PASS test/lib/git_cache.test.js
+  ● Console
+
+    console.log
+      Invalidated 2 cache entries after commit
+
+      at Logger.info (src/core/logger.js:48:15)
+
+PASS test/lib/auto_commit.test.js
+  ● Console
+
+    console.log
+      Auto-committed 1 files: chore(metrics): update metrics [skip ci]
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.warn
+      ⚠ No GitAutomation instance provided
+
+      65 |   warn(message) {
+      66 |     const formatted = this._format(message, 'warn');
+    > 67 |     console.warn(formatted);
+         |             ^
+      68 |   }
+      69 |
+      70 |   /**
+
+      at Logger.warn (src/core/logger.js:67:13)
+      at AutoCommit.commitArtifacts (src/lib/auto_commit.js:445:14)
+      at Object.<anonymous> (test/lib/auto_commit.test.js:369:39)
+
+    console.log
+      [DRY RUN] Would commit 1 files: chore(metrics): update metrics [skip ci]
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.error
+      ✗ Failed to auto-commit: Git error
+
+      73 |   error(message) {
+      74 |     const formatted = this._format(message, 'error');
+    > 75 |     console.error(formatted);
+         |             ^
+      76 |   }
+      77 |
+      78 |   /**
+
+      at Logger.error (src/core/logger.js:75:13)
+      at AutoCommit.commitArtifacts (src/lib/auto_commit.js:496:14)
+      at Object.<anonymous> (test/lib/auto_commit.test.js:410:22)
+
+    console.log
+      Auto-committed 1 files: chore(metrics): update metrics [skip ci]
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Auto-committed 2 files: docs(docs): update docs [skip ci]
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Auto-committed 1 files: chore(metrics): update metrics [skip ci]
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Auto-committed 1 files: chore(workflow): update summaries [skip ci]
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Auto-committed 2 files: chore(workflow): update docs and metrics [skip ci]
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Auto-committed 1 files: chore(metrics): update metrics [skip ci]
+
+      at Logger.info (src/core/logger.js:48:15)
+
+PASS test/lib/config.test.js
+PASS test/lib/cleanup_handlers.test.js
+  ● Console
+
+    console.log
+      [DRY RUN] Would delete file: /tmp/cleanup-test-cHN254/test.txt
+
+      at Logger.info (src/core/logger.js:48:15)
+
+PASS test/lib/project_kind_config.test.js
+  ● Console
+
+    console.error
+      ✗ Project kind 'unknown_kind' not found in project_kinds.yaml
+
+      73 |   error(message) {
+      74 |     const formatted = this._format(message, 'error');
+    > 75 |     console.error(formatted);
+         |             ^
+      76 |   }
+      77 |
+      78 |   /**
+
+      at Logger.error (src/core/logger.js:75:13)
+      at ProjectKindConfigManager.loadConfig (src/lib/project_kind_config.js:270:14)
+      at Object.<anonymous> (test/lib/project_kind_config.test.js:380:20)
+
+PASS test/orchestrator/workflow_engine.test.js
+  ● Console
+
+    console.log
+      Loading workflow configuration...
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      ✓ Workflow loaded: test-workflow v1.0.0
+
+      at Logger.success (src/core/logger.js:58:15)
+
+    console.log
+      Execution plan: 2 steps
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Loading workflow configuration...
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.error
+      ✗ Workflow validation failed: Workflow version is required, Steps must be an array
+
+      73 |   error(message) {
+      74 |     const formatted = this._format(message, 'error');
+    > 75 |     console.error(formatted);
+         |             ^
+      76 |   }
+      77 |
+      78 |   /**
+
+      at Logger.error (src/core/logger.js:75:13)
+      at WorkflowEngine.loadWorkflow (src/orchestrator/workflow_engine.js:428:14)
+      at Object.<anonymous> (test/orchestrator/workflow_engine.test.js:454:27)
+
+    console.log
+      Loading workflow configuration...
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      ✓ Workflow loaded: test v1.0.0
+
+      at Logger.success (src/core/logger.js:58:15)
+
+    console.log
+      Execution plan: 1 steps
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Loading workflow configuration...
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Loading workflow configuration...
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      ✓ Workflow loaded: simple v1.0.0
+
+      at Logger.success (src/core/logger.js:58:15)
+
+    console.log
+      Execution plan: 2 steps
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Starting workflow execution: simple
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Executing step: Step 1 (step1)
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Executing step: Step 2 (step2)
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      ✓ Workflow completed in 1ms
+
+      at Logger.success (src/core/logger.js:58:15)
+
+    console.log
+      Results: 2/2 steps succeeded
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Loading workflow configuration...
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      ✓ Workflow loaded: with-handlers v1.0.0
+
+      at Logger.success (src/core/logger.js:58:15)
+
+    console.log
+      Execution plan: 2 steps
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Starting workflow execution: with-handlers
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Executing step: Step 1 (step1)
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      ✓ Step step1 completed in 0ms
+
+      at Logger.success (src/core/logger.js:58:15)
+
+    console.log
+      Executing step: Step 2 (step2)
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      ✓ Step step2 completed in 0ms
+
+      at Logger.success (src/core/logger.js:58:15)
+
+    console.log
+      ✓ Workflow completed in 0ms
+
+      at Logger.success (src/core/logger.js:58:15)
+
+    console.log
+      Results: 2/2 steps succeeded
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Loading workflow configuration...
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      ✓ Workflow loaded: with-failure v1.0.0
+
+      at Logger.success (src/core/logger.js:58:15)
+
+    console.log
+      Execution plan: 2 steps
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Starting workflow execution: with-failure
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Executing step: Step 1 (step1)
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.error
+      ✗ Step step1 failed: Failed
+
+      73 |   error(message) {
+      74 |     const formatted = this._format(message, 'error');
+    > 75 |     console.error(formatted);
+         |             ^
+      76 |   }
+      77 |
+      78 |   /**
+
+      at Logger.error (src/core/logger.js:75:13)
+      at WorkflowEngine.executeStep (src/orchestrator/workflow_engine.js:611:14)
+      at WorkflowEngine.executeWorkflow (src/orchestrator/workflow_engine.js:487:24)
+      at Object.<anonymous> (test/orchestrator/workflow_engine.test.js:535:22)
+
+    console.error
+      ✗ Critical step step1 failed. Stopping workflow.
+
+      73 |   error(message) {
+      74 |     const formatted = this._format(message, 'error');
+    > 75 |     console.error(formatted);
+         |             ^
+      76 |   }
+      77 |
+      78 |   /**
+
+      at Logger.error (src/core/logger.js:75:13)
+      at WorkflowEngine.executeWorkflow (src/orchestrator/workflow_engine.js:501:18)
+      at Object.<anonymous> (test/orchestrator/workflow_engine.test.js:535:22)
+
+    console.log
+      ✓ Workflow completed in 0ms
+
+      at Logger.success (src/core/logger.js:58:15)
+
+    console.log
+      Results: 0/1 steps succeeded
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Loading workflow configuration...
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      ✓ Workflow loaded: with-skip v1.0.0
+
+      at Logger.success (src/core/logger.js:58:15)
+
+    console.log
+      Execution plan: 2 steps
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Starting workflow execution: with-skip
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Executing step: Step 1 (step1)
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Executing step: Step 2 (step2)
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Step step2 skipped (condition not met)
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      ✓ Workflow completed in 1ms
+
+      at Logger.success (src/core/logger.js:58:15)
+
+    console.log
+      Results: 1/2 steps succeeded
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Loading workflow configuration...
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      ✓ Workflow loaded: start-from v1.0.0
+
+      at Logger.success (src/core/logger.js:58:15)
+
+    console.log
+      Execution plan: 3 steps
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Starting workflow execution: start-from
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Executing step: Step 2 (step2)
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Executing step: Step 3 (step3)
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      ✓ Workflow completed in 1ms
+
+      at Logger.success (src/core/logger.js:58:15)
+
+    console.log
+      Results: 2/2 steps succeeded
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Loading workflow configuration...
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      ✓ Workflow loaded: stop-at v1.0.0
+
+      at Logger.success (src/core/logger.js:58:15)
+
+    console.log
+      Execution plan: 3 steps
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Starting workflow execution: stop-at
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Executing step: Step 1 (step1)
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Executing step: Step 2 (step2)
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Stopping at step step2 as requested
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      ✓ Workflow completed in 0ms
+
+      at Logger.success (src/core/logger.js:58:15)
+
+    console.log
+      Results: 2/2 steps succeeded
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Loading workflow configuration...
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      ✓ Workflow loaded: dry-run v1.0.0
+
+      at Logger.success (src/core/logger.js:58:15)
+
+    console.log
+      Execution plan: 1 steps
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Starting workflow execution: dry-run
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Executing step: Step 1 (step1)
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      [DRY RUN] Would execute step: Step 1
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      ✓ Workflow completed in 0ms
+
+      at Logger.success (src/core/logger.js:58:15)
+
+    console.log
+      Results: 1/1 steps succeeded
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Loading workflow configuration...
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      ✓ Workflow loaded: events v1.0.0
+
+      at Logger.success (src/core/logger.js:58:15)
+
+    console.log
+      Execution plan: 1 steps
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Starting workflow execution: events
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Executing step: Step 1 (step1)
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      ✓ Workflow completed in 0ms
+
+      at Logger.success (src/core/logger.js:58:15)
+
+    console.log
+      Results: 1/1 steps succeeded
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Loading workflow configuration...
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      ✓ Workflow loaded: test v1.0.0
+
+      at Logger.success (src/core/logger.js:58:15)
+
+    console.log
+      Execution plan: 1 steps
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Executing step: Step 1 (step1)
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Loading workflow configuration...
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      ✓ Workflow loaded: test v1.0.0
+
+      at Logger.success (src/core/logger.js:58:15)
+
+    console.log
+      Execution plan: 1 steps
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Executing step: Step 1 (step1)
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Loading workflow configuration...
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      ✓ Workflow loaded: test v1.0.0
+
+      at Logger.success (src/core/logger.js:58:15)
+
+    console.log
+      Execution plan: 1 steps
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Executing step: Step 1 (step1)
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.error
+      ✗ Step step1 failed: Test error
+
+      73 |   error(message) {
+      74 |     const formatted = this._format(message, 'error');
+    > 75 |     console.error(formatted);
+         |             ^
+      76 |   }
+      77 |
+      78 |   /**
+
+      at Logger.error (src/core/logger.js:75:13)
+      at WorkflowEngine.executeStep (src/orchestrator/workflow_engine.js:611:14)
+      at Object.<anonymous> (test/orchestrator/workflow_engine.test.js:684:22)
+
+    console.log
+      Loading workflow configuration...
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      ✓ Workflow loaded: test v1.0.0
+
+      at Logger.success (src/core/logger.js:58:15)
+
+    console.log
+      Execution plan: 1 steps
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Loading workflow configuration...
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      ✓ Workflow loaded: test v1.0.0
+
+      at Logger.success (src/core/logger.js:58:15)
+
+    console.log
+      Execution plan: 2 steps
+
+      at Logger.info (src/core/logger.js:48:15)
+
+PASS test/lib/step1_incremental.test.js
+  ● Console
+
+    console.log
+      Step1: No cache found, starting fresh
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Step1: Loaded cache with 1 entries
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.warn
+      ⚠ Step1: Failed to load cache: Unexpected token 'i', "invalid json" is not valid JSON
+
+      65 |   warn(message) {
+      66 |     const formatted = this._format(message, 'warn');
+    > 67 |     console.warn(formatted);
+         |             ^
+      68 |   }
+      69 |
+      70 |   /**
+
+      at Logger.warn (src/core/logger.js:67:13)
+      at Step1IncrementalProcessor.loadCache (src/lib/step1_incremental.js:324:16)
+      at Object.<anonymous> (test/lib/step1_incremental.test.js:457:23)
+
+    console.log
+      Step1: No cache found, starting fresh
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Step1: Saved cache with 1 entries
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Step1: No cache found, starting fresh
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Step1: Saved cache with 0 entries
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.warn
+      ⚠ Step1: Failed to read file /non/existent/file.md: ENOENT: no such file or directory, open '/non/existent/file.md'
+
+      65 |   warn(message) {
+      66 |     const formatted = this._format(message, 'warn');
+    > 67 |     console.warn(formatted);
+         |             ^
+      68 |   }
+      69 |
+      70 |   /**
+
+      at Logger.warn (src/core/logger.js:67:13)
+      at Step1IncrementalProcessor.calculateFileHash (src/lib/step1_incremental.js:362:14)
+      at Object.<anonymous> (test/lib/step1_incremental.test.js:502:22)
+
+    console.warn
+      ⚠ Step1: Failed to read file /non/existent/file.md: ENOENT: no such file or directory, open '/non/existent/file.md'
+
+      65 |   warn(message) {
+      66 |     const formatted = this._format(message, 'warn');
+    > 67 |     console.warn(formatted);
+         |             ^
+      68 |   }
+      69 |
+      70 |   /**
+
+      at Logger.warn (src/core/logger.js:67:13)
+      at Step1IncrementalProcessor.calculateFileHash (src/lib/step1_incremental.js:362:14)
+      at Step1IncrementalProcessor.calculateHashes (src/lib/step1_incremental.js:377:20)
+      at Object.<anonymous> (test/lib/step1_incremental.test.js:521:24)
+
+    console.log
+      Step1: No cache found, starting fresh
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Step1: Detected 3 changed files, 0 unchanged
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Step1: No cache found, starting fresh
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Step1: Detected 3 changed files, 0 unchanged
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Step1: Saved cache with 3 entries
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Step1: Updated cache with 3 validated files
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Step1: Detected 0 changed files, 3 unchanged
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Step1: No cache found, starting fresh
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Step1: Detected 3 changed files, 0 unchanged
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Step1: Saved cache with 3 entries
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Step1: Updated cache with 3 validated files
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Step1: Detected 1 changed files, 2 unchanged
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Step1: No cache found, starting fresh
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Step1: Detected 3 changed files, 0 unchanged
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Step1: No cache found, starting fresh
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Step1: Detected 3 changed files, 0 unchanged
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Step1: No cache found, starting fresh
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Step1: Detected 3 changed files, 0 unchanged
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Step1: No cache found, starting fresh
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Step1: Detected 3 changed files, 0 unchanged
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Step1: Saved cache with 3 entries
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Step1: Updated cache with 3 validated files
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Step1: Detected 0 changed files, 3 unchanged
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Step1: No cache found, starting fresh
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Step1: Detected 3 changed files, 0 unchanged
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Step1: Saved cache with 3 entries
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Step1: Updated cache with 3 validated files
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Step1: No cache found, starting fresh
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Step1: Detected 0 changed files, 0 unchanged
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Step1: Saved cache with 0 entries
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Step1: Updated cache with 0 validated files
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Step1: No cache found, starting fresh
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Step1: Detected 3 changed files, 0 unchanged
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Step1: Saved cache with 3 entries
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Step1: Updated cache with 3 validated files
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Step1: Saved cache with 0 entries
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Step1: Cache cleared
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Step1: Saved cache with 0 entries
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Step1: Cache cleared
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Step1: No cache found, starting fresh
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Step1: Detected 3 changed files, 0 unchanged
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Step1: Saved cache with 3 entries
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Step1: Updated cache with 3 validated files
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Step1: No cache found, starting fresh
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Step1: Detected 3 changed files, 0 unchanged
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Step1: Saved cache with 3 entries
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Step1: Updated cache with 3 validated files
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Step1: Detected 0 changed files, 3 unchanged
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Step1: Detected 1 changed files, 2 unchanged
+
+      at Logger.info (src/core/logger.js:48:15)
+
+PASS test/lib/edit_operations.test.js
+  ● Console
+
+    console.log
+      [DRY RUN] Would replace in file: /tmp/editops-test-bQF9G6/test.txt
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      [DRY RUN] Would insert at line 1 in /tmp/editops-test-NevbGr/test.txt
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      [DRY RUN] Would append to file: /tmp/editops-test-Hm4kOi/test.txt
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      [DRY RUN] Would prepend to file: /tmp/editops-test-SQx4pD/test.txt
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      [DRY RUN] Would delete 1 line(s) from /tmp/editops-test-szDWZc/test.txt
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      [DRY RUN] Would replace lines 1-2 in /tmp/editops-test-uRs6AB/test.txt
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      [DRY RUN] Would transform file: /tmp/editops-test-zHVzhO/test.txt
+
+      at Logger.info (src/core/logger.js:48:15)
+
+PASS test/lib/ai_helpers.test.js
+PASS test/lib/backlog.test.js
+  ● Console
+
+    console.log
+      [DRY RUN] Would create workflow summary: /tmp/backlog-test-Cv63ht/.ai_workflow/backlog/workflow_20260208_150418/WORKFLOW_SUMMARY.md
+
+      at Backlog.createWorkflowSummary (src/lib/backlog.js:185:15)
+
+PASS test/lib/workflow_profiles.test.js
+  ● Console
+
+    console.log
+      Detecting workflow profile based on changes...
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Detected profile: docs_only
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+        Changed files: 2 (docs: 2, code: 0, tests: 0, infra: 0)
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Detecting workflow profile based on changes...
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Detected profile: code_changes
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+        Changed files: 2 (docs: 1, code: 1, tests: 0, infra: 0)
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Using manually set profile: test_changes
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.warn
+      ⚠ Invalid profile 'invalid_profile', using full_validation
+
+      65 |   warn(message) {
+      66 |     const formatted = this._format(message, 'warn');
+    > 67 |     console.warn(formatted);
+         |             ^
+      68 |   }
+      69 |
+      70 |   /**
+
+      at Logger.warn (src/core/logger.js:67:13)
+      at WorkflowProfileManager.detectProfile (src/lib/workflow_profiles.js:352:16)
+      at Object.<anonymous> (test/lib/workflow_profiles.test.js:373:39)
+
+    console.log
+      Profile detection disabled, using full_validation
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Detecting workflow profile based on changes...
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.warn
+      ⚠ Could not detect changes: Git error, using full_validation
+
+      65 |   warn(message) {
+      66 |     const formatted = this._format(message, 'warn');
+    > 67 |     console.warn(formatted);
+         |             ^
+      68 |   }
+      69 |
+      70 |   /**
+
+      at Logger.warn (src/core/logger.js:67:13)
+      at WorkflowProfileManager.detectProfile (src/lib/workflow_profiles.js:368:14)
+      at Object.<anonymous> (test/lib/workflow_profiles.test.js:386:25)
+
+    console.log
+      Detecting workflow profile based on changes...
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Detected profile: docs_only
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+        Changed files: 1 (docs: 1, code: 0, tests: 0, infra: 0)
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Detecting workflow profile based on changes...
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Detected profile: docs_only
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+        Changed files: 1 (docs: 1, code: 0, tests: 0, infra: 0)
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Detecting workflow profile based on changes...
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Detected profile: docs_only
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+        Changed files: 1 (docs: 1, code: 0, tests: 0, infra: 0)
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Detecting workflow profile based on changes...
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Detected profile: docs_only
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+        Changed files: 1 (docs: 1, code: 0, tests: 0, infra: 0)
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Detecting workflow profile based on changes...
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Detected profile: docs_only
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+        Changed files: 1 (docs: 1, code: 0, tests: 0, infra: 0)
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Profile set to: code_changes
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Detecting workflow profile based on changes...
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Detected profile: docs_only
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+        Changed files: 1 (docs: 1, code: 0, tests: 0, infra: 0)
+
+      at Logger.info (src/core/logger.js:48:15)
+
+PASS test/lib/code_changes_optimization.test.js
+  ● Console
+
+    console.log
+      Code optimization: config (5 steps skipped)
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Code optimization: frontend (0 steps skipped)
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Code optimization: config (5 steps skipped)
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Code optimization: config (2 steps skipped)
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Code optimization: config (5 steps skipped)
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Code optimization: config (5 steps skipped)
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Code optimization: frontend (0 steps skipped)
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Code optimization: config (5 steps skipped)
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Code optimization: config (2 steps skipped)
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Code optimization: frontend (0 steps skipped)
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Code optimization: config (4 steps skipped)
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Code optimization: frontend (0 steps skipped)
+
+      at Logger.info (src/core/logger.js:48:15)
+
+PASS test/steps/step_13_markdown_lint.test.js
+PASS test/steps/step_02_5_lib/version_analysis.test.js
+PASS test/lib/utils.test.js
+PASS test/lib/third_party_exclusion.test.js
+PASS test/steps/step_12_git_finalization.test.js
+PASS test/lib/git_automation.test.js
+PASS test/lib/ai_validation.test.js
+PASS test/lib/file_operations.test.js
+  ● Console
+
+    console.log
+      [DRY RUN] Would write to file: /tmp/fileops-test-I1hSDe/dryrun.txt (7 bytes)
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      [DRY RUN] Would copy file: /tmp/fileops-test-MrQDQj/source.txt → /tmp/fileops-test-MrQDQj/dest.txt
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      [DRY RUN] Would move file: /tmp/fileops-test-0XDpCu/source.txt → /tmp/fileops-test-0XDpCu/dest.txt
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      [DRY RUN] Would delete file: /tmp/fileops-test-vos8no/delete.txt
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      [DRY RUN] Would create directory: /tmp/fileops-test-uSobWb/dryrun
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      [DRY RUN] Would delete directory: /tmp/fileops-test-85j7WQ/keepme
+
+      at Logger.info (src/core/logger.js:48:15)
+
+PASS test/lib/performance_monitoring.test.js
+  ● Console
+
+    console.warn
+      ⚠ [PerformanceMonitor] Invalid thresholds provided, using defaults
+
+      65 |   warn(message) {
+      66 |     const formatted = this._format(message, 'warn');
+    > 67 |     console.warn(formatted);
+         |             ^
+      68 |   }
+      69 |
+      70 |   /**
+
+      at Logger.warn (src/core/logger.js:67:13)
+      at new PerformanceMonitor (src/lib/performance_monitoring.js:330:14)
+      at Object.<anonymous> (test/lib/performance_monitoring.test.js:299:30)
+
+    console.warn
+      ⚠ [WARNING] Operation 'test-op' took 6.0s
+
+      65 |   warn(message) {
+      66 |     const formatted = this._format(message, 'warn');
+    > 67 |     console.warn(formatted);
+         |             ^
+      68 |   }
+      69 |
+      70 |   /**
+
+      at Logger.warn (src/core/logger.js:67:13)
+      at PerformanceMonitor.checkMetrics (src/lib/performance_monitoring.js:420:14)
+      at Object.<anonymous> (test/lib/performance_monitoring.test.js:314:29)
+
+    console.warn
+      ⚠ [WARNING] Operation 'db-query' took 6.0s (memory: 100MB)
+
+      65 |   warn(message) {
+      66 |     const formatted = this._format(message, 'warn');
+    > 67 |     console.warn(formatted);
+         |             ^
+      68 |   }
+      69 |
+      70 |   /**
+
+      at Logger.warn (src/core/logger.js:67:13)
+      at PerformanceMonitor.checkMetrics (src/lib/performance_monitoring.js:420:14)
+      at Object.<anonymous> (test/lib/performance_monitoring.test.js:329:29)
+
+    console.error
+      ✗ [CRITICAL] Operation 'slow-operation' took 35.0s
+
+      73 |   error(message) {
+      74 |     const formatted = this._format(message, 'error');
+    > 75 |     console.error(formatted);
+         |             ^
+      76 |   }
+      77 |
+      78 |   /**
+
+      at Logger.error (src/core/logger.js:75:13)
+      at PerformanceMonitor.checkMetrics (src/lib/performance_monitoring.js:418:14)
+      at Object.<anonymous> (test/lib/performance_monitoring.test.js:339:29)
+
+    console.warn
+      ⚠ [PerformanceMonitor] Invalid operationId or metrics
+
+      65 |   warn(message) {
+      66 |     const formatted = this._format(message, 'warn');
+    > 67 |     console.warn(formatted);
+         |             ^
+      68 |   }
+      69 |
+      70 |   /**
+
+      at Logger.warn (src/core/logger.js:67:13)
+      at PerformanceMonitor.checkMetrics (src/lib/performance_monitoring.js:368:14)
+      at Object.<anonymous> (test/lib/performance_monitoring.test.js:372:22)
+
+    console.warn
+      ⚠ [PerformanceMonitor] Invalid operationId or metrics
+
+      65 |   warn(message) {
+      66 |     const formatted = this._format(message, 'warn');
+    > 67 |     console.warn(formatted);
+         |             ^
+      68 |   }
+      69 |
+      70 |   /**
+
+      at Logger.warn (src/core/logger.js:67:13)
+      at PerformanceMonitor.checkMetrics (src/lib/performance_monitoring.js:368:14)
+      at Object.<anonymous> (test/lib/performance_monitoring.test.js:373:22)
+
+    console.warn
+      ⚠ [WARNING] Operation 'op0' took 6.0s
+
+      65 |   warn(message) {
+      66 |     const formatted = this._format(message, 'warn');
+    > 67 |     console.warn(formatted);
+         |             ^
+      68 |   }
+      69 |
+      70 |   /**
+
+      at Logger.warn (src/core/logger.js:67:13)
+      at PerformanceMonitor.checkMetrics (src/lib/performance_monitoring.js:420:14)
+      at Object.<anonymous> (test/lib/performance_monitoring.test.js:397:17)
+
+    console.warn
+      ⚠ [WARNING] Operation 'op1' took 6.0s
+
+      65 |   warn(message) {
+      66 |     const formatted = this._format(message, 'warn');
+    > 67 |     console.warn(formatted);
+         |             ^
+      68 |   }
+      69 |
+      70 |   /**
+
+      at Logger.warn (src/core/logger.js:67:13)
+      at PerformanceMonitor.checkMetrics (src/lib/performance_monitoring.js:420:14)
+      at Object.<anonymous> (test/lib/performance_monitoring.test.js:397:17)
+
+    console.warn
+      ⚠ [WARNING] Operation 'op2' took 6.0s
+
+      65 |   warn(message) {
+      66 |     const formatted = this._format(message, 'warn');
+    > 67 |     console.warn(formatted);
+         |             ^
+      68 |   }
+      69 |
+      70 |   /**
+
+      at Logger.warn (src/core/logger.js:67:13)
+      at PerformanceMonitor.checkMetrics (src/lib/performance_monitoring.js:420:14)
+      at Object.<anonymous> (test/lib/performance_monitoring.test.js:397:17)
+
+    console.warn
+      ⚠ [WARNING] Operation 'op3' took 6.0s
+
+      65 |   warn(message) {
+      66 |     const formatted = this._format(message, 'warn');
+    > 67 |     console.warn(formatted);
+         |             ^
+      68 |   }
+      69 |
+      70 |   /**
+
+      at Logger.warn (src/core/logger.js:67:13)
+      at PerformanceMonitor.checkMetrics (src/lib/performance_monitoring.js:420:14)
+      at Object.<anonymous> (test/lib/performance_monitoring.test.js:397:17)
+
+    console.warn
+      ⚠ [WARNING] Operation 'op4' took 6.0s
+
+      65 |   warn(message) {
+      66 |     const formatted = this._format(message, 'warn');
+    > 67 |     console.warn(formatted);
+         |             ^
+      68 |   }
+      69 |
+      70 |   /**
+
+      at Logger.warn (src/core/logger.js:67:13)
+      at PerformanceMonitor.checkMetrics (src/lib/performance_monitoring.js:420:14)
+      at Object.<anonymous> (test/lib/performance_monitoring.test.js:397:17)
+
+    console.warn
+      ⚠ [WARNING] Operation 'op1' took 6.0s
+
+      65 |   warn(message) {
+      66 |     const formatted = this._format(message, 'warn');
+    > 67 |     console.warn(formatted);
+         |             ^
+      68 |   }
+      69 |
+      70 |   /**
+
+      at Logger.warn (src/core/logger.js:67:13)
+      at PerformanceMonitor.checkMetrics (src/lib/performance_monitoring.js:420:14)
+      at Object.<anonymous> (test/lib/performance_monitoring.test.js:405:15)
+
+    console.warn
+      ⚠ [WARNING] Operation 'op2' took 6.0s
+
+      65 |   warn(message) {
+      66 |     const formatted = this._format(message, 'warn');
+    > 67 |     console.warn(formatted);
+         |             ^
+      68 |   }
+      69 |
+      70 |   /**
+
+      at Logger.warn (src/core/logger.js:67:13)
+      at PerformanceMonitor.checkMetrics (src/lib/performance_monitoring.js:420:14)
+      at Object.<anonymous> (test/lib/performance_monitoring.test.js:406:15)
+
+    console.warn
+      ⚠ [WARNING] Operation 'op1' took 6.0s
+
+      65 |   warn(message) {
+      66 |     const formatted = this._format(message, 'warn');
+    > 67 |     console.warn(formatted);
+         |             ^
+      68 |   }
+      69 |
+      70 |   /**
+
+      at Logger.warn (src/core/logger.js:67:13)
+      at PerformanceMonitor.checkMetrics (src/lib/performance_monitoring.js:420:14)
+      at Object.<anonymous> (test/lib/performance_monitoring.test.js:415:15)
+
+    console.warn
+      ⚠ [WARNING] Operation 'op2' took 6.0s
+
+      65 |   warn(message) {
+      66 |     const formatted = this._format(message, 'warn');
+    > 67 |     console.warn(formatted);
+         |             ^
+      68 |   }
+      69 |
+      70 |   /**
+
+      at Logger.warn (src/core/logger.js:67:13)
+      at PerformanceMonitor.checkMetrics (src/lib/performance_monitoring.js:420:14)
+      at Object.<anonymous> (test/lib/performance_monitoring.test.js:416:15)
+
+    console.warn
+      ⚠ [WARNING] Operation 'op1' took 7.0s
+
+      65 |   warn(message) {
+      66 |     const formatted = this._format(message, 'warn');
+    > 67 |     console.warn(formatted);
+         |             ^
+      68 |   }
+      69 |
+      70 |   /**
+
+      at Logger.warn (src/core/logger.js:67:13)
+      at PerformanceMonitor.checkMetrics (src/lib/performance_monitoring.js:420:14)
+      at Object.<anonymous> (test/lib/performance_monitoring.test.js:417:15)
+
+    console.warn
+      ⚠ [WARNING] Operation 'op1' took 6.0s
+
+      65 |   warn(message) {
+      66 |     const formatted = this._format(message, 'warn');
+    > 67 |     console.warn(formatted);
+         |             ^
+      68 |   }
+      69 |
+      70 |   /**
+
+      at Logger.warn (src/core/logger.js:67:13)
+      at PerformanceMonitor.checkMetrics (src/lib/performance_monitoring.js:420:14)
+      at Object.<anonymous> (test/lib/performance_monitoring.test.js:453:15)
+
+    console.warn
+      ⚠ [WARNING] Operation 'op2' took 6.0s
+
+      65 |   warn(message) {
+      66 |     const formatted = this._format(message, 'warn');
+    > 67 |     console.warn(formatted);
+         |             ^
+      68 |   }
+      69 |
+      70 |   /**
+
+      at Logger.warn (src/core/logger.js:67:13)
+      at PerformanceMonitor.checkMetrics (src/lib/performance_monitoring.js:420:14)
+      at Object.<anonymous> (test/lib/performance_monitoring.test.js:454:15)
+
+    console.log
+      [PerformanceMonitor] Thresholds updated
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.error
+      ✗ [PerformanceMonitor] Invalid threshold configuration
+
+      73 |   error(message) {
+      74 |     const formatted = this._format(message, 'error');
+    > 75 |     console.error(formatted);
+         |             ^
+      76 |   }
+      77 |
+      78 |   /**
+
+      at Logger.error (src/core/logger.js:75:13)
+      at PerformanceMonitor.updateThresholds (src/lib/performance_monitoring.js:516:14)
+      at Object.<anonymous> (test/lib/performance_monitoring.test.js:493:30)
+
+    console.error
+      ✗ [PerformanceMonitor] Invalid thresholds
+
+      73 |   error(message) {
+      74 |     const formatted = this._format(message, 'error');
+    > 75 |     console.error(formatted);
+         |             ^
+      76 |   }
+      77 |
+      78 |   /**
+
+      at Logger.error (src/core/logger.js:75:13)
+      at PerformanceMonitor.updateThresholds (src/lib/performance_monitoring.js:509:14)
+      at Object.<anonymous> (test/lib/performance_monitoring.test.js:503:30)
+
+PASS test/steps/step_16_version_update.test.js
+PASS test/orchestrator/conditional_executor.test.js
+  ● Console
+
+    console.log
+      ⚡ Step 'step1' skipped: Step marked to skip
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      ⚡ Step 'step1' skipped: No changes detected
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      ⚡ Step 'step1' skipped: Step marked to skip
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      ⚡ Step 'step2' skipped: Step marked to skip
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Execution plan: 2 to execute, 1 to skip
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Execution plan: 3 to execute, 0 to skip
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      ⚡ Step 'step1' skipped: Step marked to skip
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      ⚡ Step 'step1' skipped: Step marked to skip
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      ⚡ Step 'step1' skipped: Step marked to skip
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      ⚡ Step 'step1' skipped: Step marked to skip
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      ⚡ Step 'step2' skipped: Step is disabled
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      ⚡ Step 'step1' skipped: Step marked to skip
+
+      at Logger.info (src/core/logger.js:48:15)
+
+PASS test/steps/step_04_config_validation.test.js
+  ● Console
+
+    console.log
+      Step 4: Configuration Validation
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      No configuration files found - skipping validation
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Step 4: Configuration Validation
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Found 2 configuration file(s)
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Syntax validation: 0 error(s)
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Security scan: 0 finding(s)
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Best practices: 0 issue(s)
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      ✓ Step 4 completed - no issues found
+
+      at Logger.success (src/core/logger.js:58:15)
+
+    console.log
+      Step 4: Configuration Validation
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Found 1 configuration file(s)
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Syntax validation: 1 error(s)
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Security scan: 0 finding(s)
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Best practices: 0 issue(s)
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.warn
+      ⚠ Step 4 completed - 1 issue(s) found
+
+      65 |   warn(message) {
+      66 |     const formatted = this._format(message, 'warn');
+    > 67 |     console.warn(formatted);
+         |             ^
+      68 |   }
+      69 |
+      70 |   /**
+
+      at Logger.warn (src/core/logger.js:67:13)
+      at Step4ConfigAnalyzer.execute (src/steps/step_04_config_validation.js:418:16)
+      at Object.<anonymous> (test/steps/step_04_config_validation.test.js:357:22)
+
+    console.log
+      Step 4: Configuration Validation
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Found 1 configuration file(s)
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Syntax validation: 0 error(s)
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Security scan: 1 finding(s)
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Best practices: 0 issue(s)
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.warn
+      ⚠ Step 4 completed - 1 issue(s) found
+
+      65 |   warn(message) {
+      66 |     const formatted = this._format(message, 'warn');
+    > 67 |     console.warn(formatted);
+         |             ^
+      68 |   }
+      69 |
+      70 |   /**
+
+      at Logger.warn (src/core/logger.js:67:13)
+      at Step4ConfigAnalyzer.execute (src/steps/step_04_config_validation.js:418:16)
+      at Object.<anonymous> (test/steps/step_04_config_validation.test.js:372:22)
+
+    console.log
+      Step 4: Configuration Validation
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Found 1 configuration file(s)
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Syntax validation: 1 error(s)
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Security scan: 0 finding(s)
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Best practices: 1 issue(s)
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.warn
+      ⚠ Step 4 completed - 1 issue(s) found
+
+      65 |   warn(message) {
+      66 |     const formatted = this._format(message, 'warn');
+    > 67 |     console.warn(formatted);
+         |             ^
+      68 |   }
+      69 |
+      70 |   /**
+
+      at Logger.warn (src/core/logger.js:67:13)
+      at Step4ConfigAnalyzer.execute (src/steps/step_04_config_validation.js:418:16)
+      at Object.<anonymous> (test/steps/step_04_config_validation.test.js:382:22)
+
+    console.log
+      Step 4: Configuration Validation
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Found 1 configuration file(s)
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Syntax validation: 0 error(s)
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Security scan: 0 finding(s)
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Best practices: 0 issue(s)
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      ✓ Step 4 completed - no issues found
+
+      at Logger.success (src/core/logger.js:58:15)
+
+    console.log
+      Step 4: Configuration Validation
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Found 1 configuration file(s)
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Syntax validation: 0 error(s)
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Security scan: 0 finding(s)
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Best practices: 0 issue(s)
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      ✓ Step 4 completed - no issues found
+
+      at Logger.success (src/core/logger.js:58:15)
+
+PASS test/lib/analysis_cache.test.js
+  ● Console
+
+    console.log
+      [AnalysisCache] Cleared 0 entries
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      [AnalysisCache] Cleared 0 entries
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      [AnalysisCache] Cleared 1 entries
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      [AnalysisCache] Cleared 1 entries
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      [AnalysisCache] Cleared 1 entries
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      [AnalysisCache] Cleared 0 entries
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      [AnalysisCache] Cleared 0 entries
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      [AnalysisCache] Cleared 1 entries
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      [AnalysisCache] Invalidated: test_f2183cee (reason: file_changed)
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      [AnalysisCache] Cleared 0 entries
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      [AnalysisCache] Cleared 1 entries
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      [AnalysisCache] Cleared 2 entries
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      [AnalysisCache] Cleared 0 entries
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      [AnalysisCache] Evicted 1 oldest entries
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      [AnalysisCache] Cleared 0 entries
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      [AnalysisCache] Evicted 1 oldest entries
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      [AnalysisCache] Cleared 2 entries
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      [AnalysisCache] Cleaned up 2 expired entries
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      [AnalysisCache] Cleared 0 entries
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      [AnalysisCache] Cleared 2 entries
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      [AnalysisCache] Exported to /home/mpb/Documents/GitHub/ai_workflow.js/.test-tmp/analysis-cache-test.json
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      [AnalysisCache] Cleared 1 entries
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      [AnalysisCache] Exported to /home/mpb/Documents/GitHub/ai_workflow.js/.test-tmp/analysis-cache-test.json
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      [AnalysisCache] Imported 1 entries from /home/mpb/Documents/GitHub/ai_workflow.js/.test-tmp/analysis-cache-test.json
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      [AnalysisCache] Cleared 1 entries
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.error
+      ✗ [AnalysisCache] Invalid file path
+
+      73 |   error(message) {
+      74 |     const formatted = this._format(message, 'error');
+    > 75 |     console.error(formatted);
+         |             ^
+      76 |   }
+      77 |
+      78 |   /**
+
+      at Logger.error (src/core/logger.js:75:13)
+      at AnalysisCache.exportToFile (src/lib/analysis_cache.js:499:14)
+      at Object.<anonymous> (test/lib/analysis_cache.test.js:477:26)
+
+    console.log
+      [AnalysisCache] Cleared 0 entries
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.error
+      ✗ [AnalysisCache] Failed to import: ENOENT: no such file or directory, open '/nonexistent/file.json'
+
+      73 |   error(message) {
+      74 |     const formatted = this._format(message, 'error');
+    > 75 |     console.error(formatted);
+         |             ^
+      76 |   }
+      77 |
+      78 |   /**
+
+      at Logger.error (src/core/logger.js:75:13)
+      at AnalysisCache.importFromFile (src/lib/analysis_cache.js:540:14)
+      at Object.<anonymous> (test/lib/analysis_cache.test.js:481:7)
+
+    console.log
+      [AnalysisCache] Cleared 0 entries
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.error
+      ✗ [AnalysisCache] Failed to import: Unexpected token 'i', "invalid json" is not valid JSON
+
+      73 |   error(message) {
+      74 |     const formatted = this._format(message, 'error');
+    > 75 |     console.error(formatted);
+         |             ^
+      76 |   }
+      77 |
+      78 |   /**
+
+      at Logger.error (src/core/logger.js:75:13)
+      at AnalysisCache.importFromFile (src/lib/analysis_cache.js:540:14)
+      at Object.<anonymous> (test/lib/analysis_cache.test.js:486:7)
+
+    console.log
+      [AnalysisCache] Cleared 0 entries
+
+      at Logger.info (src/core/logger.js:48:15)
+
+PASS test/steps/step_02_5_lib/consolidation.test.js
+PASS test/lib/ml_optimization.test.js
+  ● Console
+
+    console.log
+      ML Optimizer initialized
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      ML Optimizer initialized
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      ML Optimizer initialized
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.warn
+      ⚠ Failed to load model: Unexpected token 'c', "corrupted json" is not valid JSON
+
+      65 |   warn(message) {
+      66 |     const formatted = this._format(message, 'warn');
+    > 67 |     console.warn(formatted);
+         |             ^
+      68 |   }
+      69 |
+      70 |   /**
+
+      at Logger.warn (src/core/logger.js:67:13)
+      at MLOptimizer.loadModel (src/lib/ml_optimization.js:525:14)
+      at Object.<anonymous> (test/lib/ml_optimization.test.js:682:7)
+
+    console.log
+      ML Optimizer initialized
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      ML Optimizer initialized
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      ML Optimizer initialized
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      ML Optimizer initialized
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      ML Optimizer initialized
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      ML Optimizer initialized
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      ML Optimizer initialized
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      ML Optimizer initialized
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      ML Optimizer initialized
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      ML Optimizer initialized
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      ML Optimizer initialized
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      ML Optimizer initialized
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      ML Optimizer initialized
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      ML Optimizer initialized
+
+      at Logger.info (src/core/logger.js:48:15)
+
+PASS test/lib/project_kind_detection.test.js
+  ● Console
+
+    console.error
+      ✗ Error detecting project kind: Failed to list directory recursively: ENOENT: no such file or directory, scandir '/non/existent/path'
+
+      73 |   error(message) {
+      74 |     const formatted = this._format(message, 'error');
+    > 75 |     console.error(formatted);
+         |             ^
+      76 |   }
+      77 |
+      78 |   /**
+
+      at Logger.error (src/core/logger.js:75:13)
+      at ProjectKindDetector.detectProjectKind (src/lib/project_kind_detection.js:352:14)
+      at Object.<anonymous> (test/lib/project_kind_detection.test.js:394:20)
+
+PASS test/steps/step_02_5_lib/git_analysis.test.js
+PASS test/lib/argument_parser.test.js
+  ● Console
+
+    console.error
+      ✗ Argument validation failed:
+
+      73 |   error(message) {
+      74 |     const formatted = this._format(message, 'error');
+    > 75 |     console.error(formatted);
+         |             ^
+      76 |   }
+      77 |
+      78 |   /**
+
+      at Logger.error (src/core/logger.js:75:13)
+      at ArgumentParser.parse (src/lib/argument_parser.js:392:16)
+      at Object.<anonymous> (test/lib/argument_parser.test.js:500:12)
+
+    console.error
+      ✗ Required option missing: --name
+
+      73 |   error(message) {
+      74 |     const formatted = this._format(message, 'error');
+    > 75 |     console.error(formatted);
+         |             ^
+      76 |   }
+      77 |
+      78 |   /**
+
+      at Logger.error (src/core/logger.js:75:13)
+      at ArgumentParser.parse (src/lib/argument_parser.js:393:16)
+      at Object.<anonymous> (test/lib/argument_parser.test.js:500:12)
+
+    console.error
+      ✗ Argument validation failed:
+
+      73 |   error(message) {
+      74 |     const formatted = this._format(message, 'error');
+    > 75 |     console.error(formatted);
+         |             ^
+      76 |   }
+      77 |
+      78 |   /**
+
+      at Logger.error (src/core/logger.js:75:13)
+      at ArgumentParser.parse (src/lib/argument_parser.js:392:16)
+      at Object.<anonymous> (test/lib/argument_parser.test.js:606:14)
+
+    console.error
+      ✗ Invalid value for --env: must be one of dev, prod
+
+      73 |   error(message) {
+      74 |     const formatted = this._format(message, 'error');
+    > 75 |     console.error(formatted);
+         |             ^
+      76 |   }
+      77 |
+      78 |   /**
+
+      at Logger.error (src/core/logger.js:75:13)
+      at ArgumentParser.parse (src/lib/argument_parser.js:393:16)
+      at Object.<anonymous> (test/lib/argument_parser.test.js:606:14)
+
+PASS test/lib/incremental_analysis.test.js
+  ● Console
+
+    console.warn
+      ⚠ Failed to load previous hashes: Unexpected token 'c', "corrupted json" is not valid JSON
+
+      65 |   warn(message) {
+      66 |     const formatted = this._format(message, 'warn');
+    > 67 |     console.warn(formatted);
+         |             ^
+      68 |   }
+      69 |
+      70 |   /**
+
+      at Logger.warn (src/core/logger.js:67:13)
+      at IncrementalAnalyzer.loadPreviousHashes (src/lib/incremental_analysis.js:410:14)
+      at Object.<anonymous> (test/lib/incremental_analysis.test.js:545:7)
+
+    console.log
+      Detected changes: 1 added, 1 modified, 1 deleted
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Detected changes: 1 added, 0 modified, 0 deleted
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Detected changes: 0 added, 1 modified, 0 deleted
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Detected changes: 1 added, 0 modified, 0 deleted
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Detected changes: 0 added, 2 modified, 0 deleted
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Detected changes: 0 added, 1 modified, 0 deleted
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Detected changes: 1 added, 1 modified, 0 deleted
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Detected changes: 1 added, 0 modified, 0 deleted
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Detected changes: 0 added, 0 modified, 0 deleted
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Detected changes: 2 added, 1 modified, 0 deleted
+
+      at Logger.info (src/core/logger.js:48:15)
+
+PASS test/steps/step_14_prompt_engineer.test.js
+PASS test/orchestrator/step_registry.test.js
+  ● Console
+
+    console.warn
+      ⚠ Step registry validation failed: Step 'step_00' depends on non-existent step 'step_99'
+
+      65 |   warn(message) {
+      66 |     const formatted = this._format(message, 'warn');
+    > 67 |     console.warn(formatted);
+         |             ^
+      68 |   }
+      69 |
+      70 |   /**
+
+      at Logger.warn (src/core/logger.js:67:13)
+      at StepRegistry.validateAll (src/orchestrator/step_registry.js:507:14)
+      at Object.<anonymous> (test/orchestrator/step_registry.test.js:846:31)
+
+PASS test/lib/full_changes_optimization.test.js
+  ● Console
+
+    console.log
+      Full optimization: Analyzing changes...
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Docs-only analysis: YES (100% docs, 46.67% faster)
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Code optimization: mixed (0 steps skipped)
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Full optimization: Selected strategy 'docs_only' (confidence: 95%)
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Full optimization: Analyzing changes...
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Docs-only analysis: NO (0% docs, 0% faster)
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Code optimization: config (2 steps skipped)
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Full optimization: Selected strategy 'code_changes' (confidence: 80%)
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Full optimization: Analyzing changes...
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Docs-only analysis: NO (33.33% docs, 0% faster)
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Code optimization: backend (0 steps skipped)
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Full optimization: Selected strategy 'ml_prediction' (confidence: 30%)
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Full optimization: Analyzing changes...
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Docs-only analysis: YES (100% docs, 0% faster)
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Code optimization: mixed (0 steps skipped)
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Full optimization: Selected strategy 'ml_prediction' (confidence: 30%)
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Full optimization: Analyzing changes...
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Docs-only analysis: YES (100% docs, 0% faster)
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Code optimization: mixed (0 steps skipped)
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Full optimization: Selected strategy 'ml_prediction' (confidence: 30%)
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Full optimization: Analyzing changes...
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Docs-only analysis: YES (100% docs, 46.67% faster)
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Code optimization: mixed (0 steps skipped)
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Full optimization: Selected strategy 'docs_only' (confidence: 95%)
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Full optimization: Analyzing changes...
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Docs-only analysis: NO (0% docs, 0% faster)
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Code optimization: backend (0 steps skipped)
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Full optimization: Selected strategy 'ml_prediction' (confidence: 30%)
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Full optimization: Analyzing changes...
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Docs-only analysis: YES (100% docs, 46.67% faster)
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Code optimization: mixed (0 steps skipped)
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Full optimization: Selected strategy 'docs_only' (confidence: 95%)
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Full optimization: Analyzing changes...
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Docs-only analysis: NO (0% docs, 0% faster)
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Code optimization: backend (0 steps skipped)
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Full optimization: Selected strategy 'ml_prediction' (confidence: 30%)
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Full optimization: Analyzing changes...
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Docs-only analysis: YES (100% docs, 0% faster)
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Code optimization: mixed (0 steps skipped)
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Full optimization: Selected strategy 'ml_prediction' (confidence: 30%)
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Full optimization: Recorded result (strategy: ml_prediction, success: true)
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Full optimization: Analyzing changes...
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Docs-only analysis: YES (100% docs, 0% faster)
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Code optimization: mixed (0 steps skipped)
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Full optimization: Selected strategy 'ml_prediction' (confidence: 30%)
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Full optimization: Recorded result (strategy: ml_prediction, success: true)
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Full optimization: Analyzing changes...
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Docs-only analysis: YES (100% docs, 0% faster)
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Code optimization: mixed (0 steps skipped)
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Full optimization: Selected strategy 'ml_prediction' (confidence: 30%)
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Full optimization: Recorded result (strategy: ml_prediction, success: true)
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Full optimization: Analyzing changes...
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Docs-only analysis: YES (100% docs, 0% faster)
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Code optimization: mixed (0 steps skipped)
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.warn
+      ⚠ ML prediction skipped: Optimizer not initialized. Call initialize() first.
+
+      65 |   warn(message) {
+      66 |     const formatted = this._format(message, 'warn');
+    > 67 |     console.warn(formatted);
+         |             ^
+      68 |   }
+      69 |
+      70 |   /**
+
+      at Logger.warn (src/core/logger.js:67:13)
+      at FullChangesOptimizer.analyze (src/lib/full_changes_optimization.js:330:16)
+      at Object.<anonymous> (test/lib/full_changes_optimization.test.js:564:25)
+
+    console.log
+      Full optimization: Selected strategy 'ml_prediction' (confidence: 30%)
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Full optimization: Recorded result (strategy: ml_prediction, success: false)
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Full optimization: Analyzing changes...
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Docs-only analysis: YES (100% docs, 0% faster)
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Code optimization: mixed (0 steps skipped)
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Full optimization: Selected strategy 'ml_prediction' (confidence: 30%)
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Full optimization: Recorded result (strategy: ml_prediction, success: true)
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Full optimization: Analyzing changes...
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Docs-only analysis: NO (0% docs, 0% faster)
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Code optimization: config (0 steps skipped)
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.warn
+      ⚠ ML prediction skipped: Optimizer not initialized. Call initialize() first.
+
+      65 |   warn(message) {
+      66 |     const formatted = this._format(message, 'warn');
+    > 67 |     console.warn(formatted);
+         |             ^
+      68 |   }
+      69 |
+      70 |   /**
+
+      at Logger.warn (src/core/logger.js:67:13)
+      at FullChangesOptimizer.analyze (src/lib/full_changes_optimization.js:330:16)
+      at Object.<anonymous> (test/lib/full_changes_optimization.test.js:581:25)
+
+    console.log
+      Full optimization: Selected strategy 'ml_prediction' (confidence: 30%)
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Full optimization: Recorded result (strategy: ml_prediction, success: true)
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Full optimization: Analyzing changes...
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Docs-only analysis: YES (100% docs, 0% faster)
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Code optimization: mixed (0 steps skipped)
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Full optimization: Selected strategy 'ml_prediction' (confidence: 30%)
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Full optimization: Recorded result (strategy: ml_prediction, success: true)
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Full optimization: State reset
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Full optimization: Analyzing changes...
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Docs-only analysis: YES (100% docs, 46.67% faster)
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Code optimization: mixed (0 steps skipped)
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Full optimization: Selected strategy 'docs_only' (confidence: 95%)
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Full optimization: Recorded result (strategy: docs_only, success: true)
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Full optimization: Analyzing changes...
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Docs-only analysis: NO (20% docs, 0% faster)
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Code optimization: backend (0 steps skipped)
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Full optimization: Selected strategy 'ml_prediction' (confidence: 30%)
+
+      at Logger.info (src/core/logger.js:48:15)
+
+PASS test/steps/step_00_analyze.test.js
+  ● Console
+
+    console.log
+      Step 0: Pre-Analysis - Analyzing Recent Changes
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Commits ahead of remote: 3
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Modified files: 10
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      No project kind in config, auto-detecting...
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Auto-detected project kind: Node.js API Server (95% confidence)
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Detected language: javascript
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Build system: npm
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Test framework: jest
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      ✓ Pre-analysis complete:
+        • Commits ahead: 3
+        • Modified files: 10
+        • Change scope: full-stack
+        • Documentation: 2 files
+        • Tests: 2 files
+        • Source: 4 files
+        • Config: 2 files
+        • Project kind: Node.js API Server (95% confidence)
+        • Language: javascript
+        • Build system: npm
+        • Test framework: jest
+
+      at Logger.success (src/core/logger.js:58:15)
+
+    console.log
+      Step 0: Pre-Analysis - Analyzing Recent Changes
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Commits ahead of remote: 3
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Modified files: 10
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      ✓ Project kind from config: React Single Page Application (configured)
+
+      at Logger.success (src/core/logger.js:58:15)
+
+    console.log
+      Detected language: javascript
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Build system: npm
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Test framework: jest
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      ✓ Pre-analysis complete:
+        • Commits ahead: 3
+        • Modified files: 10
+        • Change scope: full-stack
+        • Documentation: 2 files
+        • Tests: 2 files
+        • Source: 4 files
+        • Config: 2 files
+        • Project kind: React Single Page Application (100% confidence)
+        • Language: javascript
+        • Build system: npm
+        • Test framework: jest
+
+      at Logger.success (src/core/logger.js:58:15)
+
+    console.log
+      Step 0: Pre-Analysis - Analyzing Recent Changes
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Commits ahead of remote: 3
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Modified files: 10
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      No project kind in config, auto-detecting...
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Auto-detected project kind: Node.js API Server (95% confidence)
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Detected language: javascript
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Build system: npm
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Test framework: jest
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      ✓ Pre-analysis complete:
+        • Commits ahead: 3
+        • Modified files: 10
+        • Change scope: full-stack
+        • Documentation: 2 files
+        • Tests: 2 files
+        • Source: 4 files
+        • Config: 2 files
+        • Project kind: Node.js API Server (95% confidence)
+        • Language: javascript
+        • Build system: npm
+        • Test framework: jest
+
+      at Logger.success (src/core/logger.js:58:15)
+
+    console.log
+      Step 0: Pre-Analysis - Analyzing Recent Changes
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Commits ahead of remote: 3
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Modified files: 10
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      No project kind in config, auto-detecting...
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Auto-detected project kind: Node.js API Server (95% confidence)
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Detected language: javascript
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Build system: npm
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Test framework: jest
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      ✓ Pre-analysis complete:
+        • Commits ahead: 3
+        • Modified files: 10
+        • Change scope: full-stack
+        • Documentation: 2 files
+        • Tests: 2 files
+        • Source: 4 files
+        • Config: 2 files
+        • Project kind: Node.js API Server (95% confidence)
+        • Language: javascript
+        • Build system: npm
+        • Test framework: jest
+
+      at Logger.success (src/core/logger.js:58:15)
+
+    console.log
+      Step 0: Pre-Analysis - Analyzing Recent Changes
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Commits ahead of remote: 3
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Modified files: 10
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      No project kind in config, auto-detecting...
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Auto-detected project kind: Node.js API Server (95% confidence)
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Detected language: javascript
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Build system: npm
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Test framework: jest
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      ✓ Pre-analysis complete:
+        • Commits ahead: 3
+        • Modified files: 10
+        • Change scope: full-stack
+        • Documentation: 2 files
+        • Tests: 2 files
+        • Source: 4 files
+        • Config: 2 files
+        • Project kind: Node.js API Server (95% confidence)
+        • Language: javascript
+        • Build system: npm
+        • Test framework: jest
+
+      at Logger.success (src/core/logger.js:58:15)
+
+    console.log
+      Step 0: Pre-Analysis - Analyzing Recent Changes
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.error
+      ✗ Step 0 failed: Git error
+
+      73 |   error(message) {
+      74 |     const formatted = this._format(message, 'error');
+    > 75 |     console.error(formatted);
+         |             ^
+      76 |   }
+      77 |
+      78 |   /**
+
+      at Logger.error (src/core/logger.js:75:13)
+      at Step0Analyzer.execute (src/steps/step_00_analyze.js:448:14)
+      at Object.<anonymous> (test/steps/step_00_analyze.test.js:577:22)
+
+    console.log
+      Step 0: Pre-Analysis - Analyzing Recent Changes
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Commits ahead of remote: 3
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Modified files: 10
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      ✓ Pre-analysis complete:
+        • Commits ahead: 3
+        • Modified files: 10
+        • Change scope: full-stack
+        • Documentation: 2 files
+        • Tests: 2 files
+        • Source: 4 files
+        • Config: 2 files
+
+      at Logger.success (src/core/logger.js:58:15)
+
+PASS test/steps/step_02_consistency.test.js
+  ● Console
+
+    console.log
+      Step 2: Documentation Consistency Analysis
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      No documentation files found - skipping consistency check
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Step 2: Documentation Consistency Analysis
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Found 2 documentation files
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Expected version: 1.0.0
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Version check: 0 issue(s) found
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Link check: 1 broken link(s) found
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.warn
+      ⚠ Step 2 completed - 1 issue(s) found
+
+      65 |   warn(message) {
+      66 |     const formatted = this._format(message, 'warn');
+    > 67 |     console.warn(formatted);
+         |             ^
+      68 |   }
+      69 |
+      70 |   /**
+
+      at Logger.warn (src/core/logger.js:67:13)
+      at Step2ConsistencyAnalyzer.execute (src/steps/step_02_consistency.js:348:16)
+      at Object.<anonymous> (test/steps/step_02_consistency.test.js:365:22)
+
+    console.log
+      Step 2: Documentation Consistency Analysis
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Found 1 documentation files
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Expected version: not found
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Version check: 0 issue(s) found
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Link check: 1 broken link(s) found
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.warn
+      ⚠ Step 2 completed - 1 issue(s) found
+
+      65 |   warn(message) {
+      66 |     const formatted = this._format(message, 'warn');
+    > 67 |     console.warn(formatted);
+         |             ^
+      68 |   }
+      69 |
+      70 |   /**
+
+      at Logger.warn (src/core/logger.js:67:13)
+      at Step2ConsistencyAnalyzer.execute (src/steps/step_02_consistency.js:348:16)
+      at Object.<anonymous> (test/steps/step_02_consistency.test.js:376:22)
+
+    console.log
+      Step 2: Documentation Consistency Analysis
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Found 1 documentation files
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Expected version: 1.0.0
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Version check: 1 issue(s) found
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Link check: 0 broken link(s) found
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.warn
+      ⚠ Step 2 completed - 1 issue(s) found
+
+      65 |   warn(message) {
+      66 |     const formatted = this._format(message, 'warn');
+    > 67 |     console.warn(formatted);
+         |             ^
+      68 |   }
+      69 |
+      70 |   /**
+
+      at Logger.warn (src/core/logger.js:67:13)
+      at Step2ConsistencyAnalyzer.execute (src/steps/step_02_consistency.js:348:16)
+      at Object.<anonymous> (test/steps/step_02_consistency.test.js:391:22)
+
+    console.log
+      Step 2: Documentation Consistency Analysis
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Found 1 documentation files
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Expected version: not found
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Version check: 0 issue(s) found
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Link check: 0 broken link(s) found
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      ✓ Step 2 completed - no issues found
+
+      at Logger.success (src/core/logger.js:58:15)
+
+    console.log
+      Step 2: Documentation Consistency Analysis
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Found 1 documentation files
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Expected version: not found
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Version check: 0 issue(s) found
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Link check: 0 broken link(s) found
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      ✓ Step 2 completed - no issues found
+
+      at Logger.success (src/core/logger.js:58:15)
+
+    console.log
+      Step 2: Documentation Consistency Analysis
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      No documentation files found - skipping consistency check
+
+      at Logger.info (src/core/logger.js:48:15)
+
+PASS test/steps/step_02_5_lib/heuristics.test.js
+PASS test/lib/docs_only_optimization.test.js
+  ● Console
+
+    console.log
+      Docs-only analysis: YES (100% docs, 83.33% faster)
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Docs-only analysis: NO (50% docs, 0% faster)
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Docs-only analysis: YES (100% docs, 33.33% faster)
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Docs-only analysis: YES (100% docs, 83.33% faster)
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Applying docs-only optimization (skipping 2 steps)
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Docs-only analysis: NO (50% docs, 0% faster)
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Docs-only analysis: YES (100% docs, 84.31% faster)
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Docs-only analysis: YES (100% docs, 84.31% faster)
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Applying docs-only optimization (skipping 3 steps)
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Docs-only analysis: NO (0% docs, 0% faster)
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Docs-only analysis: NO (0% docs, 0% faster)
+
+      at Logger.info (src/core/logger.js:48:15)
+
+PASS test/lib/ai_personas.test.js
+PASS test/steps/step_10_code_quality.test.js
+  ● Console
+
+    console.log
+      Step 10: Code Quality Analysis
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Detected language: javascript
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Found 2 source file(s)
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Linter command: npm run lint
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      ✓ No code quality issues found
+
+      at Logger.success (src/core/logger.js:58:15)
+
+    console.log
+      Quality rating: excellent (0 issues/file)
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      ✓ Step 10 completed - code quality validated!
+
+      at Logger.success (src/core/logger.js:58:15)
+
+    console.log
+      Step 10: Code Quality Analysis
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Detected language: javascript
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Found 2 source file(s)
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Linter command: npm run lint
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      ✓ No code quality issues found
+
+      at Logger.success (src/core/logger.js:58:15)
+
+    console.log
+      Quality rating: excellent (0 issues/file)
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      ✓ Step 10 completed - code quality validated!
+
+      at Logger.success (src/core/logger.js:58:15)
+
+    console.log
+      Step 10: Code Quality Analysis
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Detected language: javascript
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Found 1 source file(s)
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Linter command: npm run lint
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.warn
+      ⚠ Found 5 code quality issue(s)
+
+      65 |   warn(message) {
+      66 |     const formatted = this._format(message, 'warn');
+    > 67 |     console.warn(formatted);
+         |             ^
+      68 |   }
+      69 |
+      70 |   /**
+
+      at Logger.warn (src/core/logger.js:67:13)
+      at Step10CodeQualityAnalyzer.execute (src/steps/step_10_code_quality.js:393:16)
+      at Object.<anonymous> (test/steps/step_10_code_quality.test.js:328:22)
+
+    console.log
+      Quality rating: good (5 issues/file)
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.warn
+      ⚠ Step 10 completed with errors
+
+      65 |   warn(message) {
+      66 |     const formatted = this._format(message, 'warn');
+    > 67 |     console.warn(formatted);
+         |             ^
+      68 |   }
+      69 |
+      70 |   /**
+
+      at Logger.warn (src/core/logger.js:67:13)
+      at Step10CodeQualityAnalyzer.execute (src/steps/step_10_code_quality.js:421:16)
+      at Object.<anonymous> (test/steps/step_10_code_quality.test.js:328:22)
+
+    console.log
+      Step 10: Code Quality Analysis
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Detected language: javascript
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Found 2 source file(s)
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Linter command: npm run lint
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.warn
+      ⚠ Found 4 code quality issue(s)
+
+      65 |   warn(message) {
+      66 |     const formatted = this._format(message, 'warn');
+    > 67 |     console.warn(formatted);
+         |             ^
+      68 |   }
+      69 |
+      70 |   /**
+
+      at Logger.warn (src/core/logger.js:67:13)
+      at Step10CodeQualityAnalyzer.execute (src/steps/step_10_code_quality.js:393:16)
+      at Object.<anonymous> (test/steps/step_10_code_quality.test.js:346:22)
+
+    console.log
+      Quality rating: good (2 issues/file)
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      ✓ Step 10 completed - code quality validated!
+
+      at Logger.success (src/core/logger.js:58:15)
+
+PASS test/lib/change_detection.test.js
+  ● Console
+
+    console.log
+      Detected changes: 2 code files, 1 doc changed
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.warn
+      ⚠ No GitAutomation instance provided
+
+      65 |   warn(message) {
+      66 |     const formatted = this._format(message, 'warn');
+    > 67 |     console.warn(formatted);
+         |             ^
+      68 |   }
+      69 |
+      70 |   /**
+
+      at Logger.warn (src/core/logger.js:67:13)
+      at ChangeDetector.detectChanges (src/lib/change_detection.js:582:14)
+      at Object.<anonymous> (test/lib/change_detection.test.js:475:37)
+
+    console.error
+      ✗ Failed to detect changes: Git error
+
+      73 |   error(message) {
+      74 |     const formatted = this._format(message, 'error');
+    > 75 |     console.error(formatted);
+         |             ^
+      76 |   }
+      77 |
+      78 |   /**
+
+      at Logger.error (src/core/logger.js:75:13)
+      at ChangeDetector.detectChanges (src/lib/change_detection.js:602:14)
+      at Object.<anonymous> (test/lib/change_detection.test.js:489:22)
+
+    console.log
+      Detected changes: 1 code file changed
+
+      at Logger.info (src/core/logger.js:48:15)
+
+PASS test/lib/tech_stack.test.js
+PASS test/steps/step_02_5_doc_optimize.test.js
+PASS test/steps/step_0b_bootstrap_docs.test.js
+PASS test/steps/step_15_ux_analysis.test.js
+PASS test/steps/step_03_script_refs.test.js
+  ● Console
+
+    console.log
+      Step 3: Script Reference Validation
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Language: bash, patterns: *.sh
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      No scripts found - skipping validation
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Step 3: Script Reference Validation
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Language: bash, patterns: *.sh
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Found 2 script(s)
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      References: 2, missing: 0
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Non-executable: 0
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Undocumented: 0
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      ✓ Step 3 completed - no issues found
+
+      at Logger.success (src/core/logger.js:58:15)
+
+    console.log
+      Step 3: Script Reference Validation
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Language: bash, patterns: *.sh
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Found 1 script(s)
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      References: 1, missing: 1
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Non-executable: 0
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Undocumented: 1
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.warn
+      ⚠ Step 3 completed - 2 issue(s) found
+
+      65 |   warn(message) {
+      66 |     const formatted = this._format(message, 'warn');
+    > 67 |     console.warn(formatted);
+         |             ^
+      68 |   }
+      69 |
+      70 |   /**
+
+      at Logger.warn (src/core/logger.js:67:13)
+      at Step3ScriptAnalyzer.execute (src/steps/step_03_script_refs.js:344:16)
+      at Object.<anonymous> (test/steps/step_03_script_refs.test.js:324:22)
+
+    console.log
+      Step 3: Script Reference Validation
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Language: bash, patterns: *.sh
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Found 1 script(s)
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      References: 0, missing: 0
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Non-executable: 1
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Undocumented: 1
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.warn
+      ⚠ Step 3 completed - 2 issue(s) found
+
+      65 |   warn(message) {
+      66 |     const formatted = this._format(message, 'warn');
+    > 67 |     console.warn(formatted);
+         |             ^
+      68 |   }
+      69 |
+      70 |   /**
+
+      at Logger.warn (src/core/logger.js:67:13)
+      at Step3ScriptAnalyzer.execute (src/steps/step_03_script_refs.js:344:16)
+      at Object.<anonymous> (test/steps/step_03_script_refs.test.js:335:22)
+
+    console.log
+      Step 3: Script Reference Validation
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Language: bash, patterns: *.sh
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Found 2 script(s)
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      References: 0, missing: 0
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Non-executable: 0
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Undocumented: 1
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.warn
+      ⚠ Step 3 completed - 1 issue(s) found
+
+      65 |   warn(message) {
+      66 |     const formatted = this._format(message, 'warn');
+    > 67 |     console.warn(formatted);
+         |             ^
+      68 |   }
+      69 |
+      70 |   /**
+
+      at Logger.warn (src/core/logger.js:67:13)
+      at Step3ScriptAnalyzer.execute (src/steps/step_03_script_refs.js:344:16)
+      at Object.<anonymous> (test/steps/step_03_script_refs.test.js:345:22)
+
+    console.log
+      Step 3: Script Reference Validation
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Language: python, patterns: *.py
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Found 1 script(s)
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      References: 0, missing: 0
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Non-executable: 0
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Undocumented: 0
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      ✓ Step 3 completed - no issues found
+
+      at Logger.success (src/core/logger.js:58:15)
+
+    console.log
+      Step 3: Script Reference Validation
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Language: bash, patterns: *.sh
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Found 1 script(s)
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      References: 0, missing: 0
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Non-executable: 0
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Undocumented: 0
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      ✓ Step 3 completed - no issues found
+
+      at Logger.success (src/core/logger.js:58:15)
+
+    console.log
+      Step 3: Script Reference Validation
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Language: bash, patterns: *.sh
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      No scripts found - skipping validation
+
+      at Logger.info (src/core/logger.js:48:15)
+
+PASS test/steps/step_01_documentation.test.js
+  ● Console
+
+    console.log
+      Step 1: AI-Powered Documentation Updates
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      No changes detected - skipping documentation update
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Step 1: AI-Powered Documentation Updates
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Changed files detected: 2 files
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Classification: 1 docs, 1 source, 0 tests
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Checking documentation changes (incremental mode)...
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Running documentation consistency validation...
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      ✓ Step 1 completed successfully
+
+      at Logger.success (src/core/logger.js:58:15)
+
+    console.log
+      Step 1: AI-Powered Documentation Updates
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Changed files detected: 3 files
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Classification: 3 docs, 0 source, 0 tests
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Checking documentation changes (incremental mode)...
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      ✓ Incremental: 2 docs unchanged (skipped)
+
+      at Logger.success (src/core/logger.js:58:15)
+
+    console.log
+      Running documentation consistency validation...
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      ✓ Step 1 completed successfully
+
+      at Logger.success (src/core/logger.js:58:15)
+
+    console.log
+      Step 1: AI-Powered Documentation Updates
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Changed files detected: 2 files
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Classification: 2 docs, 0 source, 0 tests
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Checking documentation changes (incremental mode)...
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      ✓ All documentation files unchanged - skipping AI analysis
+
+      at Logger.success (src/core/logger.js:58:15)
+
+    console.log
+      Step 1: AI-Powered Documentation Updates
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Changed files detected: 1 files
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Classification: 1 docs, 0 source, 0 tests
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Checking documentation changes (incremental mode)...
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Running documentation consistency validation...
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      ✓ Step 1 completed successfully
+
+      at Logger.success (src/core/logger.js:58:15)
+
+    console.log
+      Step 1: AI-Powered Documentation Updates
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Changed files detected: 1 files
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Classification: 1 docs, 0 source, 0 tests
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Checking documentation changes (incremental mode)...
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Running documentation consistency validation...
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      ✓ Step 1 completed successfully
+
+      at Logger.success (src/core/logger.js:58:15)
+
+    console.log
+      Step 1: AI-Powered Documentation Updates
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Changed files detected: 2 files
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Classification: 2 docs, 0 source, 0 tests
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Checking documentation changes (incremental mode)...
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Running documentation consistency validation...
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Running parallel documentation analysis...
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      ✓ Parallel analysis completed: 2 docs in 200ms
+
+      at Logger.success (src/core/logger.js:58:15)
+
+    console.log
+      ✓ Step 1 completed successfully
+
+      at Logger.success (src/core/logger.js:58:15)
+
+    console.log
+      Step 1: AI-Powered Documentation Updates
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.error
+      ✗ Step 1 failed: Git error
+
+      73 |   error(message) {
+      74 |     const formatted = this._format(message, 'error');
+    > 75 |     console.error(formatted);
+         |             ^
+      76 |   }
+      77 |
+      78 |   /**
+
+      at Logger.error (src/core/logger.js:75:13)
+      at Step1DocumentationAnalyzer.execute (src/steps/step_01_documentation.js:256:14)
+      at Object.<anonymous> (test/steps/step_01_documentation.test.js:370:7)
+
+    console.log
+      Step 1: AI-Powered Documentation Updates
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Changed files detected: 1 files
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Classification: 1 docs, 0 source, 0 tests
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Checking documentation changes (incremental mode)...
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Running documentation consistency validation...
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      ✓ Step 1 completed successfully
+
+      at Logger.success (src/core/logger.js:58:15)
+
+PASS test/steps/step_06_test_review.test.js
+  ● Console
+
+    console.log
+      Step 6: Test Review
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Detected language: javascript
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Found 2 test file(s)
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Unit: 1, Integration: 1, E2E: 0
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Coverage report found: coverage/lcov-report/index.html
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      ✓ Step 6 completed - test suite looks good
+
+      at Logger.success (src/core/logger.js:58:15)
+
+    console.log
+      Step 6: Test Review
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Detected language: javascript
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Found 0 test file(s)
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.warn
+      ⚠ No test files found!
+
+      65 |   warn(message) {
+      66 |     const formatted = this._format(message, 'warn');
+    > 67 |     console.warn(formatted);
+         |             ^
+      68 |   }
+      69 |
+      70 |   /**
+
+      at Logger.warn (src/core/logger.js:67:13)
+      at Step6TestReviewer.execute (src/steps/step_06_test_review.js:327:16)
+      at Object.<anonymous> (test/steps/step_06_test_review.test.js:351:22)
+
+    console.log
+      Step 6: Test Review
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Detected language: javascript
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Found 1 test file(s)
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Unit: 1, Integration: 0, E2E: 0
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Coverage report found: coverage/lcov-report/index.html
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      ✓ Step 6 completed - test suite looks good
+
+      at Logger.success (src/core/logger.js:58:15)
+
+    console.log
+      Step 6: Test Review
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Detected language: javascript
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Found 1 test file(s)
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Unit: 1, Integration: 0, E2E: 0
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.warn
+      ⚠ No coverage reports found
+
+      65 |   warn(message) {
+      66 |     const formatted = this._format(message, 'warn');
+    > 67 |     console.warn(formatted);
+         |             ^
+      68 |   }
+      69 |
+      70 |   /**
+
+      at Logger.warn (src/core/logger.js:67:13)
+      at Step6TestReviewer.execute (src/steps/step_06_test_review.js:355:16)
+      at Object.<anonymous> (test/steps/step_06_test_review.test.js:384:22)
+
+    console.warn
+      ⚠ Step 6 completed - 1 issue(s) identified
+
+      65 |   warn(message) {
+      66 |     const formatted = this._format(message, 'warn');
+    > 67 |     console.warn(formatted);
+         |             ^
+      68 |   }
+      69 |
+      70 |   /**
+
+      at Logger.warn (src/core/logger.js:67:13)
+      at Step6TestReviewer.execute (src/steps/step_06_test_review.js:376:16)
+      at Object.<anonymous> (test/steps/step_06_test_review.test.js:384:22)
+
+    console.log
+      Step 6: Test Review
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Detected language: javascript
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Found 0 test file(s)
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.warn
+      ⚠ No test files found!
+
+      65 |   warn(message) {
+      66 |     const formatted = this._format(message, 'warn');
+    > 67 |     console.warn(formatted);
+         |             ^
+      68 |   }
+      69 |
+      70 |   /**
+
+      at Logger.warn (src/core/logger.js:67:13)
+      at Step6TestReviewer.execute (src/steps/step_06_test_review.js:327:16)
+      at Object.<anonymous> (test/steps/step_06_test_review.test.js:404:7)
+
+    console.log
+      Step 6: Test Review
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Detected language: javascript
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Found 0 test file(s)
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.warn
+      ⚠ No test files found!
+
+      65 |   warn(message) {
+      66 |     const formatted = this._format(message, 'warn');
+    > 67 |     console.warn(formatted);
+         |             ^
+      68 |   }
+      69 |
+      70 |   /**
+
+      at Logger.warn (src/core/logger.js:67:13)
+      at Step6TestReviewer.execute (src/steps/step_06_test_review.js:327:16)
+      at Object.<anonymous> (test/steps/step_06_test_review.test.js:419:22)
+
+PASS test/steps/step_08_test_exec.test.js
+  ● Console
+
+    console.log
+      Step 8: Test Execution
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Detected language: javascript
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Test command: jest
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Tests: 10 passed, 0 failed, 0 skipped
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      ✓ Step 8 completed - all tests passed!
+
+      at Logger.success (src/core/logger.js:58:15)
+
+    console.log
+      Step 8: Test Execution
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Detected language: javascript
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Test command: jest
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Tests: 8 passed, 2 failed, 0 skipped
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.warn
+      ⚠ Step 8 completed - 2 test(s) failed
+
+      65 |   warn(message) {
+      66 |     const formatted = this._format(message, 'warn');
+    > 67 |     console.warn(formatted);
+         |             ^
+      68 |   }
+      69 |
+      70 |   /**
+
+      at Logger.warn (src/core/logger.js:67:13)
+      at Step8TestExecutor.execute (src/steps/step_08_test_exec.js:411:16)
+      at Object.<anonymous> (test/steps/step_08_test_exec.test.js:366:22)
+
+    console.log
+      Step 8: Test Execution
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Detected language: javascript
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Test command: jest
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Tests: 10 passed, 0 failed, 0 skipped
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Coverage: 85% statements
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      ✓ Step 8 completed - all tests passed!
+
+      at Logger.success (src/core/logger.js:58:15)
+
+    console.log
+      Step 8: Test Execution
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Detected language: bash
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.warn
+      ⚠ No test command configured
+
+      65 |   warn(message) {
+      66 |     const formatted = this._format(message, 'warn');
+    > 67 |     console.warn(formatted);
+         |             ^
+      68 |   }
+      69 |
+      70 |   /**
+
+      at Logger.warn (src/core/logger.js:67:13)
+      at Step8TestExecutor.execute (src/steps/step_08_test_exec.js:355:16)
+      at Object.<anonymous> (test/steps/step_08_test_exec.test.js:400:22)
+
+    console.log
+      Step 8: Test Execution
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Detected language: javascript
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Test command: jest
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Tests: 10 passed, 0 failed, 0 skipped
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      ✓ Step 8 completed - all tests passed!
+
+      at Logger.success (src/core/logger.js:58:15)
+
+PASS test/lib/dependency_cache.test.js
+  ● Console
+
+    console.log
+      Dependency cache disabled
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      ✓ Using cached result (key: abc123...)
+
+      at Logger.success (src/core/logger.js:58:15)
+
+    console.log
+      Cleaned up 1 expired cache entries
+
+      at Logger.info (src/core/logger.js:48:15)
+
+PASS test/steps/step_02_5_lib/reporting.test.js
+(node:998351) Warning: `--localstorage-file` was provided without a valid path
+PASS test/orchestrator/step_executor.test.js
+  ● Console
+
+    console.log
+      Step 'step1' completed in 0ms
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.error
+      ✗ Step 'step1' failed: Step 'step1' has no valid handler function
+
+      73 |   error(message) {
+      74 |     const formatted = this._format(message, 'error');
+    > 75 |     console.error(formatted);
+         |             ^
+      76 |   }
+      77 |
+      78 |   /**
+
+      at Logger.error (src/core/logger.js:75:13)
+      at StepExecutor.execute (src/orchestrator/step_executor.js:365:14)
+      at Object.<anonymous> (test/orchestrator/step_executor.test.js:325:29)
+
+    console.error
+      ✗ Step 'step1' failed: Input validation failed: Missing required field: name
+
+      73 |   error(message) {
+      74 |     const formatted = this._format(message, 'error');
+    > 75 |     console.error(formatted);
+         |             ^
+      76 |   }
+      77 |
+      78 |   /**
+
+      at Logger.error (src/core/logger.js:75:13)
+      at StepExecutor.execute (src/orchestrator/step_executor.js:365:14)
+      at Object.<anonymous> (test/orchestrator/step_executor.test.js:337:29)
+
+    console.error
+      ✗ Step 'step1' failed: Output validation failed: Missing required output field: result
+
+      73 |   error(message) {
+      74 |     const formatted = this._format(message, 'error');
+    > 75 |     console.error(formatted);
+         |             ^
+      76 |   }
+      77 |
+      78 |   /**
+
+      at Logger.error (src/core/logger.js:75:13)
+      at StepExecutor.execute (src/orchestrator/step_executor.js:365:14)
+      at Object.<anonymous> (test/orchestrator/step_executor.test.js:349:7)
+
+    console.log
+      Step 'step1' completed in 0ms
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Step 'step1' completed in 0ms
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Step 'step1' completed in 0ms
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.error
+      ✗ Step 'step1' failed: Step execution timed out after 1000ms
+
+      73 |   error(message) {
+      74 |     const formatted = this._format(message, 'error');
+    > 75 |     console.error(formatted);
+         |             ^
+      76 |   }
+      77 |
+      78 |   /**
+
+      at Logger.error (src/core/logger.js:75:13)
+      at StepExecutor.execute (src/orchestrator/step_executor.js:365:14)
+      at Object.<anonymous> (test/orchestrator/step_executor.test.js:412:7)
+
+    console.log
+      Step 'step1' completed in 0ms
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.error
+      ✗ Step 'step1' failed: Temporary failure
+
+      73 |   error(message) {
+      74 |     const formatted = this._format(message, 'error');
+    > 75 |     console.error(formatted);
+         |             ^
+      76 |   }
+      77 |
+      78 |   /**
+
+      at Logger.error (src/core/logger.js:75:13)
+      at StepExecutor.execute (src/orchestrator/step_executor.js:365:14)
+      at StepExecutor.executeWithRetry (src/orchestrator/step_executor.js:385:24)
+      at Object.<anonymous> (test/orchestrator/step_executor.test.js:446:22)
+
+    console.warn
+      ⚠ Step 'step1' failed (attempt 1/4), retrying in 10ms
+
+      65 |   warn(message) {
+      66 |     const formatted = this._format(message, 'warn');
+    > 67 |     console.warn(formatted);
+         |             ^
+      68 |   }
+      69 |
+      70 |   /**
+
+      at Logger.warn (src/core/logger.js:67:13)
+      at StepExecutor.executeWithRetry (src/orchestrator/step_executor.js:394:18)
+      at Object.<anonymous> (test/orchestrator/step_executor.test.js:446:22)
+
+    console.log
+      Step 'step1' completed in 0ms
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.error
+      ✗ Step 'step1' failed: Permanent failure
+
+      73 |   error(message) {
+      74 |     const formatted = this._format(message, 'error');
+    > 75 |     console.error(formatted);
+         |             ^
+      76 |   }
+      77 |
+      78 |   /**
+
+      at Logger.error (src/core/logger.js:75:13)
+      at StepExecutor.execute (src/orchestrator/step_executor.js:365:14)
+      at StepExecutor.executeWithRetry (src/orchestrator/step_executor.js:385:24)
+      at Object.<anonymous> (test/orchestrator/step_executor.test.js:462:7)
+
+    console.warn
+      ⚠ Step 'step1' failed (attempt 1/3), retrying in 10ms
+
+      65 |   warn(message) {
+      66 |     const formatted = this._format(message, 'warn');
+    > 67 |     console.warn(formatted);
+         |             ^
+      68 |   }
+      69 |
+      70 |   /**
+
+      at Logger.warn (src/core/logger.js:67:13)
+      at StepExecutor.executeWithRetry (src/orchestrator/step_executor.js:394:18)
+      at Object.<anonymous> (test/orchestrator/step_executor.test.js:462:7)
+
+    console.error
+      ✗ Step 'step1' failed: Permanent failure
+
+      73 |   error(message) {
+      74 |     const formatted = this._format(message, 'error');
+    > 75 |     console.error(formatted);
+         |             ^
+      76 |   }
+      77 |
+      78 |   /**
+
+      at Logger.error (src/core/logger.js:75:13)
+      at StepExecutor.execute (src/orchestrator/step_executor.js:365:14)
+      at StepExecutor.executeWithRetry (src/orchestrator/step_executor.js:385:24)
+      at Object.<anonymous> (test/orchestrator/step_executor.test.js:462:7)
+
+    console.warn
+      ⚠ Step 'step1' failed (attempt 2/3), retrying in 20ms
+
+      65 |   warn(message) {
+      66 |     const formatted = this._format(message, 'warn');
+    > 67 |     console.warn(formatted);
+         |             ^
+      68 |   }
+      69 |
+      70 |   /**
+
+      at Logger.warn (src/core/logger.js:67:13)
+      at StepExecutor.executeWithRetry (src/orchestrator/step_executor.js:394:18)
+      at Object.<anonymous> (test/orchestrator/step_executor.test.js:462:7)
+
+    console.error
+      ✗ Step 'step1' failed: Permanent failure
+
+      73 |   error(message) {
+      74 |     const formatted = this._format(message, 'error');
+    > 75 |     console.error(formatted);
+         |             ^
+      76 |   }
+      77 |
+      78 |   /**
+
+      at Logger.error (src/core/logger.js:75:13)
+      at StepExecutor.execute (src/orchestrator/step_executor.js:365:14)
+      at StepExecutor.executeWithRetry (src/orchestrator/step_executor.js:385:24)
+      at Object.<anonymous> (test/orchestrator/step_executor.test.js:462:7)
+
+    console.error
+      ✗ Step 'step1' failed: Invalid
+
+      73 |   error(message) {
+      74 |     const formatted = this._format(message, 'error');
+    > 75 |     console.error(formatted);
+         |             ^
+      76 |   }
+      77 |
+      78 |   /**
+
+      at Logger.error (src/core/logger.js:75:13)
+      at StepExecutor.execute (src/orchestrator/step_executor.js:365:14)
+      at StepExecutor.executeWithRetry (src/orchestrator/step_executor.js:385:24)
+      at Object.<anonymous> (test/orchestrator/step_executor.test.js:475:7)
+
+    console.error
+      ✗ Step 'step1' failed: Fail once
+
+      73 |   error(message) {
+      74 |     const formatted = this._format(message, 'error');
+    > 75 |     console.error(formatted);
+         |             ^
+      76 |   }
+      77 |
+      78 |   /**
+
+      at Logger.error (src/core/logger.js:75:13)
+      at StepExecutor.execute (src/orchestrator/step_executor.js:365:14)
+      at StepExecutor.executeWithRetry (src/orchestrator/step_executor.js:385:24)
+      at Object.<anonymous> (test/orchestrator/step_executor.test.js:501:7)
+
+    console.warn
+      ⚠ Step 'step1' failed (attempt 1/4), retrying in 10ms
+
+      65 |   warn(message) {
+      66 |     const formatted = this._format(message, 'warn');
+    > 67 |     console.warn(formatted);
+         |             ^
+      68 |   }
+      69 |
+      70 |   /**
+
+      at Logger.warn (src/core/logger.js:67:13)
+      at StepExecutor.executeWithRetry (src/orchestrator/step_executor.js:394:18)
+      at Object.<anonymous> (test/orchestrator/step_executor.test.js:501:7)
+
+    console.log
+      Step 'step1' completed in 0ms
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Step 'step1' completed in 0ms
+
+      at Logger.info (src/core/logger.js:48:15)
+          at async Promise.all (index 0)
+
+    console.log
+      Step 'step2' completed in 0ms
+
+      at Logger.info (src/core/logger.js:48:15)
+          at async Promise.all (index 1)
+
+    console.log
+      Step 'step3' completed in 0ms
+
+      at Logger.info (src/core/logger.js:48:15)
+          at async Promise.all (index 2)
+
+    console.log
+      Parallel execution complete: 3/3 succeeded
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Step 'step1' completed in 0ms
+
+      at Logger.info (src/core/logger.js:48:15)
+          at async Promise.all (index 0)
+
+    console.log
+      Step 'step3' completed in 0ms
+
+      at Logger.info (src/core/logger.js:48:15)
+          at async Promise.all (index 2)
+
+    console.error
+      ✗ Step 'step2' failed: Failed
+
+      73 |   error(message) {
+      74 |     const formatted = this._format(message, 'error');
+    > 75 |     console.error(formatted);
+         |             ^
+      76 |   }
+      77 |
+      78 |   /**
+
+      at Logger.error (src/core/logger.js:75:13)
+      at StepExecutor.execute (src/orchestrator/step_executor.js:365:14)
+          at async Promise.all (index 1)
+      at StepExecutor.executeInParallel (src/orchestrator/step_executor.js:432:21)
+      at Object.<anonymous> (test/orchestrator/step_executor.test.js:536:23)
+
+    console.log
+      Parallel execution complete: 2/3 succeeded
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Step 'step1' completed in 0ms
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Step 'step1' completed in 0ms
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Step 'step1' completed in 0ms
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.error
+      ✗ Step 'step2' failed: Failed
+
+      73 |   error(message) {
+      74 |     const formatted = this._format(message, 'error');
+    > 75 |     console.error(formatted);
+         |             ^
+      76 |   }
+      77 |
+      78 |   /**
+
+      at Logger.error (src/core/logger.js:75:13)
+      at StepExecutor.execute (src/orchestrator/step_executor.js:365:14)
+      at Object.<anonymous> (test/orchestrator/step_executor.test.js:640:9)
+
+    console.log
+      Step 'step1' completed in 0ms
+
+      at Logger.info (src/core/logger.js:48:15)
+
+PASS test/steps/step_05_directory.test.js
+  ● Console
+
+    console.log
+      Step 5: Directory Structure Validation
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Found 0 misplaced documentation file(s)
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Structure validation: 0 issue(s)
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      ✓ Step 5 completed - directory structure is well-organized
+
+      at Logger.success (src/core/logger.js:58:15)
+
+    console.log
+      Step 5: Directory Structure Validation
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Found 2 misplaced documentation file(s)
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Structure validation: 1 issue(s)
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.warn
+      ⚠ Step 5 completed - 1 issue(s) found
+
+      65 |   warn(message) {
+      66 |     const formatted = this._format(message, 'warn');
+    > 67 |     console.warn(formatted);
+         |             ^
+      68 |   }
+      69 |
+      70 |   /**
+
+      at Logger.warn (src/core/logger.js:67:13)
+      at Step5DirectoryAnalyzer.execute (src/steps/step_05_directory.js:385:16)
+      at Object.<anonymous> (test/steps/step_05_directory.test.js:463:22)
+
+    console.log
+      Step 5: Directory Structure Validation
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Found 0 misplaced documentation file(s)
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Structure validation: 3 issue(s)
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.error
+      ✗ Critical: 2 critical directories missing!
+
+      73 |   error(message) {
+      74 |     const formatted = this._format(message, 'error');
+    > 75 |     console.error(formatted);
+         |             ^
+      76 |   }
+      77 |
+      78 |   /**
+
+      at Logger.error (src/core/logger.js:75:13)
+      at Step5DirectoryAnalyzer.execute (src/steps/step_05_directory.js:381:16)
+      at Object.<anonymous> (test/steps/step_05_directory.test.js:481:22)
+
+    console.log
+      Step 5: Directory Structure Validation
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Found 0 misplaced documentation file(s)
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Structure validation: 0 issue(s)
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      ✓ Step 5 completed - directory structure is well-organized
+
+      at Logger.success (src/core/logger.js:58:15)
+
+    console.log
+      Step 5: Directory Structure Validation
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Found 0 misplaced documentation file(s)
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.error
+      ✗ Structure validation failed: File system error
+
+      73 |   error(message) {
+      74 |     const formatted = this._format(message, 'error');
+    > 75 |     console.error(formatted);
+         |             ^
+      76 |   }
+      77 |
+      78 |   /**
+
+      at Logger.error (src/core/logger.js:75:13)
+      at Step5DirectoryAnalyzer.validateStructure (src/steps/step_05_directory.js:493:14)
+      at Step5DirectoryAnalyzer.execute (src/steps/step_05_directory.js:364:32)
+      at Object.<anonymous> (test/steps/step_05_directory.test.js:507:22)
+
+    console.log
+      Structure validation: 0 issue(s)
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      ✓ Step 5 completed - directory structure is well-organized
+
+      at Logger.success (src/core/logger.js:58:15)
+
+PASS test/orchestrator/dependency_resolver.test.js
+  ● Console
+
+    console.error
+      ✗ Dependency validation failed: Step 'step2' depends on non-existent step 'step99'
+
+      73 |   error(message) {
+      74 |     const formatted = this._format(message, 'error');
+    > 75 |     console.error(formatted);
+         |             ^
+      76 |   }
+      77 |
+      78 |   /**
+
+      at Logger.error (src/core/logger.js:75:13)
+      at DependencyResolver.analyze (src/orchestrator/dependency_resolver.js:453:14)
+      at test/orchestrator/dependency_resolver.test.js:455:29
+      at Object.<anonymous> (node_modules/expect/build/index.js:1824:9)
+      at Object.throwingMatcher [as toThrow] (node_modules/expect/build/index.js:2235:93)
+      at Object.<anonymous> (test/orchestrator/dependency_resolver.test.js:455:45)
+
+    console.error
+      ✗ Circular dependency detected: step1 -> step2 -> step1
+
+      73 |   error(message) {
+      74 |     const formatted = this._format(message, 'error');
+    > 75 |     console.error(formatted);
+         |             ^
+      76 |   }
+      77 |
+      78 |   /**
+
+      at Logger.error (src/core/logger.js:75:13)
+      at DependencyResolver.analyze (src/orchestrator/dependency_resolver.js:461:14)
+      at test/orchestrator/dependency_resolver.test.js:465:29
+      at Object.<anonymous> (node_modules/expect/build/index.js:1824:9)
+      at Object.throwingMatcher [as toThrow] (node_modules/expect/build/index.js:2235:93)
+      at Object.<anonymous> (test/orchestrator/dependency_resolver.test.js:465:45)
+
+PASS test/steps/step_07_test_gen.test.js
+  ● Console
+
+    console.log
+      Step 7: Test Generation
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Detected language: javascript
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Found 2 source file(s), 2 test file(s)
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Identified 0 untested file(s)
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Test coverage: 100%
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      ✓ Step 7 completed - all files have tests!
+
+      at Logger.success (src/core/logger.js:58:15)
+
+    console.log
+      Step 7: Test Generation
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Detected language: javascript
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Found 2 source file(s), 1 test file(s)
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Identified 1 untested file(s)
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Test coverage: 50%
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.warn
+      ⚠ Step 7 completed - 1 file(s) need testing
+
+      65 |   warn(message) {
+      66 |     const formatted = this._format(message, 'warn');
+    > 67 |     console.warn(formatted);
+         |             ^
+      68 |   }
+      69 |
+      70 |   /**
+
+      at Logger.warn (src/core/logger.js:67:13)
+      at Step7TestGenerator.execute (src/steps/step_07_test_gen.js:374:16)
+      at Object.<anonymous> (test/steps/step_07_test_gen.test.js:367:22)
+
+    console.log
+      Step 7: Test Generation
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Detected language: javascript
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Found 0 source file(s), 0 test file(s)
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.warn
+      ⚠ No source files found!
+
+      65 |   warn(message) {
+      66 |     const formatted = this._format(message, 'warn');
+    > 67 |     console.warn(formatted);
+         |             ^
+      68 |   }
+      69 |
+      70 |   /**
+
+      at Logger.warn (src/core/logger.js:67:13)
+      at Step7TestGenerator.execute (src/steps/step_07_test_gen.js:323:16)
+      at Object.<anonymous> (test/steps/step_07_test_gen.test.js:377:22)
+
+    console.log
+      Step 7: Test Generation
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Detected language: javascript
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Found 0 source file(s), 0 test file(s)
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.warn
+      ⚠ No source files found!
+
+      65 |   warn(message) {
+      66 |     const formatted = this._format(message, 'warn');
+    > 67 |     console.warn(formatted);
+         |             ^
+      68 |   }
+      69 |
+      70 |   /**
+
+      at Logger.warn (src/core/logger.js:67:13)
+      at Step7TestGenerator.execute (src/steps/step_07_test_gen.js:323:16)
+      at Object.<anonymous> (test/steps/step_07_test_gen.test.js:393:7)
+
+    console.log
+      Step 7: Test Generation
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Detected language: javascript
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Found 0 source file(s), 0 test file(s)
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.warn
+      ⚠ No source files found!
+
+      65 |   warn(message) {
+      66 |     const formatted = this._format(message, 'warn');
+    > 67 |     console.warn(formatted);
+         |             ^
+      68 |   }
+      69 |
+      70 |   /**
+
+      at Logger.warn (src/core/logger.js:67:13)
+      at Step7TestGenerator.execute (src/steps/step_07_test_gen.js:323:16)
+      at Object.<anonymous> (test/steps/step_07_test_gen.test.js:402:22)
+
+    console.log
+      Step 7: Test Generation
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Detected language: javascript
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Found 0 source file(s), 0 test file(s)
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.warn
+      ⚠ No source files found!
+
+      65 |   warn(message) {
+      66 |     const formatted = this._format(message, 'warn');
+    > 67 |     console.warn(formatted);
+         |             ^
+      68 |   }
+      69 |
+      70 |   /**
+
+      at Logger.warn (src/core/logger.js:67:13)
+      at Step7TestGenerator.execute (src/steps/step_07_test_gen.js:323:16)
+      at Object.<anonymous> (test/steps/step_07_test_gen.test.js:414:22)
+
+PASS test/steps/step_02_5_lib/ai_analyzer.test.js
+PASS test/steps/step_09_dependencies.test.js
+  ● Console
+
+    console.log
+      Step 9: Dependency Validation
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Detected language: bash
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      bash projects do not require dependency validation
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Step 9: Dependency Validation
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Detected language: javascript
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Found dependency files: package.json, package-lock.json, yarn.lock
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Total dependencies: 2
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      ✓ No vulnerabilities found
+
+      at Logger.success (src/core/logger.js:58:15)
+
+    console.log
+      ✓ Step 9 completed - dependencies validated!
+
+      at Logger.success (src/core/logger.js:58:15)
+
+    console.log
+      Step 9: Dependency Validation
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Detected language: javascript
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Found dependency files: package.json, package-lock.json, yarn.lock
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Total dependencies: 1
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.warn
+      ⚠ Found 1 vulnerabilities
+
+      65 |   warn(message) {
+      66 |     const formatted = this._format(message, 'warn');
+    > 67 |     console.warn(formatted);
+         |             ^
+      68 |   }
+      69 |
+      70 |   /**
+
+      at Logger.warn (src/core/logger.js:67:13)
+      at Step9DependencyValidator.execute (src/steps/step_09_dependencies.js:378:16)
+      at Object.<anonymous> (test/steps/step_09_dependencies.test.js:396:22)
+
+    console.warn
+      ⚠ Step 9 completed with security issues
+
+      65 |   warn(message) {
+      66 |     const formatted = this._format(message, 'warn');
+    > 67 |     console.warn(formatted);
+         |             ^
+      68 |   }
+      69 |
+      70 |   /**
+
+      at Logger.warn (src/core/logger.js:67:13)
+      at Step9DependencyValidator.execute (src/steps/step_09_dependencies.js:406:16)
+      at Object.<anonymous> (test/steps/step_09_dependencies.test.js:396:22)
+
+    console.log
+      Step 9: Dependency Validation
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Detected language: javascript
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Found dependency files: package.json, package-lock.json, yarn.lock
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Total dependencies: 1
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      ✓ No vulnerabilities found
+
+      at Logger.success (src/core/logger.js:58:15)
+
+    console.log
+      Found 1 outdated packages
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      ✓ Step 9 completed - dependencies validated!
+
+      at Logger.success (src/core/logger.js:58:15)
+
+PASS test/steps/step_11_context.test.js
+  ● Console
+
+    console.log
+      Step 11: Context Analysis
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Workflow completion: 91% (10/11)
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Change impact: low (score: 0)
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Issues: 0 total, 0 critical
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Workflow duration: 1m 0s
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      ✓ Step 11 completed - workflow context analyzed!
+
+      at Logger.success (src/core/logger.js:58:15)
+
+    console.log
+      Step 11: Context Analysis
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Workflow completion: 80% (8/10)
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Git state: 2 modified, 1 staged
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Change impact: low (score: 1)
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Issues: 0 total, 0 critical
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Workflow duration: 1m 0s
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      ✓ Step 11 completed - workflow context analyzed!
+
+      at Logger.success (src/core/logger.js:58:15)
+
+    console.log
+      Step 11: Context Analysis
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Workflow completion: 90% (9/10)
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Git state: 12 modified, 1 staged
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Change impact: high (score: 6)
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Issues: 0 total, 0 critical
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Workflow duration: 1m 0s
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      ✓ Step 11 completed - workflow context analyzed!
+
+      at Logger.success (src/core/logger.js:58:15)
+
+    console.log
+      Step 11: Context Analysis
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Workflow completion: 80% (8/10)
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Change impact: low (score: 0)
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Issues: 3 total, 2 critical
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Workflow duration: 1m 0s
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.warn
+      ⚠ Step 11 completed with critical issues
+
+      65 |   warn(message) {
+      66 |     const formatted = this._format(message, 'warn');
+    > 67 |     console.warn(formatted);
+         |             ^
+      68 |   }
+      69 |
+      70 |   /**
+
+      at Logger.warn (src/core/logger.js:67:13)
+      at Step11ContextAnalyzer.execute (src/steps/step_11_context.js:375:16)
+      at Object.<anonymous> (test/steps/step_11_context.test.js:361:22)
+
+    console.log
+      Step 11: Context Analysis
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Workflow completion: 100% (10/10)
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Change impact: low (score: 0)
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Issues: 0 total, 0 critical
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      Workflow duration: 1m 0s
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      ✓ Step 11 completed - workflow context analyzed!
+
+      at Logger.success (src/core/logger.js:58:15)
+
+PASS test/lib/step1_parallel.test.js
+PASS test/lib/ai_prompt_builder.test.js
+(node:998350) Warning: `--localstorage-file` was provided without a valid path
+PASS test/lib/ai_cache.test.js
+  ● Console
+
+    console.log
+      Cleaned up 1 expired cache entries
+
+      at Logger.info (src/core/logger.js:48:15)
+
+    console.log
+      ✓ AI cache cleared
+
+      at Logger.success (src/core/logger.js:58:15)
+
+    console.log
+      ✓ AI cache cleared
+
+      at Logger.success (src/core/logger.js:58:15)
+
+
+Summary of all failing tests
+FAIL test/lib/performance.test.js
+  ● Performance Module - PerformanceTracker Class › getMetrics › retrieves recorded metrics
+
+    expect(received).toBeGreaterThanOrEqual(expected)
+
+    Expected: >= 50
+    Received:    49
+
+      339 |       const metrics = tracker.getMetrics('test-op');
+      340 |       expect(metrics).not.toBeNull();
+    > 341 |       expect(metrics.duration).toBeGreaterThanOrEqual(50);
+          |                                ^
+      342 |     });
+      343 |
+      344 |     test('returns null for unknown operation', () => {
+
+      at Object.<anonymous> (test/lib/performance.test.js:341:32)
+
+
+Test Suites: 1 failed, 66 passed, 67 total
+Tests:       1 failed, 18 skipped, 3416 passed, 3435 total
+Snapshots:   0 total
+Time:        2.41 s
+Ran all test suites.

@@ -1,6 +1,6 @@
 # AI Workflow Automation
 
-[![Current version is 3.2.7](https://img.shields.io/badge/version-3.2.7-blue.svg)](https://github.com/mpbarbosa/ai_workflow/releases)
+[![Current version is 4.0.0](https://img.shields.io/badge/version-4.0.0-blue.svg)](https://github.com/mpbarbosa/ai_workflow/releases)
 [![License is MIT](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 [![Code quality score is B+ with 87 out of 100 points](https://img.shields.io/badge/quality-B%2B%20(87%2F100)-brightgreen.svg)](src/COMPREHENSIVE_CODE_QUALITY_REPORT.md)
 [![37 or more tests are passing](https://img.shields.io/badge/tests-37%2B%20passing-brightgreen.svg)](tests/)
@@ -13,8 +13,10 @@
 Intelligent workflow automation system for validating and enhancing documentation, code, and tests with AI support.
 
 **Migrated from**: mpbarbosa_site repository (2025-12-18)  
-**Version**: v3.2.7  
+**Version**: v4.0.0  
 **Repository**: [github.com/mpbarbosa/ai_workflow](https://github.com/mpbarbosa/ai_workflow)
+
+> 🚀 **NEW in v4.0.0**: Configuration-driven step execution! Use descriptive step names (`documentation_updates`) instead of numbers. See [Migration Guide](docs/MIGRATION_GUIDE_v4.0.md).
 
 ## Overview
 
@@ -150,7 +152,18 @@ cd /path/to/target/project
 ./src/workflow/execute_tests_docs_workflow.sh \
   --multi-stage \
   --manual-trigger
+
+# Option 15: Select specific steps by name (NEW v4.0.0)
+# Use descriptive step names instead of numbers
+./src/workflow/execute_tests_docs_workflow.sh \
+  --steps documentation_updates,test_execution,git_finalization
+
+# Option 16: Mixed syntax - combine indices and names (NEW v4.0.0)
+./src/workflow/execute_tests_docs_workflow.sh \
+  --steps 0,documentation_updates,test_execution,12
 ```
+
+> 🚀 **v4.0.0**: See [Migration Guide](docs/MIGRATION_GUIDE_v4.0.md) for complete step name mapping and configuration options.
 
 **Performance Tips**:
 - Use `--multi-stage` for intelligent progressive validation

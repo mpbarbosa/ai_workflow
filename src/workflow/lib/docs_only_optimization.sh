@@ -218,7 +218,7 @@ execute_docs_only_fast_track() {
     # STEP 0: Pre-Analysis (REQUIRED - establishes baseline)
     print_info "→ Step 0: Pre-Analysis"
     if should_execute_step 0; then
-        if ! step0_analyze_changes > "${parallel_dir}/step0.log" 2>&1; then
+        if ! execute_step 0 > "${parallel_dir}/step0.log" 2>&1; then
             print_error "Step 0 failed - aborting fast track"
             return 1
         fi
@@ -243,7 +243,7 @@ execute_docs_only_fast_track() {
         
         if should_execute_step 1; then
             (
-                if step1_update_documentation > "${parallel_dir}/step1.log" 2>&1; then
+                if execute_step 1 > "${parallel_dir}/step1.log" 2>&1; then
                     echo "SUCCESS" > "${parallel_dir}/step1.status"
                     exit 0
                 else
@@ -257,7 +257,7 @@ execute_docs_only_fast_track() {
         
         if should_execute_step 2; then
             (
-                if step2_check_consistency > "${parallel_dir}/step2.log" 2>&1; then
+                if execute_step 2 > "${parallel_dir}/step2.log" 2>&1; then
                     echo "SUCCESS" > "${parallel_dir}/step2.status"
                     exit 0
                 else
@@ -299,7 +299,7 @@ execute_docs_only_fast_track() {
         # SEQUENTIAL MODE: Run single step directly
         if should_execute_step 1; then
             print_info "→ Step 1: Documentation"
-            if step1_update_documentation > "${parallel_dir}/step1.log" 2>&1; then
+            if execute_step 1 > "${parallel_dir}/step1.log" 2>&1; then
                 print_success "✓ Step 1 complete"
                 save_checkpoint 1 "success"
             else
@@ -310,7 +310,7 @@ execute_docs_only_fast_track() {
         
         if should_execute_step 2; then
             print_info "→ Step 2: Consistency"
-            if step2_check_consistency > "${parallel_dir}/step2.log" 2>&1; then
+            if execute_step 2 > "${parallel_dir}/step2.log" 2>&1; then
                 print_success "✓ Step 2 complete"
                 save_checkpoint 2 "success"
             else
@@ -341,7 +341,7 @@ execute_docs_only_fast_track() {
     # STEP 11: Git Finalization (REQUIRED - commits changes)
     print_info "→ Step 11: Git Finalization"
     if should_execute_step 11; then
-        if step11_git_finalization > "${parallel_dir}/step11.log" 2>&1; then
+        if execute_step 11 > "${parallel_dir}/step11.log" 2>&1; then
             print_success "✓ Step 11 complete"
             save_checkpoint 11 "success"
         else

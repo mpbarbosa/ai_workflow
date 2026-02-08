@@ -92,6 +92,21 @@ parse_workflow_arguments() {
                 EXECUTE_STEPS="$2"
                 shift 2
                 ;;
+            --last-commits)
+                if [[ -z "${2:-}" ]] || [[ "$2" == --* ]]; then
+                    print_error "--last-commits requires a positive integer argument"
+                    exit 1
+                fi
+                # Validate it's a positive integer
+                if ! [[ "$2" =~ ^[1-9][0-9]*$ ]]; then
+                    print_error "--last-commits must be a positive integer (got: $2)"
+                    exit 1
+                fi
+                LAST_COMMITS="$2"
+                export LAST_COMMITS
+                print_info "Analyzing last ${LAST_COMMITS} commits + uncommitted changes"
+                shift 2
+                ;;
             --smart-execution)
                 SMART_EXECUTION=true
                 export SMART_EXECUTION
@@ -370,10 +385,11 @@ validate_parsed_arguments() {
         ((errors++)) || true
     fi
     
-    # Validate EXECUTE_STEPS format
+    # Validate EXECUTE_STEPS format (v4.0: supports step names + indices)
     if [[ -n "${EXECUTE_STEPS:-}" ]] && [[ "$EXECUTE_STEPS" != "all" ]]; then
-        if ! [[ "$EXECUTE_STEPS" =~ ^[0-9,]+$ ]]; then
-            print_error "Invalid --steps format: must be 'all' or comma-separated numbers (e.g., '0,1,2')"
+        # Allow: numbers, step names (letters/underscores), and commas
+        if ! [[ "$EXECUTE_STEPS" =~ ^[0-9a-z_,]+$ ]]; then
+            print_error "Invalid --steps format: must be 'all', comma-separated numbers (e.g., '0,1,2'), or step names (e.g., 'documentation_updates,test_execution')"
             ((errors++)) || true
         fi
     fi
@@ -440,6 +456,7 @@ OPTIONS:
   --verbose              Enable detailed logging output
   
   --steps <list>         Execute specific steps (e.g., '0,5,6' or 'all')
+  --last-commits <N>     Analyze last N commits from HEAD~N + uncommitted changes
   --smart-execution      Enable change-based step skipping
   --parallel             Enable parallel execution of independent steps
   --parallel-tracks      Enable 3-track parallel execution (optimal mode)
@@ -481,6 +498,9 @@ EXAMPLES:
   
   # Run specific steps only
   ./execute_tests_docs_workflow.sh --steps 0,5,6,7
+  
+  # Analyze last 5 commits plus uncommitted changes
+  ./execute_tests_docs_workflow.sh --last-commits 5
   
   # Initialize configuration
   ./execute_tests_docs_workflow.sh --init-config

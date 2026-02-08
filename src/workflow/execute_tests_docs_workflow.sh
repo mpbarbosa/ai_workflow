@@ -122,7 +122,7 @@ set -euo pipefail
 # CONFIGURATION & CONSTANTS
 # ==============================================================================
 
-SCRIPT_VERSION="3.2.8"  # Git Submodule Support in Step 11
+SCRIPT_VERSION="4.0.0"  # Configuration-Driven Step Execution
 SCRIPT_NAME="Tests & Documentation Workflow Automation"
 WORKFLOW_HOME="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
 PROJECT_ROOT="$(pwd)"  # Default: current directory; can be overridden with --target option
@@ -180,6 +180,7 @@ SHOW_GRAPH=false
 PARALLEL_EXECUTION=true  # ✅ ENABLED BY DEFAULT (Phase 2) - Parallel validation steps
 USE_AI_CACHE=true  # Enabled by default
 NO_RESUME=false    # When true, ignore checkpoints and start from step 0
+LAST_COMMITS=""    # Number of recent commits to analyze (empty = only uncommitted changes)
 
 # Enhanced validations (v2.7.0) - NEW
 ENABLE_ENHANCED_VALIDATIONS=false  # Off by default - enable with --enhanced-validations
@@ -278,13 +279,26 @@ for lib_file in "${LIB_DIR}"/*.sh; do
     fi
 done
 
-# Source all step modules
-for step_file in "${STEPS_DIR}"/step_*.sh; do
-    if [[ -f "$step_file" ]]; then
-        # shellcheck source=/dev/null
-        source "$step_file"
+# v4.0.0: Initialize step registry (replaces hardcoded step sourcing)
+# Steps are now loaded dynamically by step_loader.sh based on execution order
+# Legacy behavior: If registry fails to load, fall back to sourcing all step files
+if ! load_step_definitions 2>/dev/null; then
+    print_warning "Step registry failed to load, using legacy step loading"
+    # Source all step modules (v3.x compatibility)
+    for step_file in "${STEPS_DIR}"/step_*.sh; do
+        if [[ -f "$step_file" ]]; then
+            # shellcheck source=/dev/null
+            source "$step_file"
+        fi
+    done
+else
+    # Resolve execution order after loading definitions
+    if ! resolve_execution_order; then
+        print_error "Failed to resolve step execution order"
+        exit 1
     fi
-done
+    print_info "Step registry loaded: $(get_loaded_module_count 2>/dev/null || echo "0") steps configured"
+fi
 
 # ==============================================================================
 # GIT STATE CACHING - PERFORMANCE OPTIMIZATION (v1.5.0)
@@ -1248,40 +1262,119 @@ validate_dependencies() {
 # ------------------------------------------------------------------------------
 validate_and_parse_steps() {
     if [[ "$EXECUTE_STEPS" == "all" ]]; then
-        SELECTED_STEPS=(0 0a 0b 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15)
-        print_info "Step selection: All steps (0, 0a, 0b, 1-15)"
+        # v4.0.0: Use step registry if available
+        if [[ "$STEP_REGISTRY_LOADED" == true ]]; then
+            # Get all steps from execution order
+            local execution_order
+            execution_order=$(get_execution_order)
+            SELECTED_STEPS=($execution_order)
+            print_info "Step selection: All steps (${#SELECTED_STEPS[@]} steps from registry)"
+        else
+            # Legacy: hardcoded step list
+            SELECTED_STEPS=(0 0a 0b 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15)
+            print_info "Step selection: All steps (0, 0a, 0b, 1-15)"
+        fi
         return 0
     fi
     
     # Parse comma-separated step list
-    IFS=',' read -ra SELECTED_STEPS <<< "$EXECUTE_STEPS"
+    IFS=',' read -ra step_input <<< "$EXECUTE_STEPS"
+    SELECTED_STEPS=()
     
-    # Validate each step number
-    for step in "${SELECTED_STEPS[@]}"; do
-        # Allow alphanumeric steps like 0a, 0b
-        if ! [[ "$step" =~ ^[0-9]+[a-z]?$ ]]; then
-            print_error "Invalid step number: $step (valid: 0-15 or 0a, 0b)"
+    # Validate and normalize each step (support both names and indices)
+    for step in "${step_input[@]}"; do
+        # Trim whitespace
+        step="${step// /}"
+        
+        # Check if it's a numeric index (including 0a, 0b format)
+        if [[ "$step" =~ ^[0-9]+[a-z]?$ ]]; then
+            # Numeric index - validate and add
+            if [[ "$STEP_REGISTRY_LOADED" == true ]]; then
+                # Try to resolve index to name
+                local step_name
+                step_name=$(get_step_by_index "$step" 2>/dev/null)
+                if [[ -n "$step_name" ]]; then
+                    SELECTED_STEPS+=("$step_name")
+                else
+                    print_warning "Step index not found in registry: $step (using legacy mode)"
+                    SELECTED_STEPS+=("$step")
+                fi
+            else
+                # Legacy mode - just add the number
+                SELECTED_STEPS+=("$step")
+            fi
+        # Check if it's a step name (letters and underscores)
+        elif [[ "$step" =~ ^[a-z_]+$ ]]; then
+            # Step name - validate against registry
+            if [[ "$STEP_REGISTRY_LOADED" == true ]]; then
+                local step_index
+                step_index=$(get_step_index "$step" 2>/dev/null)
+                if [[ -n "$step_index" ]]; then
+                    SELECTED_STEPS+=("$step")
+                else
+                    print_error "Invalid step name: $step (not found in registry)"
+                    print_info "Available steps: $(get_execution_order 2>/dev/null || echo 'Registry not loaded')"
+                    exit 1
+                fi
+            else
+                print_error "Step names not supported without step registry"
+                print_error "Either fix .workflow-config.yaml or use numeric indices: 0-15"
+                exit 1
+            fi
+        else
+            print_error "Invalid step identifier: $step"
+            print_error "Valid formats: numeric (0-15, 0a, 0b) or name (documentation_updates, test_generation)"
             exit 1
         fi
     done
     
-    # Sort and deduplicate steps
-    SELECTED_STEPS=($(echo "${SELECTED_STEPS[@]}" | tr ' ' '\n' | sort -n | uniq))
+    # Remove duplicates while preserving order
+    local -A seen
+    local -a unique_steps
+    for step in "${SELECTED_STEPS[@]}"; do
+        if [[ -z "${seen[$step]:-}" ]]; then
+            seen[$step]=1
+            unique_steps+=("$step")
+        fi
+    done
+    SELECTED_STEPS=("${unique_steps[@]}")
     
-    print_info "Step selection: ${SELECTED_STEPS[*]}"
+    print_info "Step selection: ${SELECTED_STEPS[*]} (${#SELECTED_STEPS[@]} steps)"
 }
 
 should_execute_step() {
-    local step_num="$1"
+    local step_identifier="$1"
     
     # If executing all steps, always return true
     if [[ "$EXECUTE_STEPS" == "all" ]]; then
         return 0
     fi
     
-    # Check if step is in selected steps
+    # Normalize step identifier (support both name and index)
+    local step_to_check="$step_identifier"
+    
+    # If it's a number and registry is loaded, convert to name
+    if [[ "$step_identifier" =~ ^[0-9]+[a-z]?$ ]] && [[ "$STEP_REGISTRY_LOADED" == true ]]; then
+        local step_name
+        step_name=$(get_step_by_index "$step_identifier" 2>/dev/null)
+        if [[ -n "$step_name" ]]; then
+            step_to_check="$step_name"
+        fi
+    fi
+    
+    # Also check the reverse - if it's a name, also check by index
+    local alt_identifier=""
+    if [[ "$step_identifier" =~ ^[a-z_]+$ ]] && [[ "$STEP_REGISTRY_LOADED" == true ]]; then
+        alt_identifier=$(get_step_index "$step_identifier" 2>/dev/null)
+    elif [[ "$step_identifier" =~ ^[0-9]+[a-z]?$ ]] && [[ "$STEP_REGISTRY_LOADED" == true ]]; then
+        alt_identifier=$(get_step_by_index "$step_identifier" 2>/dev/null)
+    fi
+    
+    # Check if step is in selected steps (check both primary and alternate identifiers)
     for selected in "${SELECTED_STEPS[@]}"; do
-        if [[ "$selected" == "$step_num" ]]; then
+        if [[ "$selected" == "$step_to_check" ]] || \
+           [[ "$selected" == "$step_identifier" ]] || \
+           [[ -n "$alt_identifier" && "$selected" == "$alt_identifier" ]]; then
             return 0
         fi
     done
@@ -1295,35 +1388,133 @@ should_execute_step() {
 
 # Execute a single workflow step
 # Used by multi-stage pipeline for stage-based execution
-# Args: $1 = step_number
+# Args: $1 = step_number or step_name
 # Returns: 0 on success, 1 on failure
 execute_step() {
-    local step_num="$1"
+    local step_identifier="$1"
     local step_name=""
+    local step_num=""
     
-    # Check intelligent skip prediction before executing
-    if [[ "${INTELLIGENT_SKIP:-false}" == "true" ]] && [[ -n "${SKIP_PREDICTIONS:-}" ]]; then
-        local prediction=$(echo "$SKIP_PREDICTIONS" | jq -r ".[] | select(.step == $step_num)")
-        
-        if [[ -n "$prediction" ]]; then
-            local should_skip=$(echo "$prediction" | jq -r '.should_skip // false')
-            local confidence=$(echo "$prediction" | jq -r '.confidence // 0')
-            local reason=$(echo "$prediction" | jq -r '.reason // "unknown"')
-            
-            if [[ "$should_skip" == "true" ]]; then
-                print_info "⏭️  Skipping Step $step_num (ML prediction: $reason, confidence: $confidence)"
-                update_workflow_status "$step_num" "⏭️"
-                log_to_workflow "INFO" "Step $step_num skipped by intelligent prediction (reason: $reason, confidence: $confidence)"
-                
-                # Record skip decision
-                record_skip_decision "$WORKFLOW_RUN_ID" "$step_num" "true" "${CHANGE_FEATURES:-{}}" "$confidence" "$reason"
-                
-                return 0
+    # Resolve step name and number
+    if [[ "$STEP_REGISTRY_LOADED" == true ]]; then
+        # v4.0.0: Use step registry for resolution
+        if [[ "$step_identifier" =~ ^[0-9]+[a-z]?$ ]]; then
+            # It's a number - get the name
+            step_num="$step_identifier"
+            step_name=$(get_step_by_index "$step_num" 2>/dev/null)
+            if [[ -z "$step_name" ]]; then
+                print_error "Invalid step index: $step_num"
+                return 1
+            fi
+        else
+            # It's a name - get the number
+            step_name="$step_identifier"
+            step_num=$(get_step_index "$step_name" 2>/dev/null)
+            if [[ -z "$step_num" ]]; then
+                print_error "Invalid step name: $step_name"
+                return 1
             fi
         fi
-    fi
-    
-    case "$step_num" in
+        
+        # Get step metadata
+        local metadata
+        metadata=$(get_step_metadata "$step_name" 2>/dev/null) || {
+            print_error "Failed to get metadata for step: $step_name"
+            return 1
+        }
+        
+        IFS=: read -r module_file function_name description enabled <<< "$metadata"
+        
+        # Check if enabled
+        if [[ "$enabled" != "true" ]]; then
+            print_info "Skipping disabled step: $step_name"
+            update_workflow_status "$step_num" "⏭️"
+            log_to_workflow "INFO" "Step $step_num ($step_name) is disabled in configuration"
+            return 0
+        fi
+        
+        # Check intelligent skip prediction before executing
+        if [[ "${INTELLIGENT_SKIP:-false}" == "true" ]] && [[ -n "${SKIP_PREDICTIONS:-}" ]]; then
+            local prediction=$(echo "$SKIP_PREDICTIONS" | jq -r ".[] | select(.step == $step_num)" 2>/dev/null)
+            
+            if [[ -n "$prediction" ]]; then
+                local should_skip=$(echo "$prediction" | jq -r '.should_skip // false')
+                local confidence=$(echo "$prediction" | jq -r '.confidence // 0')
+                local reason=$(echo "$prediction" | jq -r '.reason // "unknown"')
+                
+                if [[ "$should_skip" == "true" ]]; then
+                    print_info "⏭️  Skipping Step $step_num ($step_name) - ML prediction: $reason, confidence: $confidence"
+                    update_workflow_status "$step_num" "⏭️"
+                    log_to_workflow "INFO" "Step $step_num skipped by intelligent prediction (reason: $reason, confidence: $confidence)"
+                    
+                    # Record skip decision
+                    if type -t record_skip_decision > /dev/null 2>&1; then
+                        record_skip_decision "$WORKFLOW_RUN_ID" "$step_num" "true" "${CHANGE_FEATURES:-{}}" "$confidence" "$reason"
+                    fi
+                    
+                    return 0
+                fi
+            fi
+        fi
+        
+        # Load step module dynamically
+        if ! load_step_module "$step_name" 2>/dev/null; then
+            print_error "Failed to load step module: $step_name"
+            return 1
+        fi
+        
+        # Verify function exists
+        if ! declare -f "$function_name" > /dev/null 2>&1; then
+            print_error "Step function not found: $function_name"
+            print_error "Module: $module_file, Step: $step_name"
+            return 1
+        fi
+        
+        # Execute the step function
+        print_step "$step_num" "$description"
+        log_step_start "$step_num" "$description" 2>/dev/null || true
+        
+        if "$function_name"; then
+            update_workflow_status "$step_num" "✅"
+            log_step_complete "$step_num" "$description" "SUCCESS" 2>/dev/null || true
+            return 0
+        else
+            update_workflow_status "$step_num" "❌"
+            log_step_complete "$step_num" "$description" "FAILED" 2>/dev/null || true
+            return 1
+        fi
+        
+    else
+        # Legacy mode: Use hardcoded case statement (v3.x compatibility)
+        step_num="$step_identifier"
+        
+        # Check intelligent skip prediction before executing (legacy)
+        if [[ "${INTELLIGENT_SKIP:-false}" == "true" ]] && [[ -n "${SKIP_PREDICTIONS:-}" ]]; then
+            local prediction=$(echo "$SKIP_PREDICTIONS" | jq -r ".[] | select(.step == $step_num)" 2>/dev/null)
+            
+            if [[ -n "$prediction" ]]; then
+                local should_skip=$(echo "$prediction" | jq -r '.should_skip // false')
+                local confidence=$(echo "$prediction" | jq -r '.confidence // 0')
+                local reason=$(echo "$prediction" | jq -r '.reason // "unknown"')
+                
+                if [[ "$should_skip" == "true" ]]; then
+                    print_info "⏭️  Skipping Step $step_num (ML prediction: $reason, confidence: $confidence)"
+                    update_workflow_status "$step_num" "⏭️"
+                    log_to_workflow "INFO" "Step $step_num skipped by intelligent prediction (reason: $reason, confidence: $confidence)"
+                    
+                    # Record skip decision
+                    if type -t record_skip_decision > /dev/null 2>&1; then
+                        record_skip_decision "$WORKFLOW_RUN_ID" "$step_num" "true" "${CHANGE_FEATURES:-{}}" "$confidence" "$reason"
+                    fi
+                    
+                    return 0
+                fi
+            fi
+        fi
+        
+        # LEGACY CASE STATEMENT (v3.x)
+        # This will be removed in a future version once all projects migrate to v4.0
+        case "$step_num" in
         0)
             step_name="Pre-Analysis"
             if step0_analyze_changes; then
@@ -1493,8 +1684,8 @@ execute_step() {
             fi
             ;;
         13)
-            step_name="Prompt Engineer Analysis"
-            if step13_prompt_engineer_analysis; then
+            step_name="Markdown Linting"
+            if step13_markdown_linting; then
                 update_workflow_status "$step_num" "✅"
                 log_step_complete "$step_num" "$step_name" "SUCCESS"
                 return 0
@@ -1521,6 +1712,8 @@ execute_step() {
             return 1
             ;;
     esac
+    # END LEGACY CASE STATEMENT - Remove after full migration to v4.0
+    fi  # End of legacy mode check
 }
 
 # ------------------------------------------------------------------------------
@@ -1951,11 +2144,11 @@ execute_full_workflow() {
         ((skipped_steps++)) || true
     fi
     
-    # Step 16: Prompt Engineer Analysis (with checkpoint)
+    # Step 13: Markdown Linting (with checkpoint)
     # MUST run before Step 11 (Git Finalization)
     if [[ -z "$failed_step" && $resume_from -le 13 ]] && should_execute_step 13; then
-        log_step_start 13 "Prompt Engineer Analysis"
-        step13_prompt_engineer_analysis || { failed_step="Step 13"; }
+        log_step_start 13 "Markdown Linting"
+        step13_markdown_linting || { failed_step="Step 13"; }
         ((executed_steps++)) || true
         save_checkpoint 13
     elif [[ -z "$failed_step" && $resume_from -le 13 ]]; then
@@ -2230,6 +2423,8 @@ OPTIONS:
     
     --verbose          Enable verbose output
     --steps STEPS      Execute specific steps (comma-separated, e.g., "0,1,2" or "all")
+    --last-commits N   Analyze last N commits from HEAD~N + uncommitted changes (NEW v3.3.0)
+                       Example: --last-commits 5 analyzes last 5 commits
     --stop             Enable continuation prompt on completion
     
     --smart-execution  Enable smart execution (skip steps based on change detection)
@@ -2392,6 +2587,9 @@ EXAMPLES:
     
     # Execute only git finalization (11)
     $0 --steps 11
+    
+    # Analyze last 10 commits plus uncommitted changes (NEW v3.3.0)
+    $0 --last-commits 10 --smart-execution
     
     # Smart execution for faster workflow (40-85% faster)
     $0 --smart-execution --parallel

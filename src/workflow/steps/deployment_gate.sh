@@ -79,7 +79,7 @@ source_step11_libraries() {
 
 # Main deployment readiness gate function
 # Returns: 0 if all mandatory checks pass, 1 if any mandatory check fails
-step11_deployment_gate() {
+deployment_gate() {
     print_step "11" "Deployment Readiness Gate"
     
     # Check if flag is set
@@ -96,7 +96,7 @@ step11_deployment_gate() {
         return 1
     fi
     
-    local gate_report="${WORKFLOW_HOME}/backlog/${BACKLOG_DIR}/deployment_gate_report.md"
+    local gate_report="${BACKLOG_DIR}/deployment_gate_report.md"
     local mandatory_passed=true
     local optional_warnings=0
     
@@ -164,6 +164,9 @@ step11_deployment_gate() {
     # ==============================================================================
     
     print_info "Generating deployment readiness report..."
+    
+    # Ensure directory exists
+    mkdir -p "$(dirname "$gate_report")"
     
     cat > "$gate_report" << EOF
 # Deployment Readiness Gate Report
@@ -256,8 +259,8 @@ EOF
 
 # Alias for backward compatibility
 step10_5_deployment_gate() {
-    step11_deployment_gate "$@"
+    deployment_gate "$@"
 }
 
 # Export step function
-export -f step11_deployment_gate step10_5_deployment_gate
+export -f deployment_gate step10_5_deployment_gate

@@ -56,7 +56,7 @@ execute_4track_parallel() {
         
         # Step 0: Pre-Analysis (REQUIRED - all tracks wait for this)
         if should_execute_step 0; then
-            step0_analyze_changes > "${parallel_dir}/track1_step0.log" 2>&1 || {
+            execute_step 0 > "${parallel_dir}/track1_step0.log" 2>&1 || {
                 echo "FAILED:0" > "${parallel_dir}/track1_analysis.status"
                 exit 1
             }
@@ -67,17 +67,17 @@ execute_4track_parallel() {
         local step_pids=()
         
         if should_execute_step 3; then
-            step3_validate_script_references > "${parallel_dir}/track1_step3.log" 2>&1 &
+            execute_step 3 > "${parallel_dir}/track1_step3.log" 2>&1 &
             step_pids[3]=$!
         fi
         
         if should_execute_step 4; then
-            step4_validate_directory_structure > "${parallel_dir}/track1_step4.log" 2>&1 &
+            execute_step 4 > "${parallel_dir}/track1_step4.log" 2>&1 &
             step_pids[4]=$!
         fi
         
         if should_execute_step 13; then
-            step13_prompt_engineer_analysis > "${parallel_dir}/track1_step13.log" 2>&1 &
+            execute_step 13 > "${parallel_dir}/track1_step13.log" 2>&1 &
             step_pids[13]=$!
         fi
         
@@ -103,7 +103,7 @@ execute_4track_parallel() {
         
         # Step 10: Context Analysis (depends on all tracks)
         if should_execute_step 10; then
-            step10_context_analysis > "${parallel_dir}/track1_step10.log" 2>&1 || {
+            execute_step 10 > "${parallel_dir}/track1_step10.log" 2>&1 || {
                 echo "FAILED:10" > "${parallel_dir}/track1_analysis.status"
                 exit 1
             }
@@ -111,7 +111,7 @@ execute_4track_parallel() {
         
         # Step 11: Git Finalization (FINAL STEP)
         if should_execute_step 11; then
-            step11_git_finalization > "${parallel_dir}/track1_step11.log" 2>&1 || {
+            execute_step 11 > "${parallel_dir}/track1_step11.log" 2>&1 || {
                 echo "FAILED:11" > "${parallel_dir}/track1_analysis.status"
                 exit 1
             }
@@ -138,20 +138,20 @@ execute_4track_parallel() {
         # Steps 5 & 8 in parallel
         local dep_pid=""
         if should_execute_step 5; then
-            step5_review_existing_tests > "${parallel_dir}/track2_step5.log" 2>&1 || {
+            execute_step 5 > "${parallel_dir}/track2_step5.log" 2>&1 || {
                 echo "FAILED:5" > "${parallel_dir}/track2_testing.status"
                 exit 1
             }
         fi
         
         if should_execute_step 8; then
-            step8_validate_dependencies > "${parallel_dir}/track2_step8.log" 2>&1 &
+            execute_step 8 > "${parallel_dir}/track2_step8.log" 2>&1 &
             dep_pid=$!
         fi
         
         # Step 6: Test Generation
         if should_execute_step 6; then
-            step6_generate_new_tests > "${parallel_dir}/track2_step6.log" 2>&1 || {
+            execute_step 6 > "${parallel_dir}/track2_step6.log" 2>&1 || {
                 echo "FAILED:6" > "${parallel_dir}/track2_testing.status"
                 exit 1
             }
@@ -169,14 +169,14 @@ execute_4track_parallel() {
                 else
                     # Fallback to standard test execution
                     print_warning "Sharded tests failed - using standard execution"
-                    step8_execute_test_suite > "${parallel_dir}/track2_step7_fallback.log" 2>&1 || {
+                    execute_step 8 > "${parallel_dir}/track2_step7_fallback.log" 2>&1 || {
                         echo "FAILED:7" > "${parallel_dir}/track2_testing.status"
                         exit 1
                     }
                 fi
             else
                 # Standard test execution if sharding not available
-            step8_execute_test_suite > "${parallel_dir}/track2_step7.log" 2>&1 || {
+            execute_step 8 > "${parallel_dir}/track2_step7.log" 2>&1 || {
                     echo "FAILED:7" > "${parallel_dir}/track2_testing.status"
                     exit 1
                 }
@@ -211,7 +211,7 @@ execute_4track_parallel() {
         
         # Step 9: Code Quality (runs after tests complete)
         if should_execute_step 9; then
-            step9_code_quality_validation > "${parallel_dir}/track3_step9.log" 2>&1 || {
+            execute_step 9 > "${parallel_dir}/track3_step9.log" 2>&1 || {
                 echo "FAILED:9" > "${parallel_dir}/track3_quality.status"
                 exit 1
             }
@@ -240,7 +240,7 @@ execute_4track_parallel() {
         
         # Step 1: Documentation
         if should_execute_step 1; then
-            step1_update_documentation > "${parallel_dir}/track4_step1.log" 2>&1 || {
+            execute_step 1 > "${parallel_dir}/track4_step1.log" 2>&1 || {
                 echo "FAILED:1" > "${parallel_dir}/track4_docs.status"
                 exit 1
             }
@@ -248,7 +248,7 @@ execute_4track_parallel() {
         
         # Step 2: Consistency
         if should_execute_step 2; then
-            step2_check_consistency > "${parallel_dir}/track4_step2.log" 2>&1 || {
+            execute_step 2 > "${parallel_dir}/track4_step2.log" 2>&1 || {
                 echo "FAILED:2" > "${parallel_dir}/track4_docs.status"
                 exit 1
             }
@@ -256,7 +256,7 @@ execute_4track_parallel() {
         
         # Step 12: Markdown Linting
         if should_execute_step 12; then
-            step12_markdown_linting > "${parallel_dir}/track4_step12.log" 2>&1 || {
+            execute_step 12 > "${parallel_dir}/track4_step12.log" 2>&1 || {
                 echo "FAILED:12" > "${parallel_dir}/track4_docs.status"
                 exit 1
             }

@@ -249,7 +249,7 @@ execute_parallel_tracks() {
         
         # Step 0: Pre-Analysis
         if should_execute_step 0; then
-            step0_analyze_changes > "${parallel_dir}/track1_step0.log" 2>&1 || {
+            execute_step 0 > "${parallel_dir}/track1_step0.log" 2>&1 || {
                 echo "FAILED:0" > "${parallel_dir}/track_analysis.status"
                 exit 1
             }
@@ -259,17 +259,17 @@ execute_parallel_tracks() {
         local step_pids=()
         
         if should_execute_step 3; then
-            step3_validate_script_references > "${parallel_dir}/track1_step3.log" 2>&1 &
+            execute_step 3 > "${parallel_dir}/track1_step3.log" 2>&1 &
             step_pids[3]=$!
         fi
         
         if should_execute_step 4; then
-            step4_validate_directory_structure > "${parallel_dir}/track1_step4.log" 2>&1 &
+            execute_step 4 > "${parallel_dir}/track1_step4.log" 2>&1 &
             step_pids[4]=$!
         fi
         
         if should_execute_step 13; then
-            step13_prompt_engineer_analysis > "${parallel_dir}/track1_step13.log" 2>&1 &
+            execute_step 13 > "${parallel_dir}/track1_step13.log" 2>&1 &
             step_pids[13]=$!
         fi
         
@@ -294,7 +294,7 @@ execute_parallel_tracks() {
         done
         
         if should_execute_step 10; then
-            step10_context_analysis > "${parallel_dir}/track1_step10.log" 2>&1 || {
+            execute_step 10 > "${parallel_dir}/track1_step10.log" 2>&1 || {
                 echo "FAILED:10" > "${parallel_dir}/track_analysis.status"
                 exit 1
             }
@@ -302,7 +302,7 @@ execute_parallel_tracks() {
         
         # Step 11: Git Finalization
         if should_execute_step 11; then
-            step11_git_finalization > "${parallel_dir}/track1_step11.log" 2>&1 || {
+            execute_step 11 > "${parallel_dir}/track1_step11.log" 2>&1 || {
                 echo "FAILED:11" > "${parallel_dir}/track_analysis.status"
                 exit 1
             }
@@ -329,20 +329,20 @@ execute_parallel_tracks() {
         # Step 5 & 8 in parallel
         local dep_pid=""
         if should_execute_step 5; then
-            step5_review_existing_tests > "${parallel_dir}/track2_step5.log" 2>&1 || {
+            execute_step 5 > "${parallel_dir}/track2_step5.log" 2>&1 || {
                 echo "FAILED:5" > "${parallel_dir}/track_validation.status"
                 exit 1
             }
         fi
         
         if should_execute_step 8; then
-            step8_validate_dependencies > "${parallel_dir}/track2_step8.log" 2>&1 &
+            execute_step 8 > "${parallel_dir}/track2_step8.log" 2>&1 &
             dep_pid=$!
         fi
         
         # Step 6: Test Generation
         if should_execute_step 6; then
-            step6_generate_new_tests > "${parallel_dir}/track2_step6.log" 2>&1 || {
+            execute_step 6 > "${parallel_dir}/track2_step6.log" 2>&1 || {
                 echo "FAILED:6" > "${parallel_dir}/track_validation.status"
                 exit 1
             }
@@ -350,7 +350,7 @@ execute_parallel_tracks() {
         
         # Step 7: Test Execution
         if should_execute_step 7; then
-            step8_execute_test_suite > "${parallel_dir}/track2_step7.log" 2>&1 || {
+            execute_step 8 > "${parallel_dir}/track2_step7.log" 2>&1 || {
                 echo "FAILED:7" > "${parallel_dir}/track_validation.status"
                 exit 1
             }
@@ -361,7 +361,7 @@ execute_parallel_tracks() {
         
         # Step 9: Code Quality
         if should_execute_step 9; then
-            step9_code_quality_validation > "${parallel_dir}/track2_step9.log" 2>&1 || {
+            execute_step 9 > "${parallel_dir}/track2_step9.log" 2>&1 || {
                 echo "FAILED:9" > "${parallel_dir}/track_validation.status"
                 exit 1
             }
@@ -390,7 +390,7 @@ execute_parallel_tracks() {
         
         # Step 1: Documentation
         if should_execute_step 1; then
-            step1_update_documentation > "${parallel_dir}/track3_step1.log" 2>&1 || {
+            execute_step 1 > "${parallel_dir}/track3_step1.log" 2>&1 || {
                 echo "FAILED:1" > "${parallel_dir}/track_docs.status"
                 exit 1
             }
@@ -398,7 +398,7 @@ execute_parallel_tracks() {
         
         # Step 2: Consistency
         if should_execute_step 2; then
-            step2_check_consistency > "${parallel_dir}/track3_step2.log" 2>&1 || {
+            execute_step 2 > "${parallel_dir}/track3_step2.log" 2>&1 || {
                 echo "FAILED:2" > "${parallel_dir}/track_docs.status"
                 exit 1
             }
@@ -406,7 +406,7 @@ execute_parallel_tracks() {
         
         # Step 12: Markdown Linting
         if should_execute_step 12; then
-            step12_markdown_linting > "${parallel_dir}/track3_step12.log" 2>&1 || {
+            execute_step 12 > "${parallel_dir}/track3_step12.log" 2>&1 || {
                 echo "FAILED:12" > "${parallel_dir}/track_docs.status"
                 exit 1
             }
@@ -596,7 +596,7 @@ execute_parallel_validation() {
         if should_execute_step 1; then
             (
                 log_step_start 1 "Documentation Updates"
-                if step1_update_documentation > "${parallel_dir}/step1.log" 2>&1; then
+                if execute_step 1 > "${parallel_dir}/step1.log" 2>&1; then
                     echo "SUCCESS" > "${parallel_dir}/step1.status"
                     exit 0
                 else
@@ -612,7 +612,7 @@ execute_parallel_validation() {
         if should_execute_step 2; then
             (
                 log_step_start 2 "Consistency Analysis"
-                if step2_check_consistency > "${parallel_dir}/step2.log" 2>&1; then
+                if execute_step 2 > "${parallel_dir}/step2.log" 2>&1; then
                     echo "SUCCESS" > "${parallel_dir}/step2.status"
                     exit 0
                 else
@@ -628,7 +628,7 @@ execute_parallel_validation() {
         if should_execute_step 3; then
             (
                 log_step_start 3 "Script Reference Validation"
-                if step3_validate_script_references > "${parallel_dir}/step3.log" 2>&1; then
+                if execute_step 3 > "${parallel_dir}/step3.log" 2>&1; then
                     echo "SUCCESS" > "${parallel_dir}/step3.status"
                     exit 0
                 else
@@ -644,7 +644,7 @@ execute_parallel_validation() {
         if should_execute_step 4; then
             (
                 log_step_start 4 "Directory Structure Validation"
-                if step4_validate_directory_structure > "${parallel_dir}/step4.log" 2>&1; then
+                if execute_step 4 > "${parallel_dir}/step4.log" 2>&1; then
                     echo "SUCCESS" > "${parallel_dir}/step4.status"
                     exit 0
                 else
@@ -681,7 +681,7 @@ execute_parallel_validation() {
         
         if should_execute_step 1; then
             log_step_start 1 "Documentation Updates"
-            if step1_update_documentation > "${parallel_dir}/step1.log" 2>&1; then
+            if execute_step 1 > "${parallel_dir}/step1.log" 2>&1; then
                 log_step_complete 1 "${step_names[1]}"
                 print_success "Step 1 completed successfully"
             else
@@ -697,7 +697,7 @@ execute_parallel_validation() {
         
         if should_execute_step 2; then
             log_step_start 2 "Consistency Analysis"
-            if step2_check_consistency > "${parallel_dir}/step2.log" 2>&1; then
+            if execute_step 2 > "${parallel_dir}/step2.log" 2>&1; then
                 log_step_complete 2 "${step_names[2]}"
                 print_success "Step 2 completed successfully"
             else
@@ -713,7 +713,7 @@ execute_parallel_validation() {
         
         if should_execute_step 3; then
             log_step_start 3 "Script Reference Validation"
-            if step3_validate_script_references > "${parallel_dir}/step3.log" 2>&1; then
+            if execute_step 3 > "${parallel_dir}/step3.log" 2>&1; then
                 log_step_complete 3 "${step_names[3]}"
                 print_success "Step 3 completed successfully"
             else
@@ -729,7 +729,7 @@ execute_parallel_validation() {
         
         if should_execute_step 4; then
             log_step_start 4 "Directory Structure Validation"
-            if step4_validate_directory_structure > "${parallel_dir}/step4.log" 2>&1; then
+            if execute_step 4 > "${parallel_dir}/step4.log" 2>&1; then
                 log_step_complete 4 "${step_names[4]}"
                 print_success "Step 4 completed successfully"
             else

@@ -113,10 +113,54 @@ has_workflow_history() {
     [[ -f "$history_file" ]] && [[ -s "$history_file" ]]
 }
 
-# Get the last workflow execution commit hash
+# Validate requested commit count doesn't exceed available commits
+# Usage: validate_commit_count <requested_count>
+# Returns: 0 if valid, 1 if exceeds available commits
+validate_commit_count() {
+    local requested="${1:-0}"
+    
+    # Get total commit count in repository
+    local total_commits
+    total_commits=$(git rev-list --count HEAD 2>/dev/null || echo "0")
+    
+    if [[ $requested -gt $total_commits ]]; then
+        print_error "Cannot analyze ${requested} commits: only ${total_commits} commits available in repository"
+        return 1
+    fi
+    
+    return 0
+}
+
+# Get the last workflow execution commit hash or HEAD~N if --last-commits specified
 # Usage: get_last_workflow_commit
-# Returns: Commit hash from last successful workflow, or empty if none
+# Returns: Commit hash from last successful workflow, or HEAD~N, or empty if none
 get_last_workflow_commit() {
+    # Check if --last-commits option was used
+    if [[ -n "${LAST_COMMITS:-}" ]]; then
+        # Validate commit count first
+        if ! validate_commit_count "$LAST_COMMITS"; then
+            return 1
+        fi
+        
+        # Validate HEAD~N exists
+        local baseline="HEAD~${LAST_COMMITS}"
+        if ! git rev-parse --verify "${baseline}^{commit}" &>/dev/null; then
+            print_error "Invalid commit reference: ${baseline} does not exist"
+            return 1
+        fi
+        
+        # Get the actual commit hash
+        local commit_hash
+        commit_hash=$(git rev-parse "${baseline}" 2>/dev/null)
+        
+        if [[ -n "$commit_hash" ]]; then
+            print_info "Using baseline: ${baseline} (${commit_hash:0:7})"
+            echo "$commit_hash"
+            return 0
+        fi
+    fi
+    
+    # Original logic: use workflow history
     local history_file=$(get_history_file)
     
     if ! has_workflow_history; then
@@ -389,7 +433,18 @@ analyze_changes() {
     # Determine baseline commit for comparison
     local baseline=""
     local baseline_info=""
-    if has_workflow_history; then
+    
+    # Check if --last-commits was specified
+    if [[ -n "${LAST_COMMITS:-}" ]]; then
+        baseline=$(get_last_workflow_commit)
+        if [[ -n "$baseline" ]]; then
+            local baseline_short=$(git rev-parse --short "${baseline}" 2>/dev/null)
+            local baseline_date=$(git log -1 --format=%ci "${baseline}" 2>/dev/null | cut -d' ' -f1,2)
+            local baseline_msg=$(git log -1 --format=%s "${baseline}" 2>/dev/null)
+            local commits_count=$(git rev-list --count "${baseline}..HEAD" 2>/dev/null || echo "0")
+            baseline_info="Analyzing last ${LAST_COMMITS} commits (${baseline_short}: ${baseline_msg}) + uncommitted changes"
+        fi
+    elif has_workflow_history; then
         baseline=$(get_last_workflow_commit)
         if [[ -n "$baseline" ]]; then
             # Validate baseline commit exists

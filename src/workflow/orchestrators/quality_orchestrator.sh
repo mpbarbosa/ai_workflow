@@ -2,9 +2,14 @@
 
 ################################################################################
 # Quality Orchestrator
-# Version: 2.3.1
-# Purpose: Orchestrate dependency and code quality checks (Steps 8-9)
-# Part of: Workflow Automation Modularization Phase 3
+# Version: 4.0.0
+# Purpose: Orchestrate dependency and code quality checks
+# Part of: Workflow Automation v4.0 (Configuration-Driven Steps)
+#
+# Changes in v4.0:
+#   - Uses execute_step() for dynamic execution
+#   - Supports both step names and numeric indices
+#   - Backward compatible with v3.x
 ################################################################################
 
 set -euo pipefail
@@ -14,7 +19,7 @@ set -euo pipefail
 # ==============================================================================
 
 execute_quality_phase() {
-    print_header "Quality Phase (Steps 8-9)"
+    print_header "Quality Phase"
     log_to_workflow "INFO" "Starting quality phase"
     
     local start_time
@@ -26,7 +31,7 @@ execute_quality_phase() {
     # Check for resume point
     local resume_from=${RESUME_FROM_STEP:-0}
     
-    # Step 8: Dependency Validation
+    # Step 8 (or dependency_validation in v4.0): Dependency Validation
     if [[ $resume_from -le 8 ]] && should_execute_step 8; then
         if [[ "${SMART_EXECUTION}" == "true" ]] && should_skip_step_by_impact 8 "${CHANGE_IMPACT}"; then
             print_info "⚡ Step 8 skipped (smart execution - ${CHANGE_IMPACT} impact)"
@@ -34,11 +39,11 @@ execute_quality_phase() {
             ((skipped_steps++)) || true
         else
             log_step_start 8 "Dependency Validation"
-            if step8_validate_dependencies; then
+            if execute_step 8; then
                 ((executed_steps++)) || true
                 save_checkpoint 8
             else
-                failed_step="Step 8"
+                failed_step="Step 8 (Dependency Validation)"
             fi
         fi
     elif [[ $resume_from -le 8 ]]; then
@@ -49,14 +54,14 @@ execute_quality_phase() {
         ((skipped_steps++)) || true
     fi
     
-    # Step 9: Code Quality Validation
+    # Step 9 (or code_quality_validation in v4.0): Code Quality Validation
     if [[ -z "$failed_step" && $resume_from -le 9 ]] && should_execute_step 9; then
         log_step_start 9 "Code Quality Validation"
-        if step9_validate_code_quality; then
+        if execute_step 9; then
             ((executed_steps++)) || true
             save_checkpoint 9
         else
-            failed_step="Step 9"
+            failed_step="Step 9 (Code Quality Validation)"
         fi
     elif [[ -z "$failed_step" && $resume_from -le 9 ]]; then
         print_info "Skipping Step 9 (not selected)"

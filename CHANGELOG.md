@@ -5,6 +5,79 @@ All notable changes to the AI Workflow Automation project will be documented in 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [4.0.0] - 2026-02-08
+
+### 🚀 Major Features - Configuration-Driven Step Execution
+
+#### Breaking Changes
+- **Step Files Renamed**: All step files use descriptive names instead of numbers
+  - `step_01_documentation.sh` → `documentation_updates.sh`
+  - `step_08_test_exec.sh` → `test_execution.sh`
+  - See [Migration Guide](docs/MIGRATION_GUIDE_v4.0.md) for complete mapping
+- **Function Names Updated**: Match file names (e.g., `step1_update_documentation` → `documentation_updates`)
+- **Library Directories Renamed**: 8 directories updated (e.g., `step_01_lib/` → `documentation_updates_lib/`)
+
+#### New Features
+- **Configuration-Driven Execution**: Define step order in `.workflow-config.yaml` instead of code
+- **Step Registry System**: New `step_registry.sh` module (17KB, 10 functions)
+  - YAML parser for workflow configuration
+  - Topological sort using Kahn's algorithm
+  - Circular dependency detection
+  - Bidirectional name/index lookup
+- **Dynamic Step Loader**: New `step_loader.sh` module (11KB, 9 functions)
+  - Dynamic module loading on-demand
+  - Execution wrapper with metrics
+  - Runtime dependency validation
+- **Migration Script**: `scripts/migrate_to_named_steps.sh` (13KB)
+  - Automated file/function renaming
+  - Git history preservation
+  - Dry-run mode and automatic backups
+
+#### CLI Enhancements
+- `--steps` now accepts step names: `--steps documentation_updates,test_execution`
+- `--steps` supports mixed syntax: `--steps 0,documentation_updates,8`
+- Improved validation for both numeric indices and step names
+
+#### Infrastructure Updates
+- **All Orchestrators Refactored**: validation, quality, finalization use `execute_step()`
+- **All Optimization Modules Updated**: 8 modules, 49 function calls replaced
+- **Execution Engine Redesigned**: Registry-driven step lookup replaces 200+ line case statement
+
+#### Backward Compatibility
+- **100% Compatible**: Legacy mode automatically activates if no `workflow:` section in config
+- **Numeric Indices Work**: Old `--steps 0,1,8` syntax still supported
+- **Gradual Migration**: Use v4.0 features when ready, no forced changes
+
+### 📝 Documentation
+- New: `docs/MIGRATION_GUIDE_v4.0.md` - Complete migration guide with examples
+- Updated: README.md with v4.0 step name examples  
+- Updated: Configuration template with workflow section
+- Generated: Migration report for tracking changes
+
+### 📊 Statistics
+- Files renamed: 21 step modules
+- Directories renamed: 8 library directories
+- Functions updated: 15 step functions
+- Orchestrators refactored: 3 files
+- Optimization modules refactored: 8 files
+- Total function calls replaced: 60+
+
+### ⚠️  Migration Notes
+
+**If you have custom scripts**:
+1. Update file imports: `step_01_documentation.sh` → `documentation_updates.sh`
+2. Update function calls: `step1_update_documentation` → `documentation_updates`
+3. Update directory references: `step_01_lib/` → `documentation_updates_lib/`
+
+**No action required for**:
+- CLI usage (all arguments work unchanged)
+- Standard workflow execution
+- Existing configurations (legacy mode handles it)
+
+See [Migration Guide](docs/MIGRATION_GUIDE_v4.0.md) for detailed instructions.
+
+---
+
 ## [Unreleased]
 
 ### Added

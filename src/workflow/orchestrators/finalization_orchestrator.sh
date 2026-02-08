@@ -2,9 +2,14 @@
 
 ################################################################################
 # Finalization Orchestrator
-# Version: 2.3.1
-# Purpose: Orchestrate context analysis, git operations, and cleanup (Steps 10-12)
-# Part of: Workflow Automation Modularization Phase 3
+# Version: 4.0.0
+# Purpose: Orchestrate context analysis, git operations, and cleanup
+# Part of: Workflow Automation v4.0 (Configuration-Driven Steps)
+#
+# Changes in v4.0:
+#   - Uses execute_step() for dynamic execution
+#   - Supports both step names and numeric indices
+#   - Backward compatible with v3.x
 ################################################################################
 
 set -euo pipefail
@@ -14,7 +19,7 @@ set -euo pipefail
 # ==============================================================================
 
 execute_finalization_phase() {
-    print_header "Finalization Phase (Steps 10-12)"
+    print_header "Finalization Phase"
     log_to_workflow "INFO" "Starting finalization phase"
     
     local start_time
@@ -26,14 +31,14 @@ execute_finalization_phase() {
     # Check for resume point
     local resume_from=${RESUME_FROM_STEP:-0}
     
-    # Step 10: Context Analysis
+    # Step 10 (or context_analysis in v4.0): Context Analysis
     if [[ $resume_from -le 10 ]] && should_execute_step 10; then
         log_step_start 10 "Context Analysis"
-        if step10_context_analysis; then
+        if execute_step 10; then
             ((executed_steps++)) || true
             save_checkpoint 10
         else
-            failed_step="Step 10"
+            failed_step="Step 10 (Context Analysis)"
         fi
     elif [[ $resume_from -le 10 ]]; then
         print_info "Skipping Step 10 (not selected)"
@@ -43,14 +48,14 @@ execute_finalization_phase() {
         ((skipped_steps++)) || true
     fi
     
-    # Step 11: Git Finalization
+    # Step 11 (or git_finalization in v4.0): Git Finalization
     if [[ -z "$failed_step" && $resume_from -le 11 ]] && should_execute_step 11; then
         log_step_start 11 "Git Finalization"
-        if step11_git_finalization; then
+        if execute_step 11; then
             ((executed_steps++)) || true
             save_checkpoint 11
         else
-            failed_step="Step 11"
+            failed_step="Step 11 (Git Finalization)"
         fi
     elif [[ -z "$failed_step" && $resume_from -le 11 ]]; then
         print_info "Skipping Step 11 (not selected)"
@@ -60,14 +65,14 @@ execute_finalization_phase() {
         ((skipped_steps++)) || true
     fi
     
-    # Step 12: Markdown Linting
+    # Step 12 (or markdown_linting in v4.0): Markdown Linting
     if [[ -z "$failed_step" && $resume_from -le 12 ]] && should_execute_step 12; then
         log_step_start 12 "Markdown Linting"
-        if step12_markdown_linting; then
+        if execute_step 12; then
             ((executed_steps++)) || true
             save_checkpoint 12
         else
-            failed_step="Step 12"
+            failed_step="Step 12 (Markdown Linting)"
         fi
     elif [[ -z "$failed_step" && $resume_from -le 12 ]]; then
         print_info "Skipping Step 12 (not selected)"
