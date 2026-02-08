@@ -3,7 +3,7 @@ set -euo pipefail
 
 ################################################################################
 # Step Registry Module
-# Version: 4.0.0
+# Version: 4.0.5
 # Purpose: Configuration-driven step management and execution order resolution
 #
 # Features:
@@ -20,7 +20,7 @@ set -euo pipefail
 ################################################################################
 
 # Module version
-readonly STEP_REGISTRY_VERSION="4.0.0"
+readonly STEP_REGISTRY_VERSION="4.0.2"
 
 # Global associative arrays for step registry
 declare -gA STEP_REGISTRY_BY_NAME      # name → index
@@ -203,6 +203,21 @@ _load_legacy_step_definitions() {
     
     STEP_REGISTRY_LOADED=true
     print_success "Loaded ${#legacy_steps[@]} legacy steps"
+    
+    # Source all step modules now that registry is loaded
+    # Use WORKFLOW_DIR which is set by execute_tests_docs_workflow.sh
+    local steps_dir="${WORKFLOW_DIR:?WORKFLOW_DIR not set}/steps"
+    
+    for step_def in "${legacy_steps[@]}"; do
+        IFS=: read -r name module function <<< "$step_def"
+        local module_path="${steps_dir}/${module}"
+        if [[ -f "$module_path" ]]; then
+            # shellcheck disable=SC1090
+            source "$module_path" || print_warning "Failed to source: $module_path"
+        else
+            print_warning "Step module not found: $module_path"
+        fi
+    done
 }
 
 # ==============================================================================

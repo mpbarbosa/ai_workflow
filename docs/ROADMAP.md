@@ -1,8 +1,8 @@
 # AI Workflow Automation - Roadmap
 
-**Project Version**: v2.6.0  
-**Last Updated**: 2025-12-24  
-**Status**: 🎯 Active Planning  
+**Project Version**: v4.0.0  
+**Last Updated**: 2026-02-08  
+**Status**: 🎯 Active Development  
 **Maintained By**: Marcelo Pereira Barbosa ([@mpbarbosa](https://github.com/mpbarbosa))
 
 ---
@@ -13,14 +13,21 @@ To create the most comprehensive, intelligent, and developer-friendly workflow a
 
 ---
 
-## Current Status (v2.6.0)
+## Current Status (v4.0.0)
 
 ### ✅ Completed
 
 **Core Features**:
-- ✅ 15-step automated pipeline with checkpoint resume
-- ✅ 33 library modules + 15 step modules (26K+ lines)
-- ✅ 14 AI personas with GitHub Copilot CLI integration
+- ✅ 20-step automated pipeline with checkpoint resume
+- ✅ 73 library modules + 20 step modules (26K+ lines)
+- ✅ 15 AI personas with GitHub Copilot CLI integration
+- ✅ **Configuration-driven step execution (v4.0.0)** - Use descriptive names instead of numbers
+- ✅ **Step selection by name (v4.0.0)** - `--steps documentation_updates,test_execution`
+- ✅ **Git commit hash tracking (v3.3.0)** - Track historical workflow commits
+- ✅ **Step 1 optimization (v3.2.0)** - 75-85% faster documentation analysis
+- ✅ **Audio notifications (v3.1.0)** - Sound alerts for prompts and completion
+- ✅ **Step 0b bootstrap docs (v3.1.0)** - Generate comprehensive docs from scratch
+- ✅ **Pre-commit hooks (v3.0.0)** - Fast validation checks to prevent broken commits
 - ✅ Smart execution (40-85% faster with change detection) - **enabled by default in v2.5.0**
 - ✅ Parallel execution (33% faster with dependency groups) - **enabled by default in v2.5.0**
 - ✅ AI response caching (60-80% token reduction)
@@ -32,15 +39,14 @@ To create the most comprehensive, intelligent, and developer-friendly workflow a
 - ✅ Code quality assessment: B+ (87/100) by AI Quality Engineer
 - ✅ Complete documentation system with quality assurance
 - ✅ Professional badges and ecosystem integration
-- ✅ **Step 13 bug fix (2024-12-24)** - Fixed prompt engineer YAML parsing for multiline block scalars
 
 **Statistics**:
-- **Total Lines**: 26,562 (22,411 shell + 4,151 YAML)
-- **Modules**: 58 total (33 libraries + 15 steps + 7 configs + 4 orchestrators)
+- **Total Lines**: 26,562+ (22,411 shell + 4,151 YAML)
+- **Modules**: 97 total (73 libraries + 20 steps + 4 orchestrators)
 - **Test Coverage**: 100% (37+ test files)
 - **Documentation**: 165+ markdown files
 
-See [PROJECT_REFERENCE.md](docs/PROJECT_REFERENCE.md) for complete details.
+See [PROJECT_REFERENCE.md](PROJECT_REFERENCE.md) for complete details.
 
 ---
 
@@ -52,12 +58,82 @@ See [PROJECT_REFERENCE.md](docs/PROJECT_REFERENCE.md) for complete details.
 ### Mid-Term (v3.0.0) - Q2-Q3 2025
 **Focus**: Plugin system and broader language support
 
-### Long-Term (v4.0.0+) - Q4 2025 and beyond
-**Focus**: AI model flexibility and enterprise features
+### Long-Term (v5.0.0+) - Q2-Q3 2026 and beyond
+**Focus**: Advanced AI integration and enterprise features
 
 ---
 
-## Version 2.9.0 - Auto-Documentation
+## Version History
+
+### v4.0.0 - Configuration-Driven Steps
+
+**Released**: 2026-02-08  
+**Status**: ✅ COMPLETED  
+**Focus**: Eliminate hardcoded step numbers with configuration-driven execution
+
+**Key Features**:
+- **Descriptive step names**: `documentation_updates.sh` instead of `step_01_documentation.sh`
+- **YAML configuration**: Define step order in `.workflow_core/config/workflow_steps.yaml`
+- **Named step selection**: `--steps documentation_updates,test_execution,git_finalization`
+- **Mixed syntax support**: Combine names and indices: `--steps 0,documentation_updates,12`
+- **100% backward compatible**: Legacy numeric syntax still works
+- **Easier maintenance**: Add/remove/reorder steps without renaming files
+
+**Migration**: See [MIGRATION_GUIDE_v4.0.md](MIGRATION_GUIDE_v4.0.md) for complete step name mapping
+
+---
+
+## Version 3.x Series
+
+### v3.3.0 - Git Commit Hash Tracking
+
+**Released**: 2026-02-08  
+**Status**: ✅ COMPLETED  
+**Focus**: Historical commit tracking for workflow execution
+
+**Key Features**:
+- Track commit hashes in workflow metadata
+- Historical analysis of workflow runs by commit
+- Enhanced git integration for traceability
+
+### v3.2.0 - Step 1 Optimization
+
+**Released**: 2026-01-20  
+**Status**: ✅ COMPLETED  
+**Focus**: 75-85% faster documentation analysis
+
+**Key Features**:
+- Incremental processing: Skip unchanged docs (96% savings)
+- Parallel analysis: Concurrent AI processing (71% savings)
+- Average: 14.5 min → 3 min
+
+### v3.1.0 - Audio Notifications & Bootstrap Docs
+
+**Released**: 2026-01-18  
+**Status**: ✅ COMPLETED  
+**Focus**: Enhanced UX and documentation generation
+
+**Key Features**:
+- **Audio notifications**: Sound alerts for continue prompts and completion
+- **Step 0b bootstrap**: Generate comprehensive documentation from scratch
+- **Technical writer persona**: Specialized AI for documentation generation
+
+### v3.0.0 - Pre-Commit Hooks
+
+**Released**: 2026-01-15  
+**Status**: ✅ COMPLETED  
+**Focus**: Fast validation checks to prevent broken commits
+
+**Key Features**:
+- Pre-commit hooks: Fast checks (< 1 second)
+- Test pre-validation: Catch issues early in Step 0
+- Enhanced dependency graph with JSON export
+
+---
+
+## Version 2.x Series
+
+## Version 2.9.2 - Auto-Documentation
 
 **Target**: Q1 2026  
 **Status**: ✅ COMPLETED (2026-01-01)  

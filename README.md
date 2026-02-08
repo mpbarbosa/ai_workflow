@@ -237,6 +237,12 @@ See [docs/reference/init-config-wizard.md](docs/reference/init-config-wizard.md)
 ai_workflow/
 ├── .github/                       # GitHub configuration
 │   └── workflows/                 # CI/CD workflows
+├── .workflow_core/                # Configuration submodule (shared configs)
+│   ├── config/                    # Centralized YAML configurations
+│   │   ├── ai_helpers.yaml        # AI prompt templates (762 lines)
+│   │   ├── paths.yaml             # Path configuration
+│   │   └── project_kinds.yaml     # Project type definitions
+│   └── scripts/                   # Shared utility scripts
 ├── docs/                          # Comprehensive documentation
 │   ├── design/adr/                # Architecture Decision Records
 │   ├── reference/                 # Reference documentation

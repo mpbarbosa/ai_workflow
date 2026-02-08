@@ -1,7 +1,7 @@
 # AI Workflow Automation - Project Reference
 
 **SINGLE SOURCE OF TRUTH**  
-**Version**: v3.2.7  
+**Version**: v4.0.0  
 **Last Updated**: 2026-02-08
 
 > ⚠️ **Important**: This document is the authoritative source for project statistics, features, and module lists. All other documentation should reference this file, not duplicate its content.
@@ -12,7 +12,7 @@
 
 - **Repository**: [github.com/mpbarbosa/ai_workflow](https://github.com/mpbarbosa/ai_workflow)
 - **License**: MIT
-- **Current Version**: v3.2.7 ⭐ NEW
+- **Current Version**: v4.0.0 ⭐ NEW
 - **Previous Repository**: mpbarbosa_site (migrated 2025-12-18)
 - **Primary Maintainer**: Marcelo Pereira Barbosa ([@mpbarbosa](https://github.com/mpbarbosa))
 - **Contact**: mpbarbosa@gmail.com
@@ -24,10 +24,16 @@
 - **Test Coverage**: 100% (37+ automated tests)
 - **Performance**: Up to 93% faster with ML optimization
 
-## Core Features (v3.2.7)
+## Core Features (v4.0.0)
+
+### Configuration-Driven Workflow
+- **Descriptive Step Names** (NEW v4.0.0): Use meaningful names like `documentation_updates.sh` instead of `step_01_documentation.sh`
+- **Named Step Selection** (NEW v4.0.0): `--steps documentation_updates,test_execution,git_finalization`
+- **YAML Configuration** (NEW v4.0.0): Define step order in `.workflow_core/config/workflow_steps.yaml`
+- **Mixed Syntax Support** (NEW v4.0.0): Combine step names and indices: `--steps 0,documentation_updates,12`
 
 ### Workflow Pipeline
-- **20-Step Automated Pipeline**: Complete workflow from pre-analysis to finalization (includes step_0a pre-processing, step_0b bootstrap docs, step_02_5 doc optimize, and step_16 post-processing) ⭐ UPDATED
+- **20-Step Automated Pipeline**: Complete workflow from pre-analysis to finalization (includes step_0a pre-processing, step_0b bootstrap docs, step_02_5 doc optimize, and step_16 post-processing)
 - **Checkpoint Resume**: Automatic continuation from last completed step
 - **Dry Run Mode**: Preview execution without changes
 
@@ -198,6 +204,52 @@ The AI Workflow uses a **flexible persona system** with dynamic prompt construct
 This architecture enables the same workflow to intelligently adapt to different project types without code changes.
 
 ## Version History (Major Releases)
+
+### v4.0.0 (2026-02-08)
+- **Configuration-driven step execution**: Use descriptive names (`documentation_updates`) instead of numbers (`step_01`)
+- **Named step selection**: `--steps documentation_updates,test_execution,git_finalization`
+- **Mixed syntax support**: Combine names and indices: `--steps 0,documentation_updates,12`
+- **YAML-based step configuration**: Define execution order in `.workflow_core/config/workflow_steps.yaml`
+- **All step files renamed**: `step_01_documentation.sh` → `documentation_updates.sh` (see Migration Guide)
+- **100% backward compatible**: Legacy numeric syntax still works
+
+### v3.3.0 (2026-02-08)
+- **Git commit hash tracking**: Track historical workflow commits
+- **Enhanced metadata**: Improved workflow execution traceability
+
+### v3.2.0 (2026-01-20)
+- **Step 1 optimization**: 75-85% faster documentation analysis
+- **Incremental processing**: Skip unchanged docs (96% savings)
+- **Parallel analysis**: Concurrent AI processing (71% savings)
+
+### v3.1.0 (2026-01-18)
+- **Audio notifications**: Sound alerts for continue prompts and completion
+- **Step 0b bootstrap documentation**: Generate comprehensive docs from scratch
+- **Technical writer persona**: Specialized AI for documentation generation
+
+### v3.0.0 (2026-01-15)
+- **Pre-commit hooks**: Fast validation checks (< 1 second)
+- **Test pre-validation**: Catch issues early in Step 0
+- **Enhanced dependency graph**: JSON export support
+- **Configuration migration**: Moved to `.workflow_core` submodule
+
+### v2.9.0 (2026-01-01)
+- **Auto-documentation**: `--generate-docs` extracts summaries to `docs/workflow-reports/`
+- **Auto-CHANGELOG**: `--update-changelog` parses conventional commits
+- **API documentation**: `--generate-api-docs` extracts function docs
+- **100% backward compatible**
+
+### v2.8.0 (2026-01-01)
+- **Multi-stage pipeline**: Progressive 3-stage validation (Stages 1-3)
+- **Intelligent triggers**: Auto-detects when each stage should run
+- **Manual override**: `--manual-trigger` forces all 3 stages
+- **80%+ of runs complete in Stages 1-2**
+
+### v2.7.0 (2026-01-01)
+- **ML-driven optimization**: `--ml-optimize` for predictive workflow intelligence
+- **Step duration prediction**: Based on historical patterns
+- **Continuous learning**: Improves with each execution (minimum 10 runs)
+- **15-30% additional improvement over static optimization**
 
 ### v2.6.0 (2025-12-24)
 - **Auto-commit workflow**: `--auto-commit` flag with intelligent artifact detection and message generation

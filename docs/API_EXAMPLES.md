@@ -1,6 +1,6 @@
 # AI Workflow Automation - API Examples
 
-**Version**: v3.2.7  
+**Version**: v4.0.0  
 **Comprehensive code examples** for API usage
 
 ---

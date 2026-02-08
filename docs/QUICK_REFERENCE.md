@@ -1,6 +1,6 @@
 # AI Workflow Automation - Quick Reference
 
-**Version**: v3.1.0  
+**Version**: v4.0.0  
 **One-Page Cheat Sheet** for common operations
 
 ---
@@ -70,8 +70,14 @@ cd /path/to/your/project
 
 ### Selective Execution
 ```bash
-# Run specific steps only
+# Run specific steps by name (NEW v4.0.0)
+./execute_tests_docs_workflow.sh --steps documentation_updates,test_execution,git_finalization
+
+# Run specific steps by index (legacy)
 ./execute_tests_docs_workflow.sh --steps 0,2,3,5
+
+# Mixed syntax - combine names and indices (NEW v4.0.0)
+./execute_tests_docs_workflow.sh --steps 0,documentation_updates,test_execution,12
 
 # Skip AI steps
 ./execute_tests_docs_workflow.sh --skip-ai
@@ -149,7 +155,10 @@ cd /path/to/your/project
 # Fast iteration on documentation
 ./templates/workflows/docs-only.sh
 
-# Code + tests development
+# Code + tests development (v4.0.0: use step names)
+./execute_tests_docs_workflow.sh --steps pre_analysis,config_validation,directory_validation,test_generation,test_execution --smart-execution
+
+# Legacy numeric syntax also works
 ./execute_tests_docs_workflow.sh --steps 0,3,4,7,8 --smart-execution
 ```
 
@@ -179,7 +188,10 @@ cd /path/to/your/project
 # Dry run to preview
 ./execute_tests_docs_workflow.sh --dry-run --verbose
 
-# Skip problematic steps
+# Skip problematic steps (v4.0.0: use step names)
+./execute_tests_docs_workflow.sh --steps pre_analysis,consistency_analysis,directory_validation,code_quality_validation,version_update
+
+# Legacy numeric syntax
 ./execute_tests_docs_workflow.sh --steps 0,2,5,10,15
 ```
 

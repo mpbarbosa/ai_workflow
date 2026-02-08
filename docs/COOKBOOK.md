@@ -1,6 +1,6 @@
 # Workflow Cookbook - Practical Recipes and Patterns
 
-**Version**: v3.2.7  
+**Version**: v4.0.0  
 **Last Updated**: 2026-02-08
 
 This cookbook provides practical, copy-paste ready recipes for common workflow automation scenarios. Each recipe includes context, step-by-step instructions, and expected outcomes.
@@ -117,7 +117,14 @@ cd /path/to/target/project
 cd ~/projects/ai_workflow
 ./templates/workflows/docs-only.sh
 
-# Or manual command
+# Or manual command (v4.0.0: use step names)
+./src/workflow/execute_tests_docs_workflow.sh \
+  --steps pre_analysis,documentation_updates,consistency_analysis,directory_validation,markdown_linting \
+  --smart-execution \
+  --parallel \
+  --auto-commit
+
+# Legacy numeric syntax also supported
 ./src/workflow/execute_tests_docs_workflow.sh \
   --steps 0,1,2,4,12 \
   --smart-execution \
@@ -126,11 +133,11 @@ cd ~/projects/ai_workflow
 ```
 
 **What it does**:
-- Step 0: Pre-analysis (tech stack detection, git state)
-- Step 1: Documentation updates (AI review)
-- Step 2: Consistency validation (cross-references)
-- Step 4: Directory structure validation
-- Step 12: Markdown linting
+- pre_analysis (Step 0): Tech stack detection, git state
+- documentation_updates (Step 1): AI review
+- consistency_analysis (Step 2): Cross-references
+- directory_validation (Step 4): Structure validation
+- markdown_linting (Step 12): Markdown quality
 
 **Skips**:
 - Testing (Steps 5-7)
@@ -222,18 +229,24 @@ vim tests/auth/login.test.js
 vim CHANGELOG.md
 
 # 5. Run focused workflow (no test generation needed)
+# v4.0.0: Use descriptive step names
+~/projects/ai_workflow/src/workflow/execute_tests_docs_workflow.sh \
+  --steps pre_analysis,documentation_updates,consistency_analysis,test_review,test_execution,code_quality_validation,git_finalization \
+  --auto
+
+# Legacy numeric syntax
 ~/projects/ai_workflow/src/workflow/execute_tests_docs_workflow.sh \
   --steps 0,1,2,5,7,9,11 \
   --auto
 
 # Steps explained:
-# 0: Pre-analysis
-# 1: Documentation updates (CHANGELOG)
-# 2: Consistency check
-# 5: Test review (validate existing tests)
-# 7: Test execution (run all tests)
-# 9: Code quality check
-# 11: Git finalization
+# pre_analysis (0): Pre-analysis
+# documentation_updates (1): Documentation updates (CHANGELOG)
+# consistency_analysis (2): Consistency check
+# test_review (5): Test review (validate existing tests)
+# test_execution (7): Test execution (run all tests)
+# code_quality_validation (9): Code quality check
+# git_finalization (11): Git finalization
 
 # 6. Verify tests pass
 npm test

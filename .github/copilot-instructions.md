@@ -1,7 +1,7 @@
 # GitHub Copilot Instructions - AI Workflow Automation
 
 **Repository**: ai_workflow  
-**Version**: v3.2.7  
+**Version**: v4.0.0  
 **Last Updated**: 2026-02-08  
 **Maintainer**: Marcelo Pereira Barbosa ([@mpbarbosa](https://github.com/mpbarbosa))
 
@@ -16,9 +16,10 @@ AI Workflow Automation is an intelligent workflow system for validating and enha
 **Core Features**:
 - **20-Step Automated Pipeline** with 15 AI personas
 - **73 Library Modules** + **20 Step Modules** + **4 Orchestrators** + **4 Configs**
+- **Configuration-Driven Steps** (NEW v4.0.0): Use descriptive step names instead of numbers
 - **Smart Execution**: 40-85% faster | **Parallel Execution**: 33% faster
 - **AI Response Caching**: 60-80% token reduction
-- **Pre-Commit Hooks** (NEW v3.0.0): Fast validation checks to prevent broken commits
+- **Pre-Commit Hooks** (v3.0.0): Fast validation checks to prevent broken commits
 - **Auto-Documentation** (v2.9.0): Generate reports and CHANGELOG from workflow execution
 - **Multi-Stage Pipeline** (v2.8.0): Progressive validation with 3-stage intelligent execution
 - **ML Optimization** (v2.7.0): Predictive workflow intelligence with 15-30% additional improvement
@@ -126,7 +127,7 @@ src/workflow/
 
 ## Development Workflow
 
-### Command-Line Options (v3.0.0)
+### Command-Line Options (v4.0.0)
 
 ```bash
 # Basic usage - runs on current directory by default
@@ -188,6 +189,15 @@ cd /path/to/project
 # Option 18: Test hooks without committing (NEW v3.0.0)
 ./src/workflow/execute_tests_docs_workflow.sh --test-hooks
 
+# Option 19: Select specific steps by name (NEW v4.0.0)
+# Use descriptive step names instead of numbers
+./src/workflow/execute_tests_docs_workflow.sh \
+  --steps documentation_updates,test_execution,git_finalization
+
+# Option 20: Mixed syntax - combine indices and names (NEW v4.0.0)
+./src/workflow/execute_tests_docs_workflow.sh \
+  --steps 0,documentation_updates,test_execution,12
+
 # Combined optimization (recommended for production)
 ./src/workflow/execute_tests_docs_workflow.sh \
   --smart-execution \
@@ -211,14 +221,15 @@ cd /path/to/project
 ./execute_tests_docs_workflow.sh --show-tech-stack                 # Display detected tech stack
 ./execute_tests_docs_workflow.sh --config-file .my-config.yaml    # Use custom config file
 
-# Selective step execution
-./execute_tests_docs_workflow.sh --steps 0,5,6,7
+# Selective step execution (v4.0.0: use names or indices)
+./execute_tests_docs_workflow.sh --steps documentation_updates,test_execution
+./execute_tests_docs_workflow.sh --steps 0,5,6,7  # Legacy numeric syntax also supported
 
 # Dry run mode
 ./execute_tests_docs_workflow.sh --dry-run
 ```
 
-### Performance Characteristics (v3.0.0)
+### Performance Characteristics (v4.0.0)
 
 | Change Type | Baseline | Smart | Parallel | Combined | With ML (v2.7+) |
 |-------------|----------|-------|----------|----------|-----------------|
@@ -226,6 +237,7 @@ cd /path/to/project
 | Code Changes | 23 min | 14 min (40% faster) | 15.5 min (33% faster) | 10 min (57% faster) | 6-7 min (70-75% faster) |
 | Full Changes | 23 min | 23 min (baseline) | 15.5 min (33% faster) | 15.5 min (33% faster) | 10-11 min (52-57% faster) |
 
+**Configuration-Driven Steps** (NEW v4.0.0): Use descriptive names (`documentation_updates`) instead of numbers - see [Migration Guide](docs/MIGRATION_GUIDE_v4.0.md)  
 **AI Response Caching**: 60-80% token usage reduction with 24-hour TTL  
 **Checkpoint Resume**: Automatic continuation from last completed step (use `--no-resume` to disable)  
 **Auto-Commit**: Intelligently commits workflow artifacts (docs, tests, source) with generated messages (use `--auto-commit` to enable)  
@@ -304,35 +316,37 @@ The documentation_specialist persona is project-aware and references:
 
 > 📋 **Complete History**: See [docs/PROJECT_REFERENCE.md#version-history-major-releases](../docs/PROJECT_REFERENCE.md#version-history-major-releases for all releases and detailed changelogs.
 
-**Current Version**: v3.2.7 (2026-02-08)
-- Pre-commit hooks for fast validation (< 1 second)
-- Step dependency metadata system for smarter execution
-- Test pre-validation in Step 0 to catch issues early
-- Enhanced dependency graph with JSON export
-- Project kind detection fixes (config priority)
-- UX analysis fixes for client-spa projects
-- No breaking changes - 100% backward compatible
+**Current Version**: v4.0.0 (2026-02-08)
+- Configuration-driven step execution (use descriptive names instead of numbers)
+- Improved step selection with `--steps` option (supports names like `documentation_updates`)
+- Mixed syntax support (combine step names and indices)
+- Enhanced YAML configuration for step metadata
+- 100% backward compatible with legacy numeric step names
 
 **Recent Versions**: 
-- v2.10.0 (2026-01-15): Pre-commit hooks initial implementation
-- v2.9.0 (2025-12-30): Auto-documentation generation
-- v2.8.0 (2025-12-26): Multi-stage pipeline with progressive validation
-- v2.7.0 (2025-12-25): ML-driven optimization
-- v2.6.0 (2025-12-24): Auto-commit + workflow templates + IDE integration
-- v2.5.0 (2025-12-24): Phase 2 optimizations + test regression fix
-- v2.4.0 (2025-12-23): UX Analysis with WCAG 2.1, UX Designer persona
-- v2.3.1 (bug fixes): Step 13 prompt engineer fix
-- v2.3.0 (smart/parallel execution), v2.2.0 (metrics), v2.1.0 (modularization), v2.0.0 (initial release)
+- v3.3.0 (2026-02-08): Git commit hash history tracking
+- v3.2.7 (2026-02-08): Bug fixes and improvements
+- v3.2.0 (2026-01-20): Step 1 optimization (75-85% faster documentation analysis)
+- v3.1.0 (2026-01-18): Audio notifications + Step 0b bootstrap documentation
+- v3.0.0 (2026-01-15): Pre-commit hooks and test pre-validation
 
 ## Common Patterns
 
-### Adding a New Step
+### Adding a New Step (v4.0.0)
 
 1. Create step script in `src/workflow/steps/`
-2. Follow naming convention: `step_XX_name.sh`
+2. Follow naming convention: `descriptive_name.sh` (e.g., `documentation_updates.sh`)
 3. Implement required functions: `validate_step()`, `execute_step()`
-4. Update dependency graph in `dependency_graph.sh`
-5. Add step to main orchestrator
+4. Add step configuration to `.workflow_core/config/workflow_steps.yaml`:
+   ```yaml
+   - id: your_step_name
+     name: "Human-readable name"
+     file: descriptive_name.sh
+     category: validation  # or preprocessing, testing, quality, finalization
+     dependencies: [other_step_ids]
+     stage: 1  # 1=core, 2=extended, 3=finalization
+   ```
+5. Update dependency graph in `dependency_graph.sh`
 6. Write tests
 7. Document in workflow analysis
 

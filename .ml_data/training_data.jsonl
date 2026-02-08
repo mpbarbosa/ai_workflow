@@ -1276,3 +1276,498 @@
   "parallel": false,
   "date": "2026-02-08 18:30:36"
 }
+{
+  "step": 0,
+  "duration": 0,
+  "features": {},
+  "issues_found": 1,
+  "timestamp": 1770578266,
+  "parallel": false,
+  "date": "2026-02-08 19:17:46"
+}
+{
+  "step": 0,
+  "duration": 1,
+  "features": {},
+  "issues_found": 0,
+  "timestamp": 1770579482,
+  "parallel": false,
+  "date": "2026-02-08 19:38:02"
+}
+{
+  "step": 0,
+  "duration": 1,
+  "features": {},
+  "issues_found": 0,
+  "timestamp": 1770579482,
+  "parallel": false,
+  "date": "2026-02-08 19:38:02"
+}
+{
+  "step": 0,
+  "duration": 1,
+  "features": {},
+  "issues_found": 0,
+  "timestamp": 1770579483,
+  "parallel": false,
+  "date": "2026-02-08 19:38:03"
+}
+{
+  "step": 0,
+  "duration": 1,
+  "features": {},
+  "issues_found": 0,
+  "timestamp": 1770579483,
+  "parallel": false,
+  "date": "2026-02-08 19:38:03"
+}
+{
+  "step": 0,
+  "duration": 302,
+  "features": {},
+  "issues_found": 0,
+  "timestamp": 1770579785,
+  "parallel": false,
+  "date": "2026-02-08 19:43:05"
+}
+{
+  "step": 0,
+  "duration": 302,
+  "features": {},
+  "issues_found": 0,
+  "timestamp": 1770579785,
+  "parallel": false,
+  "date": "2026-02-08 19:43:05"
+}
+{
+  "step": 0,
+  "duration": 1,
+  "features": {},
+  "issues_found": 0,
+  "timestamp": 1770579992,
+  "parallel": false,
+  "date": "2026-02-08 19:46:32"
+}
+{
+  "step": 0,
+  "duration": 1,
+  "features": {},
+  "issues_found": 0,
+  "timestamp": 1770579992,
+  "parallel": false,
+  "date": "2026-02-08 19:46:32"
+}
+{
+  "step": 0,
+  "duration": 1,
+  "features": {},
+  "issues_found": 0,
+  "timestamp": 1770579993,
+  "parallel": false,
+  "date": "2026-02-08 19:46:33"
+}
+{
+  "step": 0,
+  "duration": 1,
+  "features": {},
+  "issues_found": 0,
+  "timestamp": 1770579993,
+  "parallel": false,
+  "date": "2026-02-08 19:46:33"
+}
+{
+  "step": 0,
+  "duration": 302,
+  "features": {},
+  "issues_found": 0,
+  "timestamp": 1770580295,
+  "parallel": false,
+  "date": "2026-02-08 19:51:35"
+}
+{
+  "step": 0,
+  "duration": 302,
+  "features": {},
+  "issues_found": 0,
+  "timestamp": 1770580295,
+  "parallel": false,
+  "date": "2026-02-08 19:51:35"
+}
+{
+  "step": 0,
+  "duration": 2,
+  "features": {},
+  "issues_found": 0,
+  "timestamp": 1770580618,
+  "parallel": false,
+  "date": "2026-02-08 19:56:58"
+}
+{
+  "step": 0,
+  "duration": 2,
+  "features": {},
+  "issues_found": 0,
+  "timestamp": 1770580618,
+  "parallel": false,
+  "date": "2026-02-08 19:56:58"
+}
+{
+  "step": 0,
+  "duration": 3,
+  "features": {},
+  "issues_found": 0,
+  "timestamp": 1770580621,
+  "parallel": false,
+  "date": "2026-02-08 19:57:01"
+}
+{
+  "step": 0,
+  "duration": 3,
+  "features": {},
+  "issues_found": 0,
+  "timestamp": 1770580621,
+  "parallel": false,
+  "date": "2026-02-08 19:57:01"
+}
+{
+  "step": 0,
+  "duration": 303,
+  "features": {},
+  "issues_found": 0,
+  "timestamp": 1770580925,
+  "parallel": false,
+  "date": "2026-02-08 20:02:05"
+}
+{
+  "step": 0,
+  "duration": 304,
+  "features": {},
+  "issues_found": 0,
+  "timestamp": 1770580925,
+  "parallel": false,
+  "date": "2026-02-08 20:02:05"
+}
+{
+  "step": 1,
+  "duration": 281,
+  "features": {},
+  "issues_found": 0,
+  "timestamp": 1770581206,
+  "parallel": false,
+  "date": "2026-02-08 20:06:46"
+}
+{
+  "step": 2,
+  "duration": 10,
+  "features": {},
+  "issues_found": 0,
+  "timestamp": 1770581216,
+  "parallel": false,
+  "date": "2026-02-08 20:06:56"
+}
+{
+  "step": 3,
+  "duration": 457,
+  "features": {},
+  "issues_found": 0,
+  "timestamp": 1770581675,
+  "parallel": false,
+  "date": "2026-02-08 20:14:35"
+}
+{
+  "step": 4,
+  "duration": 0,
+  "features": {},
+  "issues_found": 0,
+  "timestamp": 1770581675,
+  "parallel": false,
+  "date": "2026-02-08 20:14:35"
+}
+{
+  "step": 5,
+  "duration": 103,
+  "features": {},
+  "issues_found": 0,
+  "timestamp": 1770581779,
+  "parallel": false,
+  "date": "2026-02-08 20:16:19"
+}
+{
+  "step": 6,
+  "duration": 0,
+  "features": {},
+  "issues_found": 0,
+  "timestamp": 1770581779,
+  "parallel": false,
+  "date": "2026-02-08 20:16:19"
+}
+{
+  "step": 0,
+  "duration": 1,
+  "features": {},
+  "issues_found": 0,
+  "timestamp": 1770581788,
+  "parallel": false,
+  "date": "2026-02-08 20:16:28"
+}
+{
+  "step": 7,
+  "duration": 120,
+  "features": {},
+  "issues_found": 0,
+  "timestamp": 1770581899,
+  "parallel": false,
+  "date": "2026-02-08 20:18:19"
+}
+{
+  "step": 8,
+  "duration": 0,
+  "features": {},
+  "issues_found": 0,
+  "timestamp": 1770581900,
+  "parallel": false,
+  "date": "2026-02-08 20:18:20"
+}
+{
+  "step": 9,
+  "duration": 78,
+  "features": {},
+  "issues_found": 0,
+  "timestamp": 1770581978,
+  "parallel": false,
+  "date": "2026-02-08 20:19:38"
+}
+{
+  "step": 10,
+  "duration": 337,
+  "features": {},
+  "issues_found": 0,
+  "timestamp": 1770582316,
+  "parallel": false,
+  "date": "2026-02-08 20:25:16"
+}
+{
+  "step": 0,
+  "duration": 2,
+  "features": {},
+  "issues_found": 0,
+  "timestamp": 1770582429,
+  "parallel": false,
+  "date": "2026-02-08 20:27:09"
+}
+{
+  "step": 0,
+  "duration": 2,
+  "features": {},
+  "issues_found": 0,
+  "timestamp": 1770582429,
+  "parallel": false,
+  "date": "2026-02-08 20:27:09"
+}
+{
+  "step": 0,
+  "duration": 3,
+  "features": {},
+  "issues_found": 0,
+  "timestamp": 1770582432,
+  "parallel": false,
+  "date": "2026-02-08 20:27:12"
+}
+{
+  "step": 0,
+  "duration": 3,
+  "features": {},
+  "issues_found": 0,
+  "timestamp": 1770582432,
+  "parallel": false,
+  "date": "2026-02-08 20:27:12"
+}
+{
+  "step": 0,
+  "duration": 304,
+  "features": {},
+  "issues_found": 0,
+  "timestamp": 1770582736,
+  "parallel": false,
+  "date": "2026-02-08 20:32:16"
+}
+{
+  "step": 0,
+  "duration": 304,
+  "features": {},
+  "issues_found": 0,
+  "timestamp": 1770582736,
+  "parallel": false,
+  "date": "2026-02-08 20:32:16"
+}
+{
+  "step": 0,
+  "duration": 2,
+  "features": {},
+  "issues_found": 0,
+  "timestamp": 1770582899,
+  "parallel": false,
+  "date": "2026-02-08 20:34:59"
+}
+{
+  "step": 0,
+  "duration": 2,
+  "features": {},
+  "issues_found": 0,
+  "timestamp": 1770582899,
+  "parallel": false,
+  "date": "2026-02-08 20:34:59"
+}
+{
+  "step": 0,
+  "duration": 3,
+  "features": {},
+  "issues_found": 0,
+  "timestamp": 1770582902,
+  "parallel": false,
+  "date": "2026-02-08 20:35:02"
+}
+{
+  "step": 0,
+  "duration": 3,
+  "features": {},
+  "issues_found": 0,
+  "timestamp": 1770582902,
+  "parallel": false,
+  "date": "2026-02-08 20:35:02"
+}
+{
+  "step": 0,
+  "duration": 304,
+  "features": {},
+  "issues_found": 0,
+  "timestamp": 1770583206,
+  "parallel": false,
+  "date": "2026-02-08 20:40:06"
+}
+{
+  "step": 0,
+  "duration": 304,
+  "features": {},
+  "issues_found": 0,
+  "timestamp": 1770583206,
+  "parallel": false,
+  "date": "2026-02-08 20:40:06"
+}
+{
+  "step": 1,
+  "duration": 304,
+  "features": {},
+  "issues_found": 0,
+  "timestamp": 1770583510,
+  "parallel": false,
+  "date": "2026-02-08 20:45:10"
+}
+{
+  "step": 2,
+  "duration": 256,
+  "features": {},
+  "issues_found": 0,
+  "timestamp": 1770583766,
+  "parallel": false,
+  "date": "2026-02-08 20:49:26"
+}
+{
+  "step": 3,
+  "duration": 520,
+  "features": {},
+  "issues_found": 0,
+  "timestamp": 1770584286,
+  "parallel": false,
+  "date": "2026-02-08 20:58:06"
+}
+{
+  "step": 4,
+  "duration": 1,
+  "features": {},
+  "issues_found": 0,
+  "timestamp": 1770584287,
+  "parallel": false,
+  "date": "2026-02-08 20:58:07"
+}
+{
+  "step": 5,
+  "duration": 189,
+  "features": {},
+  "issues_found": 0,
+  "timestamp": 1770584476,
+  "parallel": false,
+  "date": "2026-02-08 21:01:16"
+}
+{
+  "step": 6,
+  "duration": 1,
+  "features": {},
+  "issues_found": 0,
+  "timestamp": 1770584477,
+  "parallel": false,
+  "date": "2026-02-08 21:01:17"
+}
+{
+  "step": 0,
+  "duration": 1,
+  "features": {},
+  "issues_found": 0,
+  "timestamp": 1770584486,
+  "parallel": false,
+  "date": "2026-02-08 21:01:26"
+}
+{
+  "step": 0,
+  "duration": 1,
+  "features": {},
+  "issues_found": 0,
+  "timestamp": 1770584564,
+  "parallel": false,
+  "date": "2026-02-08 21:02:44"
+}
+{
+  "step": 7,
+  "duration": 265,
+  "features": {},
+  "issues_found": 0,
+  "timestamp": 1770584742,
+  "parallel": false,
+  "date": "2026-02-08 21:05:42"
+}
+{
+  "step": 8,
+  "duration": 0,
+  "features": {},
+  "issues_found": 0,
+  "timestamp": 1770584742,
+  "parallel": false,
+  "date": "2026-02-08 21:05:42"
+}
+{
+  "step": 9,
+  "duration": 228,
+  "features": {},
+  "issues_found": 0,
+  "timestamp": 1770584970,
+  "parallel": false,
+  "date": "2026-02-08 21:09:30"
+}
+{
+  "step": 10,
+  "duration": 327,
+  "features": {},
+  "issues_found": 0,
+  "timestamp": 1770585298,
+  "parallel": false,
+  "date": "2026-02-08 21:14:58"
+}
+{
+  "step": 11,
+  "duration": 7,
+  "features": {},
+  "issues_found": 0,
+  "timestamp": 1770585305,
+  "parallel": false,
+  "date": "2026-02-08 21:15:05"
+}

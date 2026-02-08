@@ -5,7 +5,7 @@ set -euo pipefail
 # Step 1 AI Integration Module
 # Purpose: AI prompt building, Copilot CLI interaction, response processing
 # Part of: Step 1 Refactoring Phase 4 - High Cohesion, Low Coupling
-# Version: 3.1.0 - Added parallel documentation analysis (Phase 2 optimization)
+# Version: 3.1.1 - Added parallel documentation analysis (Phase 2 optimization)
 ################################################################################
 
 # Get script directory for sourcing dependencies
@@ -302,7 +302,11 @@ categorize_doc_file() {
     
     # Check categories in priority order: root, guides, architecture, reference, examples
     for category in root guides architecture reference examples; do
+        # Temporarily disable nounset for array access
+        set +u
         local pattern="${DOC_CATEGORIES[$category]}"
+        set -u
+        
         # Check filename or directory path against pattern
         if [[ "$basename" =~ $pattern ]] || [[ "$dirname" =~ $pattern ]]; then
             echo "$category"
@@ -336,17 +340,24 @@ categorize_docs() {
         local category
         category=$(categorize_doc_file "$file")
         
+        # Temporarily disable nounset for array access
+        set +u
         if [[ -n "${category_files[$category]}" ]]; then
             category_files[$category]+=$'\n'"$file"
         else
             category_files[$category]="$file"
         fi
+        set -u
     done
     
     # Build JSON output (simple format)
     local json_parts=()
     for category in "${!category_files[@]}"; do
+        # Temporarily disable nounset for array access
+        set +u
         local files_list="${category_files[$category]}"
+        set -u
+        
         if [[ -n "$files_list" ]]; then
             local count
             count=$(echo "$files_list" | grep -c . || echo 0)
@@ -429,11 +440,14 @@ parallel_doc_analysis_step1() {
         local category
         category=$(categorize_doc_file "$file")
         
+        # Temporarily disable nounset for array access
+        set +u
         if [[ -n "${category_files[$category]:-}" ]]; then
             category_files[$category]+=$'\n'"$file"
         else
             category_files[$category]="$file"
         fi
+        set -u
     done
     
     # Create temp directory for job outputs
@@ -445,7 +459,11 @@ parallel_doc_analysis_step1() {
     local job_count=0
     
     for category in "${!category_files[@]}"; do
+        # Temporarily disable nounset for array access
+        set +u
         local files_in_category="${category_files[$category]}"
+        set -u
+        
         [[ -z "$files_in_category" ]] && continue
         
         local count
