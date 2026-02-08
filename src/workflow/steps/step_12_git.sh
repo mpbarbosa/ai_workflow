@@ -50,6 +50,73 @@ readonly STEP12_VERSION_MAJOR=2
 readonly STEP12_VERSION_MINOR=3
 readonly STEP12_VERSION_PATCH=0
 
+# Build AI prompt for git commit message generation
+# Args: $1=script_version $2=change_scope $3=git_context $4=changed_files
+#       $5=diff_summary $6=git_analysis_content $7=diff_sample
+build_step12_git_commit_prompt() {
+    local script_version="$1"
+    local change_scope="$2"
+    local git_context="$3"
+    local changed_files="$4"
+    local diff_summary="$5"
+    local git_analysis_content="$6"
+    local diff_sample="$7"
+    
+    cat << EOF
+You are a Git commit message specialist following Conventional Commits specification.
+
+## Project Information
+- Workflow Version: ${script_version}
+- Change Scope: ${change_scope}
+
+## Git Context
+${git_context}
+
+## Changed Files (${changed_files} total)
+Use this to determine the commit scope.
+
+## Diff Summary
+${diff_summary}
+
+## Additional Analysis
+${git_analysis_content}
+
+## Sample Changes
+\`\`\`diff
+${diff_sample}
+\`\`\`
+
+## Your Task
+Generate a conventional commit message following this format:
+
+\`\`\`
+<type>(<scope>): <description>
+
+<body>
+
+<footer>
+\`\`\`
+
+**Requirements**:
+1. Type must be one of: feat, fix, docs, style, refactor, perf, test, build, ci, chore
+2. Scope should be concise (e.g., "workflow", "docs", "tests", "config")
+3. Description must be lowercase, imperative mood, no period at end
+4. Body should explain WHAT and WHY (not HOW)
+5. Include breaking changes in footer if applicable: "BREAKING CHANGE: description"
+6. Keep total message under 200 characters for first line
+
+**Examples**:
+- \`feat(workflow): add parallel execution support\`
+- \`fix(tests): resolve flaky test in auth module\`
+- \`docs(readme): update installation instructions\`
+- \`refactor(core): simplify error handling logic\`
+
+Generate ONLY the commit message, no additional commentary.
+EOF
+}
+
+export -f build_step12_git_commit_prompt
+
 # Push to remote if local is ahead
 # Args:
 #   $1 - commit_was_made (true/false) - whether a commit was just created

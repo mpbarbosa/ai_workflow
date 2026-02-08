@@ -1,3 +1,5 @@
+> ⚠️ **ARCHIVED**: This document reflects analysis from an earlier date. See [PROJECT_REFERENCE.md](PROJECT_REFERENCE.md) for current information.
+
 # Documentation Fixes Applied - December 24, 2025
 
 **Date**: 2025-12-24  

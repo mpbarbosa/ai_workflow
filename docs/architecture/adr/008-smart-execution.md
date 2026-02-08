@@ -187,8 +187,8 @@ print_info "Skipping steps: 5, 6, 7 (testing pipeline)"
   - [ADR-010: ML-Based Workflow Optimization](./010-ml-optimization.md)
   - [ADR-017: Comprehensive Metrics Collection](./017-metrics-collection.md)
 - Documentation:
-  - [change_detection.sh API](../../api/core/change_detection.md)
-  - [workflow_optimization.sh API](../../api/core/workflow_optimization.md)
+  - [change_detection.sh API](../../api/LIBRARY_MODULES_COMPLETE_API.md#change_detectionsh)
+  - [workflow_optimization.sh API](../../api/LIBRARY_MODULES_COMPLETE_API.md#workflow_optimizationsh)
   - [Performance Guide](../../guides/PERFORMANCE_TUNING.md)
 - Implementation:
   - `src/workflow/lib/change_detection.sh`

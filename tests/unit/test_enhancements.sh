@@ -282,15 +282,16 @@ test_dependency_graph_module() {
     fi
     
     # Test 2: Dependency checking - dependency met
-    if check_dependencies 1 "0"; then
-        assert_equals "true" "true" "Step 1 dependency met when Step 0 completed"
+    # Note: Step 1 requires step 0b (bootstrap documentation)
+    if check_dependencies 1 "0,0a,0b"; then
+        assert_equals "true" "true" "Step 1 dependency met when Steps 0, 0a, 0b completed"
         ((TESTS_RUN++))
         ((TESTS_PASSED++))
     else
         ((TESTS_RUN++))
         ((TESTS_FAILED++))
-        FAILED_TESTS+=("Step 1 dependency met when Step 0 completed")
-        echo -e "${RED}✗${NC} Step 1 dependency met when Step 0 completed"
+        FAILED_TESTS+=("Step 1 dependency met when Steps 0, 0a, 0b completed")
+        echo -e "${RED}✗${NC} Step 1 dependency met when Steps 0, 0a, 0b completed"
     fi
     
     # Test 3: Dependency checking - dependency not met

@@ -273,4 +273,4 @@ bash test_docs_only_optimization.sh
 
 - [PERFORMANCE_OPTIMIZATION_SUMMARY.md](../PERFORMANCE_OPTIMIZATION_SUMMARY.md)
 - [Workflow Templates](../../templates/workflows/README.md)
-- [PROJECT_REFERENCE.md](../../../docs/PROJECT_REFERENCE.md)
+- [PROJECT_REFERENCE.md](../PROJECT_REFERENCE.md)

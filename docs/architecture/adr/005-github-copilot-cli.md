@@ -186,7 +186,7 @@ fi
   - [ADR-006: 15 Specialized AI Personas](./006-specialized-personas.md)
   - [ADR-007: AI Response Caching Strategy](./007-ai-response-caching.md)
 - Documentation:
-  - [ai_helpers.sh API](../../api/core/ai_helpers.md)
+  - [ai_helpers.sh API](../../api/LIBRARY_MODULES_COMPLETE_API.md#ai_helperssh)
   - [AI Integration Guide](../../guides/ai-integration.md)
 - External Resources:
   - [GitHub Copilot CLI](https://githubnext.com/projects/copilot-cli)

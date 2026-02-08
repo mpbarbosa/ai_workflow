@@ -153,18 +153,29 @@ step13_markdown_linting() {
         local ai_prompt_file=$(mktemp)
         TEMP_FILES+=("$ai_prompt_file")
         
-        cat > "$ai_prompt_file" << 'EOF'
+        # Pre-gather all context to avoid Copilot needing to run commands
+        local current_branch
+        current_branch=$(get_git_current_branch 2>/dev/null || git branch --show-current 2>/dev/null || echo "unknown")
+        
+        local modified_md_count
+        modified_md_count=$(get_git_status_short_output 2>/dev/null | grep "\.md$" | wc -l || echo "0")
+        
+        local lint_results
+        lint_results=$(cat "$lint_report" 2>/dev/null || echo "No linting results available")
+        
+        # Build prompt with pre-expanded context (no command substitution in prompt)
+        cat > "$ai_prompt_file" << EOF
 You are a Technical Documentation Specialist with expertise in markdown best practices.
 
 # Your Task
 Review the markdown linting results and provide recommendations for improving documentation quality.
 
 # Markdown Linting Results
-$(cat "$lint_report")
+${lint_results}
 
 # Git Context
-Branch: $(get_git_current_branch)
-Modified markdown files: $(get_git_status_short_output | grep "\.md$" | wc -l)
+Branch: ${current_branch}
+Modified markdown files: ${modified_md_count}
 
 # Analysis Request
 Please provide:
@@ -175,7 +186,7 @@ Please provide:
 5. **Quick Fixes**: Provide specific sed/awk commands or manual fixes for common issues
 
 # Output Format
-Provide a concise analysis (2.0.700 words) focusing on actionable recommendations.
+Provide a concise analysis (200-700 words) focusing on actionable recommendations.
 EOF
         
         print_info "Triggering AI analysis..."

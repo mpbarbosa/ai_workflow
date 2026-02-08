@@ -477,7 +477,6 @@ README.md references documentation files that have been reorganized into subdire
 - `docs/ORCHESTRATOR_ARCHITECTURE.md` → `docs/developer-guide/architecture.md`
 - `docs/RELEASE_NOTES_v2.4.0.md` → `docs/user-guide/release-notes.md`
 - `docs/DOCUMENTATION_HUB.md` → `docs/archive/DOCUMENTATION_HUB.md`
-- `docs/reports/implementation/MIGRATION_README.md` → `docs/archive/reports/implementation/MIGRATION_README.md` (3 references)
 
 ### 2. **Missing SECURITY.md File**
 **Impact**: Security reporting broken  

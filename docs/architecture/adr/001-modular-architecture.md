@@ -166,7 +166,6 @@ source "$(dirname "$0")/lib/module_name.sh"
 - External Resources:
   - [Unix Philosophy](https://en.wikipedia.org/wiki/Unix_philosophy)
   - [Single Responsibility Principle](https://en.wikipedia.org/wiki/Single-responsibility_principle)
-- Migration Report: [MIGRATION_REPORT_20260208_160759.md](../../../MIGRATION_REPORT_20260208_160759.md)
 
 ## Review History
 

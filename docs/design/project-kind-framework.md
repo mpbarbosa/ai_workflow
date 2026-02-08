@@ -1145,7 +1145,6 @@ EOF
 ## Appendix C: Related Documentation
 
 ### Core Documentation
-- **MIGRATION_README.md** - Main repository guide
 - **src/workflow/README.md** - Module API reference
 - **TECH_STACK_ADAPTIVE_FRAMEWORK.md** - Tech stack detection
 

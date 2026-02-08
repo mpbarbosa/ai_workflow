@@ -1697,7 +1697,7 @@ execute_step() {
             ;;
         14)
             step_name="UX Analysis"
-            if step14_ux_analysis; then
+            if step15_ux_analysis; then
                 update_workflow_status "$step_num" "✅"
                 log_step_complete "$step_num" "$step_name" "SUCCESS"
                 return 0
@@ -2164,7 +2164,7 @@ execute_full_workflow() {
     # MUST run before Step 11 (Git Finalization)
     if [[ -z "$failed_step" && $resume_from -le 14 ]] && should_execute_step 14; then
         log_step_start 14 "UX Analysis"
-        step14_ux_analysis || { failed_step="Step 14"; }
+        step15_ux_analysis || { failed_step="Step 14"; }
         ((executed_steps++)) || true
         save_checkpoint 14
     elif [[ -z "$failed_step" && $resume_from -le 14 ]]; then

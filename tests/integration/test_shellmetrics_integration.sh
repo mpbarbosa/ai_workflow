@@ -104,10 +104,10 @@ fi
 
 # Test 4: Check Step 9 integration
 echo -e "\n${CYAN}Test 4: Step 9 Code Quality Integration${NC}"
-STEP9="${WORKFLOW_HOME}/src/workflow/steps/step_09_code_quality.sh"
+STEP9="${WORKFLOW_HOME}/src/workflow/steps/step_10_code_quality.sh"
 
 if grep -q "shellmetrics" "$STEP9"; then
-    echo -e "${GREEN}✓${NC} Shellmetrics referenced in step_09_code_quality.sh"
+    echo -e "${GREEN}✓${NC} Shellmetrics referenced in step_10_code_quality.sh"
     
     # Check for key integration points
     if grep -q "command -v shellmetrics" "$STEP9"; then
@@ -128,7 +128,7 @@ if grep -q "shellmetrics" "$STEP9"; then
         echo -e "${YELLOW}⚠${NC} LLOC metric handling not found"
     fi
 else
-    echo -e "${RED}✗${NC} Shellmetrics not integrated in step_09_code_quality.sh"
+    echo -e "${RED}✗${NC} Shellmetrics not integrated in step_10_code_quality.sh"
     exit 1
 fi
 

@@ -412,6 +412,29 @@ Provide one of:
 **Important**: Be specific and surgical - don't suggest changes just because files were modified. Only update if documentation is actually incorrect or incomplete."
         fi
         
+        # Expand language-specific placeholders in approach if present
+        if echo "$approach" | grep -q "{language_specific_documentation}"; then
+            local primary_language="${PRIMARY_LANGUAGE:-}"
+            local language_standards=""
+            
+            # Try to get language-specific documentation standards
+            if [[ -n "$primary_language" ]]; then
+                # Source ai_prompt_builder if available for language-specific content
+                local prompt_builder="${AI_HELPERS_DIR}/ai_prompt_builder.sh"
+                if [[ -f "$prompt_builder" ]]; then
+                    # shellcheck source=./ai_prompt_builder.sh
+                    source "$prompt_builder"
+                    language_standards=$(get_language_specific_content "$yaml_file" "language_specific_documentation" "$primary_language" 2>/dev/null || echo "")
+                fi
+            fi
+            
+            if [[ -n "$language_standards" ]]; then
+                approach="${approach//\{language_specific_documentation\}/$language_standards}"
+            else
+                approach="${approach//\{language_specific_documentation\}/No language-specific standards available}"
+            fi
+        fi
+        
         build_ai_prompt "$role" "$task" "$approach"
         
         # Display prompt type indicator (to stderr to avoid capturing in prompt variable)

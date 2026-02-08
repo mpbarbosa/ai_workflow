@@ -44,9 +44,9 @@ if ! type -t print_error &>/dev/null; then
     print_error() { echo -e "${RED}❌ ERROR: $1${NC}" >&2; }
 fi
 
-# Load Step 14
-source "${WORKFLOW_STEPS_DIR}/step_14_ux_analysis.sh" 2>/dev/null || {
-    echo "ERROR: Failed to load step_14_ux_analysis.sh"
+# Load Step 15: UX Analysis (formerly step_14, renumbered in v4.0.0)
+source "${WORKFLOW_STEPS_DIR}/step_15_ux_analysis.sh" 2>/dev/null || {
+    echo "ERROR: Failed to load step_15_ux_analysis.sh"
     exit 1
 }
 

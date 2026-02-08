@@ -19,7 +19,7 @@ TESTS_FAILED=0
 
 # Get script directory
 TEST_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-STEP1_LIB_DIR="${TEST_DIR}/../../src/workflow/steps/step_01_lib"
+STEP1_LIB_DIR="${TEST_DIR}/../../src/workflow/steps/documentation_updates_lib"
 
 echo "Test directory: $TEST_DIR"
 echo "Step1 lib directory: $STEP1_LIB_DIR"

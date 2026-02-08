@@ -147,7 +147,6 @@ find src/workflow/config -name "*.yaml" -type f | wc -l
 **High Priority Updates**:
 1. `README.md:29` - Claims "32 Library Modules" ✅ (CORRECT!)
 2. `.github/copilot-instructions.md:34` - Claims "20 Library Modules" ❌
-3. `docs/archive/reports/implementation/MIGRATION_README.md` - Claims "20 library modules" ❌
 4. `docs/PROJECT_REFERENCE.md:23` - Claims "32 libraries + 15 steps" ⚠️ (libraries correct, steps need update)
 
 **Correct Terminology to Use**:
@@ -178,7 +177,6 @@ find src/workflow/config -name "*.yaml" -type f | wc -l
 
 **Immediate (Week 1)**:
 - [ ] Update `.github/copilot-instructions.md` with correct counts
-- [ ] Add note to MIGRATION_README.md about historical counts
 - [ ] Verify PROJECT_REFERENCE.md step count (update 15 → 31)
 
 **Short-term (Week 2)**:

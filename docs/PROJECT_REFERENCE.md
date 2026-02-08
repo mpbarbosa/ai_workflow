@@ -359,7 +359,6 @@ cd /path/to/project
 - **[reference/target-option-quick-reference.md](reference/target-option-quick-reference.md)**: Quick reference
 
 ### Technical Documentation
-- **[archive/reports/implementation/MIGRATION_README.md](archive/reports/implementation/MIGRATION_README.md)**: Architecture overview
 - **[reference/workflow-diagrams.md](reference/workflow-diagrams.md)**: Visual diagrams (17 Mermaid diagrams))
 - **[developer-guide/architecture.md](developer-guide/architecture.md)**: Orchestrator design
 - **[archive/](archive/)**: Comprehensive workflow docs

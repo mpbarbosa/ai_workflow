@@ -39,8 +39,18 @@ step11_5_context_analysis() {
     local steps_failed=0
     local workflow_summary=""
     
+    # Deduplicate step keys to avoid confusion (prefer stepXX format over bare numbers)
+    declare -A seen_steps
     for step in "${!WORKFLOW_STATUS[@]}"; do
         local status="${WORKFLOW_STATUS[$step]}"
+        
+        # Normalize step name (prefer "stepXX" format, skip bare numbers if "stepXX" exists)
+        local normalized="$step"
+        if [[ "$step" =~ ^[0-9]+[a-z]?$ ]] && [[ -n "${WORKFLOW_STATUS[step${step}]:-}" ]]; then
+            # Skip bare number if "stepXX" version exists
+            continue
+        fi
+        
         workflow_summary+="$step: $status\n"
         if [[ "$status" == "✅" ]]; then
             ((steps_completed++))
@@ -129,9 +139,16 @@ step11_5_context_analysis() {
     local total_issues=0
     local critical_issues=0
     
-    # Scan all workflow status
+    # Scan all workflow status (with deduplication)
+    declare -A seen_steps_issues
     for step in "${!WORKFLOW_STATUS[@]}"; do
         local status="${WORKFLOW_STATUS[$step]}"
+        
+        # Skip duplicates (prefer stepXX format)
+        if [[ "$step" =~ ^[0-9]+[a-z]?$ ]] && [[ -n "${WORKFLOW_STATUS[step${step}]:-}" ]]; then
+            continue
+        fi
+        
         if [[ "$status" == "❌" ]]; then
             ((critical_issues++))
             ((total_issues++))
@@ -338,7 +355,12 @@ Please provide a comprehensive strategic analysis with specific, prioritized rec
 ### Workflow Steps Completion
 
 "
+    # List workflow steps (with deduplication)
     for key in "${!WORKFLOW_STATUS[@]}"; do
+        # Skip duplicates (prefer stepXX format)
+        if [[ "$key" =~ ^[0-9]+[a-z]?$ ]] && [[ -n "${WORKFLOW_STATUS[step${key}]:-}" ]]; then
+            continue
+        fi
         step_issues+="- ${key}: ${WORKFLOW_STATUS[$key]}
 "
     done

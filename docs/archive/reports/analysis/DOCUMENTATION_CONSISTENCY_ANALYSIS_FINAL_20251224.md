@@ -278,7 +278,6 @@ See detailed breakdowns in full report sections.
 ```markdown
 > **📌 Historical Note**: This document dates from before the 2025-12-18 repository
 > migration. References to `/shell_scripts/` reflect the old structure. The current
-> path is `/src/workflow/`. See [MIGRATION_README.md](../../MIGRATION_README.md).
 ```
 
 **Alternative**: Global replacement in archive directory (preserves less historical context):
@@ -376,7 +375,7 @@ Summary of remaining medium priority issues:
 ```markdown
 > **⚠️ ARCHIVED REPORT**: This analysis was performed on [DATE] and reflects
 > the codebase state at that time. For current statistics, see
-> [PROJECT_REFERENCE.md](../../../../PROJECT_REFERENCE.md).
+> [PROJECT_REFERENCE.md](PROJECT_REFERENCE.md).
 ```
 
 ---
