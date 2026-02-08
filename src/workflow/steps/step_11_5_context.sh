@@ -2,22 +2,22 @@
 set -euo pipefail
 
 ################################################################################
-# Step 11: AI-Powered Context Analysis & Workflow Adaptation (Language-Aware)
+# Step 11.5: AI-Powered Context Analysis & Workflow Adaptation (Language-Aware)
 # Purpose: Analyze workflow context and provide strategic recommendations (adaptive)
-# Part of: Tests & Documentation Workflow Automation v2.6.7
-# Version: 2.1.0 (Phase 5 Final - Language-aware context injection)
+# Part of: Tests & Documentation Workflow Automation v3.3.0
+# Version: 2.2.0 (Renamed from Step 11 to accommodate Deployment Readiness Gate)
 ################################################################################
 
 # Module version information
-readonly STEP11_VERSION="2.1.0"
-readonly STEP11_VERSION_MAJOR=2
-readonly STEP11_VERSION_MINOR=1
-readonly STEP11_VERSION_PATCH=0
+readonly STEP11_5_VERSION="2.2.0"
+readonly STEP11_5_VERSION_MAJOR=2
+readonly STEP11_5_VERSION_MINOR=2
+readonly STEP11_5_VERSION_PATCH=0
 
 # Main step function - analyzes workflow context with AI strategic planning
 # Returns: 0 for success, 1 for failure
-step11_context_analysis() {
-    print_step "10" "Context Analysis & Summary"
+step11_5_context_analysis() {
+    print_step "10.5" "Context Analysis & Summary"
     
     cd "$PROJECT_ROOT" || return 1
     
@@ -349,8 +349,8 @@ Please provide a comprehensive strategic analysis with specific, prioritized rec
 
 # Alias for backward compatibility (main script calls step10_context_analysis)
 step10_context_analysis() {
-    step11_context_analysis "$@"
+    step11_5_context_analysis "$@"
 }
 
 # Export step function
-export -f step11_context_analysis step10_context_analysis
+export -f step11_5_context_analysis step10_context_analysis

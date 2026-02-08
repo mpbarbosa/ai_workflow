@@ -28,43 +28,52 @@ STEP_DEPENDENCIES=(
     [8]="7"               # Test Execution depends on Test Generation
     [9]="0"               # Dependencies depends on Pre-Analysis
     [10]="8"              # Code Quality depends on Test Execution
-    [11]="1,2,3,4,5,8,9,10"  # Context Analysis depends on most steps
+    [11]="8,10,16"        # Deployment Readiness Gate depends on test execution, code quality, and version update (NEW v3.3.0)
+    [11.5]="1,2,3,4,5,8,9,10"  # Context Analysis depends on most steps (MOVED from Step 11)
     [13]="2"              # Markdown Linting depends on Consistency
     [14]="0"              # Prompt Engineer Analysis depends on Pre-Analysis (can run early)
     [15]="0,1"            # UX Analysis depends on Pre-Analysis and Documentation
-    [16]="11,13,14,15"    # AI-Powered Version Update depends on all analysis steps
+    [16]="11.5,13,14,15"  # AI-Powered Version Update depends on all analysis steps
     [12]="16"             # Git Finalization MUST BE LAST - depends on version update
 )
 
 # Define parallelizable step groups (steps that can run simultaneously)
-# Updated v3.2.0: Step 4 (Configuration Validation) added to parallel execution
+# Updated v3.3.0: Step 11 (Deployment Gate) and Step 11.5 (Context Analysis) added
 declare -a PARALLEL_GROUPS
 PARALLEL_GROUPS=(
     "0a"                  # Group 1: Version Update (runs after Step 0)
     "0b"                  # Group 2: Bootstrap Documentation (runs after 0a)
-    "3,4,5,6,9,14,15"     # Group 3: Can run in parallel with Step 1 (added Step 4: Config Validation)
-    "2,13"                # Group 4: Consistency checks (renumbered from 12)
-    "7"                   # Group 5: Test Generation (renumbered from 6)
-    "8,10"                # Group 6: Test Execution and Code Quality (renumbered from 7,9)
-    "11"                  # Group 7: Context Analysis (renumbered from 10)
-    "16"                  # Group 8: AI-Powered Version Update (renumbered from 15)
-    "12"                  # Group 9: Git Finalization (MUST BE LAST, renumbered from 11)
+    "3,4,5,6,9,14,15"     # Group 3: Can run in parallel with Step 1
+    "2,13"                # Group 4: Consistency checks
+    "7"                   # Group 5: Test Generation
+    "8,10"                # Group 6: Test Execution and Code Quality
+    "11"                  # Group 7: Deployment Readiness Gate (NEW v3.3.0, conditional)
+    "11.5"                # Group 8: Context Analysis (MOVED from Step 11)
+    "16"                  # Group 9: AI-Powered Version Update
+    "12"                  # Group 10: Git Finalization (MUST BE LAST)
 )
 
-# 3-Track Parallel Execution Structure (v3.2.0 - with Config Validation)
-# Track 1 (Analysis):       0 → (3,4,5,14 parallel) → 11 ┐
-# Track 2 (Validation):     6 → 7 → 8 → 10 (+ 9 parallel) ├─→ 16 → 12 (FINAL)
-# Track 3 (Documentation):  0a → 0b → 1 → 2 → 13 → 15 ────┘
+# 3-Track Parallel Execution Structure (v3.3.0 - with Deployment Gate)
+# Track 1 (Analysis):       0 → (3,4,5,14 parallel) → 11.5 ┐
+# Track 2 (Validation):     6 → 7 → 8 → 10 → 11* (+ 9 parallel) ├─→ 16 → 12 (FINAL)
+# Track 3 (Documentation):  0a → 0b → 1 → 2 → 13 → 15 ──────────┘
 #
-# Step 4 (Configuration Validation):
+# Step 11 (Deployment Readiness Gate):
+# - Conditional execution (only with --validate-release flag)
+# - Runs after Step 8 (tests), Step 10 (code quality), Step 16 (version)
+# - Blocks workflow on failure (strict mode)
+# - Validates: tests passing, CHANGELOG updated, version bump, branch sync
+#
+# Step 11.5 (Context Analysis):
+# - Moved from Step 11 to accommodate Deployment Gate
 # - Runs in parallel with documentation track
-# - Can execute alongside steps 3, 5, 6, 9, 14, 15
-# - Particularly useful for config-only changes (fast-track)
+# - Can execute alongside steps in Track 3
 #
 # Synchronization Points:
 # - All tracks wait for Step 0 completion
-# - Step 11 waits for Track 2 & 3 critical steps
-# - Step 16 waits for all analysis completion (Steps 11, 13, 14, 15)
+# - Step 11 waits for Steps 8, 10, 16 (deployment checks)
+# - Step 11.5 waits for Track 2 & 3 critical steps
+# - Step 16 waits for all analysis completion (Steps 11.5, 13, 14, 15)
 # - Step 12 waits for version update (Step 16)
 # - Estimated 60-70% time reduction vs sequential execution
 
@@ -78,18 +87,19 @@ STEP_TIME_ESTIMATES=(
     [2]=90    # Consistency
     [3]=60    # Script Refs
     [4]=90    # Configuration Validation (with AI) - NEW v3.2.0
-    [5]=90    # Directory Structure (renumbered from 4)
-    [6]=120   # Test Review (with AI, renumbered from 5)
-    [7]=180   # Test Generation (with AI, renumbered from 6)
-    [8]=240   # Test Execution (longest step, renumbered from 7)
-    [9]=60    # Dependencies (renumbered from 8)
-    [10]=150  # Code Quality (with AI, renumbered from 9)
-    [11]=120  # Context Analysis (with AI, renumbered from 10)
-    [12]=90   # Git Finalization (with AI, renumbered from 11)
-    [13]=45   # Markdown Linting (renumbered from 12)
-    [14]=150  # Prompt Engineer Analysis (with AI, renumbered from 13)
-    [15]=180  # UX Analysis (with AI, renumbered from 14)
-    [16]=60   # AI-Powered Version Update (with AI, final validation, renumbered from 15)
+    [5]=90    # Directory Structure
+    [6]=120   # Test Review (with AI)
+    [7]=180   # Test Generation (with AI)
+    [8]=240   # Test Execution (longest step)
+    [9]=60    # Dependencies
+    [10]=150  # Code Quality (with AI)
+    [11]=45   # Deployment Readiness Gate (NEW v3.3.0, conditional)
+    [11.5]=120  # Context Analysis (with AI, MOVED from Step 11)
+    [12]=90   # Git Finalization (with AI)
+    [13]=45   # Markdown Linting
+    [14]=150  # Prompt Engineer Analysis (with AI)
+    [15]=180  # UX Analysis (with AI)
+    [16]=60   # AI-Powered Version Update (with AI, final validation)
 )
 
 # ==============================================================================

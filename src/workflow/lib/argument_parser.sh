@@ -303,6 +303,36 @@ parse_workflow_arguments() {
                 print_info "Pre-commit hooks will be tested"
                 shift
                 ;;
+            --validate-release)
+                VALIDATE_RELEASE=true
+                export VALIDATE_RELEASE
+                print_info "Deployment readiness gate enabled - will validate tests and CHANGELOG"
+                shift
+                ;;
+            --deployment-check)
+                VALIDATE_RELEASE=true
+                export VALIDATE_RELEASE
+                print_info "Deployment readiness gate enabled (alias for --validate-release)"
+                shift
+                ;;
+            --skip-version-check)
+                CHECK_VERSION_BUMP=false
+                export CHECK_VERSION_BUMP
+                print_info "Version bump check disabled"
+                shift
+                ;;
+            --skip-branch-check)
+                CHECK_BRANCH_SYNC=false
+                export CHECK_BRANCH_SYNC
+                print_info "Branch sync check disabled"
+                shift
+                ;;
+            --force-save-history)
+                FORCE_SAVE_HISTORY=true
+                export FORCE_SAVE_HISTORY
+                print_info "Force save history enabled - will save even with uncommitted changes"
+                shift
+                ;;
             --no-fast-track)
                 DISABLE_FAST_TRACK=true
                 export DISABLE_FAST_TRACK

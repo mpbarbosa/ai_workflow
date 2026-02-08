@@ -19,6 +19,7 @@ WORKFLOW_ARTIFACTS=(
     ".ai_workflow/backlog/*"
     ".ai_workflow/logs/*"
     ".ai_workflow/summaries/*"
+    ".ai_workflow/history/*"
     "src/workflow/metrics/*"
     "src/workflow/.checkpoints/*"
     "src/workflow/.ai_cache/*"
@@ -90,6 +91,128 @@ is_workflow_artifact() {
 }
 
 # ==============================================================================
+# WORKFLOW HISTORY TRACKING (v3.3.0)
+# ==============================================================================
+# Tracks git commit hash after each successful workflow execution to enable
+# accurate change detection across multiple commits between workflow runs.
+# History stored in: .ai_workflow/history/history.jsonl (JSON Lines format)
+
+# Get path to workflow history file
+# Usage: get_history_file
+# Returns: Path to history.jsonl in current project
+get_history_file() {
+    local project_root="${PROJECT_ROOT:-$(pwd)}"
+    echo "${project_root}/.ai_workflow/history/history.jsonl"
+}
+
+# Check if workflow history exists
+# Usage: has_workflow_history
+# Returns: 0 if history exists, 1 otherwise
+has_workflow_history() {
+    local history_file=$(get_history_file)
+    [[ -f "$history_file" ]] && [[ -s "$history_file" ]]
+}
+
+# Get the last workflow execution commit hash
+# Usage: get_last_workflow_commit
+# Returns: Commit hash from last successful workflow, or empty if none
+get_last_workflow_commit() {
+    local history_file=$(get_history_file)
+    
+    if ! has_workflow_history; then
+        return 0
+    fi
+    
+    # Read last line from history file and extract commit_hash
+    local last_entry=$(tail -n 1 "$history_file" 2>/dev/null)
+    
+    if [[ -z "$last_entry" ]]; then
+        return 0
+    fi
+    
+    # Parse JSON to extract commit_hash field
+    # Use jq if available, otherwise fall back to grep/sed
+    local commit_hash=""
+    if command -v jq &> /dev/null; then
+        commit_hash=$(echo "$last_entry" | jq -r '.commit_hash // empty' 2>/dev/null)
+    else
+        # Fallback: extract commit_hash with grep/sed
+        commit_hash=$(echo "$last_entry" | grep -o '"commit_hash"[[:space:]]*:[[:space:]]*"[^"]*"' | sed 's/.*"\([^"]*\)".*/\1/')
+    fi
+    
+    # Validate commit hash format (40 hex characters for full SHA-1)
+    if [[ "$commit_hash" =~ ^[0-9a-f]{7,40}$ ]]; then
+        echo "$commit_hash"
+    fi
+}
+
+# Validate that git working tree is clean (no uncommitted changes)
+# Usage: validate_clean_working_tree
+# Returns: 0 if clean, 1 if dirty
+validate_clean_working_tree() {
+    # Check for uncommitted changes
+    if [[ -n "$(git status --porcelain 2>/dev/null)" ]]; then
+        return 1
+    fi
+    return 0
+}
+
+# Save workflow history entry after successful execution
+# Usage: save_workflow_history <workflow_id> [force]
+# Args:
+#   workflow_id: Current workflow run identifier
+#   force: Optional, skip clean tree validation if set to "force"
+# Returns: 0 on success, 1 on error
+save_workflow_history() {
+    local workflow_id="${1:-}"
+    local force_flag="${2:-}"
+    
+    if [[ -z "$workflow_id" ]]; then
+        echo "ERROR: workflow_id required for save_workflow_history" >&2
+        return 1
+    fi
+    
+    # Validate working tree is clean unless force flag is set
+    if [[ "$force_flag" != "force" ]]; then
+        if ! validate_clean_working_tree; then
+            echo "WARNING: Uncommitted changes detected - workflow history NOT saved" >&2
+            echo "Commit your changes and re-run workflow to establish new baseline" >&2
+            return 1
+        fi
+    fi
+    
+    # Get current commit hash
+    local commit_hash=$(git rev-parse HEAD 2>/dev/null)
+    if [[ -z "$commit_hash" ]]; then
+        echo "ERROR: Failed to get current commit hash" >&2
+        return 1
+    fi
+    
+    # Get current branch name
+    local branch=$(git rev-parse --abbrev-ref HEAD 2>/dev/null || echo "unknown")
+    
+    # Get timestamp in ISO 8601 format
+    local timestamp=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
+    
+    # Create history directory if it doesn't exist
+    local history_file=$(get_history_file)
+    local history_dir=$(dirname "$history_file")
+    mkdir -p "$history_dir"
+    
+    # Create JSON entry (one line)
+    local json_entry
+    json_entry=$(cat <<EOF
+{"workflow_id":"${workflow_id}","commit_hash":"${commit_hash}","timestamp":"${timestamp}","branch":"${branch}"}
+EOF
+)
+    
+    # Append to history file
+    echo "$json_entry" >> "$history_file"
+    
+    return 0
+}
+
+# ==============================================================================
 # CHANGE CLASSIFICATION
 # ==============================================================================
 
@@ -136,9 +259,35 @@ STEP_RECOMMENDATIONS=(
 # Usage: detect_change_type
 # Returns: Change type category
 detect_change_type() {
-    local modified_files=$(git diff --name-only HEAD 2>/dev/null)
-    local staged_files=$(git diff --cached --name-only 2>/dev/null)
-    local untracked_files=$(git ls-files --others --exclude-standard 2>/dev/null)
+    # Determine baseline commit for comparison
+    local baseline=""
+    if has_workflow_history; then
+        baseline=$(get_last_workflow_commit)
+        if [[ -n "$baseline" ]]; then
+            # Validate baseline commit exists in git history
+            if ! git rev-parse --verify "${baseline}^{commit}" &>/dev/null; then
+                # Baseline commit not found (possibly rebased), fall back to HEAD
+                baseline=""
+            fi
+        fi
+    fi
+    
+    # Get changed files based on baseline
+    local modified_files
+    local staged_files
+    local untracked_files
+    
+    if [[ -n "$baseline" ]]; then
+        # Compare against history baseline
+        modified_files=$(git diff --name-only "${baseline}..HEAD" 2>/dev/null)
+        staged_files=""  # Already included in baseline..HEAD diff
+        untracked_files=$(git ls-files --others --exclude-standard 2>/dev/null)
+    else
+        # Fall back to comparing against HEAD (current behavior)
+        modified_files=$(git diff --name-only HEAD 2>/dev/null)
+        staged_files=$(git diff --cached --name-only 2>/dev/null)
+        untracked_files=$(git ls-files --others --exclude-standard 2>/dev/null)
+    fi
     
     # Combine all changed files
     local all_changes=$(echo -e "${modified_files}\n${staged_files}\n${untracked_files}" | sort -u | grep -v '^$')
@@ -237,9 +386,37 @@ matches_pattern() {
 # Usage: analyze_changes
 # Prints detailed breakdown of changes by category
 analyze_changes() {
-    local modified_files=$(git diff --name-only HEAD 2>/dev/null)
-    local staged_files=$(git diff --cached --name-only 2>/dev/null)
-    local untracked_files=$(git ls-files --others --exclude-standard 2>/dev/null)
+    # Determine baseline commit for comparison
+    local baseline=""
+    local baseline_info=""
+    if has_workflow_history; then
+        baseline=$(get_last_workflow_commit)
+        if [[ -n "$baseline" ]]; then
+            # Validate baseline commit exists
+            if git rev-parse --verify "${baseline}^{commit}" &>/dev/null; then
+                local baseline_date=$(git log -1 --format=%ci "${baseline}" 2>/dev/null | cut -d' ' -f1,2)
+                local commits_count=$(git rev-list --count "${baseline}..HEAD" 2>/dev/null || echo "0")
+                baseline_info="Comparing ${commits_count} commit(s) since last workflow (${baseline:0:7} on ${baseline_date})"
+            else
+                baseline=""
+            fi
+        fi
+    fi
+    
+    # Get changed files based on baseline
+    local modified_files
+    local staged_files
+    local untracked_files
+    
+    if [[ -n "$baseline" ]]; then
+        modified_files=$(git diff --name-only "${baseline}..HEAD" 2>/dev/null)
+        staged_files=""
+        untracked_files=$(git ls-files --others --exclude-standard 2>/dev/null)
+    else
+        modified_files=$(git diff --name-only HEAD 2>/dev/null)
+        staged_files=$(git diff --cached --name-only 2>/dev/null)
+        untracked_files=$(git ls-files --others --exclude-standard 2>/dev/null)
+    fi
     
     local all_changes=$(echo -e "${modified_files}\n${staged_files}\n${untracked_files}" | sort -u | grep -v '^$')
     
@@ -249,6 +426,10 @@ analyze_changes() {
     
     echo "## Change Analysis"
     echo ""
+    if [[ -n "$baseline_info" ]]; then
+        echo "**Baseline:** ${baseline_info}"
+        echo ""
+    fi
     echo "**Total Files Changed:** $(echo "${filtered_changes}" | wc -l)"
     if [[ $artifacts_filtered -gt 0 ]]; then
         echo "**Workflow Artifacts Filtered:** ${artifacts_filtered}"
@@ -374,7 +555,17 @@ get_step_name_for_display() {
 # Returns: low, medium, high
 assess_change_impact() {
     local change_type=$(detect_change_type)
-    local all_files=$(git diff --name-only HEAD 2>/dev/null)
+    
+    # Determine baseline for file comparison
+    local baseline=$(get_last_workflow_commit)
+    local all_files
+    
+    if [[ -n "$baseline" ]] && git rev-parse --verify "${baseline}^{commit}" &>/dev/null; then
+        all_files=$(git diff --name-only "${baseline}..HEAD" 2>/dev/null)
+    else
+        all_files=$(git diff --name-only HEAD 2>/dev/null)
+    fi
+    
     local filtered_files=$(filter_workflow_artifacts "$all_files")
     local total_files=$(echo "$filtered_files" | grep -v '^$' | wc -l)
     
@@ -475,9 +666,21 @@ EOF
 # Usage: classify_files_by_nature
 # Returns: Four pipe-separated lists: "code_files|doc_files|test_files|config_files"
 classify_files_by_nature() {
-    local modified_files=$(git diff --name-only HEAD 2>/dev/null)
-    local staged_files=$(git diff --cached --name-only 2>/dev/null)
-    local untracked_files=$(git ls-files --others --exclude-standard 2>/dev/null)
+    # Determine baseline for comparison
+    local baseline=$(get_last_workflow_commit)
+    local modified_files
+    local staged_files
+    local untracked_files
+    
+    if [[ -n "$baseline" ]] && git rev-parse --verify "${baseline}^{commit}" &>/dev/null; then
+        modified_files=$(git diff --name-only "${baseline}..HEAD" 2>/dev/null)
+        staged_files=""
+        untracked_files=$(git ls-files --others --exclude-standard 2>/dev/null)
+    else
+        modified_files=$(git diff --name-only HEAD 2>/dev/null)
+        staged_files=$(git diff --cached --name-only 2>/dev/null)
+        untracked_files=$(git ls-files --others --exclude-standard 2>/dev/null)
+    fi
     
     # Combine all changed files
     local all_changes=$(echo -e "${modified_files}\n${staged_files}\n${untracked_files}" | sort -u | grep -v '^$')
@@ -523,3 +726,5 @@ export -f filter_workflow_artifacts is_workflow_artifact
 export -f detect_change_type analyze_changes get_recommended_steps
 export -f should_execute_step display_execution_plan assess_change_impact
 export -f generate_change_report classify_files_by_nature
+export -f get_history_file has_workflow_history get_last_workflow_commit
+export -f validate_clean_working_tree save_workflow_history

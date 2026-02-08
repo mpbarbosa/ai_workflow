@@ -46,6 +46,12 @@ if [[ -f "${WORKFLOW_LIB_DIR}/tech_stack.sh" ]]; then
     source "${WORKFLOW_LIB_DIR}/tech_stack.sh"
 fi
 
+# Source parallel bootstrap module (v3.3.0)
+# shellcheck source=step_0b_lib/parallel_bootstrap.sh
+if [[ -f "${STEP0B_DIR}/step_0b_lib/parallel_bootstrap.sh" ]]; then
+    source "${STEP0B_DIR}/step_0b_lib/parallel_bootstrap.sh"
+fi
+
 # ==============================================================================
 # VALIDATION FUNCTIONS
 # ==============================================================================
@@ -468,7 +474,40 @@ step0b_bootstrap_documentation() {
     local execution_status="✅"
     local status_message=""
     
-    if execute_ai_bootstrap_documentation "$output_file" "$log_file"; then
+    # Check if parallel bootstrap is enabled and available
+    local use_parallel="${USE_PARALLEL_BOOTSTRAP:-true}"  # Default to parallel for performance
+    if [[ "$use_parallel" == "true" ]] && declare -f execute_parallel_bootstrap &>/dev/null; then
+        print_info "Using parallel bootstrap (5 concurrent tasks)..."
+        
+        local parallel_dir="${output_dir}/parallel_bootstrap_temp"
+        mkdir -p "$parallel_dir"
+        
+        # Execute parallel bootstrap
+        if execute_parallel_bootstrap "$parallel_dir" "${PROJECT_NAME:-Unknown Project}" "$PRIMARY_LANGUAGE"; then
+            # Aggregate results
+            if aggregate_bootstrap_results "$parallel_dir" "$output_file"; then
+                print_success "Parallel documentation bootstrap completed"
+                execution_status="✅"
+                if [[ "$bootstrap_needed" == true ]]; then
+                    status_message="Generated bootstrap documentation (parallel) for project with ${doc_count} existing doc files"
+                else
+                    status_message="Analyzed ${doc_count} documentation files in parallel, identified gaps and provided recommendations"
+                fi
+            else
+                print_warning "Parallel bootstrap aggregation failed, falling back to sequential"
+                use_parallel="false"
+            fi
+        else
+            print_warning "Parallel bootstrap encountered issues, falling back to sequential"
+            use_parallel="false"
+        fi
+    else
+        use_parallel="false"
+    fi
+    
+    # Fall back to sequential if parallel was disabled or failed
+    if [[ "$use_parallel" == "false" ]]; then
+        if execute_ai_bootstrap_documentation "$output_file" "$log_file"; then
         print_success "Documentation gap analysis completed"
         print_info "Results saved to: $output_file"
         if [[ -f "$log_file" ]]; then
@@ -487,6 +526,7 @@ step0b_bootstrap_documentation() {
         execution_status="⚠️"
         status_message="Documentation gap analysis completed with warnings (Copilot may not be available)"
     fi
+    fi  # End of parallel fallback
     
     # Generate standardized step summary
     if declare -f save_step_summary &>/dev/null; then

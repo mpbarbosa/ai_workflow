@@ -212,6 +212,9 @@ GENERATE_DASHBOARD=false            # Generate HTML dashboard
 SERVE_DASHBOARD=false               # Serve dashboard on HTTP server
 DASHBOARD_PORT=8080                 # Dashboard server port
 
+# Workflow History Tracking (v3.3.0) - NEW
+FORCE_SAVE_HISTORY=false            # Save history even with uncommitted changes
+
 # Export mode variables so they're available in step functions
 export DRY_RUN
 export INTERACTIVE_MODE
@@ -239,6 +242,10 @@ export INSTALL_HOOKS
 export UNINSTALL_HOOKS
 export TEST_HOOKS
 export DISABLE_FAST_TRACK
+export VALIDATE_RELEASE
+export CHECK_VERSION_BUMP
+export CHECK_BRANCH_SYNC
+export FORCE_SAVE_HISTORY
 
 # Step execution control
 EXECUTE_STEPS="all"  # Default: execute all steps
@@ -1884,7 +1891,7 @@ execute_full_workflow() {
         echo ""
     fi
     
-    # Step 16: Context Analysis (with checkpoint)
+    # Step 10: Context Analysis (with checkpoint)
     if [[ -z "$failed_step" && $resume_from -le 10 ]] && should_execute_step 10; then
         log_step_start 10 "Context Analysis"
         step10_context_analysis || { failed_step="Step 10"; }
@@ -1897,6 +1904,34 @@ execute_full_workflow() {
         ((skipped_steps++)) || true
     elif [[ $resume_from -gt 10 ]]; then
         print_info "Skipping Step 10 (resuming from checkpoint)"
+        ((skipped_steps++)) || true
+    fi
+    
+    # Step 11: Deployment Readiness Gate (with checkpoint) - NEW v3.3.0
+    # Conditional execution: only runs with --validate-release flag
+    if [[ -z "$failed_step" && $resume_from -le 11 ]] && should_execute_step 11; then
+        if [[ "${VALIDATE_RELEASE:-false}" == "true" ]]; then
+            log_step_start 11 "Deployment Readiness Gate"
+            if step11_deployment_gate; then
+                update_workflow_status 11 "✅"
+                ((executed_steps++)) || true
+                save_checkpoint 11
+            else
+                failed_step="Step 11"
+                update_workflow_status 11 "❌"
+                print_error "Deployment readiness gate FAILED - workflow blocked"
+            fi
+        else
+            print_info "Skipping Step 11 (use --validate-release to enable)"
+            log_to_workflow "INFO" "Skipping Step 11 (deployment gate not requested)"
+            ((skipped_steps++)) || true
+        fi
+    elif [[ -z "$failed_step" && $resume_from -le 11 ]]; then
+        print_info "Skipping Step 11 (not selected)"
+        log_to_workflow "INFO" "Skipping Step 11 (not selected)"
+        ((skipped_steps++)) || true
+    elif [[ $resume_from -gt 11 ]]; then
+        print_info "Skipping Step 11 (resuming from checkpoint)"
         ((skipped_steps++)) || true
     fi
     
@@ -2032,6 +2067,31 @@ execute_full_workflow() {
         verify_workflow_health || true
         validate_doc_placement || true
         enhanced_git_state_report || true
+        
+        # Save workflow history (v3.3.0) - NEW
+        echo ""
+        print_header "Workflow History Tracking"
+        local force_flag=""
+        [[ "${FORCE_SAVE_HISTORY:-false}" == "true" ]] && force_flag="force"
+        
+        if save_workflow_history "${WORKFLOW_RUN_ID}" "$force_flag"; then
+            local saved_commit=$(git rev-parse --short HEAD 2>/dev/null)
+            print_success "Workflow history saved: ${saved_commit}"
+            log_to_workflow "SUCCESS" "Workflow history recorded at commit ${saved_commit}"
+            
+            # Display baseline info for next run
+            local history_file=$(get_history_file)
+            if [[ -f "$history_file" ]]; then
+                local entry_count=$(wc -l < "$history_file" 2>/dev/null || echo "0")
+                print_info "Total workflow executions tracked: ${entry_count}"
+            fi
+        else
+            print_warning "Workflow history NOT saved"
+            if [[ "$force_flag" != "force" ]]; then
+                print_info "Uncommitted changes detected. Commit changes or use --force-save-history"
+            fi
+            log_to_workflow "WARNING" "Workflow history not saved - uncommitted changes present"
+        fi
         
         # Create workflow summary file
         create_workflow_summary
@@ -2248,7 +2308,20 @@ OPTIONS:
     --uninstall-hooks  Remove pre-commit hooks (NEW v2.10.0)
     --test-hooks       Test pre-commit hooks without committing (NEW v2.10.0)
     
-    --skip-submodules  Skip git submodule operations in Step 11 (NEW v3.1.0)
+    --validate-release Enable deployment readiness gate (Step 11) (NEW v3.3.0)
+                       🚀 Validates deployment prerequisites before completion
+                       Mandatory checks: Tests passing, CHANGELOG.md updated
+                       Optional checks: Version bump, branch sync (warn only)
+                       Strict mode: Blocks workflow on mandatory check failure
+    --deployment-check Alias for --validate-release
+    --skip-version-check Skip optional version bump validation
+    --skip-branch-check  Skip optional branch sync validation
+    
+    --force-save-history Save workflow history even with uncommitted changes (NEW v3.3.0)
+                        📝 By default, history is only saved when working tree is clean
+                        Use this flag to record baseline even with pending changes
+    
+    --skip-submodules  Skip git submodule operations in Step 12 (NEW v3.1.0)
                        Default: Process all submodules automatically
                        Use when you want to manage submodules manually
     
@@ -2649,6 +2722,23 @@ main() {
     
     # Initialize metrics collection (v2.3.0)
     init_metrics
+    
+    # Show workflow history baseline if available (v3.3.0) - NEW
+    if has_workflow_history; then
+        local baseline_commit=$(get_last_workflow_commit)
+        if [[ -n "$baseline_commit" ]]; then
+            if git rev-parse --verify "${baseline_commit}^{commit}" &>/dev/null; then
+                local baseline_date=$(git log -1 --format=%ci "${baseline_commit}" 2>/dev/null | cut -d' ' -f1,2)
+                local commits_since=$(git rev-list --count "${baseline_commit}..HEAD" 2>/dev/null || echo "0")
+                
+                print_header "Workflow History Baseline"
+                print_info "Using baseline commit: ${baseline_commit:0:7} (from ${baseline_date})"
+                print_info "Comparing changes across ${commits_since} commit(s) since last workflow"
+                log_to_workflow "INFO" "Baseline: ${baseline_commit} (${commits_since} commits since last workflow)"
+                echo ""
+            fi
+        fi
+    fi
     
     # Analyze change impact for conditional execution (v2.2.0)
     analyze_change_impact

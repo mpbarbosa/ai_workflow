@@ -35,6 +35,10 @@ LIB_DIR="$(cd "${STEP2_DIR}/../lib" && pwd)"
 # shellcheck source=../lib/incremental_analysis.sh
 source "${LIB_DIR}/incremental_analysis.sh"
 
+# Source link validator (v3.3.0)
+# shellcheck source=../lib/link_validator.sh
+source "${LIB_DIR}/link_validator.sh"
+
 # ==============================================================================
 # BACKWARD COMPATIBILITY ALIASES
 # ==============================================================================
@@ -125,6 +129,18 @@ step2_check_consistency() {
     check_all_documentation_links_step2 "$broken_refs_file" || broken_links=$?
     if [[ ${broken_links:-0} -gt 0 ]]; then
         ((issues_found += broken_links))
+    fi
+    
+    # Enhanced link validation (v3.3.0) - URLs, anchors, references
+    print_info "Running enhanced link validation..."
+    local link_report_file="${BACKLOG_RUN_DIR}/step02_link_validation_report.txt"
+    local link_broken=0
+    validate_all_documentation_links "$link_report_file" "." || link_broken=$?
+    if [[ $link_broken -gt 0 ]]; then
+        print_warning "Found $link_broken additional link issues"
+        ((issues_found += link_broken))
+    else
+        print_success "Enhanced link validation passed"
     fi
     
     # Phase 3: Gather documentation inventory
