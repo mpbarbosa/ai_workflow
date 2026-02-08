@@ -4,7 +4,7 @@ set -euo pipefail
 
 ################################################################################
 # Tests & Documentation Workflow Automation Script
-# Version: 3.2.1
+# Version: 3.2.8
 # Purpose: Automate the complete tests and documentation update workflow
 # Related: /prompts/tests_documentation_update_enhanced.txt
 #
@@ -18,20 +18,20 @@ set -euo pipefail
 #   Step 0b: Bootstrap Documentation (Technical Writer) ⭐ NEW v3.1.1
 #   Step 1:  Documentation Updates (Technical Documentation Specialist)
 #   Step 2:  Consistency Analysis (Documentation Specialist + Information Architect)
-#   Step 2.5: Documentation Optimization (Documentation Architect + AI Optimizer) ⭐ NEW v3.2.1
+#   Step 2.5: Documentation Optimization (Documentation Architect + AI Optimizer) ⭐ NEW v3.2.8
 #   Step 3:  Script Reference Validation (DevOps Documentation Expert)
-#   Step 4:  Directory Structure Validation (Software Architect + Documentation Specialist)
-#   Step 5:  Test Review (QA Engineer + Test Automation Specialist)
-#   Step 6:  Test Generation (TDD Expert + Code Generation Specialist)
-#   Step 7:  Test Execution (QA Automation Engineer + CI/CD Specialist)
-#   Step 8:  Dependency Validation (DevOps Engineer + Package Management Specialist)
-#   Step 9:  Code Quality Validation (Software Quality Engineer + Code Review Specialist)
-#   Step 10: Context Analysis (Technical Project Manager + Workflow Orchestration Specialist)
-#   Step 12: Markdown Linting (Technical Documentation Specialist) ⭐ NEW
-#   Step 13: Prompt Engineer Analysis (Prompt Engineer + AI Specialist) ⭐ NEW v2.3.1
-#   Step 14: UX Analysis (UX Designer + Frontend Specialist) ⭐ NEW v2.4.0
+#   Step 16:  Directory Structure Validation (Software Architect + Documentation Specialist)
+#   Step 16:  Test Review (QA Engineer + Test Automation Specialist)
+#   Step 16:  Test Generation (TDD Expert + Code Generation Specialist)
+#   Step 16:  Test Execution (QA Automation Engineer + CI/CD Specialist)
+#   Step 16:  Dependency Validation (DevOps Engineer + Package Management Specialist)
+#   Step 16:  Code Quality Validation (Software Quality Engineer + Code Review Specialist)
+#   Step 16: Context Analysis (Technical Project Manager + Workflow Orchestration Specialist)
+#   Step 16: Markdown Linting (Technical Documentation Specialist) ⭐ NEW
+#   Step 16: Prompt Engineer Analysis (Prompt Engineer + AI Specialist) ⭐ NEW v2.3.1
+#   Step 16: UX Analysis (UX Designer + Frontend Specialist) ⭐ NEW v2.4.0
 #   Step 0a: Semantic Version Update (Version Manager - PRE-PROCESSING) ⭐ NEW v2.6.0
-#   Step 11: Git Finalization (Git Workflow Specialist + Technical Communication Expert) ⭐ ENHANCED [FINAL STEP]
+#   Step 16: Git Finalization (Git Workflow Specialist + Technical Communication Expert) ⭐ ENHANCED [FINAL STEP]
 #
 # ARCHITECTURE PATTERN:
 #   All enhanced steps follow: Role → Task → Standards structure
@@ -122,7 +122,7 @@ set -euo pipefail
 # CONFIGURATION & CONSTANTS
 # ==============================================================================
 
-SCRIPT_VERSION="3.2.1"  # Git Submodule Support in Step 11
+SCRIPT_VERSION="3.2.8"  # Git Submodule Support in Step 11
 SCRIPT_NAME="Tests & Documentation Workflow Automation"
 WORKFLOW_HOME="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
 PROJECT_ROOT="$(pwd)"  # Default: current directory; can be overridden with --target option
@@ -1378,8 +1378,8 @@ execute_step() {
             fi
             ;;
         4)
-            step_name="Directory Structure Validation"
-            if step4_validate_directory_structure; then
+            step_name="Configuration Validation"
+            if step4_validate_configuration; then
                 update_workflow_status "$step_num" "✅"
                 log_step_complete "$step_num" "$step_name" "SUCCESS"
                 return 0
@@ -1390,8 +1390,8 @@ execute_step() {
             fi
             ;;
         5)
-            step_name="Test Review"
-            if step5_review_existing_tests; then
+            step_name="Directory Structure Validation"
+            if step5_validate_directory_structure; then
                 update_workflow_status "$step_num" "✅"
                 log_step_complete "$step_num" "$step_name" "SUCCESS"
                 return 0
@@ -1403,7 +1403,7 @@ execute_step() {
             ;;
         6)
             step_name="Test Generation"
-            if step6_generate_new_tests; then
+            if step6_review_existing_tests; then
                 update_workflow_status "$step_num" "✅"
                 log_step_complete "$step_num" "$step_name" "SUCCESS"
                 return 0
@@ -1415,7 +1415,7 @@ execute_step() {
             ;;
         7)
             step_name="Test Execution"
-            if step7_execute_test_suite; then
+            if step8_execute_test_suite; then
                 update_workflow_status "$step_num" "✅"
                 log_step_complete "$step_num" "$step_name" "SUCCESS"
                 return 0
@@ -1726,8 +1726,8 @@ execute_full_workflow() {
         fi
     
         if [[ -z "$failed_step" && $resume_from -le 4 ]] && should_execute_step 4; then
-            log_step_start 4 "Directory Structure Validation"
-            step4_validate_directory_structure || { failed_step="Step 4"; }
+            log_step_start 4 "Configuration Validation"
+            step4_validate_configuration || { failed_step="Step 4"; }
             [[ -z "$failed_step" ]] && update_workflow_status 4 "✅"
             ((executed_steps++)) || true
             save_checkpoint 4
@@ -1741,15 +1741,15 @@ execute_full_workflow() {
         fi
     fi
     
-    # Step 5: Test Review (conditional execution based on impact)
+    # Step 16: Test Review (conditional execution based on impact)
     if [[ -z "$failed_step" && $resume_from -le 5 ]] && should_execute_step 5; then
         if [[ "${SMART_EXECUTION}" == "true" ]] && should_skip_step_by_impact 5 "${CHANGE_IMPACT}"; then
             print_info "⚡ Step 5 skipped (smart execution - ${CHANGE_IMPACT} impact)"
             log_to_workflow "INFO" "Step 5 skipped - ${CHANGE_IMPACT} impact (no code/test changes)"
             ((skipped_steps++)) || true
         else
-            log_step_start 5 "Test Review"
-            step5_review_existing_tests || { failed_step="Step 5"; }
+            log_step_start 5 "Directory Structure Validation"
+            step5_validate_directory_structure || { failed_step="Step 5"; }
             [[ -z "$failed_step" ]] && update_workflow_status 5 "✅"
             ((executed_steps++)) || true
             save_checkpoint 5
@@ -1763,7 +1763,7 @@ execute_full_workflow() {
         ((skipped_steps++)) || true
     fi
     
-    # Step 6: Test Generation (conditional execution based on impact)
+    # Step 16: Test Generation (conditional execution based on impact)
     if [[ -z "$failed_step" && $resume_from -le 6 ]] && should_execute_step 6; then
         if [[ "${SMART_EXECUTION}" == "true" ]] && should_skip_step_by_impact 6 "${CHANGE_IMPACT}"; then
             print_info "⚡ Step 6 skipped (smart execution - ${CHANGE_IMPACT} impact)"
@@ -1771,7 +1771,7 @@ execute_full_workflow() {
             ((skipped_steps++)) || true
         else
             log_step_start 6 "Test Generation"
-            step6_generate_new_tests || { failed_step="Step 6"; }
+            step6_review_existing_tests || { failed_step="Step 6"; }
             [[ -z "$failed_step" ]] && update_workflow_status 6 "✅"
             ((executed_steps++)) || true
             save_checkpoint 6
@@ -1785,7 +1785,7 @@ execute_full_workflow() {
         ((skipped_steps++)) || true
     fi
     
-    # Step 7: Test Execution (conditional execution based on impact)
+    # Step 16: Test Execution (conditional execution based on impact)
     if [[ -z "$failed_step" && $resume_from -le 7 ]] && should_execute_step 7; then
         if [[ "${SMART_EXECUTION}" == "true" ]] && should_skip_step_by_impact 7 "${CHANGE_IMPACT}"; then
             print_info "⚡ Step 7 skipped (smart execution - ${CHANGE_IMPACT} impact)"
@@ -1794,7 +1794,7 @@ execute_full_workflow() {
         else
             log_step_start 7 "Test Execution"
             # Test execution validates its own status internally to prevent silent failures
-            if step7_execute_test_suite; then
+            if step8_execute_test_suite; then
                 # Step already updated its status based on test results
                 :  # No-op - status already set correctly
             else
@@ -1813,7 +1813,7 @@ execute_full_workflow() {
         ((skipped_steps++)) || true
     fi
     
-    # Step 8: Dependency Validation (conditional execution based on impact)
+    # Step 16: Dependency Validation (conditional execution based on impact)
     if [[ -z "$failed_step" && $resume_from -le 8 ]] && should_execute_step 8; then
         if [[ "${SMART_EXECUTION}" == "true" ]] && should_skip_step_by_impact 8 "${CHANGE_IMPACT}"; then
             print_info "⚡ Step 8 skipped (smart execution - ${CHANGE_IMPACT} impact)"
@@ -1835,7 +1835,7 @@ execute_full_workflow() {
         ((skipped_steps++)) || true
     fi
     
-    # Step 9: Code Quality Validation (conditional execution based on impact)
+    # Step 16: Code Quality Validation (conditional execution based on impact)
     if [[ -z "$failed_step" && $resume_from -le 9 ]] && should_execute_step 9; then
         if [[ "${SMART_EXECUTION}" == "true" ]] && should_skip_step_by_impact 9 "${CHANGE_IMPACT}"; then
             print_info "⚡ Step 9 skipped (smart execution - ${CHANGE_IMPACT} impact)"
@@ -1884,7 +1884,7 @@ execute_full_workflow() {
         echo ""
     fi
     
-    # Step 10: Context Analysis (with checkpoint)
+    # Step 16: Context Analysis (with checkpoint)
     if [[ -z "$failed_step" && $resume_from -le 10 ]] && should_execute_step 10; then
         log_step_start 10 "Context Analysis"
         step10_context_analysis || { failed_step="Step 10"; }
@@ -1900,11 +1900,10 @@ execute_full_workflow() {
         ((skipped_steps++)) || true
     fi
     
-    # Step 12: Markdown Linting (with checkpoint)
-    # MUST run before Step 11 (Git Finalization)
+    # Step 12: Git Finalization (with checkpoint)
     if [[ -z "$failed_step" && $resume_from -le 12 ]] && should_execute_step 12; then
-        log_step_start 12 "Markdown Linting"
-        step12_markdown_linting || { failed_step="Step 12"; }
+        log_step_start 12 "Git Finalization"
+        step12_git_finalization || { failed_step="Step 12"; }
         [[ -z "$failed_step" ]] && update_workflow_status 12 "✅"
         ((executed_steps++)) || true
         save_checkpoint 12
@@ -1917,7 +1916,7 @@ execute_full_workflow() {
         ((skipped_steps++)) || true
     fi
     
-    # Step 13: Prompt Engineer Analysis (with checkpoint)
+    # Step 16: Prompt Engineer Analysis (with checkpoint)
     # MUST run before Step 11 (Git Finalization)
     if [[ -z "$failed_step" && $resume_from -le 13 ]] && should_execute_step 13; then
         log_step_start 13 "Prompt Engineer Analysis"
@@ -1933,7 +1932,7 @@ execute_full_workflow() {
         ((skipped_steps++)) || true
     fi
     
-    # Step 14: UX Analysis (with checkpoint)
+    # Step 16: UX Analysis (with checkpoint)
     # MUST run before Step 11 (Git Finalization)
     if [[ -z "$failed_step" && $resume_from -le 14 ]] && should_execute_step 14; then
         log_step_start 14 "UX Analysis"
@@ -1950,7 +1949,7 @@ execute_full_workflow() {
     fi
     
     
-    # Step 15: AI-Powered Semantic Version Update (with checkpoint)
+    # Step 16: AI-Powered Semantic Version Update (with checkpoint)
     # NEW in v2.13.0: Runs after all analysis steps, before Git Finalization
     if [[ -z "$failed_step" && $resume_from -le 15 ]] && should_execute_step 15; then
         log_step_start 15 "AI-Powered Semantic Version Update"
@@ -1968,7 +1967,7 @@ execute_full_workflow() {
     fi
     
     
-    # Step 11: Git Finalization (with checkpoint)
+    # Step 16: Git Finalization (with checkpoint)
     # MANDATORY: MUST BE THE FINAL STEP - runs after all analysis and validation steps
     if [[ -z "$failed_step" && $resume_from -le 11 ]] && should_execute_step 11; then
         log_step_start 11 "Git Finalization"
@@ -2178,11 +2177,11 @@ OPTIONS:
                        Performance: 40-85% faster for incremental changes
                        Use --no-smart-execution to disable
     
-    --force-model MODEL   Override AI model selection for all steps (NEW v3.2.1)
+    --force-model MODEL   Override AI model selection for all steps (NEW v3.2.8)
                           Force specific GitHub Copilot model regardless of complexity
                           Examples: claude-opus-4.6, gpt-5.2, claude-haiku-4.5
                           
-    --show-model-plan     Preview AI model assignments without executing (NEW v3.2.1)
+    --show-model-plan     Preview AI model assignments without executing (NEW v3.2.8)
                           Displays which model will be used for each step based on
                           change complexity analysis, then exits
     
@@ -2276,20 +2275,20 @@ WORKFLOW STEPS:
     Step 0b: Bootstrap Documentation (NEW v3.1.1)
     Step 1:  Update Related Documentation
     Step 2:  Check Documentation Consistency
-    Step 2.5: Documentation Optimization & Consolidation (NEW v3.2.1)
+    Step 2.5: Documentation Optimization & Consolidation (NEW v3.2.8)
     Step 3:  Validate Script References
-    Step 4:  Validate Directory Structure
-    Step 5:  Review Existing Tests
-    Step 6:  Generate New Tests
-    Step 7:  Execute Test Suite
-    Step 8:  Validate Dependencies
-    Step 9:  Code Quality Validation
-    Step 10: Context Analysis & Summary
-    Step 12: Markdown Linting
-    Step 13: Prompt Engineer Analysis (ai_workflow only)
-    Step 14: UX Analysis
-    Step 15: AI-Powered Semantic Version Update
-    Step 11: Git Finalization [FINAL STEP - commits all changes]
+    Step 16:  Validate Directory Structure
+    Step 16:  Review Existing Tests
+    Step 16:  Generate New Tests
+    Step 16:  Execute Test Suite
+    Step 16:  Validate Dependencies
+    Step 16:  Code Quality Validation
+    Step 16: Context Analysis & Summary
+    Step 16: Markdown Linting
+    Step 16: Prompt Engineer Analysis (ai_workflow only)
+    Step 16: UX Analysis
+    Step 16: AI-Powered Semantic Version Update
+    Step 16: Git Finalization [FINAL STEP - commits all changes]
 
 EXAMPLES:
     # Basic: Run on current directory (default behavior)

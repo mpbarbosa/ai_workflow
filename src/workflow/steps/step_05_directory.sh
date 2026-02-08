@@ -2,21 +2,21 @@
 set -euo pipefail
 
 ################################################################################
-# Step 4: AI-Powered Directory Structure Validation & Organization
+# Step 5: AI-Powered Directory Structure Validation & Organization
 # Purpose: Validate project directory structure, organize misplaced docs, and verify architecture
-# Part of: Tests & Documentation Workflow Automation v3.0.0
+# Part of: Tests & Documentation Workflow Automation v3.0.7
 # Version: 2.3.0 (Added incremental analysis optimization for client_spa)
 ################################################################################
 
 # Module version information
-readonly STEP4_VERSION="2.3.0"
-readonly STEP4_VERSION_MAJOR=2
-readonly STEP4_VERSION_MINOR=3
-readonly STEP4_VERSION_PATCH=0
+readonly STEP5_VERSION="2.3.0"
+readonly STEP5_VERSION_MAJOR=2
+readonly STEP5_VERSION_MINOR=3
+readonly STEP5_VERSION_PATCH=0
 
 # Source incremental analysis optimization
-STEP4_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-LIB_DIR="$(cd "${STEP4_DIR}/../lib" && pwd)"
+STEP5_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+LIB_DIR="$(cd "${STEP5_DIR}/../lib" && pwd)"
 # shellcheck source=../lib/incremental_analysis.sh
 source "${LIB_DIR}/incremental_analysis.sh"
 
@@ -131,7 +131,7 @@ export -f organize_misplaced_documentation
 
 # Main step function - validates directory structure with AI assistance
 # Returns: 0 for success, 1 for failure
-step4_validate_directory_structure() {
+step5_validate_directory_structure() {
     print_step "4" "Validate Directory Structure"
     
     cd "$PROJECT_ROOT" || return 1
@@ -313,7 +313,7 @@ step4_validate_directory_structure() {
     
     # Build comprehensive architectural analysis prompt using AI helper function
     local copilot_prompt
-    copilot_prompt=$(build_step4_directory_prompt \
+    copilot_prompt=$(build_step5_directory_prompt \
         "$dir_count" \
         "${CHANGE_SCOPE}" \
         "$missing_critical" \
@@ -343,7 +343,7 @@ step4_validate_directory_structure() {
             # Create log file with unique timestamp
             local log_timestamp
             log_timestamp=$(date +%Y%m%d_%H%M%S_%N | cut -c1-21)
-            local log_file="${LOGS_RUN_DIR}/step4_copilot_directory_validation_${log_timestamp}.log"
+            local log_file="${LOGS_RUN_DIR}/step5_copilot_directory_validation_${log_timestamp}.log"
             print_info "Logging output to: $log_file"
             
             # Execute Copilot prompt
@@ -393,8 +393,8 @@ $(cat "$structure_issues_file")
             "$dir_count"
     fi
     
-    update_workflow_status "step4" "✅"
+    update_workflow_status "step5" "✅"
 }
 
 # Export step function
-export -f step4_validate_directory_structure
+export -f step5_validate_directory_structure

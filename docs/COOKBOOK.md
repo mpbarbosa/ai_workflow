@@ -1,7 +1,7 @@
 # Workflow Cookbook - Practical Recipes and Patterns
 
-**Version**: v3.0.0  
-**Last Updated**: 2026-01-31
+**Version**: v3.2.7  
+**Last Updated**: 2026-02-08
 
 This cookbook provides practical, copy-paste ready recipes for common workflow automation scenarios. Each recipe includes context, step-by-step instructions, and expected outcomes.
 
@@ -1532,5 +1532,5 @@ chmod +x ~/my-workflows/hotfix.sh
 ---
 
 **Document Version**: 1.0.0  
-**Workflow Version**: v3.0.0  
+**Workflow Version**: v3.2.7  
 **Last Updated**: 2026-01-31

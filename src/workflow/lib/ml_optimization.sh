@@ -3,7 +3,7 @@ set -euo pipefail
 
 ################################################################################
 # Machine Learning Optimization Module
-# Version: 3.0.1
+# Version: 3.0.5
 # Purpose: Predictive optimization using historical workflow data
 #
 # Features:
@@ -585,13 +585,15 @@ record_step_execution() {
     [[ -z "$features" || "$features" == '""' || "$features" == "null" ]] && features="{}"
     
     # Compact features JSON to single line for jq --argjson (multiline breaks parsing)
+    # Take only the first line to avoid multi-object issues
     local features_compact
-    features_compact=$(echo "$features" | jq -c '.' 2>/dev/null || echo "{}")
+    features_compact=$(echo "$features" | head -1 | jq -c '.' 2>/dev/null || echo "{}")
     
-    local record=$(jq_safe -nc \
+    local record
+    record=$(jq_safe -n \
         --argjson step "$step" \
         --argjson duration "$duration" \
-        --argjson features "$features_compact" \
+        --argjson features "${features_compact}" \
         --argjson issues "$issues_found" \
         --argjson timestamp "$(date +%s)" \
         --argjson parallel "${PARALLEL_EXECUTION:-false}" \

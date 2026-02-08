@@ -1,17 +1,17 @@
 #!/bin/bash
 ################################################################################
-# Step 13: Prompt Engineer Analysis
+# Step 14: Prompt Engineer Analysis
 # Purpose: Analyze AI persona prompts and create GitHub issues for improvements
-# Part of: Tests & Documentation Workflow Automation v3.0.0
+# Part of: Tests & Documentation Workflow Automation v3.0.7
 # Version: 1.0.0
 # Scope: Only runs on "bash-automation-framework" projects (ai_workflow)
 ################################################################################
 
 # Module version information
-readonly STEP13_VERSION="1.0.0"
-readonly STEP13_VERSION_MAJOR=1
-readonly STEP13_VERSION_MINOR=0
-readonly STEP13_VERSION_PATCH=0
+readonly STEP14_VERSION="1.0.0"
+readonly STEP14_VERSION_MAJOR=1
+readonly STEP14_VERSION_MINOR=0
+readonly STEP14_VERSION_PATCH=0
 
 # Configuration file path
 readonly AI_HELPERS_YAML="${SCRIPT_DIR}/../../.workflow_core/config/ai_helpers.yaml"
@@ -89,7 +89,7 @@ build_prompt_engineer_analysis_prompt() {
     
     # Extract role (multiline YAML block scalar format with 2-space indent)
     local role=$(awk '
-        /^step13_prompt_engineer_prompt:$/ { in_section=1; next }
+        /^step14_prompt_engineer_prompt:$/ { in_section=1; next }
         in_section && /^[a-z]/ { exit }
         in_section && /^[[:space:]]{2}role:[[:space:]]*\|/ { in_role=1; next }
         in_section && in_role {
@@ -105,7 +105,7 @@ build_prompt_engineer_analysis_prompt() {
     
     # Extract task template (multiline YAML block scalar format with 2-space indent)
     local task_template=$(awk '
-        /^step13_prompt_engineer_prompt:$/ { in_section=1; next }
+        /^step14_prompt_engineer_prompt:$/ { in_section=1; next }
         in_section && /^[a-z]/ { exit }
         in_section && /^[[:space:]]{2}task_template:[[:space:]]*\|/ { in_task=1; next }
         in_section && in_task {
@@ -128,7 +128,7 @@ build_prompt_engineer_analysis_prompt() {
     
     # Extract approach (multiline YAML block scalar format with 2-space indent)
     local approach=$(awk '
-        /^step13_prompt_engineer_prompt:$/ { in_section=1; next }
+        /^step14_prompt_engineer_prompt:$/ { in_section=1; next }
         in_section && /^[a-z]/ { exit }
         in_section && /^[[:space:]]{2}approach:[[:space:]]*\|/ { in_approach=1; next }
         in_section && in_approach {
@@ -306,7 +306,7 @@ ${opportunity_text}
 
 # Main step function - analyzes AI prompts and creates improvement issues
 # Returns: 0 for success, 1 for failure
-step13_prompt_engineer_analysis() {
+step14_prompt_engineer_analysis() {
     print_step "13" "Prompt Engineer Analysis"
     
     cd "$PROJECT_ROOT" || return 1
@@ -316,7 +316,7 @@ step13_prompt_engineer_analysis() {
         print_info "Skipping prompt engineer analysis for this project type"
         save_step_summary "13" "Prompt_Engineer_Analysis" \
             "Skipped - only runs on bash-automation-framework projects" "⏭️"
-        update_workflow_status "step13" "⏭️ SKIP"
+        update_workflow_status "step14" "⏭️ SKIP"
         return 0
     fi
     
@@ -325,7 +325,7 @@ step13_prompt_engineer_analysis() {
         print_error "AI helpers configuration not found: $AI_HELPERS_YAML"
         save_step_summary "13" "Prompt_Engineer_Analysis" \
             "Failed - configuration file not found" "❌"
-        update_workflow_status "step13" "❌ FAIL"
+        update_workflow_status "step14" "❌ FAIL"
         return 1
     fi
     
@@ -352,7 +352,7 @@ step13_prompt_engineer_analysis() {
         print_warning "GitHub Copilot CLI not available - skipping AI analysis"
         save_step_summary "13" "Prompt_Engineer_Analysis" \
             "Skipped - Copilot CLI not available" "⚠️"
-        update_workflow_status "step13" "⚠️ SKIP"
+        update_workflow_status "step14" "⚠️ SKIP"
         return 0
     fi
     
@@ -367,11 +367,11 @@ step13_prompt_engineer_analysis() {
     # Execute AI analysis
     print_info "Executing AI analysis..."
     local log_timestamp=$(date +%Y%m%d_%H%M%S_%N | cut -c1-21)
-    local log_file="${LOGS_RUN_DIR}/step13_prompt_analysis_${log_timestamp}.log"
+    local log_file="${LOGS_RUN_DIR}/step14_prompt_analysis_${log_timestamp}.log"
     
     if [[ "$INTERACTIVE_MODE" == true ]] && [[ "$AUTO_MODE" == false ]]; then
         print_info "Invoking GitHub Copilot CLI for interactive analysis..."
-        execute_copilot_prompt "$ai_prompt" "$log_file" "step13" "prompt_engineer"
+        execute_copilot_prompt "$ai_prompt" "$log_file" "step14" "prompt_engineer"
         
         # Copy log output to ai_output for parsing
         cp "$log_file" "$ai_output"
@@ -404,7 +404,7 @@ step13_prompt_engineer_analysis() {
 All AI persona prompts meet quality standards. No issues to create.
 "
         save_step_issues "13" "Prompt_Engineer_Analysis" "$step_issues"
-        update_workflow_status "step13" "✅"
+        update_workflow_status "step14" "✅"
         return 0
     fi
     
@@ -496,10 +496,10 @@ Parsed opportunities saved to: \`$opportunities_file\`
     
     # Update workflow status
     if [[ $issues_failed -eq 0 ]]; then
-        update_workflow_status "step13" "✅"
+        update_workflow_status "step14" "✅"
         print_success "Prompt engineering analysis complete - created $issues_created issues"
     else
-        update_workflow_status "step13" "⚠️"
+        update_workflow_status "step14" "⚠️"
         print_warning "Prompt engineering analysis complete with warnings"
     fi
     
@@ -507,7 +507,7 @@ Parsed opportunities saved to: \`$opportunities_file\`
 }
 
 # Export step function
-export -f step13_prompt_engineer_analysis
+export -f step14_prompt_engineer_analysis
 export -f should_run_prompt_engineer_step
 export -f get_persona_names
 export -f count_personas

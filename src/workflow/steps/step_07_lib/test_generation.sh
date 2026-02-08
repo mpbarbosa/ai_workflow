@@ -2,10 +2,10 @@
 set -euo pipefail
 
 ################################################################################
-# Step 6 Test Generation Module
+# Step 7 Test Generation Module
 # Purpose: Test file generation logic
-# Part of: Step 6 Refactoring - High Cohesion, Low Coupling
-# Version: 2.0.0
+# Part of: Step 7 Refactoring - High Cohesion, Low Coupling
+# Version: 2.0.7
 ################################################################################
 
 # Generate test file stub (placeholder for AI-assisted generation)

@@ -4,7 +4,7 @@
 
 ################################################################################
 # JQ Wrapper Module
-# Version: 1.0.1
+# Version: 1.0.5
 # Purpose: Safe wrapper for jq command with validation, logging, and error handling
 # Part of: Tests & Documentation Workflow Automation v3.0.0+
 # Created: February 3, 2026
@@ -75,6 +75,9 @@ jq_safe() {
                     # Validate the value is not empty
                     if [[ -z "$value" ]]; then
                         validation_errors+=("--argjson variable '$var_name' has empty value")
+                    # Validate no newlines (--argjson requires single-line JSON)
+                    elif [[ "$value" == *$'\n'* ]]; then
+                        validation_errors+=("--argjson variable '$var_name' contains newlines (must be single-line JSON)")
                     # Validate the value looks like valid JSON (basic check)
                     # Must be: number, "string", true, false, null, {object}, [array]
                     elif ! [[ "$value" =~ ^(-?[0-9]+\.?[0-9]*|\".*\"|true|false|null|\{.*\}|\[.*\])$ ]]; then

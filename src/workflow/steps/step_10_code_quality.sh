@@ -2,21 +2,21 @@
 set -euo pipefail
 
 ################################################################################
-# Step 9: AI-Powered Code Quality Validation
+# Step 10: AI-Powered Code Quality Validation
 # Purpose: Validate code quality, detect anti-patterns, assess maintainability (adaptive)
-# Part of: Tests & Documentation Workflow Automation v2.3.2
+# Part of: Tests & Documentation Workflow Automation v2.3.9
 # Version: 2.1.0 (Phase 3 - Adaptive)
 ################################################################################
 
 # Module version information
-readonly STEP9_VERSION="2.1.0"
-readonly STEP9_VERSION_MAJOR=2
-readonly STEP9_VERSION_MINOR=1
-readonly STEP9_VERSION_PATCH=0
+readonly STEP10_VERSION="2.1.0"
+readonly STEP10_VERSION_MAJOR=2
+readonly STEP10_VERSION_MINOR=1
+readonly STEP10_VERSION_PATCH=0
 
 # Main step function - validates code quality with AI assistance
 # Returns: 0 for success, 1 for failure
-step9_code_quality_validation() {
+step10_code_quality_validation() {
     print_step "9" "Code Quality Validation"
     
     cd "$SRC_DIR"
@@ -307,7 +307,7 @@ $(head -50 "$file" 2>/dev/null)  # Increased from 30 lines (Dec 15, 2025) for be
     
     # Build comprehensive code quality prompt using AI helper function
     local copilot_prompt
-    copilot_prompt=$(build_step9_code_quality_prompt \
+    copilot_prompt=$(build_step10_code_quality_prompt \
         "$total_files" \
         "$js_files" \
         "$html_files" \
@@ -338,7 +338,7 @@ $(head -50 "$file" 2>/dev/null)  # Increased from 30 lines (Dec 15, 2025) for be
             # Create log file with unique timestamp
             local log_timestamp
             log_timestamp=$(date +%Y%m%d_%H%M%S_%N | cut -c1-21)
-            local log_file="${LOGS_RUN_DIR}/step9_copilot_code_quality_review_${log_timestamp}.log"
+            local log_file="${LOGS_RUN_DIR}/step10_copilot_code_quality_review_${log_timestamp}.log"
             print_info "Logging output to: $log_file"
             
             # Execute Copilot prompt
@@ -379,5 +379,10 @@ $(head -50 "$file" 2>/dev/null)  # Increased from 30 lines (Dec 15, 2025) for be
     update_workflow_status "step9" "✅"
 }
 
+# Alias for backward compatibility (main script calls step9_code_quality_validation)
+step9_code_quality_validation() {
+    step10_code_quality_validation "$@"
+}
+
 # Export step function
-export -f step9_code_quality_validation
+export -f step10_code_quality_validation step9_code_quality_validation

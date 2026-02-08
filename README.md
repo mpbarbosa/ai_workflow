@@ -1,6 +1,6 @@
 # AI Workflow Automation
 
-[![Current version is 3.1.0](https://img.shields.io/badge/version-3.1.0-blue.svg)](https://github.com/mpbarbosa/ai_workflow/releases)
+[![Current version is 3.2.7](https://img.shields.io/badge/version-3.2.7-blue.svg)](https://github.com/mpbarbosa/ai_workflow/releases)
 [![License is MIT](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 [![Code quality score is B+ with 87 out of 100 points](https://img.shields.io/badge/quality-B%2B%20(87%2F100)-brightgreen.svg)](src/COMPREHENSIVE_CODE_QUALITY_REPORT.md)
 [![37 or more tests are passing](https://img.shields.io/badge/tests-37%2B%20passing-brightgreen.svg)](tests/)
@@ -13,7 +13,7 @@
 Intelligent workflow automation system for validating and enhancing documentation, code, and tests with AI support.
 
 **Migrated from**: mpbarbosa_site repository (2025-12-18)  
-**Version**: v3.1.0  
+**Version**: v3.2.7  
 **Repository**: [github.com/mpbarbosa/ai_workflow](https://github.com/mpbarbosa/ai_workflow)
 
 ## Overview
@@ -25,8 +25,8 @@ This repository provides a comprehensive, modular workflow automation system tha
 > 📋 See [Project Reference](docs/PROJECT_REFERENCE.md) for complete feature list, module inventory, and version history.
 
 **Highlights**:
-- **18-Step Automated Pipeline** with checkpoint resume
-- **62 Library Modules** + **18 Step Modules** + **4 Orchestrators** + **4 Configs**
+- **20-Step Automated Pipeline** with checkpoint resume
+- **73 Library Modules** + **20 Step Modules** + **4 Orchestrators** + **4 Configs**
 - **15 AI Personas** with GitHub Copilot CLI integration
 - **Smart Execution**: 40-85% faster (change-based step skipping)
 - **Parallel Execution**: 33% faster (independent steps run simultaneously)
@@ -337,7 +337,7 @@ This project is licensed under the **MIT License** - see the [LICENSE](LICENSE) 
 - **Created**: 2025-12-14
 - **Repository**: [github.com/mpbarbosa/ai_workflow](https://github.com/mpbarbosa/ai_workflow)
 - **Migrated From**: mpbarbosa_site (2025-12-18)
-- **Current Version**: v3.0.0 (2026-01-28)
+- **Current Version**: v3.2.7 (2026-02-08)
 
 ### Contributing
 

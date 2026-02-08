@@ -2,26 +2,26 @@
 set -euo pipefail
 
 ################################################################################
-# Step 8: AI-Powered Dependency Validation
+# Step 9: AI-Powered Dependency Validation
 # Purpose: Validate dependencies and environment configuration (adaptive)
-# Part of: Tests & Documentation Workflow Automation v3.3.1
+# Part of: Tests & Documentation Workflow Automation v3.3.8
 # Version: 2.2.0 (Added dependency caching for npm audit/outdated)
 ################################################################################
 
 # Module version information
-readonly STEP8_VERSION="2.2.0"
-readonly STEP8_VERSION_MAJOR=2
-readonly STEP8_VERSION_MINOR=2
-readonly STEP8_VERSION_PATCH=0
+readonly STEP9_VERSION="2.2.0"
+readonly STEP9_VERSION_MAJOR=2
+readonly STEP9_VERSION_MINOR=2
+readonly STEP9_VERSION_PATCH=0
 
 # Source dependency cache module
-STEP8_LIB_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/../lib" && pwd)"
-if [[ -f "${STEP8_LIB_DIR}/dependency_cache.sh" ]]; then
-    source "${STEP8_LIB_DIR}/dependency_cache.sh"
+STEP9_LIB_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/../lib" && pwd)"
+if [[ -f "${STEP9_LIB_DIR}/dependency_cache.sh" ]]; then
+    source "${STEP9_LIB_DIR}/dependency_cache.sh"
 fi
 
 # Detect project tech stack
-detect_project_tech_stack_step8() {
+detect_project_tech_stack_step9() {
     local tech_stack=()
     
     # Check for Node.js/JavaScript/TypeScript
@@ -55,7 +55,7 @@ detect_project_tech_stack_step8() {
 
 # Main step function - validates dependencies with AI assistance (adaptive - Phase 3)
 # Returns: 0 for success, 1 for failure
-step8_validate_dependencies() {
+step9_validate_dependencies() {
     print_step "8" "Validate Dependencies & Environment"
     
     # Use global tech stack detection from Phase 3
@@ -100,7 +100,7 @@ Validation focused on system tools and git repository health.
 "
         save_step_issues "8" "Dependency_Validation" "$step_summary"
         save_step_summary "8" "Dependency_Validation" "Shell project - no dependencies to validate" "✅"
-        update_workflow_status "step8" "✅"
+        update_workflow_status "step9" "✅"
         
         cd "$PROJECT_ROOT" || return 1
         return 0
@@ -175,7 +175,7 @@ CRITICAL: Missing ${package_file} file. Cannot validate dependencies.
                 save_step_summary "8" "Dependency_Validation" "CRITICAL: Missing ${package_file} file." "❌"
                 
                 cd "$PROJECT_ROOT" || return 1
-                update_workflow_status "step8" "❌"
+                update_workflow_status "step9" "❌"
                 return 1
             fi
             
@@ -199,7 +199,7 @@ CRITICAL: Invalid ${package_file} syntax. Cannot validate dependencies.
                 save_step_summary "8" "Dependency_Validation" "CRITICAL: Invalid ${package_file} syntax." "❌"
                 
                 cd "$PROJECT_ROOT" || return 1
-                update_workflow_status "step8" "❌"
+                update_workflow_status "step9" "❌"
                 return 1
             fi
     # Check 2: Run npm audit for security vulnerabilities
@@ -467,7 +467,7 @@ CRITICAL: Invalid ${package_file} syntax. Cannot validate dependencies.
     
     # Build comprehensive dependency analysis prompt using AI helper function
     local copilot_prompt
-    copilot_prompt=$(build_step8_dependencies_prompt \
+    copilot_prompt=$(build_step9_dependencies_prompt \
         "$node_version" \
         "$npm_version" \
         "$dep_count" \
@@ -501,7 +501,7 @@ CRITICAL: Invalid ${package_file} syntax. Cannot validate dependencies.
             # Create log file with unique timestamp
             local log_timestamp
             log_timestamp=$(date +%Y%m%d_%H%M%S_%N | cut -c1-21)
-            local log_file="${LOGS_RUN_DIR}/step8_copilot_dependency_analysis_${log_timestamp}.log"
+            local log_file="${LOGS_RUN_DIR}/step9_copilot_dependency_analysis_${log_timestamp}.log"
             print_info "Logging output to: $log_file"
             
             # Execute Copilot prompt
@@ -539,8 +539,13 @@ CRITICAL: Invalid ${package_file} syntax. Cannot validate dependencies.
         "$total_deps"
     
     cd "$PROJECT_ROOT" || return 1
-    update_workflow_status "step8" "✅"
+    update_workflow_status "step9" "✅"
+}
+
+# Alias for backward compatibility (main script calls step8_validate_dependencies)
+step8_validate_dependencies() {
+    step9_validate_dependencies "$@"
 }
 
 # Export step functions
-export -f detect_project_tech_stack_step8 step8_validate_dependencies
+export -f detect_project_tech_stack_step9 step9_validate_dependencies step8_validate_dependencies

@@ -2,10 +2,10 @@
 set -euo pipefail
 
 ################################################################################
-# Step 5 Test Discovery Module
+# Step 6 Test Discovery Module
 # Purpose: Language-aware test file discovery and inventory
-# Part of: Step 5 Refactoring - High Cohesion, Low Coupling
-# Version: 2.0.0
+# Part of: Step 6 Refactoring - High Cohesion, Low Coupling
+# Version: 2.0.7
 ################################################################################
 
 # ==============================================================================
@@ -13,9 +13,9 @@ set -euo pipefail
 # ==============================================================================
 
 # Discover test files based on project language
-# Usage: discover_test_files_step5 [language]
+# Usage: discover_test_files_step6 [language]
 # Returns: List of test files
-discover_test_files_step5() {
+discover_test_files_step6() {
     local language="${1:-${PRIMARY_LANGUAGE:-javascript}}"
     
     case "$language" in
@@ -59,9 +59,9 @@ discover_test_files_step5() {
 }
 
 # Count test files
-# Usage: count_test_files_step5 <test_files>
+# Usage: count_test_files_step6 <test_files>
 # Returns: Count of test files
-count_test_files_step5() {
+count_test_files_step6() {
     local test_files="$1"
     
     if [[ -z "$test_files" ]]; then
@@ -76,12 +76,12 @@ count_test_files_step5() {
 # ==============================================================================
 
 # Create test inventory with metadata
-# Usage: create_test_inventory_step5 <test_files>
+# Usage: create_test_inventory_step6 <test_files>
 # Returns: Inventory report
-create_test_inventory_step5() {
+create_test_inventory_step6() {
     local test_files="$1"
     local count
-    count=$(count_test_files_step5 "$test_files")
+    count=$(count_test_files_step6 "$test_files")
     
     if [[ $count -eq 0 ]]; then
         echo "No test files found"
@@ -104,6 +104,6 @@ create_test_inventory_step5() {
 # EXPORTS
 # ==============================================================================
 
-export -f discover_test_files_step5
-export -f count_test_files_step5
-export -f create_test_inventory_step5
+export -f discover_test_files_step6
+export -f count_test_files_step6
+export -f create_test_inventory_step6

@@ -3,7 +3,7 @@ set -euo pipefail
 
 ################################################################################
 # Dependency Cache Module
-# Version: 1.0.1
+# Version: 1.0.7
 # Purpose: Cache npm audit and outdated check results to improve performance
 # Part of: Tests & Documentation Workflow Automation v3.3.0
 # Created: February 7, 2026
@@ -40,7 +40,7 @@ init_dependency_cache() {
     if [[ ! -f "${DEPENDENCY_CACHE_INDEX}" ]]; then
         cat > "${DEPENDENCY_CACHE_INDEX}" << 'EOF'
 {
-  "version": "1.0.1",
+  "version": "1.0.7",
   "created": "",
   "last_cleanup": "",
   "entries": []
@@ -195,22 +195,16 @@ update_dependency_cache_index() {
         init_dependency_cache
     fi
     
-    # Create new entry
-    local new_entry=$(cat << EOF
-{
-  "key": "${cache_key}",
-  "type": "${cache_type}",
-  "timestamp": "${now}",
-  "ttl": ${DEPENDENCY_CACHE_TTL}
-}
-EOF
-)
-    
     # Add entry to index using jq (safer than manual JSON manipulation)
     if command -v jq &>/dev/null; then
         local temp_index
         temp_index=$(mktemp)
-        jq --argjson entry "$new_entry" '.entries += [$entry]' "${DEPENDENCY_CACHE_INDEX}" > "$temp_index"
+        jq --arg key "${cache_key}" \
+           --arg type "${cache_type}" \
+           --arg timestamp "${now}" \
+           --argjson ttl "${DEPENDENCY_CACHE_TTL}" \
+           '.entries += [{key: $key, type: $type, timestamp: $timestamp, ttl: $ttl}]' \
+           "${DEPENDENCY_CACHE_INDEX}" > "$temp_index"
         mv "$temp_index" "${DEPENDENCY_CACHE_INDEX}"
     fi
 }

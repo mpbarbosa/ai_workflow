@@ -2,19 +2,19 @@
 set -euo pipefail
 
 ################################################################################
-# Step 15: AI-Powered Semantic Version Update
+# Step 16: AI-Powered Semantic Version Update
 # Purpose: Update semantic versions in modified files and project metadata
-# Part of: Tests & Documentation Workflow Automation v3.0.0
+# Part of: Tests & Documentation Workflow Automation v3.0.7
 # Version: 1.0.0
 # Position: Runs after all analysis (10,12,13,14), before Git Finalization (11)
 # Dependencies: Steps 10, 12, 13, 14
 ################################################################################
 
 # Module version information
-readonly STEP15_VERSION="1.0.0"
-readonly STEP15_VERSION_MAJOR=1
-readonly STEP15_VERSION_MINOR=0
-readonly STEP15_VERSION_PATCH=0
+readonly STEP16_VERSION="1.0.0"
+readonly STEP16_VERSION_MAJOR=1
+readonly STEP16_VERSION_MINOR=0
+readonly STEP16_VERSION_PATCH=0
 
 # Source required libraries
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
@@ -118,7 +118,7 @@ determine_heuristic_bump_type() {
 # Determine bump type using AI analysis
 # Returns: major|minor|patch with reasoning logged
 determine_ai_bump_type() {
-    local output_file="${BACKLOG_RUN_DIR}/step_15_ai_bump_analysis.md"
+    local output_file="${BACKLOG_RUN_DIR}/step_16_ai_bump_analysis.md"
     
     # Build context from workflow artifacts
     local context=""
@@ -157,7 +157,7 @@ Reasoning: [2-3 sentence explanation]
 Confidence: [high|medium|low]"
     
     # Call AI with version_manager persona
-    if ! execute_copilot_prompt "$prompt" "$output_file" "step_15_version_update" "version_manager"; then
+    if ! execute_copilot_prompt "$prompt" "$output_file" "step_16_version_update" "version_manager"; then
         return 1
     fi
     
@@ -269,12 +269,12 @@ update_project_version() {
 # Main Step Function
 ################################################################################
 
-step15_version_update() {
+step16_version_update() {
     print_step "15" "AI-Powered Semantic Version Update"
     
     # Check dry run mode
     if [[ "${DRY_RUN:-false}" == true ]]; then
-        print_info "[DRY RUN] Step 15: Would update semantic versions"
+        print_info "[DRY RUN] Step 16: Would update semantic versions"
         return 0
     fi
     
@@ -450,9 +450,9 @@ step15_version_update() {
     done <<< "$modified_files"
     
     # Generate report
-    local report_file="${BACKLOG_RUN_DIR}/step_15_version_update.md"
+    local report_file="${BACKLOG_RUN_DIR}/step_16_version_update.md"
     {
-        echo "# Step 15: AI-Powered Semantic Version Update"
+        echo "# Step 16: AI-Powered Semantic Version Update"
         echo ""
         echo "**Status**: ✅ Complete"
         echo "**Bump Type**: $bump_type"
@@ -481,4 +481,4 @@ step15_version_update() {
 }
 
 # Export main function
-export -f step15_version_update
+export -f step16_version_update

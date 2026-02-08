@@ -2,10 +2,10 @@
 set -euo pipefail
 
 ################################################################################
-# Step 6 Gap Analysis Module
+# Step 7 Gap Analysis Module
 # Purpose: Language-aware detection of untested code
-# Part of: Step 6 Refactoring - High Cohesion, Low Coupling
-# Version: 2.0.0
+# Part of: Step 7 Refactoring - High Cohesion, Low Coupling
+# Version: 2.0.7
 ################################################################################
 
 # Find untested code files based on language

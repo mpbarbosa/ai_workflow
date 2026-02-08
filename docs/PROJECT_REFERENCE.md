@@ -1,8 +1,8 @@
 # AI Workflow Automation - Project Reference
 
 **SINGLE SOURCE OF TRUTH**  
-**Version**: v3.1.0  
-**Last Updated**: 2026-01-30
+**Version**: v3.2.7  
+**Last Updated**: 2026-02-08
 
 > ⚠️ **Important**: This document is the authoritative source for project statistics, features, and module lists. All other documentation should reference this file, not duplicate its content.
 
@@ -12,7 +12,7 @@
 
 - **Repository**: [github.com/mpbarbosa/ai_workflow](https://github.com/mpbarbosa/ai_workflow)
 - **License**: MIT
-- **Current Version**: v3.1.0 ⭐ NEW
+- **Current Version**: v3.2.7 ⭐ NEW
 - **Previous Repository**: mpbarbosa_site (migrated 2025-12-18)
 - **Primary Maintainer**: Marcelo Pereira Barbosa ([@mpbarbosa](https://github.com/mpbarbosa))
 - **Contact**: mpbarbosa@gmail.com
@@ -20,14 +20,14 @@
 ### Key Statistics
 
 - **Total Lines**: 26,562 (22,411 shell + 4,151 YAML)
-- **Total Modules**: 88 (62 libraries + 18 steps + 4 configs + 4 orchestrators) ⭐ NEW
+- **Total Modules**: 101 (73 libraries + 20 steps + 4 configs + 4 orchestrators) ⭐ UPDATED
 - **Test Coverage**: 100% (37+ automated tests)
 - **Performance**: Up to 93% faster with ML optimization
 
-## Core Features (v3.0.0)
+## Core Features (v3.2.7)
 
 ### Workflow Pipeline
-- **18-Step Automated Pipeline**: Complete workflow from pre-analysis to finalization (includes step_0a pre-processing, step_0b bootstrap docs, and step_15 post-processing) ⭐ NEW
+- **20-Step Automated Pipeline**: Complete workflow from pre-analysis to finalization (includes step_0a pre-processing, step_0b bootstrap docs, step_02_5 doc optimize, and step_16 post-processing) ⭐ UPDATED
 - **Checkpoint Resume**: Automatic continuation from last completed step
 - **Dry Run Mode**: Preview execution without changes
 
@@ -66,9 +66,9 @@
 
 ## Module Inventory
 
-### Library Modules (62 total in src/workflow/lib/)
+### Library Modules (73 total in src/workflow/lib/)
 
-> **Note**: Module count updated 2026-01-29 to reflect actual inventory (62 modules verified via `ls src/workflow/lib/*.sh | wc -l`).
+> **Note**: Module count updated 2026-02-08 to reflect actual inventory (73 modules verified via `ls src/workflow/lib/*.sh | wc -l`).
 
 #### Core Modules (12 modules)
 - `ai_helpers.sh` (102K) - AI integration with 14 functional personas
@@ -108,28 +108,30 @@
 - `colors.sh` (637 bytes) - Terminal formatting
 - _(+29 additional modules - see src/workflow/lib/ for complete list)_
 
-### Step Modules (18 total in src/workflow/steps/) ⭐ NEW
+### Step Modules (20 total in src/workflow/steps/) ⭐ UPDATED
 
-**Execution Order** (Step 11 MUST be last):
+**Execution Order** (Step 12 MUST be last):
 
 1. `step_00_analyze.sh` - Pre-flight analysis
 2. `step_0a_version_update.sh` - Semantic version updates (PRE-PROCESSING - v2.6.0)
 3. `step_0b_bootstrap_docs.sh` - Bootstrap documentation (NEW v3.1.0) ⭐ NEW
 4. `step_01_documentation.sh` - Documentation updates
-5. `step_02_consistency.sh` - Cross-reference validation
-6. `step_03_script_refs.sh` - Script reference validation (shell projects only, auto-skips for Node.js/Python)
-7. `step_04_directory.sh` - Directory structure validation
-8. `step_05_test_review.sh` - Test coverage review
-9. `step_06_test_gen.sh` - Test case generation
-10. `step_07_test_exec.sh` - Test execution
-11. `step_08_dependencies.sh` - Dependency validation
-12. `step_09_code_quality.sh` - Code quality checks
-13. `step_10_context.sh` - Context analysis
-14. `step_12_markdown_lint.sh` - Markdown linting
-15. `step_13_prompt_engineer.sh` - Prompt engineering (ai_workflow only)
-16. `step_14_ux_analysis.sh` - UX/UI analysis (v2.4.0)
-17. `step_15_version_update.sh` - **AI-powered version updates (POST-PROCESSING - runs after 10,12,13,14)**
-18. `step_11_git.sh` - **Git operations [FINAL STEP - commits all changes]**
+5. `step_02_5_doc_optimize.sh` - Documentation optimization (NEW v3.2.0) ⭐ NEW
+6. `step_02_consistency.sh` - Cross-reference validation
+7. `step_03_script_refs.sh` - Script reference validation (shell projects only, auto-skips for Node.js/Python)
+8. `step_04_config_validation.sh` - Configuration validation
+9. `step_05_directory.sh` - Directory structure validation
+10. `step_06_test_review.sh` - Test coverage review
+11. `step_07_test_gen.sh` - Test case generation
+12. `step_08_test_exec.sh` - Test execution
+13. `step_09_dependencies.sh` - Dependency validation
+14. `step_10_code_quality.sh` - Code quality checks
+15. `step_11_context.sh` - Context analysis
+16. `step_13_markdown_lint.sh` - Markdown linting
+17. `step_14_prompt_engineer.sh` - Prompt engineering (ai_workflow only)
+18. `step_15_ux_analysis.sh` - UX/UI analysis (v2.4.0)
+19. `step_16_version_update.sh` - **AI-powered version updates (POST-PROCESSING - runs after 10,13,14,15)** ⭐ NEW
+20. `step_12_git.sh` - **Git operations [FINAL STEP - commits all changes]**
 
 ### Configuration Files (4 total in .workflow_core/config/)
 

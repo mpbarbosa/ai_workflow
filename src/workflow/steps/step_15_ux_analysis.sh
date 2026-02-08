@@ -1,8 +1,8 @@
 #!/bin/bash
 ################################################################################
-# Step 14: UX Analysis
+# Step 15: UX Analysis
 # Purpose: Analyze UI code for bugs, usability issues, and suggest improvements
-# Part of: Tests & Documentation Workflow Automation v3.0.0
+# Part of: Tests & Documentation Workflow Automation v3.0.7
 # Version: 1.0.0
 # Scope: Only runs for projects with UI components (web apps, SPAs, static sites)
 ################################################################################
@@ -13,14 +13,14 @@ if [[ "${BASH_SOURCE[0]}" != *"test"* ]] && [[ -z "${TEST_MODE:-}" ]]; then
 fi
 
 # Module version information
-readonly STEP14_VERSION="1.0.0"
-readonly STEP14_VERSION_MAJOR=1
-readonly STEP14_VERSION_MINOR=0
-readonly STEP14_VERSION_PATCH=0
+readonly STEP15_VERSION="1.0.0"
+readonly STEP15_VERSION_MAJOR=1
+readonly STEP15_VERSION_MINOR=0
+readonly STEP15_VERSION_PATCH=0
 
 # Determine script directory and project root
-STEP14_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-WORKFLOW_LIB_DIR="${STEP14_DIR}/../lib"
+STEP15_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+WORKFLOW_LIB_DIR="${STEP15_DIR}/../lib"
 
 # Source required dependencies if not already loaded
 if ! type -t print_info &>/dev/null; then
@@ -117,7 +117,7 @@ should_run_ux_analysis_step() {
     
     # Check step relevance configuration
     if command -v get_step_relevance &>/dev/null; then
-        step_relevance=$(get_step_relevance "$project_kind" "step_14_ux_analysis" 2>/dev/null || echo "optional")
+        step_relevance=$(get_step_relevance "$project_kind" "step_15_ux_analysis" 2>/dev/null || echo "optional")
     else
         step_relevance="optional"
     fi
@@ -333,17 +333,17 @@ EOF
 
 # Main step function - performs UX analysis
 # Returns: 0 for success, 1 for failure
-step14_ux_analysis() {
+step15_ux_analysis() {
     print_step "14" "UX Analysis"
     
     # Check if this step should run
     if ! should_run_ux_analysis_step; then
-        print_info "Step 14: UX Analysis skipped (no UI components)"
+        print_info "Step 15: UX Analysis skipped (no UI components)"
         
         # Create minimal backlog entry
-        local backlog_file="${BACKLOG_RUN_DIR}/step_14_ux_analysis.md"
+        local backlog_file="${BACKLOG_RUN_DIR}/step_15_ux_analysis.md"
         cat > "$backlog_file" << EOF
-# Step 14: UX Analysis - SKIPPED
+# Step 15: UX Analysis - SKIPPED
 
 **Status**: ⏭️ Skipped
 **Reason**: No UI components detected in this project
@@ -428,10 +428,10 @@ EOF
         # Create log file for AI output
         local log_timestamp
         log_timestamp=$(date +%Y%m%d_%H%M%S)_$$
-        local log_file="${LOGS_RUN_DIR:-./logs}/step14_copilot_ux_analysis_${log_timestamp}.log"
+        local log_file="${LOGS_RUN_DIR:-./logs}/step15_copilot_ux_analysis_${log_timestamp}.log"
         
         # Call AI with ux_designer persona using execute_copilot_prompt
-        if execute_copilot_prompt "$ux_prompt" "$log_file" "step14" "ux_designer"; then
+        if execute_copilot_prompt "$ux_prompt" "$log_file" "step15" "ux_designer"; then
             cp "$log_file" "$ux_report"
             print_success "AI UX analysis completed"
         else
@@ -445,10 +445,10 @@ EOF
     
     # Phase 4: Generate backlog report
     print_info "Phase 4: Generating UX analysis report..."
-    local backlog_file="${BACKLOG_RUN_DIR}/step_14_ux_analysis.md"
+    local backlog_file="${BACKLOG_RUN_DIR}/step_15_ux_analysis.md"
     
     cat > "$backlog_file" << EOF
-# Step 14: UX Analysis Report
+# Step 15: UX Analysis Report
 
 **Status**: ✅ Completed
 **Date**: $(date '+%Y-%m-%d %H:%M:%S')
@@ -468,7 +468,7 @@ EOF
 
 ## Analysis Metadata
 
-- **Step Version**: ${STEP14_VERSION}
+- **Step Version**: ${STEP15_VERSION}
 - **Analysis Method**: $(if command -v execute_copilot_prompt &>/dev/null && type -t validate_copilot_cli &>/dev/null && validate_copilot_cli; then echo "AI-Powered"; else echo "Automated Checks"; fi)
 - **Target Directory**: ${target_dir}
 - **UI Files Scanned**: ${ui_file_count}
@@ -484,12 +484,12 @@ EOF
 EOF
     
     # Phase 5: Generate summary
-    local summary_file="${SUMMARIES_RUN_DIR}/step_14_ux_analysis.md"
+    local summary_file="${SUMMARIES_RUN_DIR}/step_15_ux_analysis.md"
     local issue_count
     issue_count=$(grep -c "^###" "$ux_report" || echo "0")
     
     cat > "$summary_file" << EOF
-# Step 14: UX Analysis - Summary
+# Step 15: UX Analysis - Summary
 
 ✅ **Status**: Completed
 
@@ -504,7 +504,7 @@ EOF
 
 EOF
     
-    print_success "Step 14: UX Analysis completed"
+    print_success "Step 15: UX Analysis completed"
     print_info "Report saved to: $backlog_file"
     print_info "Summary saved to: $summary_file"
     

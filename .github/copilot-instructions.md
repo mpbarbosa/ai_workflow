@@ -1,8 +1,8 @@
 # GitHub Copilot Instructions - AI Workflow Automation
 
 **Repository**: ai_workflow  
-**Version**: v3.1.0  
-**Last Updated**: 2026-01-28  
+**Version**: v3.2.7  
+**Last Updated**: 2026-02-08  
 **Maintainer**: Marcelo Pereira Barbosa ([@mpbarbosa](https://github.com/mpbarbosa))
 
 ## Project Overview
@@ -14,8 +14,8 @@ AI Workflow Automation is an intelligent workflow system for validating and enha
 > 📋 **Reference**: See [docs/PROJECT_REFERENCE.md](../docs/PROJECT_REFERENCE.md) for authoritative project statistics, features, and module inventory.
 
 **Core Features**:
-- **18-Step Automated Pipeline** with 15 AI personas
-- **62 Library Modules** + **18 Step Modules** + **4 Orchestrators** + **4 Configs**
+- **20-Step Automated Pipeline** with 15 AI personas
+- **73 Library Modules** + **20 Step Modules** + **4 Orchestrators** + **4 Configs**
 - **Smart Execution**: 40-85% faster | **Parallel Execution**: 33% faster
 - **AI Response Caching**: 60-80% token reduction
 - **Pre-Commit Hooks** (NEW v3.0.0): Fast validation checks to prevent broken commits
@@ -304,7 +304,7 @@ The documentation_specialist persona is project-aware and references:
 
 > 📋 **Complete History**: See [docs/PROJECT_REFERENCE.md#version-history-major-releases](../docs/PROJECT_REFERENCE.md#version-history-major-releases for all releases and detailed changelogs.
 
-**Current Version**: v3.0.0 (2026-01-28)
+**Current Version**: v3.2.7 (2026-02-08)
 - Pre-commit hooks for fast validation (< 1 second)
 - Step dependency metadata system for smarter execution
 - Test pre-validation in Step 0 to catch issues early

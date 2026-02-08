@@ -111,7 +111,7 @@ declare -A FILE_PATTERNS
 FILE_PATTERNS=(
     ["docs"]="*.md|*.txt|*.rst|docs/*|README*|CHANGELOG*|LICENSE*"
     ["tests"]="*test*.js|*spec*.js|__tests__/*|*.test.mjs|*.spec.mjs"
-    ["config"]="*.json|*.yaml|*.yml|*.toml|*.ini|.editorconfig|.gitignore|.nvmrc|.node-version|.mdlrc"
+    ["config"]="*.json|*.yaml|*.yml|*.toml|*.ini|.editorconfig|.gitignore|.nvmrc|.node-version|.mdlrc|.env.example|Dockerfile|docker-compose.yml|docker-compose.*.yml|.dockerignore|tsconfig.json|jsconfig.json|.eslintrc*|.prettierrc*|pyproject.toml|setup.cfg|tox.ini|Cargo.toml|go.mod|go.sum|.gitlab-ci.yml|Jenkinsfile|.circleci/config.yml|.github/workflows/*.yml|.github/workflows/*.yaml"
     ["scripts"]="*.sh|src/workflow/*|Makefile"
     ["code"]="*.js|*.mjs|*.ts|*.tsx|*.jsx|*.css|*.html|*.php|*.py|*.go|*.rs"
     ["assets"]="*.png|*.jpg|*.jpeg|*.gif|*.svg|*.ico|*.woff|*.woff2|*.ttf|*.eot"
@@ -120,12 +120,12 @@ FILE_PATTERNS=(
 # Step execution recommendations based on change type
 declare -A STEP_RECOMMENDATIONS
 STEP_RECOMMENDATIONS=(
-    ["docs-only"]="0,1,2,11,12"  # Pre-analysis, Docs, Consistency, Git, Markdown lint
-    ["tests-only"]="0,5,6,7,11"  # Pre-analysis, Test review, Test gen, Test exec, Git
-    ["config-only"]="0,8,11"     # Pre-analysis, Dependencies, Git
-    ["scripts-only"]="0,3,4,11"  # Pre-analysis, Script refs, Directory, Git
-    ["code-only"]="0,5,6,7,9,11" # Pre-analysis, Tests, Code quality, Git
-    ["full-stack"]="0,1,2,3,4,5,6,7,8,9,10,11,12"  # All steps
+    ["docs-only"]="0,1,2,12,13"  # Pre-analysis, Docs, Consistency, Git, Markdown lint
+    ["tests-only"]="0,6,7,8,12"  # Pre-analysis, Test review, Test gen, Test exec, Git
+    ["config-only"]="0,4,5,9,12"   # Pre-analysis, Config validation, Dependencies, Git (Step 4 will be new config step)
+    ["scripts-only"]="0,3,5,12"  # Pre-analysis, Script refs, Directory, Git
+    ["code-only"]="0,6,7,8,10,12" # Pre-analysis, Tests, Code quality, Git
+    ["full-stack"]="0,1,2,3,4,5,6,7,8,9,10,11,12,13"  # All steps
 )
 
 # ==============================================================================
@@ -471,9 +471,9 @@ EOF
 # FILE CLASSIFICATION FOR MODEL SELECTION (v3.2.0)
 # ==============================================================================
 
-# Classify changed files into code, documentation, and tests
+# Classify changed files into code, documentation, tests, and config
 # Usage: classify_files_by_nature
-# Returns: Three space-separated lists: "code_files|doc_files|test_files"
+# Returns: Four pipe-separated lists: "code_files|doc_files|test_files|config_files"
 classify_files_by_nature() {
     local modified_files=$(git diff --name-only HEAD 2>/dev/null)
     local staged_files=$(git diff --cached --name-only 2>/dev/null)
@@ -488,15 +488,18 @@ classify_files_by_nature() {
     local code_files=""
     local doc_files=""
     local test_files=""
+    local config_files=""
     
     while IFS= read -r file; do
         [[ -z "$file" ]] && continue
         
-        # Priority: tests > docs > code (to handle ambiguous files)
+        # Priority: tests > docs > config > code (to handle ambiguous files)
         if matches_pattern "$file" "${FILE_PATTERNS[tests]}"; then
             test_files="${test_files}${file} "
         elif matches_pattern "$file" "${FILE_PATTERNS[docs]}"; then
             doc_files="${doc_files}${file} "
+        elif matches_pattern "$file" "${FILE_PATTERNS[config]}"; then
+            config_files="${config_files}${file} "
         elif matches_pattern "$file" "${FILE_PATTERNS[code]}"; then
             code_files="${code_files}${file} "
         elif matches_pattern "$file" "${FILE_PATTERNS[scripts]}"; then
@@ -509,9 +512,10 @@ classify_files_by_nature() {
     code_files=$(echo "$code_files" | xargs)
     doc_files=$(echo "$doc_files" | xargs)
     test_files=$(echo "$test_files" | xargs)
+    config_files=$(echo "$config_files" | xargs)
     
-    # Return pipe-delimited
-    echo "${code_files}|${doc_files}|${test_files}"
+    # Return pipe-delimited with 4 categories
+    echo "${code_files}|${doc_files}|${test_files}|${config_files}"
 }
 
 # Export functions for use in workflow

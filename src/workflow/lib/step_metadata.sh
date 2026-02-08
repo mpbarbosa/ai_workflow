@@ -5,7 +5,7 @@ set -euo pipefail
 # Step Metadata Module
 # Purpose: Comprehensive metadata for workflow steps enabling smart execution
 # Part of: Tests & Documentation Workflow Automation v2.6.1
-# Version: 1.0.1
+# Version: 1.0.8
 ################################################################################
 
 # ==============================================================================
@@ -57,104 +57,122 @@ STEP_CAN_PARALLELIZE[3]=true
 STEP_REQUIRES_AI[3]=false
 STEP_AFFECTS_FILES[3]=""
 
-# Step 4: Directory Structure Validation
-STEP_NAMES[4]="Directory Structure Validation"
-STEP_DESCRIPTIONS[4]="Verify project directory structure and organization"
+# Step 4: Configuration Validation
+STEP_NAMES[4]="Configuration Validation"
+STEP_DESCRIPTIONS[4]="Validate configuration files for syntax, security, and best practices"
 STEP_CATEGORIES[4]="validation"
 STEP_CAN_SKIP[4]=true
 STEP_CAN_PARALLELIZE[4]=true
-STEP_REQUIRES_AI[4]=false
-STEP_AFFECTS_FILES[4]=""
+STEP_REQUIRES_AI[4]=true
+STEP_AFFECTS_FILES[4]="*.{json,yaml,yml,toml,ini},.*rc,.env.example,Dockerfile,docker-compose*.yml"
 
-# Step 5: Test Review
-STEP_NAMES[5]="Test Review"
-STEP_DESCRIPTIONS[5]="Review existing tests for coverage and quality"
-STEP_CATEGORIES[5]="testing"
+# Step 5: Directory Structure Validation
+STEP_NAMES[5]="Directory Structure Validation"
+STEP_DESCRIPTIONS[5]="Verify project directory structure and organization"
+STEP_CATEGORIES[5]="validation"
 STEP_CAN_SKIP[5]=true
 STEP_CAN_PARALLELIZE[5]=true
-STEP_REQUIRES_AI[5]=true
+STEP_REQUIRES_AI[5]=false
 STEP_AFFECTS_FILES[5]=""
 
-# Step 6: Test Generation
-STEP_NAMES[6]="Test Generation"
-STEP_DESCRIPTIONS[6]="Generate new tests with AI assistance"
+# Step 6: Test Review
+STEP_NAMES[6]="Test Review"
+STEP_DESCRIPTIONS[6]="Review existing tests for coverage and quality"
 STEP_CATEGORIES[6]="testing"
 STEP_CAN_SKIP[6]=true
-STEP_CAN_PARALLELIZE[6]=false
+STEP_CAN_PARALLELIZE[6]=true
 STEP_REQUIRES_AI[6]=true
-STEP_AFFECTS_FILES[6]="tests/**/*.{sh,js,ts,py}"
+STEP_AFFECTS_FILES[6]=""
 
-# Step 7: Test Execution
-STEP_NAMES[7]="Test Execution"
-STEP_DESCRIPTIONS[7]="Execute full test suite and analyze results"
+# Step 7: Test Generation
+STEP_NAMES[7]="Test Generation"
+STEP_DESCRIPTIONS[7]="Generate new tests with AI assistance"
 STEP_CATEGORIES[7]="testing"
-STEP_CAN_SKIP[7]=false
+STEP_CAN_SKIP[7]=true
 STEP_CAN_PARALLELIZE[7]=false
 STEP_REQUIRES_AI[7]=true
-STEP_AFFECTS_FILES[7]=""
+STEP_AFFECTS_FILES[7]="tests/**/*.{sh,js,ts,py}"
 
-# Step 8: Dependency Validation
-STEP_NAMES[8]="Dependency Validation"
-STEP_DESCRIPTIONS[8]="Validate project dependencies and versions"
-STEP_CATEGORIES[8]="validation"
-STEP_CAN_SKIP[8]=true
-STEP_CAN_PARALLELIZE[8]=true
-STEP_REQUIRES_AI[8]=false
+# Step 8: Test Execution
+STEP_NAMES[8]="Test Execution"
+STEP_DESCRIPTIONS[8]="Execute full test suite and analyze results"
+STEP_CATEGORIES[8]="testing"
+STEP_CAN_SKIP[8]=false
+STEP_CAN_PARALLELIZE[8]=false
+STEP_REQUIRES_AI[8]=true
 STEP_AFFECTS_FILES[8]=""
 
-# Step 9: Code Quality Validation
-STEP_NAMES[9]="Code Quality"
-STEP_DESCRIPTIONS[9]="Analyze code quality and suggest improvements"
-STEP_CATEGORIES[9]="quality"
+# Step 9: Dependency Validation
+STEP_NAMES[9]="Dependency Validation"
+STEP_DESCRIPTIONS[9]="Validate project dependencies and versions"
+STEP_CATEGORIES[9]="validation"
 STEP_CAN_SKIP[9]=true
 STEP_CAN_PARALLELIZE[9]=true
-STEP_REQUIRES_AI[9]=true
-STEP_AFFECTS_FILES[9]="src/**/*.{sh,js,ts,py}"
+STEP_REQUIRES_AI[9]=false
+STEP_AFFECTS_FILES[9]=""
 
-# Step 10: Context Analysis
-STEP_NAMES[10]="Context Analysis"
-STEP_DESCRIPTIONS[10]="Synthesize workflow results and generate insights"
-STEP_CATEGORIES[10]="analysis"
-STEP_CAN_SKIP[10]=false
-STEP_CAN_PARALLELIZE[10]=false
+# Step 10: Code Quality Validation
+STEP_NAMES[10]="Code Quality"
+STEP_DESCRIPTIONS[10]="Analyze code quality and suggest improvements"
+STEP_CATEGORIES[10]="quality"
+STEP_CAN_SKIP[10]=true
+STEP_CAN_PARALLELIZE[10]=true
 STEP_REQUIRES_AI[10]=true
-STEP_AFFECTS_FILES[10]=""
+STEP_AFFECTS_FILES[10]="src/**/*.{sh,js,ts,py}"
 
-# Step 11: Git Finalization
-STEP_NAMES[11]="Git Finalization"
-STEP_DESCRIPTIONS[11]="Generate commit message and finalize git operations"
-STEP_CATEGORIES[11]="finalization"
+# Step 11: Context Analysis
+STEP_NAMES[11]="Context Analysis"
+STEP_DESCRIPTIONS[11]="Synthesize workflow results and generate insights"
+STEP_CATEGORIES[11]="analysis"
 STEP_CAN_SKIP[11]=false
 STEP_CAN_PARALLELIZE[11]=false
 STEP_REQUIRES_AI[11]=true
-STEP_AFFECTS_FILES[11]=".git"
+STEP_AFFECTS_FILES[11]=""
 
-# Step 12: Markdown Linting
-STEP_NAMES[12]="Markdown Linting"
-STEP_DESCRIPTIONS[12]="Lint and format markdown documentation"
-STEP_CATEGORIES[12]="quality"
-STEP_CAN_SKIP[12]=true
-STEP_CAN_PARALLELIZE[12]=true
-STEP_REQUIRES_AI[12]=false
-STEP_AFFECTS_FILES[12]="docs/**/*.md,README.md,*.md"
+# Step 12: Git Finalization
+STEP_NAMES[12]="Git Finalization"
+STEP_DESCRIPTIONS[12]="Generate commit message and finalize git operations"
+STEP_CATEGORIES[12]="finalization"
+STEP_CAN_SKIP[12]=false
+STEP_CAN_PARALLELIZE[12]=false
+STEP_REQUIRES_AI[12]=true
+STEP_AFFECTS_FILES[12]=".git"
 
-# Step 13: Prompt Engineer Analysis
-STEP_NAMES[13]="Prompt Engineer Analysis"
-STEP_DESCRIPTIONS[13]="Analyze and improve AI prompts used in workflow"
+# Step 13: Markdown Linting
+STEP_NAMES[13]="Markdown Linting"
+STEP_DESCRIPTIONS[13]="Lint and format markdown documentation"
 STEP_CATEGORIES[13]="quality"
 STEP_CAN_SKIP[13]=true
 STEP_CAN_PARALLELIZE[13]=true
-STEP_REQUIRES_AI[13]=true
-STEP_AFFECTS_FILES[13]=""
+STEP_REQUIRES_AI[13]=false
+STEP_AFFECTS_FILES[13]="docs/**/*.md,README.md,*.md"
 
-# Step 14: UX Analysis
-STEP_NAMES[14]="UX Analysis"
-STEP_DESCRIPTIONS[14]="Analyze user experience and accessibility"
+# Step 14: Prompt Engineer Analysis
+STEP_NAMES[14]="Prompt Engineer Analysis"
+STEP_DESCRIPTIONS[14]="Analyze and improve AI prompts used in workflow"
 STEP_CATEGORIES[14]="quality"
 STEP_CAN_SKIP[14]=true
 STEP_CAN_PARALLELIZE[14]=true
 STEP_REQUIRES_AI[14]=true
 STEP_AFFECTS_FILES[14]=""
+
+# Step 15: UX Analysis
+STEP_NAMES[15]="UX Analysis"
+STEP_DESCRIPTIONS[15]="Analyze user experience and accessibility"
+STEP_CATEGORIES[15]="quality"
+STEP_CAN_SKIP[15]=true
+STEP_CAN_PARALLELIZE[15]=true
+STEP_REQUIRES_AI[15]=true
+STEP_AFFECTS_FILES[15]=""
+
+# Step 16: Version Update
+STEP_NAMES[16]="Version Update"
+STEP_DESCRIPTIONS[16]="Update version numbers across the project"
+STEP_CATEGORIES[16]="finalization"
+STEP_CAN_SKIP[16]=true
+STEP_CAN_PARALLELIZE[16]=false
+STEP_REQUIRES_AI[16]=false
+STEP_AFFECTS_FILES[16]="package.json,version.txt,**/version.sh"
 
 # ==============================================================================
 # METADATA QUERIES

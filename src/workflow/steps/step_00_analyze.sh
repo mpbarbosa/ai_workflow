@@ -5,7 +5,7 @@ set -euo pipefail
 # Step 0: Pre-Analysis - Analyzing Recent Changes
 # Purpose: Analyze git state and capture change context before workflow execution (adaptive)
 # Part of: Tests & Documentation Workflow Automation v2.6.1
-# Version: 3.0.1 (Added test infrastructure smoke test)
+# Version: 3.0.8 (Added test infrastructure smoke test)
 ################################################################################
 
 # Source test smoke test module
@@ -139,6 +139,7 @@ step0_analyze_changes() {
             local code_files=$(echo "$classified_files" | cut -d'|' -f1)
             local doc_files=$(echo "$classified_files" | cut -d'|' -f2)
             local test_files=$(echo "$classified_files" | cut -d'|' -f3)
+            local config_files=$(echo "$classified_files" | cut -d'|' -f4)
             
             # Count files
             local code_count=$(echo "$code_files" | wc -w)
