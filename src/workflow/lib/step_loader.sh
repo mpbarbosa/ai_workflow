@@ -3,7 +3,7 @@ set -euo pipefail
 
 ################################################################################
 # Step Loader Module
-# Version: 4.0.0
+# Version: 4.0.3
 # Purpose: Dynamic step module loading and execution
 #
 # Features:
@@ -20,10 +20,11 @@ set -euo pipefail
 ################################################################################
 
 # Module version
-readonly STEP_LOADER_VERSION="4.0.0"
+readonly STEP_LOADER_VERSION="4.0.3"
 
 # Global variables
-WORKFLOW_STEPS_DIR="${WORKFLOW_HOME:-$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)}/steps"
+# Use STEPS_DIR if set by parent script, otherwise derive from script location
+WORKFLOW_STEPS_DIR="${STEPS_DIR:-${WORKFLOW_HOME:-$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)}/steps}"
 declare -gA LOADED_STEP_MODULES  # Track loaded modules
 
 # ==============================================================================
@@ -67,11 +68,12 @@ load_step_module() {
         return 1
     fi
     
-    # Verify function exists
-    if ! declare -f "$function_name" > /dev/null 2>&1; then
-        print_error "Step function not found: $function_name"
-        print_error "Module: $module_path"
-        return 1
+    # Verify function exists (only if function_name is specified)
+    if [[ -n "$function_name" ]]; then
+        if ! declare -f "$function_name" > /dev/null 2>&1; then
+            print_warning "Step function not found: $function_name (Module: $module_path)"
+            print_info "Module loaded but function verification skipped"
+        fi
     fi
     
     # Mark as loaded

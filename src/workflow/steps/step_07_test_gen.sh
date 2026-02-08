@@ -4,12 +4,12 @@ set -euo pipefail
 ################################################################################
 # Step 7: AI-Powered Test Generation (Refactored)
 # Purpose: Generate new test code for untested modules
-# Part of: Tests & Documentation Workflow Automation v2.0.7
-# Version"2.0.8 (Refactored - High Cohesion, Low Coupling)
+# Part of: Tests & Documentation Workflow Automation v2.0.9
+# Version"2.0.9 (Refactored - High Cohesion, Low Coupling)
 ################################################################################
 
 # Module version information
-readonly STEP7_VERSION"2.0.8"
+readonly STEP7_VERSION="2.0.9"
 readonly STEP7_VERSION_MAJOR=2
 readonly STEP7_VERSION_MINOR=0
 readonly STEP7_VERSION_PATCH=0
@@ -18,17 +18,17 @@ readonly STEP7_VERSION_PATCH=0
 STEP7_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 # Source modular libraries
-# shellcheck source=step_07_lib/gap_analysis.sh
-source "${STEP7_DIR}/step_07_lib/gap_analysis.sh"
+# shellcheck source=test_generation_lib/gap_analysis.sh
+source "${STEP7_DIR}/test_generation_lib/gap_analysis.sh"
 
-# shellcheck source=step_07_lib/test_generation.sh
-source "${STEP7_DIR}/step_07_lib/test_generation.sh"
+# shellcheck source=test_generation_lib/test_generation.sh
+source "${STEP7_DIR}/test_generation_lib/test_generation.sh"
 
-# shellcheck source=step_07_lib/ai_integration.sh
-source "${STEP7_DIR}/step_07_lib/ai_integration.sh"
+# shellcheck source=test_generation_lib/ai_integration.sh
+source "${STEP7_DIR}/test_generation_lib/ai_integration.sh"
 
-# shellcheck source=step_07_lib/reporting.sh
-source "${STEP7_DIR}/step_07_lib/reporting.sh"
+# shellcheck source=test_generation_lib/reporting.sh
+source "${STEP7_DIR}/test_generation_lib/reporting.sh"
 
 # ==============================================================================
 # BACKWARD COMPATIBILITY ALIASES

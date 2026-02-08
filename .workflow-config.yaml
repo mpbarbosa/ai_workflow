@@ -212,7 +212,7 @@ workflow:
       description: "Finalize version and generate changelog"
       phase: "specialized"
       can_parallelize: false
-      dependencies: ["12", "13", "14", "15"]
+      dependencies: ["12", "13", "14"]
       ai_persona: "version_manager"
     
     # Finalization Phase (12-14)
@@ -222,7 +222,7 @@ workflow:
       description: "Git status and change management"
       phase: "finalization"
       can_parallelize: false
-      dependencies: ["11"]
+      dependencies: ["15"]
 
   # Step execution phases for multi-stage pipeline
   phases:

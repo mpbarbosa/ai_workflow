@@ -5,7 +5,7 @@ set -euo pipefail
 # Step 2.5: Documentation Optimization
 # Purpose: Analyze, consolidate, and optimize documentation to reduce AI context
 # Part of: Tests & Documentation Workflow Automation v3.2.1
-# Version: 1.0.3
+# Version: 1.0.5
 ################################################################################
 #
 # This step optimizes the documentation base by:
@@ -41,12 +41,12 @@ source "${WORKFLOW_LIB_DIR}/git_cache.sh" 2>/dev/null || true
 source "${WORKFLOW_LIB_DIR}/metrics.sh" 2>/dev/null || true
 
 # Source step-specific submodules
-source "${STEP2_5_DIR}/step_02_5_lib/heuristics.sh"
-source "${STEP2_5_DIR}/step_02_5_lib/git_analysis.sh"
-source "${STEP2_5_DIR}/step_02_5_lib/version_analysis.sh"
-source "${STEP2_5_DIR}/step_02_5_lib/ai_analyzer.sh"
-source "${STEP2_5_DIR}/step_02_5_lib/consolidation.sh"
-source "${STEP2_5_DIR}/step_02_5_lib/reporting.sh"
+source "${STEP2_5_DIR}/documentation_optimization_lib/heuristics.sh"
+source "${STEP2_5_DIR}/documentation_optimization_lib/git_analysis.sh"
+source "${STEP2_5_DIR}/documentation_optimization_lib/version_analysis.sh"
+source "${STEP2_5_DIR}/documentation_optimization_lib/ai_analyzer.sh"
+source "${STEP2_5_DIR}/documentation_optimization_lib/consolidation.sh"
+source "${STEP2_5_DIR}/documentation_optimization_lib/reporting.sh"
 
 # Configuration defaults (can be overridden via .workflow-config.yaml)
 readonly DEFAULT_OUTDATED_THRESHOLD_MONTHS=12

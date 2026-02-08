@@ -4,7 +4,7 @@ set -euo pipefail
 
 ################################################################################
 # Tests & Documentation Workflow Automation Script
-# Version: 3.2.8
+# Version: 3.2.11
 # Purpose: Automate the complete tests and documentation update workflow
 # Related: /prompts/tests_documentation_update_enhanced.txt
 #
@@ -18,7 +18,7 @@ set -euo pipefail
 #   Step 0b: Bootstrap Documentation (Technical Writer) ⭐ NEW v3.1.1
 #   Step 1:  Documentation Updates (Technical Documentation Specialist)
 #   Step 2:  Consistency Analysis (Documentation Specialist + Information Architect)
-#   Step 2.5: Documentation Optimization (Documentation Architect + AI Optimizer) ⭐ NEW v3.2.8
+#   Step 2.5: Documentation Optimization (Documentation Architect + AI Optimizer) ⭐ NEW v3.2.11
 #   Step 3:  Script Reference Validation (DevOps Documentation Expert)
 #   Step 16:  Directory Structure Validation (Software Architect + Documentation Specialist)
 #   Step 16:  Test Review (QA Engineer + Test Automation Specialist)
@@ -298,6 +298,18 @@ else
         exit 1
     fi
     print_info "Step registry loaded: $(get_loaded_module_count 2>/dev/null || echo "0") steps configured"
+    
+    # Load all step modules dynamically
+    if ! load_all_step_modules; then
+        print_error "Failed to load step modules from registry"
+        print_info "Falling back to legacy step loading"
+        for step_file in "${STEPS_DIR}"/step_*.sh; do
+            if [[ -f "$step_file" ]]; then
+                # shellcheck source=/dev/null
+                source "$step_file"
+            fi
+        done
+    fi
 fi
 
 # ==============================================================================
@@ -2432,11 +2444,11 @@ OPTIONS:
                        Performance: 40-85% faster for incremental changes
                        Use --no-smart-execution to disable
     
-    --force-model MODEL   Override AI model selection for all steps (NEW v3.2.8)
+    --force-model MODEL   Override AI model selection for all steps (NEW v3.2.11)
                           Force specific GitHub Copilot model regardless of complexity
                           Examples: claude-opus-4.6, gpt-5.2, claude-haiku-4.5
                           
-    --show-model-plan     Preview AI model assignments without executing (NEW v3.2.8)
+    --show-model-plan     Preview AI model assignments without executing (NEW v3.2.11)
                           Displays which model will be used for each step based on
                           change complexity analysis, then exits
     
@@ -2543,7 +2555,7 @@ WORKFLOW STEPS:
     Step 0b: Bootstrap Documentation (NEW v3.1.1)
     Step 1:  Update Related Documentation
     Step 2:  Check Documentation Consistency
-    Step 2.5: Documentation Optimization & Consolidation (NEW v3.2.8)
+    Step 2.5: Documentation Optimization & Consolidation (NEW v3.2.11)
     Step 3:  Validate Script References
     Step 16:  Validate Directory Structure
     Step 16:  Review Existing Tests

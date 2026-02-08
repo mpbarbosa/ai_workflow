@@ -5,7 +5,7 @@ set -euo pipefail
 # Step 4: Configuration Validation
 # Purpose: Validate configuration files for syntax, security, and best practices
 # Part of: Tests & Documentation Workflow Automation v3.2.7
-# Version: 1.0.3 (Configuration Files as 4th Category Feature)
+# Version: 1.0.4 (Configuration Files as 4th Category Feature)
 ################################################################################
 
 # Module version information
@@ -96,9 +96,19 @@ validate_yaml() {
     
     # Try using yq if available, otherwise use python
     if command -v yq &>/dev/null; then
-        if ! yq eval '.' "$file" >/dev/null 2>&1; then
-            echo "ERROR: Invalid YAML syntax in $file" >&2
-            return 1
+        # Detect yq version (Go-based vs Python-based)
+        if yq --version 2>&1 | grep -q "mikefarah"; then
+            # Go-based yq (mikefarah/yq)
+            if ! yq eval '.' "$file" >/dev/null 2>&1; then
+                echo "ERROR: Invalid YAML syntax in $file" >&2
+                return 1
+            fi
+        else
+            # Python-based yq (uses jq syntax)
+            if ! yq '.' "$file" >/dev/null 2>&1; then
+                echo "ERROR: Invalid YAML syntax in $file" >&2
+                return 1
+            fi
         fi
     elif command -v python3 &>/dev/null; then
         if ! python3 -c "import yaml; yaml.safe_load(open('$file'))" 2>/dev/null; then

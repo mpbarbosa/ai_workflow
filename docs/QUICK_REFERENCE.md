@@ -242,8 +242,8 @@ test:
 ```
 src/workflow/
 ├── execute_tests_docs_workflow.sh  # Main entry point
-├── lib/                            # 73 library modules
-├── steps/                          # 20 step modules
+├── lib/                            # 81 library modules
+├── steps/                          # 21 step modules
 ├── orchestrators/                  # 4 orchestrators
 ├── backlog/                        # Execution reports
 ├── logs/                           # Execution logs

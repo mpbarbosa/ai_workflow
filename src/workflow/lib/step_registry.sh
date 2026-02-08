@@ -3,7 +3,7 @@ set -euo pipefail
 
 ################################################################################
 # Step Registry Module
-# Version: 4.0.5
+# Version: 4.0.8
 # Purpose: Configuration-driven step management and execution order resolution
 #
 # Features:
@@ -90,10 +90,11 @@ load_step_definitions() {
         # Skip if not in steps section
         [[ "$in_steps_section" != true ]] && continue
         
-        # Parse step entry (starts with "- name:")
-        if [[ "$line" =~ ^[[:space:]]*-[[:space:]]+name:[[:space:]]+([a-z_]+) ]]; then
-            current_step_name="${BASH_REMATCH[1]}"
+        # Parse step entry (starts with "- id:")
+        if [[ "$line" =~ ^[[:space:]]*-[[:space:]]+id:[[:space:]]+\"?([^\"[:space:]]+)\"? ]]; then
+            local step_id="${BASH_REMATCH[1]}"
             ((step_index++)) || true
+            current_step_name="$step_id"
             
             # Initialize registry entries
             STEP_REGISTRY_BY_NAME["$current_step_name"]=$step_index
@@ -110,10 +111,19 @@ load_step_definitions() {
         [[ -z "$current_step_name" ]] && continue
         
         # Parse step properties
-        if [[ "$line" =~ ^[[:space:]]+description:[[:space:]]+\"(.+)\" ]]; then
+        if [[ "$line" =~ ^[[:space:]]+name:[[:space:]]+\"(.+)\" ]]; then
+            # Use human-readable name as description if description not set
+            if [[ -z "${STEP_REGISTRY_DESCRIPTION[$current_step_name]:-}" ]]; then
+                STEP_REGISTRY_DESCRIPTION["$current_step_name"]="${BASH_REMATCH[1]}"
+            fi
+            
+        elif [[ "$line" =~ ^[[:space:]]+description:[[:space:]]+\"(.+)\" ]]; then
             STEP_REGISTRY_DESCRIPTION["$current_step_name"]="${BASH_REMATCH[1]}"
             
-        elif [[ "$line" =~ ^[[:space:]]+module:[[:space:]]+([a-z_]+\.sh) ]]; then
+        elif [[ "$line" =~ ^[[:space:]]+file:[[:space:]]+\"?([a-z0-9_\.]+\.sh)\"? ]]; then
+            STEP_REGISTRY_MODULE["$current_step_name"]="${BASH_REMATCH[1]}"
+            
+        elif [[ "$line" =~ ^[[:space:]]+module:[[:space:]]+\"?([a-z0-9_\.]+\.sh)\"? ]]; then
             STEP_REGISTRY_MODULE["$current_step_name"]="${BASH_REMATCH[1]}"
             
         elif [[ "$line" =~ ^[[:space:]]+function:[[:space:]]+([a-z_]+) ]]; then
@@ -123,9 +133,10 @@ load_step_definitions() {
             STEP_REGISTRY_ENABLED["$current_step_name"]="${BASH_REMATCH[1]}"
             
         elif [[ "$line" =~ ^[[:space:]]+dependencies:[[:space:]]+\[([^\]]*)\] ]]; then
-            # Parse dependency array: [dep1, dep2, dep3]
+            # Parse dependency array: [dep1, dep2, dep3] or ["dep1", "dep2"]
             local deps="${BASH_REMATCH[1]}"
             deps="${deps//[[:space:]]/}"  # Remove spaces
+            deps="${deps//\"/}"           # Remove quotes
             STEP_REGISTRY_DEPENDENCIES["$current_step_name"]="$deps"
             
         elif [[ "$line" =~ ^[[:space:]]+ai_persona:[[:space:]]+([a-z_]+) ]]; then
@@ -347,6 +358,17 @@ resolve_execution_order() {
         return 1
     fi
     
+    # Check if registry is empty (disable unbound variable check temporarily)
+    set +u
+    local registry_size=${#STEP_REGISTRY_BY_NAME[@]}
+    set -u
+    
+    if [[ $registry_size -eq 0 ]]; then
+        print_warning "No steps loaded in registry. Execution order is empty."
+        STEP_EXECUTION_ORDER=()
+        return 0
+    fi
+    
     print_info "Resolving step execution order..."
     
     # Clear existing execution order
@@ -373,11 +395,17 @@ resolve_execution_order() {
         for dep in "${dep_array[@]}"; do
             [[ -z "$dep" ]] && continue
             
+            # Validate dependency exists
+            if [[ -z "${STEP_REGISTRY_BY_NAME[$dep]:-}" ]]; then
+                print_warning "Step '$step_name' has unknown dependency: '$dep' - skipping"
+                continue
+            fi
+            
             # Increment in_degree for this step
             ((in_degree["$step_name"]++)) || true
             
             # Add this step to dependency's adjacency list
-            if [[ -z "${adj_list[$dep]}" ]]; then
+            if [[ -z "${adj_list[$dep]:-}" ]]; then
                 adj_list["$dep"]="$step_name"
             else
                 adj_list["$dep"]="${adj_list[$dep]},$step_name"

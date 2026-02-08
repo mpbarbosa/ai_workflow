@@ -33,8 +33,8 @@
 
 This unified API reference consolidates all module APIs, providing a single source of truth for the AI Workflow Automation system. The system consists of:
 
-- **73 Library Modules**: Reusable functions for workflow operations
-- **20 Step Modules**: Workflow pipeline execution steps
+- **81 Library Modules**: Reusable functions for workflow operations
+- **21 Step Modules**: Workflow pipeline execution steps
 - **4 Orchestrators**: High-level workflow coordination (pre_flight, validation, quality, finalization)
 - **4 Configuration Files**: YAML-based settings and templates
 
