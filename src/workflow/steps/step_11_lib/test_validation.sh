@@ -40,25 +40,25 @@ check_test_status() {
     local test_logs
     test_logs=$(find "${WORKFLOW_HOME}/logs/${WORKFLOW_TIMESTAMP:-*}" -name "*test*.log" 2>/dev/null || true)
     
-    if [[ -z "$test_logs" ]]; then
-        print_error "No test execution logs found"
-        return 1
-    fi
-    
-    # Parse test logs for failures
-    local has_failures=false
-    while IFS= read -r log_file; do
-        if grep -qi "fail\|error\|✗" "$log_file" 2>/dev/null; then
-            if ! grep -qi "0 fail" "$log_file" 2>/dev/null; then
-                has_failures=true
-                break
+    if [[ -n "$test_logs" ]]; then
+        # Parse test logs for failures
+        local has_failures=false
+        while IFS= read -r log_file; do
+            if grep -qi "fail\|error\|✗" "$log_file" 2>/dev/null; then
+                if ! grep -qi "0 fail" "$log_file" 2>/dev/null; then
+                    has_failures=true
+                    break
+                fi
             fi
+        done <<< "$test_logs"
+        
+        if [[ "$has_failures" == "true" ]]; then
+            print_error "Test failures detected in logs"
+            return 1
         fi
-    done <<< "$test_logs"
-    
-    if [[ "$has_failures" == "true" ]]; then
-        print_error "Test failures detected in logs"
-        return 1
+        
+        # Test logs found and no failures - tests passed
+        return 0
     fi
     
     # Method 4: Check for test result files
