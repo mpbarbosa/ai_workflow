@@ -452,3 +452,5 @@ main() {
 
 # Run tests
 main "$@"
+exit_code=$?
+exit $exit_code

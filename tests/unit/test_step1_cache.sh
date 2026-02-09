@@ -108,7 +108,9 @@ assert_equals "test_value_1" "$result" "Cache returns cached value without re-ex
 
 # Test 5: Cache statistics
 # Note: Direct cache manipulation to test stats since subshell modifications don't persist
+set +u  # Temporarily disable nounset for associative array access
 STEP1_CACHE["test_key"]="test_value"
+set -u  # Re-enable nounset
 assert_equals "1" "$(get_cache_stats_step1)" "Cache reports correct count"
 
 # Test 6: Check if key is cached

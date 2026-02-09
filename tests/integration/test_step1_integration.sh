@@ -103,14 +103,14 @@ test_modules_exist() {
     
     local all_exist=true
     
-    if [[ -f "$STEP1_DIR/step_01_lib/cache.sh" ]]; then
+    if [[ -f "$STEP1_DIR/documentation_updates_lib/cache.sh" ]]; then
         pass "Cache module exists"
     else
         fail "Cache module not found"
         all_exist=false
     fi
     
-    if [[ -f "$STEP1_DIR/step_01_lib/file_operations.sh" ]]; then
+    if [[ -f "$STEP1_DIR/documentation_updates_lib/file_operations.sh" ]]; then
         pass "File operations module exists"
     else
         fail "File operations module not found"
@@ -124,14 +124,14 @@ test_modules_exist() {
 test_modules_syntax() {
     info "Test 3: Checking module syntax..."
     
-    if bash -n "$STEP1_DIR/step_01_lib/cache.sh" 2>/dev/null; then
+    if bash -n "$STEP1_DIR/documentation_updates_lib/cache.sh" 2>/dev/null; then
         pass "Cache module syntax valid"
     else
         fail "Cache module has syntax errors"
         return 1
     fi
     
-    if bash -n "$STEP1_DIR/step_01_lib/file_operations.sh" 2>/dev/null; then
+    if bash -n "$STEP1_DIR/documentation_updates_lib/file_operations.sh" 2>/dev/null; then
         pass "File operations module syntax valid"
     else
         fail "File operations module has syntax errors"
@@ -143,7 +143,7 @@ test_modules_syntax() {
 test_modules_source() {
     info "Test 4: Testing module sourcing..."
     
-    if source "$STEP1_DIR/step_01_lib/cache.sh" 2>/dev/null; then
+    if source "$STEP1_DIR/documentation_updates_lib/cache.sh" 2>/dev/null; then
         if [[ "${STEP1_CACHE_MODULE_LOADED:-}" == "true" ]]; then
             pass "Cache module sources and loads correctly"
         else
@@ -155,7 +155,7 @@ test_modules_source() {
         return 1
     fi
     
-    if source "$STEP1_DIR/step_01_lib/file_operations.sh" 2>/dev/null; then
+    if source "$STEP1_DIR/documentation_updates_lib/file_operations.sh" 2>/dev/null; then
         if [[ "${STEP1_FILE_OPS_MODULE_LOADED:-}" == "true" ]]; then
             pass "File operations module sources and loads correctly"
         else
@@ -172,8 +172,8 @@ test_modules_source() {
 test_functions_exported() {
     info "Test 5: Testing exported functions..."
     
-    source "$STEP1_DIR/step_01_lib/cache.sh"
-    source "$STEP1_DIR/step_01_lib/file_operations.sh"
+    source "$STEP1_DIR/documentation_updates_lib/cache.sh"
+    source "$STEP1_DIR/documentation_updates_lib/file_operations.sh"
     
     # Test cache functions
     if declare -F init_step1_cache &>/dev/null; then
@@ -197,7 +197,7 @@ test_cache_functionality() {
     info "Test 6: Testing cache module functionality..."
     
     # Test that cache module loads without error
-    if bash -c 'source "'"$STEP1_DIR"'/step_01_lib/cache.sh" && init_step1_cache' 2>/dev/null; then
+    if bash -c 'source "'"$STEP1_DIR"'/documentation_updates_lib/cache.sh" && init_step1_cache' 2>/dev/null; then
         pass "Cache module functions correctly"
     else
         fail "Cache module has runtime errors"
@@ -209,7 +209,7 @@ test_cache_functionality() {
 test_file_ops_functionality() {
     info "Test 7: Testing file operations module functionality..."
     
-    source "$STEP1_DIR/step_01_lib/file_operations.sh"
+    source "$STEP1_DIR/documentation_updates_lib/file_operations.sh"
     
     # Test determine_doc_folder
     folder=$(determine_doc_folder_step1 "docs/test.md")
@@ -236,7 +236,7 @@ test_step1_sources_modules() {
         export -f print_error print_success print_info print_warning
         
         source "'"$STEP1_DIR"'/step_01_documentation.sh" 2>&1 | head -1
-    ' 2>&1 | grep -q "step_01_lib"; then
+    ' 2>&1 | grep -q "documentation_updates_lib"; then
         pass "Step 1 successfully sources both modules"
     else
         pass "Step 1 sources without fatal errors"
@@ -263,8 +263,8 @@ test_no_syntax_errors() {
     info "Test 10: Full syntax check of refactored code..."
     
     if bash -n "$STEP1_DIR/step_01_documentation.sh" 2>/dev/null && \
-       bash -n "$STEP1_DIR/step_01_lib/cache.sh" 2>/dev/null && \
-       bash -n "$STEP1_DIR/step_01_lib/file_operations.sh" 2>/dev/null; then
+       bash -n "$STEP1_DIR/documentation_updates_lib/cache.sh" 2>/dev/null && \
+       bash -n "$STEP1_DIR/documentation_updates_lib/file_operations.sh" 2>/dev/null; then
         pass "No syntax errors in any file"
     else
         fail "Syntax errors detected"
