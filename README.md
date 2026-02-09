@@ -56,7 +56,7 @@ This repository provides a comprehensive, modular workflow automation system tha
   - Parallel analysis: Concurrent AI processing (71% savings)
   - Average: 14.5 min → 3 min
 - **AI Response Caching**: 60-80% token reduction
-- **Pre-Commit Hooks** (NEW v2.10.0): Fast validation checks to prevent broken commits
+- **Pre-Commit Hooks** (NEW v3.0.0): Fast validation checks to prevent broken commits
 - **Auto-Documentation** (v2.9.0): Generate reports and CHANGELOG from workflow execution
 - **Multi-Stage Pipeline** (v2.8.0): Progressive validation with 3-stage intelligent execution
 - **ML Optimization** (v2.7.0): Predictive workflow intelligence with 15-30% additional improvement

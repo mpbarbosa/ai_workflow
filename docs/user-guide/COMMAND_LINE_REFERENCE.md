@@ -277,6 +277,58 @@ Force all stages in multi-stage mode.
 
 **Behavior**: Runs all 3 stages regardless of stage 1 results
 
+### `--parallel-tracks`
+**Version**: v2.6.0  
+Enable 3-track parallel execution for maximum performance.
+
+```bash
+./execute_tests_docs_workflow.sh --parallel-tracks --auto
+```
+
+**How It Works**:
+- Divides workflow into 3 independent execution tracks
+- Each track runs in parallel process
+- Automatically manages dependencies between tracks
+- Maximum CPU utilization
+
+**Performance**: Up to 50% faster than standard `--parallel` mode
+
+**Resource Requirements**:
+- Minimum 4 CPU cores (optimal: 8+ cores)
+- 8GB+ RAM
+- Fast SSD storage
+
+**Tracks**:
+1. **Track 1**: Documentation and analysis steps
+2. **Track 2**: Code review and test execution
+3. **Track 3**: Quality checks and finalization
+
+**Example**:
+```bash
+# Maximum performance mode
+./execute_tests_docs_workflow.sh \
+  --parallel-tracks \
+  --smart-execution \
+  --ml-optimize \
+  --auto
+```
+
+### `--no-fast-track`
+**Version**: v5.0.0  
+Disable docs-only fast track optimization.
+
+```bash
+./execute_tests_docs_workflow.sh --no-fast-track
+```
+
+**Use Cases**:
+- Force full pipeline execution
+- Validate all steps even for doc-only changes
+- Testing and debugging
+- Release validation
+
+**Behavior**: Disables automatic step skipping for documentation-only changes
+
 ---
 
 ## Configuration Options
@@ -433,6 +485,61 @@ Clear AI response cache before execution.
 
 **Effect**: Removes all cached responses in `.ai_cache/`
 
+### `--force-model <model-name>`
+**Version**: v3.2.11  
+Override default AI model selection for all steps.
+
+```bash
+./execute_tests_docs_workflow.sh --force-model gpt-4-turbo
+```
+
+**Supported Models**:
+- `gpt-4` - OpenAI GPT-4 (high quality, slower)
+- `gpt-4-turbo` - OpenAI GPT-4 Turbo (faster)
+- `gpt-3.5-turbo` - OpenAI GPT-3.5 (fast, lower cost)
+- `claude-3-opus` - Anthropic Claude 3 Opus
+- `claude-3-sonnet` - Anthropic Claude 3 Sonnet
+
+**Use Cases**:
+- Testing different model performance
+- Cost optimization
+- Quality vs. speed tradeoffs
+- Specific model requirements
+
+**Example**:
+```bash
+# Use faster model for quick validation
+./execute_tests_docs_workflow.sh \
+  --force-model gpt-3.5-turbo \
+  --steps documentation_updates \
+  --auto
+```
+
+### `--show-model-plan`
+**Version**: v3.2.11  
+Preview AI model assignments without executing workflow.
+
+```bash
+./execute_tests_docs_workflow.sh --show-model-plan
+```
+
+**Output Example**:
+```
+AI Model Plan:
+├── Step 2 (Documentation): gpt-4 (recommended)
+├── Step 4 (Code Review): gpt-4-turbo (fast)
+├── Step 5 (Test Generation): gpt-4 (high quality)
+└── Step 7 (Quality Check): gpt-3.5-turbo (efficient)
+
+Total estimated tokens: 125,000
+Estimated cost: $2.50
+```
+
+**Use Cases**:
+- Cost estimation before execution
+- Model selection planning
+- Debugging model assignments
+
 ---
 
 ## Git & Version Control
@@ -472,7 +579,7 @@ Install Git pre-commit hooks.
 ```
 
 **Installed Hooks**:
-- `pre-commit` - Fast validation checks (< 1 second)
+- `pre-commit` - Fast validation checks (< 1 second) (v3.0.0)
   - File syntax validation
   - Basic linting
   - Commit message format
@@ -488,6 +595,69 @@ Test pre-commit hooks without committing.
 ```
 
 **Output**: Validation results without Git commit
+
+### `--last-commits <N>`
+**Version**: v3.3.0  
+Analyze last N commits from HEAD for change detection.
+
+```bash
+# Analyze last 5 commits plus uncommitted changes
+./execute_tests_docs_workflow.sh --last-commits 5
+```
+
+**How It Works**:
+1. Analyzes commits from `HEAD~N` to `HEAD`
+2. Includes uncommitted changes in working directory
+3. Uses combined changes for smart execution decisions
+4. Stores commit hashes in workflow metadata
+
+**Use Cases**:
+- Multi-commit feature branches
+- Release validation across commits
+- Historical change analysis
+- Comprehensive testing after rebase
+
+**Example**:
+```bash
+# Validate last 10 commits before release
+./execute_tests_docs_workflow.sh \
+  --last-commits 10 \
+  --validate-release \
+  --smart-execution
+```
+
+### `--validate-release`
+**Version**: v3.3.0  
+Enable deployment readiness gate (Step 11).
+
+```bash
+./execute_tests_docs_workflow.sh --validate-release
+```
+
+**Validation Checks**:
+- All tests passing
+- Documentation complete
+- No TODO/FIXME in production code
+- Version numbers consistent
+- CHANGELOG updated
+- Git tags present
+- Build succeeds
+
+**Behavior**: 
+- Enables Step 11 (normally skipped)
+- Fails workflow if validation fails
+- Generates deployment readiness report
+
+**Alias**: `--deployment-check`
+
+**Example**:
+```bash
+# Pre-release validation
+./execute_tests_docs_workflow.sh \
+  --validate-release \
+  --last-commits 20 \
+  --auto
+```
 
 ---
 
