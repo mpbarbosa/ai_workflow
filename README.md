@@ -286,7 +286,10 @@ See [docs/reference/init-config-wizard.md](docs/reference/init-config-wizard.md)
 
 **📚 Complete Documentation** - See [docs/README.md](docs/README.md) and [docs/PROJECT_REFERENCE.md](docs/PROJECT_REFERENCE.md) ⭐
 
-> **For Developers**: Detailed API reference and module documentation available at [src/workflow/README.md](src/workflow/README.md)
+> **For Developers**: Comprehensive script and module documentation:
+> - **[src/workflow/SCRIPT_REFERENCE.md](src/workflow/SCRIPT_REFERENCE.md)** - Complete script API reference (180+ scripts)
+> - **[src/workflow/README.md](src/workflow/README.md)** - Module architecture and design patterns
+> - **[docs/PROJECT_REFERENCE.md](docs/PROJECT_REFERENCE.md)** - Authoritative module inventory
 
 ### Quick Start
 - **[docs/ROADMAP.md](docs/ROADMAP.md)**: Future plans and development roadmap

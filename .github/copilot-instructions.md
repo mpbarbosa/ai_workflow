@@ -1,8 +1,8 @@
 # GitHub Copilot Instructions - AI Workflow Automation
 
 **Repository**: ai_workflow  
-**Version**: v4.0.0  
-**Last Updated**: 2026-02-08  
+**Version**: v4.0.1  
+**Last Updated**: 2026-02-09  
 **Maintainer**: Marcelo Pereira Barbosa ([@mpbarbosa](https://github.com/mpbarbosa))
 
 ## Project Overview
@@ -14,8 +14,8 @@ AI Workflow Automation is an intelligent workflow system for validating and enha
 > 📋 **Reference**: See [docs/PROJECT_REFERENCE.md](../docs/PROJECT_REFERENCE.md) for authoritative project statistics, features, and module inventory.
 
 **Core Features**:
-- **20-Step Automated Pipeline** with 15 AI personas
-- **81 Library Modules** + **21 Step Modules** + **4 Orchestrators** + **4 Configs**
+- **23-Step Automated Pipeline** with 17 AI personas ⭐ UPDATED v4.0.1
+- **81 Library Modules** + **22 Step Modules** + **4 Orchestrators** + **4 Configs** ⭐ UPDATED
 - **Configuration-Driven Steps** (NEW v4.0.0): Use descriptive step names instead of numbers
 - **Smart Execution**: 40-85% faster | **Parallel Execution**: 33% faster
 - **AI Response Caching**: 60-80% token reduction
@@ -26,7 +26,8 @@ AI Workflow Automation is an intelligent workflow system for validating and enha
 - **Auto-Commit Workflow** (v2.6.0): Automatic artifact commits
 - **Workflow Templates** (v2.6.0): Docs-only, test-only, feature templates
 - **IDE Integration** (v2.6.0): VS Code tasks with 10 pre-configured workflows
-- **UX Analysis** (v2.4.0): Accessibility checking with WCAG 2.1
+- **Front-End Analysis** (v4.0.1): Technical implementation review with front_end_developer persona ⭐ NEW
+- **UX Analysis** (v2.4.0, updated v4.0.1): User experience review with ui_ux_designer persona ⭐ UPDATED
 - **Checkpoint Resume**: Automatic continuation from failures
 - **100% Test Coverage**: 37+ automated tests
 - **Code Quality**: B+ (87/100) assessed by Software Quality Engineer AI
@@ -87,6 +88,19 @@ src/workflow/execute_tests_docs_workflow.sh
 ### Library and Step Modules
 
 > 📋 **Complete List**: See [docs/PROJECT_REFERENCE.md#module-inventory](../docs/PROJECT_REFERENCE.md#module-inventory for all 62 library modules, 18 step modules, and 4 orchestrators with line counts.
+
+### Script Reference Documentation
+
+```
+src/workflow/SCRIPT_REFERENCE.md        # Comprehensive script API reference
+├── Entry Points (4 scripts)            # Main orchestrator + workflow templates
+├── Library Modules (81 modules)        # Core + supporting modules
+├── Step Modules (79 scripts)           # Configuration-driven + legacy steps
+├── Orchestrators (4 modules)           # Pre-flight, validation, quality, finalization
+└── Utility Scripts (20+ scripts)       # Repository utilities and tools
+```
+
+> **Quick Reference**: For API details and usage examples, see [src/workflow/SCRIPT_REFERENCE.md](../src/workflow/SCRIPT_REFERENCE.md)
 
 ### Documentation Structure
 
@@ -262,6 +276,27 @@ cd ../
 ./test_file_operations.sh
 ```
 
+### Common Utility Scripts
+
+```bash
+# Artifact cleanup
+./scripts/cleanup_artifacts.sh --all --older-than 30      # Clean old artifacts
+./scripts/cleanup_artifacts.sh --logs --older-than 7      # Clean logs only
+./scripts/cleanup_artifacts.sh --all --dry-run            # Preview cleanup
+
+# Documentation validation
+python3 .workflow_core/scripts/validate_structure.py docs/          # Validate structure
+python3 .workflow_core/scripts/validate_context_blocks.py docs/     # Validate context
+python3 scripts/check_doc_links.py                                  # Check links
+python3 scripts/validate_api_docs.py                                # Validate API docs
+
+# Repository maintenance
+./scripts/bump_version.sh <new-version>                   # Bump version
+./scripts/standardize_dates.sh                            # Standardize dates
+./scripts/doc_diff_checker.sh                             # Check doc differences
+./scripts/validate_doc_examples.sh                        # Validate examples
+```
+
 ### Code Style Guidelines
 
 1. **Shell Script Standards**
@@ -291,17 +326,19 @@ cd ../
 
 ### AI Personas
 
-> 📋 **Complete List**: See [docs/PROJECT_REFERENCE.md#ai-personas-15-total](../docs/PROJECT_REFERENCE.md#ai-personas-15-total for all 15 functional AI personas.
+> 📋 **Complete List**: See [docs/PROJECT_REFERENCE.md#ai-personas-17-total](../docs/PROJECT_REFERENCE.md#ai-personas-17-total) for all 17 functional AI personas.
 
-The system uses **15 specialized AI personas** including documentation_specialist, code_reviewer, test_engineer, ux_designer (NEW v2.4.0), and technical_writer (NEW v3.1.0).
+The system uses **17 specialized AI personas** including documentation_specialist, code_reviewer, test_engineer, front_end_developer (NEW v4.0.1), ui_ux_designer (UPDATED v4.0.1), and technical_writer (v3.1.0). ⭐ UPDATED
 
 **Key Steps Using AI**:
-- **Step 0b: Bootstrap Documentation** (NEW v3.1.0): technical_writer persona generates comprehensive documentation from scratch
-- **Step 1-15**: Various specialized personas for documentation, testing, code quality, and finalization
+- **Step 0b: Bootstrap Documentation** (v3.1.0): technical_writer persona generates comprehensive documentation from scratch
+- **Step 11.7: Front-End Development Analysis** (NEW v4.0.1): front_end_developer persona analyzes technical implementation ⭐ NEW
+- **Step 15: UX Analysis** (v2.4.0, updated v4.0.1): ui_ux_designer persona reviews user experience and visual design ⭐ UPDATED
+- **Steps 1-16**: Various specialized personas for documentation, testing, code quality, and finalization
 
 Personas are implemented through:
-- **9 base prompt templates** in `.workflow_core/config/ai_helpers.yaml`
-- **4 project-kind specific personas** in `.workflow_core/config/ai_prompts_project_kinds.yaml` (documentation_specialist, code_reviewer, test_engineer, ux_designer)
+- **11 base prompt templates** in `.workflow_core/config/ai_helpers.yaml` (includes front_end_developer_prompt v4.2.0, ui_ux_designer_prompt v5.0.1) ⭐ UPDATED
+- **6 project-kind specific personas** in `.workflow_core/config/ai_prompts_project_kinds.yaml` (documentation_specialist, code_reviewer, test_engineer, front_end_developer, ui_ux_designer, configuration_specialist) ⭐ UPDATED
 - **Language-aware enhancements**: When `PRIMARY_LANGUAGE` is set in `.workflow-config.yaml`, AI prompts are automatically enhanced with language-specific conventions (documentation standards, testing practices, code quality rules) from `ai_helpers.yaml`. This happens silently in Steps 2 and 5.
 
 The documentation_specialist persona is project-aware and references:
