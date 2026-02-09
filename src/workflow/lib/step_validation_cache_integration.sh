@@ -2,6 +2,29 @@
 # Integration Example: Using Step Validation Cache in Workflow Steps
 # This demonstrates how to integrate validation caching into actual workflow steps
 
+# ==============================================================================
+# CLEANUP MANAGEMENT
+# ==============================================================================
+
+# Track temporary files for cleanup
+declare -a STEP_VAL_INT_TEMP_FILES=()
+
+# Register temp file for cleanup
+track_step_val_int_temp() {
+    local temp_file="$1"
+    [[ -n "$temp_file" ]] && STEP_VAL_INT_TEMP_FILES+=("$temp_file")
+}
+
+# Cleanup handler for step validation cache integration
+cleanup_step_val_int_files() {
+    local file
+    for file in "${STEP_VAL_INT_TEMP_FILES[@]}"; do
+        [[ -d "$file" ]] && rm -rf "$file" 2>/dev/null
+        [[ -f "$file" ]] && rm -f "$file" 2>/dev/null
+    done
+    STEP_VAL_INT_TEMP_FILES=()
+}
+
 ################################################################################
 # EXAMPLE 1: Step 9 - Code Quality Validation with Caching
 ################################################################################
@@ -288,6 +311,7 @@ step9_with_cache() {
 test_step9_integration() {
     # Setup test environment
     local test_dir=$(mktemp -d)
+    track_step_val_int_temp "$test_dir"
     cd "${test_dir}"
     
     # Create test files
@@ -340,6 +364,10 @@ handle_cache_flags() {
 # MODULE EXPORTS
 ################################################################################
 
+# Export cleanup handlers
+export -f track_step_val_int_temp
+export -f cleanup_step_val_int_files
+
 # Export integration functions for use in steps
 export -f integrate_step9_with_cache
 export -f integrate_step12_with_cache
@@ -347,3 +375,10 @@ export -f integrate_step4_with_cache
 export -f cached_lint_file
 export -f cached_lint_all_files
 export -f cached_validate_directory
+
+# ==============================================================================
+# CLEANUP TRAP
+# ==============================================================================
+
+# Ensure cleanup runs on exit
+trap cleanup_step_val_int_files EXIT INT TERM

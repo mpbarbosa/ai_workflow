@@ -14,6 +14,28 @@ AI_HELPERS_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 AI_HELPERS_WORKFLOW_DIR="$(cd "${AI_HELPERS_DIR}/.." && pwd)"
 
 # ==============================================================================
+# CLEANUP MANAGEMENT
+# ==============================================================================
+
+# Track temporary files for cleanup
+declare -a AI_HELPERS_TEMP_FILES=()
+
+# Register temp file for cleanup
+track_ai_helpers_temp() {
+    local temp_file="$1"
+    [[ -n "$temp_file" ]] && AI_HELPERS_TEMP_FILES+=("$temp_file")
+}
+
+# Cleanup handler for AI helpers
+cleanup_ai_helpers_files() {
+    local file
+    for file in "${AI_HELPERS_TEMP_FILES[@]}"; do
+        [[ -f "$file" ]] && rm -f "$file" 2>/dev/null
+    done
+    AI_HELPERS_TEMP_FILES=()
+}
+
+# ==============================================================================
 # COPILOT CLI DETECTION AND VALIDATION
 # ==============================================================================
 
@@ -2264,6 +2286,7 @@ execute_copilot_batch() {
     # Write prompt to temporary file
     local temp_prompt_file
     temp_prompt_file=$(mktemp)
+    track_ai_helpers_temp "$temp_prompt_file"
     echo "$prompt_text" > "$temp_prompt_file"
     
     # Execute with timeout, model selection, and non-interactive flags
@@ -2359,6 +2382,7 @@ execute_copilot_prompt() {
     # Write prompt to temporary file to avoid ARG_MAX limit
     local temp_prompt_file
     temp_prompt_file=$(mktemp)
+    track_ai_helpers_temp "$temp_prompt_file"
     echo "$prompt_text" > "$temp_prompt_file"
     
     if [[ -n "$log_file" ]]; then
@@ -3126,4 +3150,13 @@ export -f build_project_kind_test_prompt
 export -f build_project_kind_review_prompt
 export -f should_use_project_kind_prompts
 export -f generate_adaptive_prompt
+export -f track_ai_helpers_temp
+export -f cleanup_ai_helpers_files
+
+# ==============================================================================
+# CLEANUP TRAP
+# ==============================================================================
+
+# Ensure cleanup runs on exit
+trap cleanup_ai_helpers_files EXIT INT TERM
 

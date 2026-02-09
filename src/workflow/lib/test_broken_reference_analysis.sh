@@ -3,6 +3,28 @@
 
 set -euo pipefail
 
+# ==============================================================================
+# CLEANUP MANAGEMENT
+# ==============================================================================
+
+# Track temporary files for cleanup
+declare -a TEST_REF_ANALYSIS_TEMP_FILES=()
+
+# Register temp file for cleanup
+track_test_ref_analysis_temp() {
+    local temp_file="$1"
+    [[ -n "$temp_file" ]] && TEST_REF_ANALYSIS_TEMP_FILES+=("$temp_file")
+}
+
+# Cleanup handler for test broken reference analysis
+cleanup_test_ref_analysis_files() {
+    local file
+    for file in "${TEST_REF_ANALYSIS_TEMP_FILES[@]}"; do
+        [[ -f "$file" ]] && rm -f "$file" 2>/dev/null
+    done
+    TEST_REF_ANALYSIS_TEMP_FILES=()
+}
+
 # CRITICAL: SCRIPT_DIR must be the src/workflow directory (parent of lib)
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 CONFIG_DIR="${SCRIPT_DIR}/config"
@@ -207,6 +229,7 @@ echo "────────────────────────�
 
 # Generate prompt and capture exit code
 temp_file=$(mktemp)
+track_test_ref_analysis_temp "$temp_file"
 if build_step2_consistency_prompt "test" "test" "shell" "major" "10" "test.md" "None" > "$temp_file" 2>&1; then
     test_result "Prompt generation succeeds" "pass"
     
@@ -283,3 +306,17 @@ else
     echo ""
     exit 1
 fi
+
+# ==============================================================================
+# EXPORTS
+# ==============================================================================
+
+export -f track_test_ref_analysis_temp
+export -f cleanup_test_ref_analysis_files
+
+# ==============================================================================
+# CLEANUP TRAP
+# ==============================================================================
+
+# Ensure cleanup runs on exit
+trap cleanup_test_ref_analysis_files EXIT INT TERM

@@ -7,6 +7,29 @@ set -euo pipefail
 # Version: 1.0.0
 ################################################################################
 
+# ==============================================================================
+# CLEANUP MANAGEMENT
+# ==============================================================================
+
+# Track temporary files for cleanup
+declare -a TEST_STEP_VAL_TEMP_FILES=()
+
+# Register temp file for cleanup
+track_test_step_val_temp() {
+    local temp_file="$1"
+    [[ -n "$temp_file" ]] && TEST_STEP_VAL_TEMP_FILES+=("$temp_file")
+}
+
+# Cleanup handler for test step validation cache
+cleanup_test_step_val_files() {
+    local file
+    for file in "${TEST_STEP_VAL_TEMP_FILES[@]}"; do
+        [[ -d "$file" ]] && rm -rf "$file" 2>/dev/null
+        [[ -f "$file" ]] && rm -f "$file" 2>/dev/null
+    done
+    TEST_STEP_VAL_TEMP_FILES=()
+}
+
 # Test setup
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 WORKFLOW_HOME="${SCRIPT_DIR}/.."
@@ -50,6 +73,7 @@ export VERBOSE=false
 setup_test_env() {
     # Create temporary test directory
     TEST_DIR=$(mktemp -d)
+    track_test_step_val_temp "$TEST_DIR"
     export TEST_DIR
     
     # Override cache directory for testing
@@ -560,6 +584,20 @@ run_all_tests() {
         exit 0
     fi
 }
+
+# ==============================================================================
+# EXPORTS
+# ==============================================================================
+
+export -f track_test_step_val_temp
+export -f cleanup_test_step_val_files
+
+# ==============================================================================
+# CLEANUP TRAP
+# ==============================================================================
+
+# Ensure cleanup runs on exit
+trap cleanup_test_step_val_files EXIT INT TERM
 
 # Run tests
 run_all_tests

@@ -8,6 +8,28 @@ set -euo pipefail
 ################################################################################
 
 # ==============================================================================
+# CLEANUP MANAGEMENT
+# ==============================================================================
+
+# Track temporary files for cleanup
+declare -a CLEANUP_HANDLERS_TEMP_FILES=()
+
+# Register temp file for cleanup
+track_cleanup_handlers_temp() {
+    local temp_file="$1"
+    [[ -n "$temp_file" ]] && CLEANUP_HANDLERS_TEMP_FILES+=("$temp_file")
+}
+
+# Cleanup handler for cleanup handlers module
+cleanup_cleanup_handlers_files() {
+    local file
+    for file in "${CLEANUP_HANDLERS_TEMP_FILES[@]}"; do
+        [[ -f "$file" ]] && rm -f "$file" 2>/dev/null
+    done
+    CLEANUP_HANDLERS_TEMP_FILES=()
+}
+
+# ==============================================================================
 # STANDARDIZED CLEANUP PATTERNS
 # ==============================================================================
 
@@ -110,6 +132,7 @@ create_temp_file() {
     local temp_file
     
     temp_file=$(mktemp "${TMPDIR:-/tmp}/${prefix}.XXXXXX")
+    track_cleanup_handlers_temp "$temp_file"
     register_temp_file "$temp_file"
     echo "$temp_file"
 }
@@ -122,6 +145,7 @@ create_temp_dir() {
     local temp_dir
     
     temp_dir=$(mktemp -d "${TMPDIR:-/tmp}/${prefix}.XXXXXX")
+    track_cleanup_handlers_temp "$temp_dir"
     register_temp_dir "$temp_dir"
     echo "$temp_dir"
 }
@@ -252,28 +276,28 @@ cleanup_old_artifacts() {
 }
 
 # ==============================================================================
-# USAGE EXAMPLE
+# EXPORTS
 # ==============================================================================
-#
-# # In your script:
-# source "${SCRIPT_DIR}/lib/cleanup_handlers.sh"
-#
-# # Initialize cleanup (done automatically on first registration)
-# init_cleanup
-#
-# # Register custom handlers
-# register_cleanup_handler "my_cleanup" "echo 'Cleaning up...'"
-#
-# # Create temporary files (auto-registered)
-# temp_file=$(create_temp_file "myapp")
-#
-# # Register existing files/dirs
-# register_temp_file "/tmp/myfile.txt"
-# register_temp_dir "/tmp/mydir"
-#
-# # Cleanup old workflow artifacts
-# cleanup_old_artifacts 7 false  # Remove artifacts older than 7 days
-# cleanup_old_artifacts 30 true  # Dry run - show what would be deleted
-#
-# # Cleanup happens automatically on EXIT/INT/TERM
-#
+
+export -f track_cleanup_handlers_temp
+export -f cleanup_cleanup_handlers_files
+export -f init_cleanup
+export -f register_cleanup_handler
+export -f register_temp_file
+export -f register_temp_dir
+export -f unregister_cleanup_handler
+export -f unregister_temp_file
+export -f execute_cleanup
+export -f create_temp_file
+export -f create_temp_dir
+export -f cleanup_step_execution
+export -f cleanup_test_execution
+export -f cleanup_sessions
+export -f cleanup_old_artifacts
+
+# ==============================================================================
+# CLEANUP TRAP
+# ==============================================================================
+
+# Ensure cleanup runs on exit
+trap cleanup_cleanup_handlers_files EXIT INT TERM
