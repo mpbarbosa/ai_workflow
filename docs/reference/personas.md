@@ -1,12 +1,12 @@
 # AI Personas Reference
 
-The workflow system uses 14 specialized AI personas for different validation and enhancement tasks.
+The workflow system uses 17 specialized AI personas for different validation and enhancement tasks.
 
 ## Overview
 
 AI personas are implemented through:
-- 9 base prompt templates in `.workflow_core/config/ai_helpers.yaml`
-- 4 project-kind specific personas in `.workflow_core/config/ai_prompts_project_kinds.yaml`
+- 11 base prompt templates in `.workflow_core/config/ai_helpers.yaml`
+- 6 project-kind specific personas in `.workflow_core/config/ai_prompts_project_kinds.yaml`
 - Language-aware enhancements based on `PRIMARY_LANGUAGE` setting
 
 ## Core Personas
@@ -29,11 +29,19 @@ AI personas are implemented through:
 - **Expertise**: Testing frameworks, coverage analysis
 - **Project-aware**: Yes
 
-### ux_designer
-- **Purpose**: Analyze user experience and accessibility
-- **Used in**: Step 14
-- **Expertise**: WCAG 2.1, usability, accessibility
-- **New in**: v2.4.0
+### front_end_developer
+- **Purpose**: Analyze front-end technical implementation
+- **Used in**: Step 11.7
+- **Expertise**: React/Vue/Angular, performance, TypeScript, accessibility implementation
+- **New in**: v4.0.1
+- **Focus**: Technical code quality, NOT user experience
+
+### ui_ux_designer
+- **Purpose**: Analyze user experience and visual design
+- **Used in**: Step 15
+- **Expertise**: WCAG 2.1, usability, visual design, information architecture
+- **Updated in**: v4.0.1
+- **Focus**: User experience and design, NOT technical implementation
 
 ## Supporting Personas
 

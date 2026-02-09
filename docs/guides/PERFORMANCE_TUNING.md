@@ -137,7 +137,7 @@ Wave 7 (parallel): Steps 14, 15
 
 **Pipeline Configuration**:
 ```bash
-# View pipeline stages
+# View multi-stage pipeline configuration
 ./src/workflow/execute_tests_docs_workflow.sh --show-pipeline
 
 # Force all stages (manual trigger)

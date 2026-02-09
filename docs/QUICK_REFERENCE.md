@@ -301,14 +301,30 @@ rm -rf src/workflow/logs/*
 
 ---
 
-## 🔗 Essential Links
+## 🔗 See Also
 
-- **Full Documentation**: [docs/README.md](README.md)
-- **Project Reference**: [docs/PROJECT_REFERENCE.md](PROJECT_REFERENCE.md)
-- **User Guide**: [docs/user-guide/USER_GUIDE.md](user-guide/USER_GUIDE.md)
-- **API Reference**: [docs/api/API_REFERENCE.md](api/API_REFERENCE.md)
-- **Developer Guide**: [docs/developer-guide/contributing.md](developer-guide/contributing.md)
-- **Tutorials**: [docs/TUTORIALS.md](TUTORIALS.md)
+### Core Documentation
+- **[Project Reference](PROJECT_REFERENCE.md)** - Complete feature list and module inventory
+- **[User Guide](user-guide/USER_GUIDE.md)** - Detailed tutorials and examples
+- **[Command Reference](user-guide/COMMAND_LINE_REFERENCE.md)** - All CLI options
+- **[Getting Started](GETTING_STARTED.md)** - Step-by-step tutorial
+
+### Advanced Topics
+- **[CI/CD Integration](operations/CI_CD_INTEGRATION.md)** - GitHub Actions, GitLab, Jenkins
+- **[Performance Optimization](operations/PERFORMANCE_OPTIMIZATION.md)** - Advanced tuning
+- **[API Reference](api/API_REFERENCE.md)** - Module documentation
+- **[Architecture Guide](architecture/COMPREHENSIVE_ARCHITECTURE_GUIDE.md)** - System design
+
+### Feature Guides
+- **[Audio Notifications](guides/AUDIO_NOTIFICATIONS_SETUP.md)** - Sound alert setup
+- **[Git Commit Tracking](guides/GIT_COMMIT_TRACKING.md)** - Multi-commit analysis
+- **[Pre-Commit Hooks](guides/PRECOMMIT_HOOKS_SETUP.md)** - Git hook integration
+- **[Bootstrap Documentation](guides/BOOTSTRAP_DOCUMENTATION.md)** - Generate docs from scratch
+
+### Developer Resources
+- **[Developer Onboarding](developer-guide/DEVELOPER_ONBOARDING_GUIDE.md)** - Start contributing
+- **[Module Development](developer-guide/MODULE_DEVELOPMENT.md)** - Create new modules
+- **[Testing Guide](developer-guide/testing.md)** - Testing strategy
 
 ---
 

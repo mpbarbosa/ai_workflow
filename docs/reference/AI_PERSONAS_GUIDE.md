@@ -1,7 +1,7 @@
 # AI Personas Reference Guide
 
-**Version**: v3.2.7  
-**Last Updated**: 2026-02-08  
+**Version**: v4.0.1  
+**Last Updated**: 2026-02-09  
 **Audience**: Users and developers working with AI-powered workflow steps
 
 ## Table of Contents
@@ -21,7 +21,7 @@
 
 ## Overview
 
-The AI Workflow Automation system uses **15 specialized AI personas** to perform different validation and enhancement tasks across the 20-step pipeline. Each persona has:
+The AI Workflow Automation system uses **17 specialized AI personas** to perform different validation and enhancement tasks across the 23-step pipeline. Each persona has:
 
 - **Specific Expertise**: Focused domain knowledge
 - **Clear Role**: Well-defined responsibilities
@@ -31,7 +31,7 @@ The AI Workflow Automation system uses **15 specialized AI personas** to perform
 ### Persona Architecture
 
 ```
-AI Personas (15 total)
+AI Personas (17 total)
 ├── Documentation (5 personas)
 │   ├── technical_writer           # Bootstrap docs from scratch (Step 0b)
 │   ├── documentation_specialist   # Analyze and update docs (Step 2)
@@ -44,16 +44,18 @@ AI Personas (15 total)
 │   ├── test_engineer             # Review test implementation (Step 5)
 │   └── test_executor             # Analyze test results (Step 7)
 │
-├── Code Quality (4 personas)
+├── Code Quality (6 personas)
 │   ├── code_reviewer             # Review code quality (Step 6, 9)
 │   ├── quality_auditor           # Comprehensive quality check (Step 11)
-│   ├── ux_designer               # UX/accessibility analysis (Step 10)
-│   └── devops_engineer           # CI/CD validation (Step 12)
+│   ├── front_end_developer       # Front-end technical analysis (Step 11.7) ⭐ NEW v4.0.1
+│   ├── ui_ux_designer            # UX/accessibility analysis (Step 15) ⭐ UPDATED v4.0.1
+│   ├── devops_engineer           # CI/CD validation (Step 12)
+│   └── context_analyst           # Context analysis (Step 11.5)
 │
 └── Integration (3 personas)
     ├── prompt_engineer           # Optimize AI prompts (Step 13)
     ├── git_specialist            # Generate commit messages (Step 14)
-    └── project_manager           # Finalize and summarize (Step 15)
+    └── version_manager           # Semantic versioning (Step 16)
 ```
 
 ### Configuration Files
@@ -498,44 +500,193 @@ These personas handle code review, quality auditing, UX analysis, and CI/CD vali
 
 ---
 
-#### ux_designer
+#### front_end_developer
 
-**Purpose**: Analyze user experience and accessibility.
+**Purpose**: Analyze front-end code for technical implementation quality, performance, and architecture.
 
 **Expertise**:
-- UX/UI analysis
-- WCAG 2.1 compliance
-- Accessibility standards
-- User interaction patterns
+- Modern JavaScript frameworks (React, Vue, Angular, Svelte)
+- Component architecture and design patterns
+- Performance optimization (Core Web Vitals, code splitting, lazy loading)
+- TypeScript and type safety
+- State management patterns
+- Accessibility implementation (WCAG 2.1+)
+- Front-end testing (Jest, React Testing Library, Cypress, Playwright)
+- Build tools and bundlers (Vite, Webpack, Rollup)
 
-**Used In**: Step 10 (UX Analysis)
+**Used In**: Step 11.7 (Front-End Development Analysis)
 
 **Key Capabilities**:
-- Analyzes user interface components
-- Checks accessibility compliance
-- Validates interaction patterns
-- Reviews responsive design
-- Identifies usability issues
+- Reviews component architecture and composition
+- Identifies performance bottlenecks (unnecessary re-renders, bundle size)
+- Validates TypeScript usage and type safety
+- Evaluates state management patterns
+- Checks accessibility implementation (ARIA attributes, semantic HTML)
+- Assesses testing coverage and quality
+- Reviews build configuration and optimization
+- Identifies cross-browser compatibility issues
+
+**Behavioral Guidelines**:
+- Focuses on technical implementation, NOT visual design or UX
+- Provides concrete, production-ready code solutions
+- Prioritizes performance and maintainability
+- Considers framework-specific best practices
+- Validates modern JavaScript/TypeScript patterns
 
 **Output Format**:
 ```markdown
-# UX/Accessibility Analysis
+# Front-End Development Analysis
 
-## Accessibility Issues (WCAG 2.1)
-1. **Component**: LoginForm
-   - **Issue**: Missing aria-label on password field
-   - **Level**: A (Critical)
-   - **Fix**: Add aria-label="Password"
+## Executive Summary
+[Priority counts: X critical issues, Y improvements, Z optimizations]
 
-## UX Improvements
-1. **Component**: Navigation
-   - **Issue**: No visual feedback on hover
-   - **Enhancement**: Add hover states
+## Critical Issues
+1. **File**: src/components/UserList.tsx:45
+   - **Issue**: Component causing unnecessary re-renders
+   - **Impact**: Performance degradation
+   - **Fix**: Wrap with React.memo and use useCallback for handlers
 
-## Compliance Summary
-- WCAG 2.1 Level A: 95% compliant
-- WCAG 2.1 Level AA: 87% compliant
+## Architecture & Design
+- Component structure and patterns
+- Props drilling and component coupling
+- Shared component opportunities
+
+## Performance Optimizations
+1. **Bundle Size**: 450KB (target: <300KB)
+   - Add code splitting for routes
+   - Lazy load heavy components
+   - Tree-shake unused lodash functions
+
+## Code Quality Improvements
+- TypeScript coverage: 85% (target: 95%)
+- Test coverage: 72% (target: 80%)
+- ESLint issues: 23 warnings
+
+## Accessibility Implementation
+✅ Good: Semantic HTML structure
+⚠️ Needs Work: Missing ARIA labels on 5 interactive elements
+❌ Critical: No focus indicators on buttons
+
+## Recommendations
+1. **High Priority**: Add focus indicators (accessibility)
+2. **Medium Priority**: Implement code splitting for routes
+3. **Low Priority**: Increase TypeScript coverage to 95%
 ```
+
+**Example Use Case**:
+```bash
+# Analyze React/Vue/Angular project front-end code
+./execute_tests_docs_workflow.sh --steps 11.7
+
+# Or as part of full workflow (auto-runs for front-end projects)
+./execute_tests_docs_workflow.sh
+```
+
+**When to Use**:
+- React, Vue, Angular, Svelte projects
+- Static websites with significant JavaScript
+- SPAs (Single Page Applications)
+- Any project with front-end components
+
+**Relationship with ui_ux_designer**:
+- **front_end_developer (Step 11.7)**: Technical implementation, code quality, performance
+- **ui_ux_designer (Step 15)**: User experience, visual design, usability
+- Run sequentially: technical analysis first, then UX review
+
+---
+
+#### ui_ux_designer
+
+**Purpose**: Analyze user experience, visual design, and accessibility from a user perspective.
+
+**Expertise**:
+- User research and user journey mapping
+- Information architecture and navigation design
+- Visual design (typography, color theory, spacing, hierarchy)
+- Interaction design and micro-interactions
+- Usability testing and cognitive psychology
+- WCAG 2.1 compliance from user perspective
+- Design systems and component libraries
+- Mobile-first and responsive design strategy
+
+**Used In**: Step 15 (UX Analysis)
+
+**Key Capabilities**:
+- Evaluates usability and cognitive load
+- Assesses visual hierarchy and design consistency
+- Reviews navigation and information architecture
+- Analyzes user flows and friction points
+- Checks accessibility from user perspective (readability, contrast, clarity)
+- Validates responsive design strategy
+- Identifies interaction patterns and feedback issues
+- Reviews design system adherence
+
+**Behavioral Guidelines**:
+- Focuses on user experience and visual design, NOT technical implementation
+- Considers user needs and cognitive load
+- Applies design principles (hierarchy, contrast, alignment, proximity)
+- Prioritizes user experience over aesthetics alone
+- Makes informed decisions based on UX best practices
+
+**Output Format**:
+```markdown
+# UX Analysis Report
+
+## Executive Summary
+[Priority counts: X critical issues, Y improvements, Z recommendations]
+
+## Critical Usability Issues
+1. **Page**: Checkout flow
+   - **Issue**: No progress indicator
+   - **Impact**: Users feel lost in multi-step process
+   - **Fix**: Add step indicator (Step 1 of 3)
+
+## Visual Design
+- Typography scale: Inconsistent heading hierarchy
+- Color usage: 3 contrast violations (WCAG 2.1 AA)
+- Spacing: Inconsistent padding in cards
+
+## Interaction Design
+✅ Good: Clear hover states on buttons
+⚠️ Needs Work: No loading feedback on form submission
+❌ Critical: No error recovery mechanism
+
+## Information Architecture
+- Navigation clarity: 7/10
+- Content organization: Good use of categories
+- Labeling: 2 ambiguous menu items
+
+## Accessibility (User Perspective)
+- Readability: Text too small on mobile (12px, should be 16px)
+- Color contrast: 3 violations
+- Cognitive load: Form has 15 fields (consider multi-step)
+
+## Recommendations
+1. **Critical**: Fix color contrast violations
+2. **High**: Add progress indicator to checkout
+3. **Medium**: Improve form UX (split into steps)
+4. **Low**: Enhance micro-interactions
+```
+
+**Example Use Case**:
+```bash
+# Analyze UI/UX for web application
+./execute_tests_docs_workflow.sh --steps 15
+
+# Or as part of full workflow (auto-runs for UI projects)
+./execute_tests_docs_workflow.sh
+```
+
+**When to Use**:
+- Web applications with user interfaces
+- Documentation sites (content presentation)
+- Static websites (visual design)
+- Any project with UI components
+
+**Relationship with front_end_developer**:
+- **front_end_developer (Step 11.7)**: Technical implementation (code architecture, performance)
+- **ui_ux_designer (Step 15)**: User experience (usability, visual design)
+- Complementary perspectives: technical quality + user experience quality
 
 ---
 
@@ -1022,8 +1173,12 @@ For Python:
 | test_executor | Analyze test results | 7 | Test execution |
 | code_reviewer | Review code quality | 6, 9 | Code quality |
 | quality_auditor | Comprehensive audit | 11 | Holistic assessment |
-| ux_designer | UX/accessibility | 10 | User experience |
+| context_analyst | Context analysis | 11.5 | Workflow summary |
+| front_end_developer | Front-end technical analysis | 11.7 | Technical implementation ⭐ NEW |
+| ui_ux_designer | UX/visual design | 15 | User experience ⭐ UPDATED |
 | devops_engineer | CI/CD validation | 12 | DevOps practices |
 | prompt_engineer | Optimize prompts | 13 | AI efficiency |
 | git_specialist | Generate commits | 14 | Git best practices |
-| project_manager | Finalize workflow | 15 | Summary and next steps |
+| version_manager | Semantic versioning | 16 | Version updates |
+
+**Total**: 17 personas across 23 workflow steps (updated v4.0.1)

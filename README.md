@@ -44,9 +44,9 @@ This repository provides a comprehensive, modular workflow automation system tha
 > 📋 See [Project Reference](docs/PROJECT_REFERENCE.md) for complete feature list, module inventory, and version history.
 
 **Highlights**:
-- **20-Step Automated Pipeline** with checkpoint resume
-- **81 Library Modules** + **21 Step Modules** + **4 Orchestrators** + **4 Configs**
-- **15 AI Personas** with GitHub Copilot CLI integration
+- **23-Step Automated Pipeline** with checkpoint resume ⭐ UPDATED
+- **111 Total Modules**: 81 libraries + 22 steps + 4 configs + 4 orchestrators (See [Project Reference](docs/PROJECT_REFERENCE.md#module-inventory))
+- **17 AI Personas** with GitHub Copilot CLI integration (See [AI Personas Guide](docs/reference/AI_PERSONAS_GUIDE.md))
 - **Smart Execution**: 40-85% faster (change-based step skipping)
 - **Parallel Execution**: 33% faster (independent steps run simultaneously)
 - **Audio Notifications** (NEW v3.1.0): Sound alerts for continue prompts and workflow completion

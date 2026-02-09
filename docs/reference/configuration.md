@@ -659,7 +659,7 @@ shell_automation:
       This is a shell script automation project. Update documentation to reflect:
       - New/modified script parameters, options, and flags
       - Changes to workflow orchestration or execution flow
-      - Updated pipeline stages or step dependencies
+      - Updated workflow step dependencies or execution order
       - Modified exit codes or error handling behavior
       - New/changed environment variable requirements
       - Updated execution prerequisites or system dependencies

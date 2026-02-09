@@ -551,7 +551,7 @@ recommendations=$(get_ml_recommendations)
 ```bash
 stage=$(get_pipeline_stage "3")
 ```
-- **Description**: Determines pipeline stage for step (validation/quality/finalization)
+- **Description**: Determines multi-stage pipeline stage for step (validation/quality/finalization)
 - **Returns**: Stage name
 
 #### `should_continue_to_next_stage(current_stage_results)`

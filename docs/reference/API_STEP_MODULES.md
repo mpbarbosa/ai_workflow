@@ -1,9 +1,9 @@
 # API Reference - Workflow Step Modules
 
-**Version**: v3.0.0  
-**Last Updated**: 2026-01-31
+**Version**: v4.0.1  
+**Last Updated**: 2026-02-09
 
-This document provides a comprehensive API reference for all 18 workflow step modules in the AI Workflow Automation system. Each step is a self-contained executable module that performs a specific phase of the workflow automation process.
+This document provides a comprehensive API reference for all 23 workflow step modules in the AI Workflow Automation system. Each step is a self-contained executable module that performs a specific phase of the workflow automation process.
 
 ## Table of Contents
 
@@ -14,7 +14,7 @@ This document provides a comprehensive API reference for all 18 workflow step mo
 - [Structure & Testing (04-07)](#structure--testing-04-07)
 - [Quality & Dependencies (08-10)](#quality--dependencies-08-10)
 - [Finalization (11-13)](#finalization-11-13)
-- [Specialized Analysis (14-15)](#specialized-analysis-14-15)
+- [Specialized Analysis (11.7, 14-15)](#specialized-analysis-14-15)
 - [Common Patterns](#common-patterns)
 - [Error Handling](#error-handling)
 
@@ -22,7 +22,7 @@ This document provides a comprehensive API reference for all 18 workflow step mo
 
 ## Overview
 
-The workflow consists of **18 step modules** organized into logical phases:
+The workflow consists of **23 step modules** organized into logical phases:
 
 | Phase | Steps | Purpose | Can Parallelize |
 |-------|-------|---------|-----------------|
@@ -31,8 +31,9 @@ The workflow consists of **18 step modules** organized into logical phases:
 | Structure | 04 | Directory structure validation | Yes (with 1-3) |
 | Testing | 05-07 | Test review, generation, execution | No (sequential) |
 | Quality | 08-10 | Dependencies, code quality, context | Yes (8-10) |
+| Front-End | 11.7 | Front-end technical implementation analysis (NEW v4.0.1) | Yes (with 10) |
 | Finalization | 11-13 | Git, markdown lint, prompt engineer | No (11 after all, 12-13 parallel) |
-| Specialized | 14-15 | UX analysis, version update | Yes (with 10,12,13) |
+| Specialized | 15, 16 | UX analysis, version update | Yes (15 after 11.7, 16 with others) |
 
 **Total Code**: ~6,600 lines across 18 modules  
 **Execution Time**: 2-23 minutes (smart: 1.5-23 min, parallel: 1.5-15.5 min)
@@ -1743,22 +1744,203 @@ fi
 
 ---
 
+### Step 11.7: Front-End Development Analysis
+
+**File**: `step_11_7_frontend_dev.sh` (653 lines)  
+**Purpose**: Analyze front-end code for technical implementation quality and performance  
+**Dependencies**: Step 10 (code quality)  
+**AI Personas**: `front_end_developer` (NEW v4.0.1)  
+**Execution**: ~3-5 minutes  
+**Scope**: Only runs for projects with front-end code (React, Vue, Angular, Svelte, etc.)
+
+#### Key Functions
+
+##### `step11_7_frontend_dev_analysis()`
+```bash
+# Main execution function
+step11_7_frontend_dev_analysis
+```
+- **Phase 1**: Discover front-end files (JSX, TSX, Vue, Svelte)
+- **Phase 2**: Analyze structure (framework, build tool, state management)
+- **Phase 3**: Run AI-powered technical analysis
+- **Returns**: 0 for success, 1 for skip (no front-end code)
+
+##### `has_frontend_code()`
+```bash
+if has_frontend_code; then
+    echo "Front-end code detected"
+fi
+```
+- **Project Detection**:
+  - Checks project kind (react_spa, vue_spa, client_spa, static_website)
+  - Scans for component files (*.jsx, *.tsx, *.vue, *.svelte)
+  - Detects frameworks in package.json
+  - Identifies static websites (HTML + CSS)
+- **Returns**: 0 if front-end detected, 1 otherwise
+
+##### `find_frontend_files()`
+```bash
+frontend_files=$(find_frontend_files)
+```
+- **File Types**:
+  - React: `*.jsx`, `*.tsx`
+  - Vue: `*.vue`
+  - Svelte: `*.svelte`
+  - JavaScript: `src/components/*.js`, `src/pages/*.js`
+  - TypeScript: `src/components/*.ts` (non-declaration files)
+- **Excludes**: node_modules/, dist/, build/, .git/
+- **Returns**: List of front-end files (up to 100)
+
+##### `analyze_frontend_structure()`
+```bash
+structure=$(analyze_frontend_structure)
+```
+- **Parameters**: None (uses TARGET_PROJECT_ROOT)
+- **Analysis**:
+  - **Framework Detection**: React, Vue, Angular, Svelte
+  - **Build Tool**: Vite, Webpack, CRA, Next.js
+  - **State Management**: Redux, Zustand, Vuex, Pinia
+  - **Component Counts**: By file type
+  - **CSS Files**: Count
+- **Returns**: JSON object with structure analysis
+
+**Structure Analysis Example**:
+```json
+{
+  "framework": "React",
+  "build_tool": "Vite",
+  "state_management": "Zustand",
+  "component_counts": {
+    "jsx": 15,
+    "tsx": 42,
+    "vue": 0,
+    "svelte": 0
+  },
+  "css_files": 8
+}
+```
+
+##### `build_frontend_dev_prompt(files, analysis)`
+```bash
+prompt=$(build_frontend_dev_prompt "$frontend_files" "$structure_analysis")
+```
+- **Parameters**: Frontend files list, structure analysis JSON
+- **AI Task**:
+  - Review component architecture and composition
+  - Identify performance bottlenecks
+  - Validate TypeScript usage and type safety
+  - Evaluate state management patterns
+  - Check accessibility implementation (ARIA, semantic HTML)
+  - Assess testing coverage
+  - Review build configuration
+- **Returns**: Formatted prompt for front_end_developer persona
+
+**Example Front-End Analysis Report**:
+```markdown
+## Front-End Development Analysis Report
+
+### Executive Summary
+57 components analyzed
+- 5 critical issues (performance)
+- 12 improvements (architecture)
+- 8 optimizations (bundle size)
+
+### Critical Issues
+
+#### Issue 1: Unnecessary Re-renders in UserList
+- **File**: src/components/UserList.tsx:45
+- **Issue**: Component re-renders on every parent update
+- **Impact**: Performance degradation (Lighthouse score: 65)
+- **Fix**: Wrap with React.memo and useCallback for handlers
+```typescript
+export const UserList = React.memo(({ users, onSelect }) => {
+  const handleSelect = useCallback((id) => onSelect(id), [onSelect]);
+  // ...
+});
+```
+
+### Architecture & Design
+
+✅ **Good Patterns**:
+- Component composition with HOCs
+- Props properly typed with TypeScript
+- Clear separation of presentational and container components
+
+⚠️ **Needs Improvement**:
+- Props drilling in 3 components (consider Context API)
+- Large component files (>300 lines): refactor into smaller components
+
+### Performance Optimizations
+
+1. **Bundle Size**: 450KB (target: <300KB)
+   - Implement code splitting for routes
+   - Lazy load heavy components (Chart.js, Monaco Editor)
+   - Tree-shake unused lodash functions
+
+2. **Re-render Optimization**:
+   - Add React.memo to 8 components
+   - Use useMemo for expensive calculations
+   - Implement virtual scrolling for long lists
+
+### Code Quality
+
+- **TypeScript Coverage**: 85% (target: 95%)
+- **Test Coverage**: 72% (target: 80%)
+- **ESLint Issues**: 23 warnings, 2 errors
+
+### Accessibility Implementation
+
+✅ **Good**: Semantic HTML structure
+⚠️ **Needs Work**: Missing ARIA labels on 5 interactive elements
+❌ **Critical**: No focus indicators on buttons
+
+### Recommendations
+
+1. **High Priority**: Add focus indicators (accessibility - WCAG 2.1 AA)
+2. **Medium Priority**: Implement code splitting for routes
+3. **Low Priority**: Increase TypeScript coverage to 95%
+```
+
+**AI-Powered Technical Analysis**:
+- Component architecture patterns
+- Performance bottlenecks identification
+- Type safety validation
+- Accessibility implementation review
+- Testing coverage assessment
+
+**Integration with Project Kinds**:
+```bash
+# Automatically runs for front-end projects
+case "$PROJECT_KIND" in
+    react_spa|vue_spa|static_website|client_spa)
+        step11_7_frontend_dev_analysis
+        ;;
+esac
+```
+
+**Relationship with Step 15 (UX Analysis)**:
+- **Step 11.7**: Technical implementation (code architecture, performance, testing)
+- **Step 15**: User experience (usability, visual design, interaction patterns)
+- Run sequentially: Technical quality → User experience quality
+
+---
+
 ## Specialized Analysis (14-15)
 
-### Step 14: UX Analysis
+### Step 15: UX Analysis
 
-**File**: `step_14_ux_analysis.sh` (634 lines)  
-**Purpose**: Analyze UI code for usability and accessibility issues  
-**Dependencies**: Step 09 (code quality)  
-**AI Personas**: `ux_designer` (NEW v2.4.0)  
+**File**: `step_15_ux_analysis.sh` (634 lines)  
+**Purpose**: Analyze UI for user experience and visual design quality  
+**Dependencies**: Step 11.7 (front-end development)  
+**AI Personas**: `ui_ux_designer` (UPDATED v4.0.1)  
 **Execution**: ~3-5 minutes  
 **Scope**: Only runs for projects with UI components
 
 #### Key Functions
 
-##### `step14_ux_analysis()`
+##### `step15_ux_analysis()`
 ```bash
-step14_ux_analysis
+step15_ux_analysis
 ```
 - **Description**: Comprehensive UX and accessibility analysis
 - **Logic**:
@@ -1773,7 +1955,7 @@ step14_ux_analysis
 ##### `has_ui_components()`
 ```bash
 if has_ui_components; then
-    step14_ux_analysis
+    step15_ux_analysis
 fi
 ```
 - **Description**: Detects if project has UI components
@@ -1945,18 +2127,18 @@ prompt=$(build_ux_review_prompt "$context")
 # Automatically runs for UI-focused projects
 case "$PROJECT_KIND" in
     react_spa|vue_spa|static_website|client_spa)
-        step14_ux_analysis
+        step15_ux_analysis
         ;;
 esac
 ```
 
 ---
 
-### Step 15: Semantic Version Update
+### Step 16: Semantic Version Update
 
-**File**: `step_15_version_update.sh` (484 lines)  
+**File**: `step_16_version_update.sh` (484 lines)  
 **Purpose**: Update semantic versions in files and project metadata  
-**Dependencies**: Steps 10, 12, 13, 14 (runs after analysis)  
+**Dependencies**: Steps 10, 11.7, 12, 13, 15 (runs after analysis)  
 **AI Personas**: `version_specialist`  
 **Execution**: ~30 seconds - 1 minute
 
