@@ -1,7 +1,7 @@
 # Complete Command-Line Reference
 
-**Version**: 3.1.0  
-**Last Updated**: 2026-02-07
+**Version**: 4.0.1  
+**Last Updated**: 2026-02-09
 
 ## Table of Contents
 

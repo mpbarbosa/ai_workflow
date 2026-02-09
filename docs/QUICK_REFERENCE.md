@@ -239,7 +239,7 @@ test:
 
 ## 📁 Important Directories
 
-```
+```text
 src/workflow/
 ├── execute_tests_docs_workflow.sh  # Main entry point
 ├── lib/                            # 81 library modules

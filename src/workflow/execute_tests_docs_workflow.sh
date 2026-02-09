@@ -4,7 +4,7 @@ set -euo pipefail
 
 ################################################################################
 # Tests & Documentation Workflow Automation Script
-# Version: 3.2.11
+# Version: 4.0.1
 # Purpose: Automate the complete tests and documentation update workflow
 # Related: /prompts/tests_documentation_update_enhanced.txt
 #
@@ -26,6 +26,7 @@ set -euo pipefail
 #   Step 16:  Test Execution (QA Automation Engineer + CI/CD Specialist)
 #   Step 16:  Dependency Validation (DevOps Engineer + Package Management Specialist)
 #   Step 16:  Code Quality Validation (Software Quality Engineer + Code Review Specialist)
+#   Step 11.7: Front-End Development (Front-End Developer + Technical Architect) ⭐ NEW v4.0.1
 #   Step 16: Context Analysis (Technical Project Manager + Workflow Orchestration Specialist)
 #   Step 16: Markdown Linting (Technical Documentation Specialist) ⭐ NEW
 #   Step 16: Prompt Engineer Analysis (Prompt Engineer + AI Specialist) ⭐ NEW v2.3.1
@@ -122,7 +123,7 @@ set -euo pipefail
 # CONFIGURATION & CONSTANTS
 # ==============================================================================
 
-SCRIPT_VERSION="4.0.0"  # Configuration-Driven Step Execution
+SCRIPT_VERSION="4.0.1"  # Configuration-Driven Step Execution
 SCRIPT_NAME="Tests & Documentation Workflow Automation"
 WORKFLOW_HOME="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
 PROJECT_ROOT="$(pwd)"  # Default: current directory; can be overridden with --target option
@@ -164,7 +165,7 @@ NC='\033[0m' # No Color
 
 # Workflow tracking
 declare -A WORKFLOW_STATUS
-TOTAL_STEPS=15
+TOTAL_STEPS=16
 DRY_RUN=false
 INTERACTIVE_MODE=true
 AUTO_MODE=false
@@ -2169,6 +2170,24 @@ execute_full_workflow() {
         ((skipped_steps++)) || true
     elif [[ $resume_from -gt 13 ]]; then
         print_info "Skipping Step 13 (resuming from checkpoint)"
+        ((skipped_steps++)) || true
+    fi
+    
+    # Step 11.7: Front-End Development Analysis (with checkpoint)
+    # NEW in v4.0.1: Analyzes front-end code for technical implementation and performance
+    # Runs AFTER Step 10 (Code Quality), BEFORE Step 15 (UX Analysis)
+    # Only executes for projects with front-end code (React, Vue, Angular, Svelte, etc.)
+    if [[ -z "$failed_step" && $resume_from -le 117 ]] && should_execute_step 117; then
+        log_step_start 117 "Front-End Development Analysis"
+        step11_7_frontend_dev_analysis || { failed_step="Step 11.7"; }
+        ((executed_steps++)) || true
+        save_checkpoint 117
+    elif [[ -z "$failed_step" && $resume_from -le 117 ]]; then
+        print_info "Skipping Step 11.7 (not selected)"
+        log_to_workflow "INFO" "Skipping Step 11.7 (not selected)"
+        ((skipped_steps++)) || true
+    elif [[ $resume_from -gt 117 ]]; then
+        print_info "Skipping Step 11.7 (resuming from checkpoint)"
         ((skipped_steps++)) || true
     fi
     

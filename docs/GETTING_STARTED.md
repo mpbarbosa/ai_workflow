@@ -241,7 +241,7 @@ Check what optimizations are working:
 
 ### Integrate with CI/CD
 
-See [docs/guides/INTEGRATION_GUIDE.md](guides/INTEGRATION_GUIDE.md) for:
+See [Integration Guide](../guides/INTEGRATION_GUIDE.md) or [CI/CD Integration](../operations/CI_CD_INTEGRATION.md) for:
 - GitHub Actions integration
 - GitLab CI integration
 - Jenkins integration
@@ -249,10 +249,11 @@ See [docs/guides/INTEGRATION_GUIDE.md](guides/INTEGRATION_GUIDE.md) for:
 
 ### Advanced Usage
 
-- [Command-Line Reference](user-guide/COMMAND_LINE_REFERENCE.md) - All options
-- [Feature Guide](user-guide/feature-guide.md) - Advanced features
-- [Performance Tuning](guides/PERFORMANCE_TUNING.md) - Optimization strategies
-- [Troubleshooting](user-guide/troubleshooting.md) - Common issues
+- [Command-Line Reference](../user-guide/COMMAND_LINE_REFERENCE.md) - All options
+- [Feature Guide](../user-guide/feature-guide.md) - Advanced features
+- [Performance Tuning](../user-guide/PERFORMANCE_TUNING.md) - Optimization strategies
+- [Performance Optimization Deep Dive](../operations/PERFORMANCE_OPTIMIZATION.md) - Advanced tuning
+- [Troubleshooting](../user-guide/troubleshooting.md) - Common issues
 
 ## FAQ
 

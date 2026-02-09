@@ -179,6 +179,60 @@ cd /path/to/target/project
 - Checkpoint resume enabled by default (use `--no-resume` for fresh start)
 - Combined optimizations: Up to 90% faster for simple changes
 
+## Development Scripts
+
+The project includes several utility scripts for maintenance and validation:
+
+### Artifact Cleanup
+
+```bash
+# Clean up workflow artifacts older than 30 days
+./scripts/cleanup_artifacts.sh --all --older-than 30
+
+# Dry-run to preview deletions
+./scripts/cleanup_artifacts.sh --all --dry-run
+
+# Clean specific artifact types
+./scripts/cleanup_artifacts.sh --logs --older-than 7
+./scripts/cleanup_artifacts.sh --backlog --older-than 60
+```
+
+See [scripts/cleanup_artifacts.sh](./scripts/cleanup_artifacts.sh) for full documentation.
+
+### Documentation Validation
+
+```bash
+# Validate documentation context blocks
+python3 .workflow_core/scripts/validate_context_blocks.py docs/
+
+# Validate documentation structure
+python3 .workflow_core/scripts/validate_structure.py docs/
+
+# Check documentation links
+python3 scripts/check_doc_links.py
+
+# Validate API documentation
+python3 scripts/validate_api_docs.py
+```
+
+### Repository Maintenance
+
+```bash
+# Standardize dates in documentation
+./scripts/standardize_dates.sh
+
+# Bump version across all files
+./scripts/bump_version.sh <new-version>
+
+# Check documentation differences
+./scripts/doc_diff_checker.sh
+
+# Validate documentation examples
+./scripts/validate_doc_examples.sh
+```
+
+See [scripts/README.md](./scripts/README.md) for complete script documentation.
+
 ## Configuration
 
 The workflow is configurable via `.workflow-config.yaml` in your project root. Create one using:
@@ -233,7 +287,7 @@ See [docs/reference/init-config-wizard.md](docs/reference/init-config-wizard.md)
 
 ## Repository Structure
 
-```
+```text
 ai_workflow/
 ├── .github/                       # GitHub configuration
 │   └── workflows/                 # CI/CD workflows

@@ -1,8 +1,8 @@
 # AI Workflow Automation - Project Reference
 
 **SINGLE SOURCE OF TRUTH**  
-**Version**: v4.0.0  
-**Last Updated**: 2026-02-08
+**Version**: v4.0.1  
+**Last Updated**: 2026-02-09
 
 > ⚠️ **Important**: This document is the authoritative source for project statistics, features, and module lists. All other documentation should reference this file, not duplicate its content.
 
@@ -12,7 +12,7 @@
 
 - **Repository**: [github.com/mpbarbosa/ai_workflow](https://github.com/mpbarbosa/ai_workflow)
 - **License**: MIT
-- **Current Version**: v4.0.0 ⭐ NEW
+- **Current Version**: v4.0.1 ⭐ NEW
 - **Previous Repository**: mpbarbosa_site (migrated 2025-12-18)
 - **Primary Maintainer**: Marcelo Pereira Barbosa ([@mpbarbosa](https://github.com/mpbarbosa))
 - **Contact**: mpbarbosa@gmail.com
@@ -20,7 +20,7 @@
 ### Key Statistics
 
 - **Total Lines**: 26,562 (22,411 shell + 4,151 YAML)
-- **Total Modules**: 110 (81 libraries + 21 steps + 4 configs + 4 orchestrators) ⭐ UPDATED
+- **Total Modules**: 111 (81 libraries + 22 steps + 4 configs + 4 orchestrators) ⭐ UPDATED
 - **Test Coverage**: 100% (37+ automated tests)
 - **Performance**: Up to 93% faster with ML optimization
 
@@ -33,12 +33,12 @@
 - **Mixed Syntax Support** (NEW v4.0.0): Combine step names and indices: `--steps 0,documentation_updates,12`
 
 ### Workflow Pipeline
-- **20-Step Automated Pipeline**: Complete workflow from pre-analysis to finalization (includes step_0a pre-processing, step_0b bootstrap docs, step_02_5 doc optimize, and step_16 post-processing)
+- **23-Step Automated Pipeline**: Complete workflow from pre-analysis to finalization (includes step_0a pre-processing, step_0b bootstrap docs, step_02_5 doc optimize, step_11_7 front-end development, and step_16 post-processing)
 - **Checkpoint Resume**: Automatic continuation from last completed step
 - **Dry Run Mode**: Preview execution without changes
 
 ### AI Integration
-- **15 Functional AI Personas**: Specialized roles across 18 workflow steps (includes Technical Writer persona for bootstrap documentation) ⭐ NEW
+- **17 Functional AI Personas**: Specialized roles across 23 workflow steps (includes Technical Writer, Front-End Developer, and UI/UX Designer personas) ⭐ UPDATED v4.0.1
 - **GitHub Copilot CLI**: Primary AI integration
 - **AI Response Caching**: 60-80% token usage reduction (24-hour TTL)
 - **Dynamic Prompt Construction**: Context-aware AI interactions
@@ -77,7 +77,7 @@
 > **Note**: Module count updated 2026-02-08 to reflect actual inventory (81 modules verified via `ls src/workflow/lib/*.sh | wc -l`).
 
 #### Core Modules (12 modules)
-- `ai_helpers.sh` (102K) - AI integration with 14 functional personas
+- `ai_helpers.sh` (102K) - AI integration with 17 functional personas (NEW: front_end_developer, ui_ux_designer) ⭐ UPDATED v4.0.1
 - `tech_stack.sh` (47K) - Technology stack detection
 - `workflow_optimization.sh` (31K) - Smart execution and parallel processing
 - `project_kind_config.sh` (26K) - Project kind configuration
@@ -114,7 +114,7 @@
 - `colors.sh` (637 bytes) - Terminal formatting
 - _(+29 additional modules - see src/workflow/lib/ for complete list)_
 
-### Step Modules (20 total in src/workflow/steps/) ⭐ UPDATED
+### Step Modules (22 total in src/workflow/steps/) ⭐ UPDATED v4.0.1
 
 **Execution Order** (Step 12 MUST be last):
 
@@ -132,12 +132,14 @@
 12. `step_08_test_exec.sh` - Test execution
 13. `step_09_dependencies.sh` - Dependency validation
 14. `step_10_code_quality.sh` - Code quality checks
-15. `step_11_context.sh` - Context analysis
-16. `step_13_markdown_lint.sh` - Markdown linting
-17. `step_14_prompt_engineer.sh` - Prompt engineering (ai_workflow only)
-18. `step_15_ux_analysis.sh` - UX/UI analysis (v2.4.0)
-19. `step_16_version_update.sh` - **AI-powered version updates (POST-PROCESSING - runs after 10,13,14,15)** ⭐ NEW
-20. `step_12_git.sh` - **Git operations [FINAL STEP - commits all changes]**
+15. `step_11_7_frontend_dev.sh` - **Front-end development analysis (NEW v4.0.1)** ⭐ NEW
+16. `step_11_context.sh` - Context analysis
+17. `step_13_markdown_lint.sh` - Markdown linting
+18. `step_14_prompt_engineer.sh` - Prompt engineering (ai_workflow only)
+19. `step_15_ux_analysis.sh` - UX/UI analysis (v2.4.0, updated v4.0.1)
+20. `step_16_version_update.sh` - **AI-powered version updates (POST-PROCESSING - runs after 10,11.7,13,14,15)** ⭐ UPDATED
+21. `step_11_deployment_gate.sh` - Deployment readiness gate
+22. `step_12_git.sh` - **Git operations [FINAL STEP - commits all changes]**
 
 ### Configuration Files (4 total in .workflow_core/config/)
 
@@ -158,11 +160,23 @@
 3. `quality_orchestrator.sh` - Quality checks coordination
 4. `finalization_orchestrator.sh` - Finalization phase coordination
 
-## AI Personas (15 total) ⭐ NEW
+## AI Personas (17 total) ⭐ UPDATED v4.0.1
 
 1. **documentation_specialist** - Documentation updates (context-aware)
 2. **consistency_analyst** - Cross-reference checks
 3. **code_reviewer** - Code quality review
+4. **test_engineer** - Test coverage and generation
+5. **technical_writer** - Bootstrap documentation (NEW v3.1.0)
+6. **front_end_developer** - Front-end technical implementation (NEW v4.0.1) ⭐ NEW
+7. **ui_ux_designer** - UI/UX design and usability analysis (UPDATED v4.0.1) ⭐ UPDATED
+8. **test_strategy** - Test strategy planning
+9. **quality_analyst** - Code quality validation
+10. **issue_extractor** - Issue identification
+11. **markdown_linter** - Markdown validation
+12. **configuration_specialist** - Configuration validation
+13. **version_manager** - Version management
+14. **prompt_engineer** - Prompt optimization
+15. **dependency_analyst** - Dependency analysis
 4. **test_engineer** - Test generation
 5. **dependency_analyst** - Dependency analysis
 6. **git_specialist** - Git operations
@@ -181,14 +195,16 @@
 The AI Workflow uses a **flexible persona system** with dynamic prompt construction:
 
 **System Design**:
-- **8 Base Prompt Templates** in `.workflow_core/config/ai_helpers.yaml`
-  - doc_analysis_prompt, consistency_prompt, technical_writer_prompt (NEW v3.1.0), test_strategy_prompt, quality_prompt, issue_extraction_prompt, markdown_lint_prompt, version_manager_prompt
+- **11 Base Prompt Templates** in `.workflow_core/config/ai_helpers.yaml`
+  - doc_analysis_prompt, consistency_prompt, technical_writer_prompt (v3.1.0), front_end_developer_prompt (v4.2.0), ui_ux_designer_prompt (v5.0.1), test_strategy_prompt, quality_prompt, issue_extraction_prompt, markdown_lint_prompt, configuration_specialist_prompt, version_manager_prompt
 
-- **4 Specialized Persona Types** in `.workflow_core/config/ai_prompts_project_kinds.yaml`
+- **6 Specialized Persona Types** in `.workflow_core/config/ai_prompts_project_kinds.yaml`
   - documentation_specialist (adapts per project kind)
   - code_reviewer (adapts per project kind)
   - test_engineer (adapts per project kind)
-  - ux_designer (NEW v2.4.0, adapts per project kind)
+  - front_end_developer (NEW v4.0.1, adapts per project kind) ⭐ NEW
+  - ui_ux_designer (UPDATED v4.0.1, adapts per project kind) ⭐ UPDATED
+  - configuration_specialist (adapts per project kind)
 
 **How It Works**:
 1. Base prompts provide general guidance applicable across project types
@@ -204,6 +220,14 @@ The AI Workflow uses a **flexible persona system** with dynamic prompt construct
 This architecture enables the same workflow to intelligently adapt to different project types without code changes.
 
 ## Version History (Major Releases)
+
+### v4.0.1 (2026-02-09)
+- **Front-end development analysis**: New Step 11.7 with front_end_developer AI persona ⭐ NEW
+- **UI/UX designer modernization**: Step 15 updated to use ui_ux_designer persona ⭐ UPDATED
+- **17 AI personas**: Added front_end_developer and updated ui_ux_designer (previously ux_designer)
+- **Persona separation**: Technical implementation (Step 11.7) vs. user experience (Step 15)
+- **Project-kind support**: React SPA, Vue SPA, Static Website, Client SPA enhancements
+- **23 workflow steps**: Expanded from 20 steps
 
 ### v4.0.0 (2026-02-08)
 - **Configuration-driven step execution**: Use descriptive names (`documentation_updates`) instead of numbers (`step_01`)

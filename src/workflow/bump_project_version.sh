@@ -2,8 +2,8 @@
 ################################################################################
 # Automated Project Version Bump Script
 # Purpose: Bump semantic version in target project with AI assistance
-# Part of: AI Workflow Automation v2.7.0
-# Version: 2.0.0
+# Part of: AI Workflow Automation v4.0.1
+# Version: 4.0.1
 # Usage: ./bump_project_version.sh [options]
 ################################################################################
 
