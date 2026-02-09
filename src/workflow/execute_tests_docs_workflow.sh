@@ -1672,8 +1672,8 @@ execute_step() {
             fi
             ;;
         11)
-            step_name="Git Finalization"
-            if step11_git_finalization; then
+            step_name="Deployment Readiness Gate"
+            if step11_deployment_gate; then
                 update_workflow_status "$step_num" "✅"
                 log_step_complete "$step_num" "$step_name" "SUCCESS"
                 return 0
@@ -1684,8 +1684,8 @@ execute_step() {
             fi
             ;;
         12)
-            step_name="Markdown Linting"
-            if step12_markdown_linting; then
+            step_name="Git Finalization"
+            if step12_git_finalization; then
                 update_workflow_status "$step_num" "✅"
                 log_step_complete "$step_num" "$step_name" "SUCCESS"
                 return 0
