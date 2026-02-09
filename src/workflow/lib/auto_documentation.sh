@@ -26,6 +26,28 @@ CHANGELOG_DIR="${DOCS_DIR}/changelog"
 CHANGELOG_FILE="${PROJECT_ROOT:-$(pwd)}/CHANGELOG.md"
 
 # ==============================================================================
+# CLEANUP MANAGEMENT
+# ==============================================================================
+
+# Track temporary files for cleanup
+declare -a AUTO_DOC_TEMP_FILES=()
+
+# Register temp file for cleanup
+track_auto_doc_temp() {
+    local temp_file="$1"
+    [[ -n "$temp_file" ]] && AUTO_DOC_TEMP_FILES+=("$temp_file")
+}
+
+# Cleanup handler for auto documentation
+cleanup_auto_documentation_files() {
+    local file
+    for file in "${AUTO_DOC_TEMP_FILES[@]}"; do
+        [[ -f "$file" ]] && rm -f "$file" 2>/dev/null
+    done
+    AUTO_DOC_TEMP_FILES=()
+}
+
+# ==============================================================================
 # INITIALIZATION
 # ==============================================================================
 
@@ -201,6 +223,7 @@ generate_changelog() {
     
     # Create temporary file for new entries
     local temp_file=$(mktemp)
+    track_auto_doc_temp "$temp_file"
     
     cat > "$temp_file" << EOF
 # Changelog
@@ -547,6 +570,15 @@ export -f generate_api_docs
 export -f generate_file_api_docs
 export -f validate_documentation
 export -f on_workflow_complete_docs
+export -f track_auto_doc_temp
+export -f cleanup_auto_documentation_files
+
+# ==============================================================================
+# CLEANUP TRAP
+# ==============================================================================
+
+# Ensure cleanup runs on exit
+trap cleanup_auto_documentation_files EXIT INT TERM
 
 ################################################################################
 # End of Auto-Documentation Module

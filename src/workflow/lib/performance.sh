@@ -8,6 +8,41 @@ set -euo pipefail
 ################################################################################
 
 # ==============================================================================
+# CLEANUP MANAGEMENT
+# ==============================================================================
+
+# Track temporary files for cleanup
+declare -a PERF_TEMP_FILES=()
+declare -a PERF_CACHE_FILES=()
+
+# Register temp file for cleanup
+track_perf_temp() {
+    local temp_file="$1"
+    [[ -n "$temp_file" ]] && PERF_TEMP_FILES+=("$temp_file")
+}
+
+# Register cache file for cleanup
+track_perf_cache() {
+    local cache_file="$1"
+    [[ -n "$cache_file" ]] && PERF_CACHE_FILES+=("$cache_file")
+}
+
+# Cleanup handler for performance module
+cleanup_performance_files() {
+    local file
+    # Clean temp files
+    for file in "${PERF_TEMP_FILES[@]}"; do
+        [[ -f "$file" ]] && rm -f "$file" 2>/dev/null
+    done
+    # Clean cache files (on exit only, not during normal operation)
+    for file in "${PERF_CACHE_FILES[@]}"; do
+        [[ -f "$file" ]] && rm -f "$file" 2>/dev/null
+    done
+    PERF_TEMP_FILES=()
+    PERF_CACHE_FILES=()
+}
+
+# ==============================================================================
 # PARALLEL EXECUTION
 # ==============================================================================
 
@@ -543,6 +578,7 @@ batch_command_outputs() {
     # Execute all commands in parallel
     for cmd in "${commands[@]}"; do
         local tmpfile=$(mktemp)
+        track_perf_temp "$tmpfile"
         tmpfiles+=("$tmpfile")
         eval "$cmd" > "$tmpfile" 2>&1 &
         pids+=($!)
@@ -561,3 +597,11 @@ batch_command_outputs() {
 }
 
 export -f batch_read_files batch_read_files_limited batch_command_outputs
+export -f track_perf_temp track_perf_cache cleanup_performance_files
+
+# ==============================================================================
+# CLEANUP TRAP
+# ==============================================================================
+
+# Ensure cleanup runs on exit
+trap cleanup_performance_files EXIT INT TERM

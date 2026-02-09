@@ -26,6 +26,28 @@ readonly MAX_DIFF_LINES=${MAX_DIFF_LINES:-200}
 readonly MAX_FILES_LIST=${MAX_FILES_LIST:-50}
 
 ################################################################################
+# CLEANUP MANAGEMENT
+################################################################################
+
+# Track temporary files for cleanup
+declare -a BATCH_COMMIT_TEMP_FILES=()
+
+# Register temp file for cleanup
+track_batch_commit_temp() {
+    local temp_file="$1"
+    [[ -n "$temp_file" ]] && BATCH_COMMIT_TEMP_FILES+=("$temp_file")
+}
+
+# Cleanup handler for batch commit
+cleanup_batch_commit() {
+    local file
+    for file in "${BATCH_COMMIT_TEMP_FILES[@]}"; do
+        [[ -f "$file" ]] && rm -f "$file" 2>/dev/null
+    done
+    BATCH_COMMIT_TEMP_FILES=()
+}
+
+################################################################################
 # GIT CONTEXT ASSEMBLY
 ################################################################################
 
@@ -217,6 +239,7 @@ generate_ai_commit_message_batch() {
     # Create temporary output file
     local output_file
     output_file=$(mktemp)
+    track_batch_commit_temp "$output_file"
     
     # Log prompt (if logging enabled)
     if [[ "${VERBOSE:-false}" == "true" ]]; then
@@ -593,6 +616,7 @@ generate_submodule_commit_message() {
     # Create temporary output file
     local output_file
     output_file=$(mktemp)
+    track_batch_commit_temp "$output_file"
     
     # Log prompt (if logging enabled)
     if [[ "${VERBOSE:-false}" == "true" ]]; then
@@ -707,3 +731,12 @@ export -f assemble_submodule_context_for_ai
 export -f build_submodule_commit_prompt
 export -f generate_submodule_commit_message
 export -f generate_submodule_fallback_message
+export -f track_batch_commit_temp
+export -f cleanup_batch_commit
+
+################################################################################
+# CLEANUP TRAP
+################################################################################
+
+# Ensure cleanup runs on exit
+trap cleanup_batch_commit EXIT INT TERM
