@@ -62,6 +62,11 @@ Practical guides and tutorials:
 - **[Multi-Stage Pipeline Guide](MULTI_STAGE_PIPELINE_GUIDE.md)** - Multi-stage execution
 - **[Step 1 Optimization Guide](STEP1_OPTIMIZATION_GUIDE.md)** - Documentation analysis optimization
 
+### 🚀 [Operations](operations/)
+Production operations and CI/CD integration:
+- **[CI/CD Integration Guide](operations/CI_CD_INTEGRATION.md)** - Complete CI/CD integration guide ⭐ NEW
+- **[Performance Optimization Deep Dive](operations/PERFORMANCE_OPTIMIZATION.md)** - Advanced performance tuning ⭐ NEW
+
 ### 📦 [Archive](archive/)
 Historical documentation and deprecated guides:
 - Older documentation versions
@@ -97,9 +102,10 @@ Execution reports and analysis from workflow runs:
 4. Follow [Contributing Guide](developer-guide/contributing.md)
 
 ### For Integration
-1. Check [Usage Guide](user-guide/usage.md) for CI/CD integration
+1. Check [CI/CD Integration Guide](operations/CI_CD_INTEGRATION.md) ⭐ NEW
 2. Review [Complete Configuration Reference](reference/COMPLETE_CONFIGURATION_REFERENCE.md) ⭐ NEW
-3. See [Example Projects](user-guide/example-projects.md)
+3. Study [Performance Optimization](operations/PERFORMANCE_OPTIMIZATION.md) ⭐ NEW
+4. See [Example Projects](user-guide/example-projects.md)
 
 ## Documentation Standards
 
@@ -115,6 +121,6 @@ For questions, issues, or contributions:
 
 ---
 
-**Version**: v4.0.0  
-**Last Updated**: 2026-02-08  
+**Version**: v4.0.1  
+**Last Updated**: 2026-02-09  
 **Maintainer**: Marcelo Pereira Barbosa (@mpbarbosa)
