@@ -201,12 +201,14 @@ update_cache_index() {
     if jq -e ".entries[] | select(.cache_key == \"${cache_key}\" or .key == \"${cache_key}\")" "${AI_CACHE_INDEX}" > /dev/null 2>&1; then
         # Update existing entry
         local temp_index=$(mktemp)
+        track_ai_cache_temp "$temp_index"
         jq ".entries |= map(if (.cache_key // .key) == \"${cache_key}\" then .last_accessed = \"$(date -Iseconds)\" | .access_count = ((.access_count // 0) + 1) else . end)" \
             "${AI_CACHE_INDEX}" > "${temp_index}"
         mv "${temp_index}" "${AI_CACHE_INDEX}"
     else
         # Add new entry
         local temp_index=$(mktemp)
+        track_ai_cache_temp "$temp_index"
         jq ".entries += [{
             \"cache_key\": \"${cache_key}\",
             \"created\": \"$(date -Iseconds)\",
@@ -257,6 +259,7 @@ cleanup_ai_cache_old_entries() {
     # Only update index if we actually deleted something
     if [[ ${deleted_count} -gt 0 ]] && [[ -f "${AI_CACHE_INDEX}" ]]; then
         local temp_index=$(mktemp)
+        track_ai_cache_temp "$temp_index"
         # Update last_cleanup and filter out entries where cache file no longer exists
         jq --arg cleanup "$(date -Iseconds)" '
             .last_cleanup = $cleanup | 
@@ -387,6 +390,32 @@ AI Cache Metrics (This Run):
   Estimated Tokens Saved: ${AI_CACHE_TOKENS_SAVED}
 EOF
 }
+
+# ==============================================================================
+# CLEANUP HANDLER
+# ==============================================================================
+
+# Track temporary files created by this module
+declare -a AI_CACHE_TEMP_FILES=()
+
+# Register temp file for cleanup
+track_ai_cache_temp() {
+    local temp_file="$1"
+    AI_CACHE_TEMP_FILES+=("$temp_file")
+}
+
+# Cleanup function for ai_cache module
+cleanup_ai_cache() {
+    # Remove any temporary files created during cache operations
+    for temp_file in "${AI_CACHE_TEMP_FILES[@]}"; do
+        if [[ -f "$temp_file" ]]; then
+            rm -f "$temp_file" 2>/dev/null || true
+        fi
+    done
+}
+
+# Register cleanup handler
+trap cleanup_ai_cache EXIT INT TERM
 
 ################################################################################
 # Module initialized

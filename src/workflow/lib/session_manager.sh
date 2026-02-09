@@ -374,3 +374,10 @@ export -f cleanup_all_sessions list_active_sessions
 export -f get_recommended_timeout
 export -f execute_npm_command execute_git_command
 export -f enhanced_workflow_cleanup
+
+# ==============================================================================
+# CLEANUP TRAP
+# ==============================================================================
+
+# Ensure cleanup runs on exit
+trap cleanup_all_sessions EXIT INT TERM
