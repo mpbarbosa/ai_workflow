@@ -4,6 +4,21 @@
 **Last Updated**: 2026-02-08  
 **Prerequisites**: Bash 4.0+, Git, Node.js 25.2.1+, GitHub Copilot CLI
 
+## Table of Contents
+
+- [Quick Start (5 Minutes)](#quick-start-5-minutes)
+- [Installation Options](#installation-options)
+- [Basic Workflows](#basic-workflows)
+- [Configuration](#configuration)
+- [Command-Line Options](#command-line-options)
+- [Performance Optimization](#performance-optimization)
+- [AI Features](#ai-features)
+- [Troubleshooting](#troubleshooting)
+- [Next Steps](#next-steps)
+- [FAQ](#faq)
+
+---
+
 ## Quick Start (5 Minutes)
 
 ### 1. Installation

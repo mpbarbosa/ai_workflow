@@ -3,6 +3,22 @@
 **Version**: v4.0.0  
 **One-Page Cheat Sheet** for common operations
 
+## Table of Contents
+
+- [Quick Start](#-quick-start)
+- [Common Commands](#-common-commands)
+  - [Basic Execution](#basic-execution)
+  - [Performance Options](#performance-options)
+  - [Workflow Templates](#workflow-templates)
+  - [Selective Execution](#selective-execution)
+- [Configuration](#-configuration)
+- [Tech Stack Detection](#-tech-stack-detection)
+- [Performance Optimization](#-performance-optimization)
+- [AI Features](#-ai-features)
+- [Pre-Commit Hooks](#-pre-commit-hooks)
+- [Troubleshooting](#-troubleshooting)
+- [Quick Tips](#-quick-tips)
+
 ---
 
 ## 🚀 Quick Start

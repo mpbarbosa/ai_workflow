@@ -18,6 +18,23 @@ Intelligent workflow automation system for validating and enhancing documentatio
 
 > 🚀 **NEW in v4.0.0**: Configuration-driven step execution! Use descriptive step names (`documentation_updates`) instead of numbers. See [Migration Guide](docs/MIGRATION_GUIDE_v4.0.md).
 
+## Table of Contents
+
+- [Overview](#overview)
+- [Quick Start](#quick-start)
+- [Performance](#performance)
+- [Installation](#installation)
+- [Usage](#usage)
+- [Configuration](#configuration)
+- [AI Personas](#ai-personas)
+- [Step Execution](#step-execution)
+- [Architecture](#architecture)
+- [Development](#development)
+- [Testing](#testing)
+- [Documentation](#documentation)
+- [Contributing](#contributing)
+- [License](#license)
+
 ## Overview
 
 This repository provides a comprehensive, modular workflow automation system that leverages AI to maintain code quality, documentation consistency, and test coverage across software projects.
