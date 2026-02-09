@@ -61,7 +61,7 @@ This analysis identified **4 critical categories** of documentation inconsistenc
 - ✅ **Configuration Files FIXED**: `src/workflow/lib/config.sh` and `src/workflow/config/paths.yaml` correctly point to `/src/workflow`
 - ✅ **27 Archive Files**: Legacy references are appropriate historical context
 - ⚠️ **2 Active Files Need Review**:
-  1. `docs/design/remove-nested-markdown-blocks.md` - Contains malformed path reference
+  1. `docs/architecture/remove-nested-markdown-blocks.md` - Contains malformed path reference
   2. `docs/reports/analysis/DOCUMENTATION_CONSISTENCY_ANALYSIS_COMPREHENSIVE_20251224.md` - Lists /shell_scripts/ in broken references section
 
 **Archive Files** (No Action Needed - Historical Context):
@@ -77,7 +77,7 @@ docs/archive/WORKFLOW_AUTOMATION_PHASE2_COMPLETION.md
 
 #### Issue 1.2.A: Malformed Path in Design Document
 
-**File**: `docs/design/remove-nested-markdown-blocks.md`  
+**File**: `docs/architecture/remove-nested-markdown-blocks.md`  
 **Lines**: 20-33
 
 **Problem**:
@@ -315,7 +315,7 @@ Create or update reference validation script to:
 if [[ "$file" =~ docs/archive/ ]]; then
     severity="INFO"
     note="(historical context - no action needed)"
-elif [[ "$file" =~ docs/design/ ]] && [[ "$reference" =~ "approach: |" ]]; then
+elif [[ "$file" =~ docs/architecture/ ]] && [[ "$reference" =~ "approach: |" ]]; then
     severity="INFO"
     note="(YAML syntax example, not actual reference)"
 elif [[ "$file" =~ docs/reports/analysis/ ]]; then
@@ -341,7 +341,7 @@ fi
 **Recommended Clarification**:
 Add navigation guidance at top of PROJECT_REFERENCE.md:
 ```markdown
-> 📋 **Document Purpose**: This is the authoritative source for project statistics, module inventory, and version history. For quick start and usage instructions, see [README.md](../README.md). For detailed guides, see [docs/user-guide/](user-guide/).
+> 📋 **Document Purpose**: This is the authoritative source for project statistics, module inventory, and version history. For quick start and usage instructions, see [README.md](../README.md). For detailed guides, see [docs/guides/user/](user-guide/).
 ```
 
 **Action**: Add clearer navigation guidance between overlapping documents.
@@ -377,7 +377,7 @@ Add navigation guidance at top of PROJECT_REFERENCE.md:
 **Verified Sources**:
 - ✅ docs/PROJECT_REFERENCE.md - Detailed version history (lines 172-200)
 - ✅ README.md - References PROJECT_REFERENCE.md for complete history
-- ✅ docs/user-guide/release-notes.md - User-facing release notes
+- ✅ docs/guides/user/release-notes.md - User-facing release notes
 - ✅ Archive documents preserve historical context
 
 **Version Coverage**:
@@ -457,7 +457,7 @@ SHELL_SCRIPTS_DIR="${PROJECT_ROOT}/src/workflow"   # ✅ CORRECT
    - Effort: 5 minutes
 
 2. **Add context to design document YAML example**
-   - File: `docs/design/remove-nested-markdown-blocks.md`
+   - File: `docs/architecture/remove-nested-markdown-blocks.md`
    - Change: Add comment clarifying YAML syntax example
    - Priority: 🟡 MEDIUM
    - Effort: 5 minutes
@@ -638,9 +638,9 @@ The AI Workflow Automation project demonstrates **excellent documentation qualit
 | .github/copilot-instructions.md | Config | Modified | None |
 | README.md | Critical | Modified | None |
 | docs/PROJECT_REFERENCE.md | Critical | Modified | None |
-| docs/design/adr/007-*.md | Design | Added | None |
-| docs/design/clarify-*.md | Design | Added | None |
-| docs/design/remove-nested-*.md | Design | Added | 1 minor |
+| docs/architecture/adr/007-*.md | Design | Added | None |
+| docs/architecture/clarify-*.md | Design | Added | None |
+| docs/architecture/remove-nested-*.md | Design | Added | 1 minor |
 | src/workflow/README.md | Developer | Modified | 1 critical |
 | src/workflow/lib/ai_helpers.sh | Source | Modified | None |
 | .workflow_core/config/ai_helpers.yaml | Source | Modified | None |

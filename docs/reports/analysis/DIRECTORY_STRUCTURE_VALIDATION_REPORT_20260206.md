@@ -45,17 +45,17 @@ This report provides comprehensive validation of the AI Workflow Automation proj
 - `templates/workflows/` - Workflow templates ✅
 
 **Documentation Subdirectories** (documented in docs/README.md):
-- `docs/user-guide/` - End user documentation ✅
-- `docs/developer-guide/` - Developer documentation ✅
+- `docs/guides/user/` - End user documentation ✅
+- `docs/guides/developer/` - Developer documentation ✅
 - `docs/reference/` - Technical reference ✅
-- `docs/design/` - Architecture decisions ✅
-- `docs/api/` - API documentation ✅
+- `docs/architecture/` - Architecture decisions ✅
+- `docs/reference/api/` - API documentation ✅
 - `docs/architecture/` - Architecture docs ✅
 - `docs/testing/` - Testing documentation ✅
-- `docs/requirements/` - Requirements docs ✅
-- `docs/diagrams/` - Visual documentation ✅
+- `docs/architecture/requirements/` - Requirements docs ✅
+- `docs/architecture/diagrams/` - Visual documentation ✅
 - `docs/changelog/` - Version history ✅
-- `docs/workflow-automation/` - Workflow-specific docs ✅
+- `docs/workflows/` - Workflow-specific docs ✅
 
 #### ⚠️ Undocumented Directories (12/53)
 
@@ -233,10 +233,10 @@ ai_workflow/
 #### ✅ Consistent Patterns
 
 **Kebab-case with hyphens** (Primary pattern):
-- `docs/user-guide/` ✅
-- `docs/developer-guide/` ✅
-- `docs/workflow-reports/` ✅
-- `docs/workflow-automation/` ✅
+- `docs/guides/user/` ✅
+- `docs/guides/developer/` ✅
+- `docs/reports/workflows/` ✅
+- `docs/workflows/` ✅
 - `test-results/` ✅
 - `.workflow-config.yaml` ✅
 
@@ -271,7 +271,7 @@ ai_workflow/
      - **Recommendation**: Merge `docs/bugfixes/` into `docs/reports/bugfixes/`
 
 3. **Similar purpose directories**
-   - **`docs/guides/`** vs **`docs/user-guide/`**
+   - **`docs/guides/`** vs **`docs/guides/user/`**
      - guides/ contains quick references
      - user-guide/ contains comprehensive documentation
      - **Status**: Acceptable distinction
@@ -456,13 +456,13 @@ No high-priority issues found.
   - **[Incremental Reference](guides/QUICK_REFERENCE_INCREMENTAL.md)** - Incremental processing
   ```
 
-#### Issue 2: Miscellaneous Directory Unclear Purpose (docs/misc/)
-- **Location**: `./docs/misc/`
+#### Issue 2: Miscellaneous Directory Unclear Purpose (docs/reports/historical/)
+- **Location**: `./docs/reports/historical/`
 - **Issue**: No README.md explaining purpose, mixed content types
 - **Impact**: Confusion about what belongs in this directory
 - **Priority**: MEDIUM
 - **Recommendation**: 
-  1. Create `docs/misc/README.md` explaining it's for temporary/work-in-progress docs
+  1. Create `docs/reports/historical/README.md` explaining it's for temporary/work-in-progress docs
   2. Consider moving completed docs to appropriate categories
   3. Establish criteria for what goes in misc/ vs archive/
 
@@ -572,7 +572,7 @@ grep -r "docs/bugfixes" docs/ README.md
 ```bash
 # Add documentation to undocumented directories
 # 1. docs/guides/README.md (see Issue 1 recommendation)
-# 2. docs/misc/README.md (see Issue 2 recommendation)  
+# 2. docs/reports/historical/README.md (see Issue 2 recommendation)  
 # 3. test-results/README.md (see Issue 4 recommendation)
 ```
 
@@ -662,8 +662,8 @@ grep -r "docs/bugfixes" docs/ README.md
    - Add: Quick Reference Guides section
    - Effort: 5 minutes
 
-2. **Create docs/misc/README.md**
-   - Create: `docs/misc/README.md`
+2. **Create docs/reports/historical/README.md**
+   - Create: `docs/reports/historical/README.md`
    - Content: Explain temporary/WIP documentation purpose
    - Effort: 10 minutes
 

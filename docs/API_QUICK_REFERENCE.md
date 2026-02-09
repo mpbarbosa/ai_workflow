@@ -2,7 +2,7 @@
 
 ## Overview
 
-This guide provides quick access to the most commonly used functions across all AI Workflow Automation modules. For complete API documentation, see `docs/api/COMPLETE_API_REFERENCE.md`.
+This guide provides quick access to the most commonly used functions across all AI Workflow Automation modules. For complete API documentation, see `docs/reference/api/COMPLETE_API_REFERENCE.md`.
 
 ## Core Modules
 
@@ -549,7 +549,7 @@ update_documentation_index "docs"
 generate_module_inventory "src" "docs/modules.md"
 
 # Extract function documentation
-extract_function_docs "$script_file" "docs/api/$module.md"
+extract_function_docs "$script_file" "docs/reference/api/$module.md"
 ```
 
 ### Changelog Generator (`changelog_generator.sh`)
@@ -778,10 +778,10 @@ cleanup_on_error() {
 
 ## See Also
 
-- **Complete API Reference**: `docs/api/COMPLETE_API_REFERENCE.md`
-- **Module Inventory**: `docs/api/README.md`
-- **Architecture Guide**: `docs/developer-guide/architecture.md`
-- **Getting Started**: `docs/GETTING_STARTED.md`
+- **Complete API Reference**: `docs/reference/api/COMPLETE_API_REFERENCE.md`
+- **Module Inventory**: `docs/reference/api/README.md`
+- **Architecture Guide**: `docs/guides/developer/architecture.md`
+- **Getting Started**: `docs/getting-started/GETTING_STARTED.md`
 
 ---
 

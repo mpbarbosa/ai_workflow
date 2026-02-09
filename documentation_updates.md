@@ -26,7 +26,7 @@ I'll analyze all 14 documentation files to identify accuracy, consistency, clari
 ● Read docs/PROJECT_REFERENCE.md
   └ 416 lines read
 
-● Read docs/QUICK_REFERENCE.md
+● Read docs/getting-started/QUICK_REFERENCE.md
   └ 317 lines read
 
 ● Read docs/ROADMAP.md
@@ -41,13 +41,13 @@ I'll analyze all 14 documentation files to identify accuracy, consistency, clari
 ● Read docs/guides/PRECOMMIT_HOOKS_SETUP.md
   └ 829 lines read
 
-● Read docs/user-guide/PERFORMANCE_TUNING.md
+● Read docs/guides/user/PERFORMANCE_TUNING.md
   └ 724 lines read
 
 ● Read documentation_updates.md
   └ 218 lines read
 
-● Read docs/user-guide/TROUBLESHOOTING.md
+● Read docs/guides/user/TROUBLESHOOTING.md
   └ 774 lines read
 
 ## Analysis Complete
@@ -77,7 +77,7 @@ This discrepancy appeared in 8+ documentation files.
 3. **.github/copilot-instructions.md** (1 change) - Module counts corrected
 4. **docs/DOCUMENTATION_HUB.md** (2 changes) - Statistics updated
 5. **docs/ARCHITECTURE_OVERVIEW.md** (4 changes) - Architecture diagrams and counts
-6. **docs/QUICK_REFERENCE.md** (2 changes) - Directory structure
+6. **docs/getting-started/QUICK_REFERENCE.md** (2 changes) - Directory structure
 7. **docs/ROADMAP.md** (2 changes) - Module statistics
 8. **docs/UNIFIED_API_REFERENCE.md** (2 changes) - API counts
 
@@ -88,7 +88,7 @@ This discrepancy appeared in 8+ documentation files.
 These 3 files were newly created (git status shows "A") and are **comprehensive and accurate**:
 - ✅ **docs/ARCHITECTURE_OVERVIEW.md** - Excellent system architecture overview
 - ✅ **docs/DOCUMENTATION_HUB.md** - Comprehensive navigation hub
-- ✅ **docs/user-guide/TROUBLESHOOTING.md** - Detailed troubleshooting guide
+- ✅ **docs/guides/user/TROUBLESHOOTING.md** - Detailed troubleshooting guide
 
 ---
 

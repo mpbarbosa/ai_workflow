@@ -591,10 +591,10 @@ testing:
 
 ## See Also
 
-- **Getting Started**: `docs/GETTING_STARTED.md`
-- **User Guide**: `docs/user-guide/`
+- **Getting Started**: `docs/getting-started/GETTING_STARTED.md`
+- **User Guide**: `docs/guides/user/`
 - **Project Reference**: `docs/PROJECT_REFERENCE.md`
-- **Troubleshooting**: `docs/user-guide/troubleshooting.md`
+- **Troubleshooting**: `docs/guides/user/troubleshooting.md`
 
 ---
 

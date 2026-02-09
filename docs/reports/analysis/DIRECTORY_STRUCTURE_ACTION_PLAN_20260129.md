@@ -104,7 +104,7 @@ The project maintains comprehensive documentation organized by audience and purp
   - **`ROADMAP.md`** - Future plans and development roadmap
 
 **User-Facing Documentation**:
-- **`docs/user-guide/`** - End-user documentation (9 files)
+- **`docs/guides/user/`** - End-user documentation (9 files)
   - Quick start guide, installation, usage, troubleshooting
   - FAQ, example projects, release notes
   
@@ -113,11 +113,11 @@ The project maintains comprehensive documentation organized by audience and purp
   - Best practices guides, feature tutorials
 
 **Developer Documentation**:
-- **`docs/developer-guide/`** - Developer/contributor guides (6 files)
+- **`docs/guides/developer/`** - Developer/contributor guides (6 files)
   - Architecture overview, API reference
   - Contributing guide, testing guide, development setup
   
-- **`docs/design/`** - Architecture and design decisions
+- **`docs/architecture/`** - Architecture and design decisions
   - **`adr/`** - Architecture Decision Records
   - **`architecture/`** - Detailed architecture documentation
   - Project kind framework, tech stack framework
@@ -134,13 +134,13 @@ The project maintains comprehensive documentation organized by audience and purp
   - **`implementation/`** - Feature implementation summaries
   - **`bugfixes/`** - Bugfix action plans and resolutions
   
-- **`docs/workflow-reports/`** - Auto-generated workflow execution reports (9 files)
+- **`docs/reports/workflows/`** - Auto-generated workflow execution reports (9 files)
   - Created by Step 16 with --generate-docs flag (v2.9.0+)
   - Timestamped execution summaries
   - Performance metrics and change detection results
 
 **Supporting Documentation**:
-- **`docs/workflow-automation/`** - Workflow execution documentation (9 files)
+- **`docs/workflows/`** - Workflow execution documentation (9 files)
   - Workflow analysis, caching, optimization guides
   - Phase completion reports, metrics documentation
   
@@ -148,7 +148,7 @@ The project maintains comprehensive documentation organized by audience and purp
   - Issue tracking, root cause analysis
   - Resolution verification, regression prevention
   
-- **`docs/misc/`** - Miscellaneous documentation (4 files)
+- **`docs/reports/historical/`** - Miscellaneous documentation (4 files)
   - Edge case documentation, special considerations
   - Mitigation strategies, advanced topics
   
@@ -158,11 +158,11 @@ The project maintains comprehensive documentation organized by audience and purp
 
 **Other Documentation Areas**:
 - **`docs/testing/`** - Test strategy and planning documentation
-- **`docs/requirements/`** - Requirements documentation
+- **`docs/architecture/requirements/`** - Requirements documentation
 - **`docs/changelog/`** - Version changelogs
-- **`docs/diagrams/`** - Visual documentation (Mermaid diagrams)
+- **`docs/architecture/diagrams/`** - Visual documentation (Mermaid diagrams)
 - **`docs/fixes/`** - Quick fix documentation
-- **`docs/architecture/`** - Legacy architecture documentation (see docs/design/)
+- **`docs/architecture/`** - Legacy architecture documentation (see docs/architecture/)
 ```
 
 ### 3. Update docs/README.md (15 minutes)
@@ -219,7 +219,7 @@ Manually created analysis and implementation reports:
 - **`implementation/`** - Feature implementation summaries, optimization reports
 - **`bugfixes/`** - Bugfix action plans, resolution documentation
 
-### Auto-Generated Reports (`docs/workflow-reports/`)
+### Auto-Generated Reports (`docs/reports/workflows/`)
 Auto-generated workflow execution reports (v2.9.0+):
 - Created by Step 16 when using `--generate-docs` flag
 - Timestamped execution summaries
@@ -314,7 +314,7 @@ grep -n "Workflow Reports" docs/README.md
 grep -n "ML Model Storage" docs/ML_OPTIMIZATION_GUIDE.md
 
 # 3. Verify directory structure documentation
-ls docs/workflow-reports/ docs/guides/ docs/misc/ docs/bugfixes/
+ls docs/reports/workflows/ docs/guides/ docs/reports/historical/ docs/bugfixes/
 ```
 
 ---
@@ -325,7 +325,7 @@ ls docs/workflow-reports/ docs/guides/ docs/misc/ docs/bugfixes/
 
 Add README.md to each undocumented directory:
 
-#### docs/workflow-reports/README.md
+#### docs/reports/workflows/README.md
 ```markdown
 # Workflow Execution Reports
 
@@ -387,12 +387,12 @@ This directory contains step-by-step guides, integration tutorials, and best pra
 
 ## Related Documentation
 
-- **User Guide** (docs/user-guide/): End-user documentation
-- **Developer Guide** (docs/developer-guide/): Contributor documentation
+- **User Guide** (docs/guides/user/): End-user documentation
+- **Developer Guide** (docs/guides/developer/): Contributor documentation
 - **Reference** (docs/reference/): Technical reference documentation
 ```
 
-#### docs/misc/README.md
+#### docs/reports/historical/README.md
 ```markdown
 # Miscellaneous Documentation
 
@@ -420,7 +420,7 @@ Content in this directory is organized by topic rather than strict categorizatio
 ## Related Documentation
 
 - **Reference** (docs/reference/): Primary technical reference
-- **Developer Guide** (docs/developer-guide/): Developer documentation
+- **Developer Guide** (docs/guides/developer/): Developer documentation
 ```
 
 #### docs/bugfixes/README.md

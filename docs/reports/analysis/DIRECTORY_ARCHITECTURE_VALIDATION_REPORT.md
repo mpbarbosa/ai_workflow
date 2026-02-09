@@ -31,7 +31,7 @@ The primary documentation accurately describes the directory structure:
 |-----------|--------------|--------|
 | `src/workflow/` | ✅ Fully documented in docs/PROJECT_REFERENCE.md | PASS |
 | `docs/` | ✅ Comprehensive README with structure map | PASS |
-| `tests/` | ✅ Documented in docs/developer-guide/testing.md | PASS |
+| `tests/` | ✅ Documented in docs/guides/developer/testing.md | PASS |
 | `scripts/` | ✅ Referenced in project documentation | PASS |
 | `examples/` | ✅ Documented with usage guide | PASS |
 | `templates/` | ✅ Has README.md explaining purpose | PASS |
@@ -62,7 +62,7 @@ rmdir docs/guides/
 # Examples: setup-guide.md, integration-guide.md, best-practices.md
 ```
 
-#### Issue 1.2: Empty `docs/workflow-automation/` Directory
+#### Issue 1.2: Empty `docs/workflows/` Directory
 - **Priority**: MEDIUM
 - **Status**: Directory exists but contains no files (0 files found)
 - **Impact**: Creates confusion about purpose
@@ -71,7 +71,7 @@ rmdir docs/guides/
 **Recommendation**:
 ```bash
 # Remove empty directory
-rmdir docs/workflow-automation/
+rmdir docs/workflows/
 # Update docs/README.md navigation structure
 ```
 
@@ -98,15 +98,15 @@ echo "Test execution reports are written to test-results/ (gitignored)" >> tests
 
 #### Issue 1.4: Documentation Gap for New Directories
 - **Priority**: LOW
-- **Status**: `docs/user-guide/` and `docs/developer-guide/` created but not in PROJECT_REFERENCE.md
+- **Status**: `docs/guides/user/` and `docs/guides/developer/` created but not in PROJECT_REFERENCE.md
 - **Impact**: Minor - directories are well-documented in docs/README.md
 - **Evidence**: Both directories have good content (8+ files each) and are properly organized
 
 **Recommendation**:
 ```markdown
 # Add to docs/PROJECT_REFERENCE.md under "Documentation Structure":
-- docs/user-guide/ - End-user documentation (9 files)
-- docs/developer-guide/ - Developer/contributor guides (6 files)
+- docs/guides/user/ - End-user documentation (9 files)
+- docs/guides/developer/ - Developer/contributor guides (6 files)
 ```
 
 ---
@@ -501,7 +501,7 @@ Average Depth: 3 levels
 **Impact**: Creates confusion, broken references
 
 **Action Items**:
-1. ✅ Remove empty directories: `rmdir docs/guides/ docs/workflow-automation/`
+1. ✅ Remove empty directories: `rmdir docs/guides/ docs/workflows/`
 2. ✅ Update docs/README.md to remove references
 3. ✅ Verify no broken links: `grep -r "docs/guides" docs/`
 
@@ -564,7 +564,7 @@ echo "test-results/" >> .gitignore
 git rm -r --cached test-results/
 
 # Remove empty directories
-rmdir docs/guides/ docs/workflow-automation/
+rmdir docs/guides/ docs/workflows/
 # Update docs/README.md (remove references to empty dirs)
 
 git commit -m "chore: cleanup backup files and empty directories"
@@ -814,7 +814,7 @@ ai_workflow/
 - [ ] Add `test-results/` to .gitignore
 - [ ] Remove `test-results/` from git tracking
 - [ ] Remove empty `docs/guides/` directory
-- [ ] Remove empty `docs/workflow-automation/` directory
+- [ ] Remove empty `docs/workflows/` directory
 - [ ] Update `docs/README.md` to remove references
 
 ### Medium Priority

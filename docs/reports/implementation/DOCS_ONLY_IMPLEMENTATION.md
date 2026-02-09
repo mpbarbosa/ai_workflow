@@ -30,7 +30,7 @@ Implemented **docs-only fast track optimization** that achieves **93% faster exe
    - Skip logic verification
    - Cache functionality tests
 
-4. **Documentation**: `docs/workflow-automation/DOCS_ONLY_FAST_TRACK.md`
+4. **Documentation**: `docs/workflows/DOCS_ONLY_FAST_TRACK.md`
    - Usage guide
    - Performance comparison
    - Troubleshooting
@@ -234,7 +234,7 @@ Tests Failed: 0
    - Mock infrastructure
    - Assertion helpers
 
-3. **docs/workflow-automation/DOCS_ONLY_FAST_TRACK.md** (300 lines)
+3. **docs/workflows/DOCS_ONLY_FAST_TRACK.md** (300 lines)
    - Usage guide
    - Performance data
    - Troubleshooting

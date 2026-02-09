@@ -120,18 +120,18 @@ The AI Workflow Automation project demonstrates **outstanding architectural orga
    - **Purpose**: Quick reference guides and troubleshooting documentation
    - **Issue**: 
      - Not listed in docs/README.md navigation structure
-     - Overlaps with docs/user-guide/ purpose (which has troubleshooting.md)
+     - Overlaps with docs/guides/user/ purpose (which has troubleshooting.md)
      - Naming conflict: "guides" vs "user-guide"
    - **Impact**: Medium - causes confusion about where to find guides
    - **Recommendation**: 
-     - **Option A (Preferred)**: Merge into `docs/user-guide/` for consistency
-       - Move TROUBLESHOOTING.md → docs/user-guide/troubleshooting-advanced.md
-       - Move other quick-starts to docs/user-guide/
+     - **Option A (Preferred)**: Merge into `docs/guides/user/` for consistency
+       - Move TROUBLESHOOTING.md → docs/guides/user/troubleshooting-advanced.md
+       - Move other quick-starts to docs/guides/user/
        - Remove docs/guides/ directory
      - **Option B**: Add clear README.md explaining it's for "advanced quick references"
      - Update docs/README.md to list this directory
 
-**2. `docs/misc/` (6 files, 1,523 lines)**
+**2. `docs/reports/historical/` (6 files, 1,523 lines)**
    - **Contents**:
      - MITIGATION_STRATEGIES.md (472 lines)
      - documentation_analysis_parallel.md (265 lines)
@@ -147,13 +147,13 @@ The AI Workflow Automation project demonstrates **outstanding architectural orga
    - **Impact**: Medium - makes documentation harder to navigate
    - **Recommendation**: 
      - **Categorize and relocate files**:
-       - MITIGATION_STRATEGIES.md → docs/design/
+       - MITIGATION_STRATEGIES.md → docs/architecture/
        - documentation_analysis_parallel.md → docs/archive/reports/analysis/
        - documentation_updates.md → docs/archive/
-       - step0b_bootstrap_documentation.md → docs/design/
+       - step0b_bootstrap_documentation.md → docs/architecture/
        - DOCUMENTATION_UPDATES_2026-01-28.md → docs/reports/implementation/
        - FINAL_INTEGRATION_VERIFICATION.md → docs/reports/implementation/
-     - **Remove docs/misc/ directory** after migration
+     - **Remove docs/reports/historical/ directory** after migration
      - Update any cross-references
 
 **3. `docs/bugfixes/` (1 file, 218 lines)**
@@ -334,7 +334,7 @@ tests/
 ```
 src/workflow/steps/step_06_lib/           # 4 levels
 docs/archive/reports/analysis/            # 4 levels
-docs/design/adr/                          # 3 levels
+docs/architecture/adr/                          # 3 levels
 tests/unit/lib/                           # 3 levels
 ```
 
@@ -372,7 +372,7 @@ step_15_version_update.sh # Post-processing
 ```
 src/workflow/lib/           # lowercase, singular/plural clear
 tests/unit/lib/             # mirrors source structure
-docs/user-guide/            # hyphenated compound names
+docs/guides/user/            # hyphenated compound names
 ```
 
 **4. Configuration Naming** ✅
@@ -386,21 +386,21 @@ ai_helpers.yaml             # Matches module names
 
 **1. Documentation Directory Naming**
 ```
-docs/user-guide/           # Hyphenated ✅
-docs/developer-guide/      # Hyphenated ✅
-docs/workflow-automation/  # Hyphenated ✅
-docs/workflow-reports/     # Hyphenated ✅
+docs/guides/user/           # Hyphenated ✅
+docs/guides/developer/      # Hyphenated ✅
+docs/workflows/  # Hyphenated ✅
+docs/reports/workflows/     # Hyphenated ✅
 
 docs/guides/               # Single word (inconsistent) ⚠️
 docs/bugfixes/             # Single word (inconsistent) ⚠️
-docs/misc/                 # Single word (inconsistent) ⚠️
+docs/reports/historical/                 # Single word (inconsistent) ⚠️
 ```
 
 **Impact**: Low - but reduces discoverability
 **Recommendation**: 
-- Merge `docs/guides/` into `docs/user-guide/`
+- Merge `docs/guides/` into `docs/guides/user/`
 - Merge `docs/bugfixes/` into `docs/reports/bugfixes/`
-- Eliminate `docs/misc/` (categorize properly)
+- Eliminate `docs/reports/historical/` (categorize properly)
 
 **2. Archive Structure**
 ```
@@ -610,7 +610,7 @@ Depth 4 Examples:
 └── .workflow_core/config/templates/           # 4 levels
 
 Depth 5 Examples:
-└── docs/design/adr/0001-example.md           # 3 levels (good)
+└── docs/architecture/adr/0001-example.md           # 3 levels (good)
 ```
 
 **Assessment**: ✅ **ACCEPTABLE**
@@ -635,8 +635,8 @@ Depth 5 Examples:
 src/workflow/lib/           # All library modules together ✅
 src/workflow/steps/         # All step modules together ✅
 tests/unit/lib/             # Tests mirror source structure ✅
-docs/user-guide/            # User docs together ✅
-docs/developer-guide/       # Developer docs together ✅
+docs/guides/user/            # User docs together ✅
+docs/guides/developer/       # Developer docs together ✅
 ```
 
 **Related Functionality Organized**:
@@ -661,12 +661,12 @@ lib/third_party_exclusion.sh # Filtering
 **Overlapping Categories**:
 ```
 docs/guides/                # Quick reference guides
-docs/user-guide/            # User guides (overlaps with above)
+docs/guides/user/            # User guides (overlaps with above)
 
 docs/bugfixes/              # Bug fix docs
 docs/reports/bugfixes/      # Also bug fix docs (redundant)
 
-docs/misc/                  # Miscellaneous (anti-pattern)
+docs/reports/historical/                  # Miscellaneous (anti-pattern)
 ```
 
 **Recommendation**: Consolidate as suggested in Section 1.1.
@@ -677,17 +677,17 @@ docs/misc/                  # Miscellaneous (anti-pattern)
 
 **Clear Entry Points**:
 1. `README.md` - Project overview ✅
-2. `docs/user-guide/quick-start.md` - Quick start ✅
-3. `docs/developer-guide/` - Developer onboarding ✅
+2. `docs/guides/user/quick-start.md` - Quick start ✅
+3. `docs/guides/developer/` - Developer onboarding ✅
 4. `docs/PROJECT_REFERENCE.md` - Single source of truth ✅
 
 **Logical Hierarchy**:
 ```
 1. Read README.md → Overview
-2. Read docs/user-guide/quick-start.md → Try it
-3. Read docs/developer-guide/architecture.md → Understand design
+2. Read docs/guides/user/quick-start.md → Try it
+3. Read docs/guides/developer/architecture.md → Understand design
 4. Read src/workflow/README.md → Module details
-5. Read docs/developer-guide/contributing.md → Contribute
+5. Read docs/guides/developer/contributing.md → Contribute
 ```
 
 **Self-Guided Discovery**:
@@ -715,18 +715,18 @@ None. Project structure is excellent.
 
 #### 📋 **M1: Consolidate Documentation Directories**
 
-**Issue**: Overlapping purposes between `docs/guides/`, `docs/user-guide/`, and `docs/bugfixes/`, `docs/reports/bugfixes/`
+**Issue**: Overlapping purposes between `docs/guides/`, `docs/guides/user/`, and `docs/bugfixes/`, `docs/reports/bugfixes/`
 
 **Action**:
-1. **Merge `docs/guides/` into `docs/user-guide/`**
+1. **Merge `docs/guides/` into `docs/guides/user/`**
    ```bash
    # Move files
-   mv docs/guides/TROUBLESHOOTING.md docs/user-guide/troubleshooting-advanced.md
-   mv docs/guides/STEP_15_QUICK_START.md docs/user-guide/step-15-quick-start.md
-   mv docs/guides/QUICK_START_ML.md docs/user-guide/quick-start-ml.md
-   mv docs/guides/QUICK_START_MULTI_STAGE.md docs/user-guide/quick-start-multi-stage.md
+   mv docs/guides/TROUBLESHOOTING.md docs/guides/user/troubleshooting-advanced.md
+   mv docs/guides/STEP_15_QUICK_START.md docs/guides/user/step-15-quick-start.md
+   mv docs/guides/QUICK_START_ML.md docs/guides/user/quick-start-ml.md
+   mv docs/guides/QUICK_START_MULTI_STAGE.md docs/guides/user/quick-start-multi-stage.md
    mv docs/guides/QUICK_REFERENCE_INCREMENTAL.md docs/reference/incremental-analysis.md
-   mv docs/guides/DOC_OPTIMIZATION.md docs/developer-guide/doc-optimization.md
+   mv docs/guides/DOC_OPTIMIZATION.md docs/guides/developer/doc-optimization.md
    
    # Remove empty directory
    rmdir docs/guides/
@@ -748,22 +748,22 @@ None. Project structure is excellent.
 **Effort**: 1-2 hours
 **Risk**: Low (just file moves)
 
-#### 📋 **M2: Reorganize `docs/misc/` Contents**
+#### 📋 **M2: Reorganize `docs/reports/historical/` Contents**
 
-**Issue**: `docs/misc/` is an anti-pattern; files should be properly categorized
+**Issue**: `docs/reports/historical/` is an anti-pattern; files should be properly categorized
 
 **Action**:
 ```bash
 # Categorize and move files
-mv docs/misc/MITIGATION_STRATEGIES.md docs/design/mitigation-strategies.md
-mv docs/misc/documentation_analysis_parallel.md docs/archive/reports/analysis/
-mv docs/misc/documentation_updates.md docs/archive/documentation_updates_historical.md
-mv docs/misc/step0b_bootstrap_documentation.md docs/design/step0b-bootstrap-design.md
-mv docs/misc/DOCUMENTATION_UPDATES_2026-01-28.md docs/reports/implementation/
-mv docs/misc/FINAL_INTEGRATION_VERIFICATION.md docs/reports/implementation/
+mv docs/reports/historical/MITIGATION_STRATEGIES.md docs/architecture/mitigation-strategies.md
+mv docs/reports/historical/documentation_analysis_parallel.md docs/archive/reports/analysis/
+mv docs/reports/historical/documentation_updates.md docs/archive/documentation_updates_historical.md
+mv docs/reports/historical/step0b_bootstrap_documentation.md docs/architecture/step0b-bootstrap-design.md
+mv docs/reports/historical/DOCUMENTATION_UPDATES_2026-01-28.md docs/reports/implementation/
+mv docs/reports/historical/FINAL_INTEGRATION_VERIFICATION.md docs/reports/implementation/
 
 # Remove empty directory
-rmdir docs/misc/
+rmdir docs/reports/historical/
 ```
 
 **Impact**:
@@ -809,7 +809,7 @@ This directory is ignored by git (see .gitignore). Files here are never committe
 ## Related
 
 - See `tests/` for test source code
-- See `docs/developer-guide/testing.md` for testing guide
+- See `docs/guides/developer/testing.md` for testing guide
 - See `.github/workflows/` for CI/CD test configuration
 EOF
 ```
@@ -846,11 +846,11 @@ EOF
 - `tests/fixtures/` - Test data
 
 ### Documentation
-- `docs/user-guide/` - User documentation
-- `docs/developer-guide/` - Developer documentation
+- `docs/guides/user/` - User documentation
+- `docs/guides/developer/` - Developer documentation
 - `docs/reference/` - Technical reference
-- `docs/design/` - Architecture and ADRs
-- `docs/api/` - API documentation
+- `docs/architecture/` - Architecture and ADRs
+- `docs/reference/api/` - API documentation
 
 ### Supporting
 - `examples/` - Usage examples
@@ -983,7 +983,7 @@ If all recommended changes are implemented:
 | Change | Files Affected | References to Update | Estimated Impact |
 |--------|---------------|---------------------|-----------------|
 | M1: Merge docs/guides/ | 6 files | 5-10 cross-references | Medium |
-| M2: Reorganize docs/misc/ | 6 files | 3-5 cross-references | Medium |
+| M2: Reorganize docs/reports/historical/ | 6 files | 3-5 cross-references | Medium |
 | M3: Add test-results/README.md | 1 file (new) | None | None |
 | L1: Update PROJECT_REFERENCE.md | 1 file | None | None |
 | L2: Flatten docs/reports/ | N/A (future) | N/A | N/A |
@@ -1047,8 +1047,8 @@ The AI Workflow Automation project demonstrates **world-class architectural orga
 ### 9.3 Recommended Actions Summary
 
 **Immediate Actions** (Priority: MEDIUM):
-1. ✅ Merge `docs/guides/` into `docs/user-guide/` (1-2 hours)
-2. ✅ Reorganize `docs/misc/` contents (1 hour)
+1. ✅ Merge `docs/guides/` into `docs/guides/user/` (1-2 hours)
+2. ✅ Reorganize `docs/reports/historical/` contents (1 hour)
 3. ✅ Add `test-results/README.md` (15 minutes)
 
 **Total effort**: **2-3 hours**
@@ -1164,18 +1164,18 @@ Total: 53 visible directories, 15 hidden directories
 | `.ml_data/` | ML training data | ✅ Good | Has README.md |
 | `.workflow_core/` | Core submodule | ✅ Good | Has README.md |
 | `docs/` | Documentation hub | ✅ Good | Has README.md |
-| `docs/api/` | API docs | ✅ Good | Listed in docs/README.md |
+| `docs/reference/api/` | API docs | ✅ Good | Listed in docs/README.md |
 | `docs/archive/` | Historical docs | ✅ Good | Has README.md |
 | `docs/bugfixes/` | Bug fix docs | ⚠️ Merge | Should merge to reports/bugfixes/ |
-| `docs/design/` | Design docs | ✅ Good | Listed in docs/README.md |
-| `docs/developer-guide/` | Developer docs | ✅ Good | Listed in docs/README.md |
+| `docs/architecture/` | Design docs | ✅ Good | Listed in docs/README.md |
+| `docs/guides/developer/` | Developer docs | ✅ Good | Listed in docs/README.md |
 | `docs/guides/` | Quick references | ⚠️ Merge | Should merge to user-guide/ |
-| `docs/misc/` | Miscellaneous | ⚠️ Remove | Anti-pattern, categorize files |
+| `docs/reports/historical/` | Miscellaneous | ⚠️ Remove | Anti-pattern, categorize files |
 | `docs/reference/` | Technical ref | ✅ Good | Listed in docs/README.md |
 | `docs/reports/` | Generated reports | ✅ Good | Clear purpose |
-| `docs/user-guide/` | User docs | ✅ Good | Listed in docs/README.md |
-| `docs/workflow-automation/` | Workflow docs | ✅ Good | Listed in docs/README.md |
-| `docs/workflow-reports/` | Execution reports | ✅ Good | Has README.md |
+| `docs/guides/user/` | User docs | ✅ Good | Listed in docs/README.md |
+| `docs/workflows/` | Workflow docs | ✅ Good | Listed in docs/README.md |
+| `docs/reports/workflows/` | Execution reports | ✅ Good | Has README.md |
 | `examples/` | Usage examples | ✅ Good | Standard location |
 | `scripts/` | Utility scripts | ✅ Good | Standard location |
 | `src/workflow/` | Main source | ✅ Good | Has README.md |
@@ -1202,9 +1202,9 @@ grep -r "docs/guides" . --include="*.md" --include="*.sh" 2>/dev/null
 
 **Files likely affected**: 5-10 (requires verification)
 
-### B.2 Files Referencing docs/misc/
+### B.2 Files Referencing docs/reports/historical/
 
-Potential references to update if `docs/misc/` is reorganized:
+Potential references to update if `docs/reports/historical/` is reorganized:
 
 ```bash
 # Search command used  

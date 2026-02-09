@@ -70,7 +70,7 @@ No critical issues that would prevent users from utilizing the documentation eff
 **Recommended Actions**:
 
 1. **Update relative paths** to point to correct locations
-3. **Create missing files** if they should exist (e.g., `docs/api/LIBRARY_MODULES_COMPLETE_API.md#ai_helperssh`)
+3. **Create missing files** if they should exist (e.g., `docs/reference/api/LIBRARY_MODULES_COMPLETE_API.md#ai_helperssh`)
 4. **Fix regex pattern** reference (`.*\.md`)
 
 **Fix Script**:
@@ -122,21 +122,21 @@ done
 ### 1. Consolidate API Documentation Structure
 
 **Current State**:
-- `docs/api/LIBRARY_MODULES_COMPLETE_API.md` (NEW, comprehensive)
+- `docs/reference/api/LIBRARY_MODULES_COMPLETE_API.md` (NEW, comprehensive)
 - `docs/reference/API_REFERENCE.md` (existing)
 - `docs/reference/MODULE_API_REFERENCE.md` (existing)
-- References to non-existent `docs/api/core/` files
+- References to non-existent `docs/reference/api/core/` files
 
 **Recommendation**:
 - Keep `LIBRARY_MODULES_COMPLETE_API.md` as the primary comprehensive reference
 - Update other API docs to reference the comprehensive guide
-- Either create `docs/api/core/` structure or remove references
+- Either create `docs/reference/api/core/` structure or remove references
 
 **Implementation**:
 ```bash
 # Option 1: Create symlinks
-mkdir -p docs/api/core
-ln -s ../LIBRARY_MODULES_COMPLETE_API.md docs/api/core/index.md
+mkdir -p docs/reference/api/core
+ln -s ../LIBRARY_MODULES_COMPLETE_API.md docs/reference/api/core/index.md
 
 # Option 2: Update references to point to comprehensive guide
 grep -rl "api/core/" docs/ | xargs sed -i 's|api/core/[^)]*|api/LIBRARY_MODULES_COMPLETE_API.md|g'
@@ -553,11 +553,11 @@ The ai_workflow documentation is **comprehensive, well-structured, and highly us
 - docs/README.md
 - docs/PROJECT_REFERENCE.md
 - docs/CHANGELOG.md
-- docs/api/LIBRARY_MODULES_COMPLETE_API.md (NEW)
+- docs/reference/api/LIBRARY_MODULES_COMPLETE_API.md (NEW)
 - docs/architecture/COMPREHENSIVE_ARCHITECTURE_GUIDE.md (NEW)
 - docs/reference/COMPLETE_CONFIGURATION_REFERENCE.md (NEW)
 - docs/guides/COMPREHENSIVE_TROUBLESHOOTING_GUIDE.md (NEW)
-- docs/developer-guide/DEVELOPER_ONBOARDING_GUIDE.md (NEW)
+- docs/guides/developer/DEVELOPER_ONBOARDING_GUIDE.md (NEW)
 
 ### B. Tools Used
 

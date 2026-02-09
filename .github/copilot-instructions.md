@@ -105,7 +105,7 @@ src/workflow/SCRIPT_REFERENCE.md        # Comprehensive script API reference
 ### Documentation Structure
 
 ```
-docs/workflow-automation/
+docs/workflows/
 ├── COMPREHENSIVE_WORKFLOW_EXECUTION_ANALYSIS.md  # Master analysis
 ├── PHASE2_COMPLETION.md                          # Phase 2 features (NEW)
 ├── WORKFLOW_AUTOMATION_VERSION_EVOLUTION.md      # Version history

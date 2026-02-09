@@ -185,7 +185,7 @@ The documentation consistently reports 14 AI personas across all key documents.
 - `/^[[:space:]]{4}/, ""`
 
 **Affected Files**:
-- `docs/design/yaml-parsing-design.md`
+- `docs/architecture/yaml-parsing-design.md`
 - `docs/reference/yaml-parsing-quick-reference.md`
 
 **Status**: ✅ **NO ACTION REQUIRED** - These are sed/awk regex patterns in code examples.
@@ -249,8 +249,8 @@ The documentation consistently reports 14 AI personas across all key documents.
 - ⚠️ Examples and use cases needed
 
 **Recommended Actions**:
-1. Create `docs/user-guide/ux-analysis-guide.md`
-2. Add UX analysis examples to `docs/user-guide/example-projects.md`
+1. Create `docs/guides/user/ux-analysis-guide.md`
+2. Add UX analysis examples to `docs/guides/user/example-projects.md`
 3. Document accessibility checking in feature guide
 
 ---
@@ -261,7 +261,7 @@ The documentation consistently reports 14 AI personas across all key documents.
 **Impact**: API reference exists but could be enhanced
 
 **Current State**:
-- ✅ Module APIs documented in `docs/developer-guide/api-reference.md`
+- ✅ Module APIs documented in `docs/guides/developer/api-reference.md`
 - ✅ Function signatures included
 - ⚠️ Some modules lack usage examples
 
@@ -275,7 +275,7 @@ The documentation consistently reports 14 AI personas across all key documents.
 **Impact**: Migration guide exists and is comprehensive
 
 **Current State**:
-- ✅ `docs/user-guide/migration-guide.md` exists
+- ✅ `docs/guides/user/migration-guide.md` exists
 - ✅ Historical migration documented in archive
 - ✅ Version evolution tracked
 
@@ -548,11 +548,11 @@ grep -r "/docs/MISSING.md\|/path/to/file\|shell_scripts/" docs/ --include="*.md"
 ## Appendix B: Documentation Standards Reference
 
 ### File Naming Conventions
-- User guides: `docs/user-guide/feature-name.md`
-- Developer guides: `docs/developer-guide/topic-name.md`
+- User guides: `docs/guides/user/feature-name.md`
+- Developer guides: `docs/guides/developer/topic-name.md`
 - Reference docs: `docs/reference/feature-reference.md`
-- Design docs: `docs/design/feature-design.md`
-- ADRs: `docs/design/adr/NNN-decision-name.md`
+- Design docs: `docs/architecture/feature-design.md`
+- ADRs: `docs/architecture/adr/NNN-decision-name.md`
 
 ### Header Structure
 ```markdown

@@ -2,125 +2,135 @@
 
 Welcome to the AI Workflow Automation documentation hub. This directory contains comprehensive documentation for users, developers, and contributors.
 
-## 📖 New Comprehensive Guides (v4.0.0)
+## Quick Navigation
 
-### Essential Reading
-- **[📚 Complete API Reference](api/LIBRARY_MODULES_COMPLETE_API.md)** - Comprehensive API documentation for all 81 library modules ⭐ NEW
-- **[🏗️ System Architecture Guide](architecture/COMPREHENSIVE_ARCHITECTURE_GUIDE.md)** - In-depth architecture, design patterns, and system components ⭐ NEW
-- **[⚙️ Complete Configuration Reference](reference/COMPLETE_CONFIGURATION_REFERENCE.md)** - Full configuration guide with all options and examples ⭐ NEW
-- **[🔧 Comprehensive Troubleshooting Guide](guides/COMPREHENSIVE_TROUBLESHOOTING_GUIDE.md)** - Solutions to common issues and debugging techniques ⭐ NEW
-- **[👨‍💻 Developer Onboarding Guide](developer-guide/DEVELOPER_ONBOARDING_GUIDE.md)** - Complete guide for new contributors ⭐ NEW
+**New to the project?** Start with [Getting Started](getting-started/GETTING_STARTED.md)  
+**Need quick answers?** Check [Quick Reference](getting-started/QUICK_REFERENCE.md)  
+**Looking for specific info?** See [Project Reference](PROJECT_REFERENCE.md)
 
-## Documentation Structure
+## Documentation Structure (Reorganized v4.0.1)
 
-### 📘 [User Guide](user-guide/)
-Documentation for end users of the workflow automation system:
-- **[Quick Start Guide](user-guide/quick-start.md)** - Get started in minutes
-- **[Installation](user-guide/installation.md)** - Installation and setup instructions
-- **[Usage Guide](user-guide/usage.md)** - Detailed usage instructions and CLI options
-- **[Troubleshooting](user-guide/troubleshooting.md)** - Common issues and solutions
-- **[FAQ](user-guide/faq.md)** - Frequently asked questions
-- **[Example Projects](user-guide/example-projects.md)** - Sample projects and use cases
+### 🚀 [Getting Started](getting-started/)
+New user onboarding and quick references:
+- **[Getting Started Guide](getting-started/GETTING_STARTED.md)** - Comprehensive tutorial for first-time users
+- **[Quick Reference](getting-started/QUICK_REFERENCE.md)** - Quick reference for experienced users
 
-### 🔧 [Developer Guide](developer-guide/)
-Documentation for contributors and developers:
-- **[Developer Onboarding Guide](developer-guide/DEVELOPER_ONBOARDING_GUIDE.md)** - Complete onboarding for new contributors ⭐ NEW
-- **[Architecture Overview](developer-guide/architecture.md)** - System architecture and design patterns
-- **[API Reference](developer-guide/api-reference.md)** - Complete library API documentation
-- **[Contributing Guide](developer-guide/contributing.md)** - How to contribute to the project
-- **[Testing Guide](developer-guide/testing.md)** - Testing strategy and test development
-- **[Development Setup](developer-guide/development-setup.md)** - Setting up development environment
+### 📖 [User Guides](guides/user/)
+Topic-specific guides for end users:
+- **[Command Line Reference](guides/user/COMMAND_LINE_REFERENCE.md)** - All CLI options and examples
+- **[Audio Notifications Setup](guides/user/AUDIO_NOTIFICATIONS_SETUP.md)** - Platform-specific audio setup
+- **[Git Commit Tracking](guides/user/GIT_COMMIT_TRACKING.md)** - Multi-commit analysis workflows
+- **[Bootstrap Documentation](guides/user/BOOTSTRAP_DOCUMENTATION.md)** - Generate docs from scratch
+- **[Performance Tuning](guides/user/PERFORMANCE_TUNING.md)** - Optimization strategies
+- **[Troubleshooting](guides/user/COMPREHENSIVE_TROUBLESHOOTING_GUIDE.md)** - Common issues and solutions
+- **[CI/CD Integration](guides/user/CI_CD_INTEGRATION.md)** - GitHub Actions, GitLab CI, Jenkins
+- **[Performance Optimization](guides/user/PERFORMANCE_OPTIMIZATION.md)** - Advanced performance tuning
 
-### 📚 [Reference](reference/)
-Technical reference documentation:
-- **[Complete Configuration Reference](reference/COMPLETE_CONFIGURATION_REFERENCE.md)** - Full configuration guide ⭐ NEW
-- **[Configuration Schema](reference/configuration.md)** - Configuration file reference
-- **[CLI Options](reference/cli-options.md)** - Complete CLI option reference
-- **[AI Personas](reference/personas.md)** - AI persona documentation
-- **[Error Codes](reference/error-codes.md)** - Error code reference
-- **[Glossary](reference/glossary.md)** - Terminology and definitions
-- **[Workflow Diagrams](reference/workflow-diagrams.md)** - Visual workflow documentation
+### 👨‍💻 [Developer Guides](guides/developer/)
+Documentation for contributors:
+- **[Developer Onboarding](guides/developer/DEVELOPER_ONBOARDING_GUIDE.md)** - Complete onboarding for contributors
+- **[Extending the Workflow](guides/developer/EXTENDING_THE_WORKFLOW.md)** - Adding new features
+- **[Module Development](guides/developer/MODULE_DEVELOPMENT.md)** - Creating new modules
+- **[Architecture Overview](guides/developer/architecture.md)** - System design patterns
+- **[API Reference](guides/developer/api-reference.md)** - Developer API documentation
+- **[Testing Guide](guides/developer/testing.md)** - Testing strategy
+- **[Development Setup](guides/developer/development-setup.md)** - Environment setup
+
+### 📚 [Reference Documentation](reference/)
+Technical specifications and API references:
+- **[Complete API Reference](reference/api/COMPLETE_API_REFERENCE.md)** - All library modules (81 total)
+- **[Library Modules API](reference/api/LIBRARY_MODULES_COMPLETE_API.md)** - Core library documentation
+- **[Step Modules](reference/api/STEP_MODULES.md)** - Workflow step reference
+- **[Configuration Reference](reference/COMPLETE_CONFIGURATION_REFERENCE.md)** - All config options
+- **[Configuration Schema](reference/configuration.md)** - YAML configuration structure
+- **[Workflow Diagrams](reference/workflow-diagrams.md)** - Visual documentation (17 diagrams)
+- **[Deprecation Notices](reference/DEPRECATION_NOTICES.md)** - Deprecated features and migration
+- **[AI Personas Guide](reference/AI_PERSONAS_GUIDE.md)** - 17 specialized AI personas
+- **[Target Option Quick Reference](reference/target-option-quick-reference.md)** - --target feature guide
 
 ### 🏗️ [Architecture](architecture/)
-System architecture and design documentation:
-- **[Comprehensive Architecture Guide](architecture/COMPREHENSIVE_ARCHITECTURE_GUIDE.md)** - Complete system architecture ⭐ NEW
-- **[ADRs](architecture/adr/)** - Architecture Decision Records
-- **[Design Documents](design/architecture/)** - Detailed architecture documentation
-- **[Project Kind Framework](design/project-kind-framework.md)** - Project type system design
-- **[Tech Stack Framework](design/tech-stack-framework.md)** - Technology stack detection
+System architecture and design decisions:
+- **[Comprehensive Architecture Guide](architecture/COMPREHENSIVE_ARCHITECTURE_GUIDE.md)** - Complete system architecture
+- **[ADRs](architecture/adr/)** - Architecture Decision Records (8 decisions)
+- **[Project Kind Framework](architecture/project-kind-framework.md)** - Project type system
+- **[Tech Stack Framework](architecture/tech-stack-framework.md)** - Technology detection
+- **[Requirements](architecture/requirements/)** - Feature requirements and specifications
 
-### 📖 [API Documentation](api/)
-Complete API reference for all modules:
-- **[Library Modules Complete API](api/LIBRARY_MODULES_COMPLETE_API.md)** - All 81 library modules ⭐ NEW
-- **[Step Modules API](reference/API_STEP_MODULES.md)** - Step module reference
-- **[Orchestrators API](reference/API_ORCHESTRATORS.md)** - Orchestrator reference
+### 🔄 [Workflows](workflows/)
+Workflow-specific documentation:
+- **[Comprehensive Workflow Execution Analysis](workflows/COMPREHENSIVE_WORKFLOW_EXECUTION_ANALYSIS.md)** - Master workflow analysis
+- **[Phase 2 Completion](workflows/PHASE2_COMPLETION.md)** - Phase 2 features
+- **[Version Evolution](workflows/WORKFLOW_AUTOMATION_VERSION_EVOLUTION.md)** - Version history
+- **[Short-term Enhancements](workflows/SHORT_TERM_ENHANCEMENTS_COMPLETION.md)** - Enhancement tracking
+- **[Modularization](workflows/)** - Modularization phase documentation
 
-### 🛠️ [Guides](guides/)
-Practical guides and tutorials:
-- **[Comprehensive Troubleshooting Guide](guides/COMPREHENSIVE_TROUBLESHOOTING_GUIDE.md)** - Complete troubleshooting ⭐ NEW
-- **[ML Optimization Guide](ML_OPTIMIZATION_GUIDE.md)** - Machine learning optimization
-- **[Multi-Stage Pipeline Guide](MULTI_STAGE_PIPELINE_GUIDE.md)** - Multi-stage execution
-- **[Step 1 Optimization Guide](STEP1_OPTIMIZATION_GUIDE.md)** - Documentation analysis optimization
+### 📊 [Reports](reports/)
+Analysis reports and execution history:
+- **[Bugfixes](reports/bugfixes/)** - Bug fix documentation and validation
+- **[Workflows](reports/workflows/)** - Historical workflow execution reports
+- **[Historical](reports/historical/)** - Legacy documentation analysis
 
-### 🚀 [Operations](operations/)
-Production operations and CI/CD integration:
-- **[CI/CD Integration Guide](operations/CI_CD_INTEGRATION.md)** - Complete CI/CD integration guide ⭐ NEW
-- **[Performance Optimization Deep Dive](operations/PERFORMANCE_OPTIMIZATION.md)** - Advanced performance tuning ⭐ NEW
+### 🧪 [Testing](testing/)
+Test documentation and strategy:
+- **[Testing Strategy](testing/TESTING_STRATEGY.md)** - Overall testing approach
+- **[Test Coverage](testing/test-coverage.md)** - Coverage reports and goals
+
+### 📋 [Changelog](changelog/)
+Version history and release notes:
+- **[CHANGELOG.md](../CHANGELOG.md)** - Complete version history (root level)
+- Version-specific release notes
 
 ### 📦 [Archive](archive/)
-Historical documentation and deprecated guides:
-- Older documentation versions
-- Superseded implementation notes
-- Historical project statistics
+Historical documentation and deprecated content:
+- See [archive/README.md](archive/README.md) for retention policy
 
-### 📊 [Workflow Reports](workflow-reports/)
-Execution reports and analysis from workflow runs:
-- Workflow execution summaries
-- Performance analysis reports
-- Step-by-step execution documentation
-- Generated during automated workflow runs
+## Key Documents
 
-## Quick Links
+### Most Frequently Referenced
+1. **[PROJECT_REFERENCE.md](PROJECT_REFERENCE.md)** - Authoritative project statistics and module inventory ⭐
+2. **[Getting Started](getting-started/GETTING_STARTED.md)** - First-time user tutorial
+3. **[Quick Reference](getting-started/QUICK_REFERENCE.md)** - Command cheat sheet
+4. **[Complete API Reference](reference/api/COMPLETE_API_REFERENCE.md)** - All APIs
+5. **[Script Reference](../src/workflow/SCRIPT_REFERENCE.md)** - 180+ scripts documented (in src/)
 
-- **[Project Reference](PROJECT_REFERENCE.md)** - Single source of truth for project statistics
-- **[Roadmap](ROADMAP.md)** - Future plans and development roadmap
-- **[Release Notes](user-guide/release-notes.md)** - Version history and changes
-- **[Changelog](DOCUMENTATION_CHANGELOG.md)** - Documentation change history
+### For Specific Tasks
+- **Installation**: [Getting Started](getting-started/GETTING_STARTED.md)
+- **Configuration**: [Complete Configuration Reference](reference/COMPLETE_CONFIGURATION_REFERENCE.md)
+- **Troubleshooting**: [Comprehensive Troubleshooting Guide](guides/user/COMPREHENSIVE_TROUBLESHOOTING_GUIDE.md)
+- **CI/CD Setup**: [CI/CD Integration](guides/user/CI_CD_INTEGRATION.md)
+- **Contributing**: [Developer Onboarding](guides/developer/DEVELOPER_ONBOARDING_GUIDE.md)
 
-## Getting Started
+## Documentation Updates
 
-### For New Users
-1. Start with the [Quick Start Guide](user-guide/quick-start.md)
-2. Review [Installation](user-guide/installation.md)
-3. Check [Usage Guide](user-guide/usage.md)
-4. Refer to [Comprehensive Troubleshooting Guide](guides/COMPREHENSIVE_TROUBLESHOOTING_GUIDE.md) if needed
+**Last Major Reorganization**: 2026-02-09 (Phase 2)
+- Consolidated from 17 → 9 directories
+- Improved navigation and discoverability
+- Updated all internal links
+- Added getting-started/ category
 
-### For Contributors
-1. Read the [Developer Onboarding Guide](developer-guide/DEVELOPER_ONBOARDING_GUIDE.md) ⭐ NEW
-2. Review [System Architecture Guide](architecture/COMPREHENSIVE_ARCHITECTURE_GUIDE.md) ⭐ NEW
-3. Study [Complete API Reference](api/LIBRARY_MODULES_COMPLETE_API.md) ⭐ NEW
-4. Follow [Contributing Guide](developer-guide/contributing.md)
+See [reports/historical/](reports/historical/) for documentation update history.
 
-### For Integration
-1. Check [CI/CD Integration Guide](operations/CI_CD_INTEGRATION.md) ⭐ NEW
-2. Review [Complete Configuration Reference](reference/COMPLETE_CONFIGURATION_REFERENCE.md) ⭐ NEW
-3. Study [Performance Optimization](operations/PERFORMANCE_OPTIMIZATION.md) ⭐ NEW
-4. See [Example Projects](user-guide/example-projects.md)
+## Finding What You Need
 
-## Documentation Standards
+### By Role
+- **New User** → [Getting Started](getting-started/)
+- **Experienced User** → [User Guides](guides/user/) or [Quick Reference](getting-started/QUICK_REFERENCE.md)
+- **Developer/Contributor** → [Developer Guides](guides/developer/)
+- **System Administrator** → [CI/CD Integration](guides/user/CI_CD_INTEGRATION.md)
 
-All documentation follows the [Documentation Style Guide](reference/documentation-style-guide.md).
+### By Topic
+- **Configuration** → [Reference](reference/)
+- **Architecture** → [Architecture](architecture/)
+- **Workflows** → [Workflows](workflows/)
+- **API** → [Reference API](reference/api/)
+- **Troubleshooting** → [User Guides](guides/user/)
 
-## Support
+## Contributing to Documentation
 
-For questions, issues, or contributions:
-- Open an issue on GitHub
-- See [MAINTAINERS.md](MAINTAINERS.md) for contact information
-- Check [FAQ](user-guide/faq.md) for common questions
-- Review [Comprehensive Troubleshooting Guide](guides/COMPREHENSIVE_TROUBLESHOOTING_GUIDE.md) ⭐ NEW
+See [guides/developer/DEVELOPER_ONBOARDING_GUIDE.md](guides/developer/DEVELOPER_ONBOARDING_GUIDE.md) for documentation contribution guidelines.
 
 ---
 
-**Version**: v4.0.1  
+**Version**: 4.0.1  
 **Last Updated**: 2026-02-09  
-**Maintainer**: Marcelo Pereira Barbosa (@mpbarbosa)
+**Documentation Structure**: Phase 2 (Consolidated)

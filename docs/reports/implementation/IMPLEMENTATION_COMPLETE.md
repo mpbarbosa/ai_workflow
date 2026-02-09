@@ -201,7 +201,7 @@ Coverage: 96.4%
 
 ## Comparison with Requirements
 
-Checking against `docs/requirements/STEP_15_SEMANTIC_VERSION_UPDATE.md`:
+Checking against `docs/architecture/requirements/STEP_15_SEMANTIC_VERSION_UPDATE.md`:
 
 ### Functional Requirements
 

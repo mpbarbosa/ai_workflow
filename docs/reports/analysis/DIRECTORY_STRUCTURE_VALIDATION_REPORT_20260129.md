@@ -48,7 +48,7 @@ The project's primary documentation (PROJECT_REFERENCE.md, README.md) accurately
 |-----------|---------------------|--------|
 | `src/workflow/` | PROJECT_REFERENCE.md (lines 69-150) | ✅ Fully documented |
 | `docs/` | docs/README.md + PROJECT_REFERENCE.md | ✅ Comprehensive |
-| `tests/` | docs/developer-guide/testing.md | ✅ Well documented |
+| `tests/` | docs/guides/developer/testing.md | ✅ Well documented |
 | `scripts/` | Referenced in multiple docs | ✅ Documented |
 | `examples/` | README.md mentions | ✅ Documented |
 | `templates/` | Has dedicated README | ✅ Documented |
@@ -147,10 +147,10 @@ All ML data directories are automatically gitignored.
 #### Issue 1.3: Documentation Directories (6 locations)
 - **Directories**:
   - `./docs/archive/` ✅ Documented in docs/README.md (line 40)
-  - `./docs/workflow-reports/` ⚠️ Not in main docs (9 files)
+  - `./docs/reports/workflows/` ⚠️ Not in main docs (9 files)
   - `./docs/guides/` ⚠️ Not in main docs (4 files)
-  - `./docs/misc/` ⚠️ Not in main docs (4 files)
-  - `./docs/user-guide/` ✅ Documented in docs/README.md (line 7)
+  - `./docs/reports/historical/` ⚠️ Not in main docs (4 files)
+  - `./docs/guides/user/` ✅ Documented in docs/README.md (line 7)
   - `./docs/bugfixes/` ⚠️ Not in main docs
 - **Priority**: MEDIUM (for undocumented ones)
 - **Status**: Some documented, some missing from PROJECT_REFERENCE.md
@@ -158,10 +158,10 @@ All ML data directories are automatically gitignored.
 
 **Analysis**:
 - `docs/archive/` - ✅ Already documented properly
-- `docs/user-guide/` - ✅ Already documented properly
-- `docs/workflow-reports/` - Contains 9 workflow execution reports (auto-generated)
+- `docs/guides/user/` - ✅ Already documented properly
+- `docs/reports/workflows/` - Contains 9 workflow execution reports (auto-generated)
 - `docs/guides/` - Contains 4 guide files (tutorial content)
-- `docs/misc/` - Contains 4 miscellaneous docs (edge case documentation)
+- `docs/reports/historical/` - Contains 4 miscellaneous docs (edge case documentation)
 - `docs/bugfixes/` - Contains bugfix documentation/reports
 
 **Recommendation**:
@@ -409,7 +409,7 @@ The project demonstrates **98% naming consistency** across all directories.
 ### 3.2 ⚠️ **LOW**: Minor Naming Observations
 
 #### Observation 3.1: Mixed Report Directory Naming
-- **Directories**: `docs/reports/` vs `docs/workflow-reports/`
+- **Directories**: `docs/reports/` vs `docs/reports/workflows/`
 - **Priority**: LOW
 - **Status**: Both valid, slightly inconsistent
 - **Impact**: Very minor - both names are clear
@@ -436,14 +436,14 @@ The project maintains two types of reports:
    - `implementation/` - Feature implementation summaries
    - `bugfixes/` - Bugfix action plans and resolutions
 
-2. **`docs/workflow-reports/`** - Auto-generated workflow execution reports (v2.9.0+)
+2. **`docs/reports/workflows/`** - Auto-generated workflow execution reports (v2.9.0+)
    - Created by Step 16 with --generate-docs flag
    - Timestamped execution summaries
    - Performance metrics and change detection results
 ```
 
 #### Observation 3.2: Inconsistent Guide Directory Naming
-- **Directories**: `docs/guides/` vs `docs/user-guide/` vs `docs/developer-guide/`
+- **Directories**: `docs/guides/` vs `docs/guides/user/` vs `docs/guides/developer/`
 - **Priority**: LOW
 - **Status**: Slightly inconsistent but functionally clear
 - **Analysis**: 
@@ -572,7 +572,7 @@ Maximum Depth: 5 levels
 Average Depth: 2.8 levels
 Deepest Paths: 
 - src/workflow/steps/step_XX_lib/ (5 levels)
-- docs/design/architecture/ (3 levels)
+- docs/architecture/architecture/ (3 levels)
 - tests/unit/lib/ (3 levels)
 ```
 
@@ -740,7 +740,7 @@ git rm -r --cached .ai_workflow/.incremental_cache/ 2>/dev/null || true
 **Action**: Add cache documentation to docs/PROJECT_REFERENCE.md
 
 #### Issue M5-M8: Document Undocumented Docs Subdirectories
-**Directories**: `docs/workflow-reports/`, `docs/guides/`, `docs/misc/`, `docs/bugfixes/`  
+**Directories**: `docs/reports/workflows/`, `docs/guides/`, `docs/reports/historical/`, `docs/bugfixes/`  
 **Effort**: 20 minutes total  
 **Impact**: Improves documentation navigation
 
@@ -821,9 +821,9 @@ git status  # Should show no ML or cache files
 ### 7.2 Short-Term Actions (Complete in next sprint)
 
 1. **Create README.md files** for undocumented directories:
-   - `docs/workflow-reports/README.md` (5 minutes)
+   - `docs/reports/workflows/README.md` (5 minutes)
    - `docs/guides/README.md` (5 minutes)
-   - `docs/misc/README.md` (5 minutes)
+   - `docs/reports/historical/README.md` (5 minutes)
    - `docs/bugfixes/README.md` (5 minutes)
 
 2. **Verify documentation accuracy**:

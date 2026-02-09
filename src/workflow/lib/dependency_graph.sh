@@ -30,33 +30,36 @@ STEP_DEPENDENCIES=(
     [10]="8"              # Code Quality depends on Test Execution
     [11]="8,10,16"        # Deployment Readiness Gate depends on test execution, code quality, and version update (NEW v3.3.0)
     [11.5]="1,2,3,4,5,8,9,10"  # Context Analysis depends on most steps (MOVED from Step 11)
+    [11.7]="10"           # Front-End Development Analysis depends on Code Quality (NEW v4.0.1)
     [13]="2"              # Markdown Linting depends on Consistency
     [14]="0"              # Prompt Engineer Analysis depends on Pre-Analysis (can run early)
-    [15]="0,1"            # UX Analysis depends on Pre-Analysis and Documentation
+    [15]="11.7"           # UX Analysis depends on Front-End Development Analysis (can also run if no front-end code)
     [16]="11.5,13,14,15"  # AI-Powered Version Update depends on all analysis steps
     [12]="16"             # Git Finalization MUST BE LAST - depends on version update
 )
 
 # Define parallelizable step groups (steps that can run simultaneously)
-# Updated v3.3.0: Step 11 (Deployment Gate) and Step 11.5 (Context Analysis) added
+# Updated v4.0.1: Step 11.7 (Front-End Development) added
 declare -a PARALLEL_GROUPS
 PARALLEL_GROUPS=(
     "0a"                  # Group 1: Version Update (runs after Step 0)
     "0b"                  # Group 2: Bootstrap Documentation (runs after 0a)
-    "3,4,5,6,9,14,15"     # Group 3: Can run in parallel with Step 1
+    "3,4,5,6,9,14"        # Group 3: Can run in parallel with Step 1
     "2,13"                # Group 4: Consistency checks
     "7"                   # Group 5: Test Generation
     "8,10"                # Group 6: Test Execution and Code Quality
     "11"                  # Group 7: Deployment Readiness Gate (NEW v3.3.0, conditional)
     "11.5"                # Group 8: Context Analysis (MOVED from Step 11)
-    "16"                  # Group 9: AI-Powered Version Update
-    "12"                  # Group 10: Git Finalization (MUST BE LAST)
+    "11.7"                # Group 9: Front-End Development Analysis (NEW v4.0.1)
+    "15"                  # Group 10: UX Analysis (updated dependency: after 11.7)
+    "16"                  # Group 11: AI-Powered Version Update
+    "12"                  # Group 12: Git Finalization (MUST BE LAST)
 )
 
-# 3-Track Parallel Execution Structure (v3.3.0 - with Deployment Gate)
-# Track 1 (Analysis):       0 → (3,4,5,14 parallel) → 11.5 ┐
-# Track 2 (Validation):     6 → 7 → 8 → 10 → 11* (+ 9 parallel) ├─→ 16 → 12 (FINAL)
-# Track 3 (Documentation):  0a → 0b → 1 → 2 → 13 → 15 ──────────┘
+# 3-Track Parallel Execution Structure (v4.0.1 - with Front-End Development Analysis)
+# Track 1 (Analysis):       0 → (3,4,5,14 parallel) → 11.5 ──────┐
+# Track 2 (Validation):     6 → 7 → 8 → 10 → 11.7 → 11* (+ 9 parallel) ├─→ 16 → 12 (FINAL)
+# Track 3 (Documentation):  0a → 0b → 1 → 2 → 13 → 15 ────────────┘
 #
 # Step 11 (Deployment Readiness Gate):
 # - Conditional execution (only with --validate-release flag)
@@ -69,10 +72,23 @@ PARALLEL_GROUPS=(
 # - Runs in parallel with documentation track
 # - Can execute alongside steps in Track 3
 #
+# Step 11.7 (Front-End Development Analysis): NEW v4.0.1
+# - Runs after Step 10 (Code Quality)
+# - Analyzes front-end code for technical implementation
+# - Only executes for projects with front-end code
+# - Must complete before Step 15 (UX Analysis)
+#
+# Step 15 (UX Analysis):
+# - Updated dependency: now depends on Step 11.7 (Front-End Development)
+# - Focuses on user experience and visual design
+# - Complementary to Step 11.7 (technical vs UX focus)
+#
 # Synchronization Points:
 # - All tracks wait for Step 0 completion
 # - Step 11 waits for Steps 8, 10, 16 (deployment checks)
 # - Step 11.5 waits for Track 2 & 3 critical steps
+# - Step 11.7 waits for Step 10 (Code Quality)
+# - Step 15 waits for Step 11.7 (or skips if no front-end code)
 # - Step 16 waits for all analysis completion (Steps 11.5, 13, 14, 15)
 # - Step 12 waits for version update (Step 16)
 # - Estimated 60-70% time reduction vs sequential execution
@@ -95,6 +111,7 @@ STEP_TIME_ESTIMATES=(
     [10]=150  # Code Quality (with AI)
     [11]=45   # Deployment Readiness Gate (NEW v3.3.0, conditional)
     [11.5]=120  # Context Analysis (with AI, MOVED from Step 11)
+    [11.7]=180  # Front-End Development Analysis (with AI) - NEW v4.0.1
     [12]=90   # Git Finalization (with AI)
     [13]=45   # Markdown Linting
     [14]=150  # Prompt Engineer Analysis (with AI)

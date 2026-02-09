@@ -135,10 +135,10 @@ step_execution.sh, utils.sh, validation.sh
 🔴 **5 Key Directories Without README**:
 ```
 ❌ src/workflow/lib/       - 32 modules, no index
-❌ docs/design/            - 11 docs, no index
+❌ docs/architecture/            - 11 docs, no index
 ❌ docs/reference/         - 22 docs, no index
-❌ docs/user-guide/        - 9 docs, no index
-❌ docs/developer-guide/   - 6 docs, no index
+❌ docs/guides/user/        - 9 docs, no index
+❌ docs/guides/developer/   - 6 docs, no index
 
 ✅ src/workflow/steps/README.md
 ✅ src/workflow/orchestrators/README.md
@@ -234,9 +234,9 @@ docs/README.md: v2.4.0 ✅
 ```markdown
 src/workflow/lib/README.md      - Module inventory
 docs/reference/README.md        - Quick reference index
-docs/user-guide/README.md       - User guide index
-docs/developer-guide/README.md  - Developer guide index
-docs/design/README.md           - Design doc index
+docs/guides/user/README.md       - User guide index
+docs/guides/developer/README.md  - Developer guide index
+docs/architecture/README.md           - Design doc index
 ```
 
 **Template**:
@@ -407,10 +407,10 @@ The AI Workflow Automation project demonstrates **STRONG documentation practices
 ```
 Root:               16 files
 docs/:               4 files (README, PROJECT_REFERENCE, ROADMAP, MAINTAINERS)
-docs/user-guide/:    9 files
+docs/guides/user/:    9 files
 docs/developer-guide: 6 files
 docs/reference/:    22 files
-docs/design/:       11 files
+docs/architecture/:       11 files
 docs/archive/:     140 files
 
 Total Active:       86 files

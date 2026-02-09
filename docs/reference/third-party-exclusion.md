@@ -636,13 +636,13 @@ echo "--glob=!node_modules" >> ~/.ripgreprc
 ## Related Documentation
 
 ### Module Documentation
-- **Implementation**: `docs/workflow-automation/THIRD_PARTY_EXCLUSION_MODULE.md` (435 lines)
-- **Integration**: `docs/workflow-automation/THIRD_PARTY_EXCLUSION_INTEGRATION.md` (591 lines)
-- **Summary**: `docs/workflow-automation/THIRD_PARTY_EXCLUSION_IMPLEMENTATION_SUMMARY.md` (344 lines)
-- **Fix Log**: `docs/workflow-automation/STEP1_THIRD_PARTY_EXCLUSION_FIX.md` (197 lines)
+- **Implementation**: `docs/workflows/THIRD_PARTY_EXCLUSION_MODULE.md` (435 lines)
+- **Integration**: `docs/workflows/THIRD_PARTY_EXCLUSION_INTEGRATION.md` (591 lines)
+- **Summary**: `docs/workflows/THIRD_PARTY_EXCLUSION_IMPLEMENTATION_SUMMARY.md` (344 lines)
+- **Fix Log**: `docs/workflows/STEP1_THIRD_PARTY_EXCLUSION_FIX.md` (197 lines)
 
 ### Requirements
-- **Functional Requirements**: `docs/workflow-automation/CONSOLIDATED_FUNCTIONAL_REQUIREMENTS.md` >> Cross-Cutting Concerns >> Third-Party File Exclusion
+- **Functional Requirements**: `docs/workflows/CONSOLIDATED_FUNCTIONAL_REQUIREMENTS.md` >> Cross-Cutting Concerns >> Third-Party File Exclusion
 
 ### Source Code
 - **Module**: `src/workflow/lib/third_party_exclusion.sh` (11K, 435 lines)

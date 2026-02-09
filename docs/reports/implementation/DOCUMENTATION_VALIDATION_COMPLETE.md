@@ -22,7 +22,7 @@ All **critical (P0)** issues from the documentation validation reports have been
 #### Directory Architecture Issues (4)
 - ✅ Removed nested `src/workflow/src/` directory
 - ✅ Removed empty `docs/guides/` directory
-- ✅ Removed empty `docs/workflow-automation/` directory
+- ✅ Removed empty `docs/workflows/` directory
 - ✅ Updated `.gitignore` with proper patterns
 
 ### Validation Results
@@ -58,7 +58,7 @@ All **critical (P0)** issues from the documentation validation reports have been
 ### Directories Removed (3)
 - `src/workflow/src/` - Orphaned runtime artifacts
 - `docs/guides/` - Empty placeholder
-- `docs/workflow-automation/` - Empty directory
+- `docs/workflows/` - Empty directory
 
 ### Git Untracked (1)
 - `test-results/` directory and contents
@@ -83,7 +83,7 @@ grep -c "Development Testing" README.md
 ls -d src/workflow/src/ 2>/dev/null  # Not found
 
 # ✓ Empty directories removed
-ls -d docs/guides/ docs/workflow-automation/ 2>/dev/null  # Not found
+ls -d docs/guides/ docs/workflows/ 2>/dev/null  # Not found
 
 # ✓ .gitignore patterns added
 grep "test-results/" .gitignore  # Found

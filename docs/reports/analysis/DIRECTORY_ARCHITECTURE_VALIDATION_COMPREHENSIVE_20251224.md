@@ -45,7 +45,7 @@ The AI Workflow Automation project demonstrates **exceptional architectural orga
 
 **Comprehensively Documented** (97% coverage):
 - **Project Reference** (`docs/PROJECT_REFERENCE.md`) - Single source of truth
-- **Developer Architecture** (`docs/developer-guide/architecture.md`) - Orchestrator patterns
+- **Developer Architecture** (`docs/guides/developer/architecture.md`) - Orchestrator patterns
 - **Module Documentation** (`src/workflow/README.md`) - Complete module inventory
 - **Documentation Hub** (`docs/README.md`) - Documentation structure map
 - **Main README** (`README.md`) - Project overview and quick start
@@ -54,16 +54,16 @@ The AI Workflow Automation project demonstrates **exceptional architectural orga
 ```
 PRIMARY DOCUMENTATION FILES:
 ✅ docs/PROJECT_REFERENCE.md (4,151 lines) - Authoritative statistics
-✅ docs/developer-guide/architecture.md - Orchestrator architecture
+✅ docs/guides/developer/architecture.md - Orchestrator architecture
 ✅ src/workflow/README.md - Module API reference (100+ lines)
 ✅ docs/README.md - Documentation navigation
 ✅ README.md - Project entry point
 
 SECONDARY DOCUMENTATION:
 ✅ 23 reference documents in docs/reference/
-✅ 9 user guides in docs/user-guide/
-✅ 12 design documents in docs/design/
-✅ 6 developer guides in docs/developer-guide/
+✅ 9 user guides in docs/guides/user/
+✅ 12 design documents in docs/architecture/
+✅ 6 developer guides in docs/guides/developer/
 ```
 
 ### 1.2 Undocumented Directories (4 identified)
@@ -83,14 +83,14 @@ drwxrwxr-x 14 mpb mpb 4096 Dec 24 16:26 ..
 # EMPTY DIRECTORY
 ```
 
-**Root Cause**: Directory created but never populated, possibly redundant with `docs/user-guide/`
+**Root Cause**: Directory created but never populated, possibly redundant with `docs/guides/user/`
 
 **Recommendations**:
 1. **Option A (Recommended)**: Remove empty directory
    ```bash
    rmdir docs/guides/
    ```
-   - **Rationale**: Eliminates confusion, `docs/user-guide/` serves same purpose
+   - **Rationale**: Eliminates confusion, `docs/guides/user/` serves same purpose
    - **Risk**: NONE - No content exists
 
 2. **Option B**: Populate with content distinct from user-guide
@@ -104,7 +104,7 @@ drwxrwxr-x 14 mpb mpb 4096 Dec 24 16:26 ..
 
 ---
 
-#### Issue #2: `./docs/user-guide/` - LOW PRIORITY 📋
+#### Issue #2: `./docs/guides/user/` - LOW PRIORITY 📋
 
 **Status**: Fully functional, well-organized (9 files)  
 **Impact**: LOW - Not explicitly listed in PROJECT_REFERENCE.md directory inventory  
@@ -112,7 +112,7 @@ drwxrwxr-x 14 mpb mpb 4096 Dec 24 16:26 ..
 
 **Analysis**:
 ```bash
-$ ls docs/user-guide/
+$ ls docs/guides/user/
 example-projects.md     migration-guide.md      troubleshooting.md
 faq.md                  quick-start.md          usage.md
 feature-guide.md        release-notes.md
@@ -130,7 +130,7 @@ installation.md
    ## Documentation Structure
    
    ### User Documentation
-   - **docs/user-guide/** (9 files) - End-user documentation
+   - **docs/guides/user/** (9 files) - End-user documentation
      - Quick start, installation, usage guides
      - Troubleshooting, FAQ, migration guides
      - Feature guide and example projects
@@ -784,7 +784,7 @@ Example paths:
 - src/workflow/lib/                 (3 levels) ✅
 - docs/reports/analysis/            (3 levels) ✅
 - tests/unit/lib/                   (3 levels) ✅
-- docs/design/adr/                  (3 levels) ✅
+- docs/architecture/adr/                  (3 levels) ✅
 ```
 
 **Assessment**: ⭐⭐⭐⭐⭐ OPTIMAL depth - Easy navigation without excessive nesting
@@ -880,7 +880,7 @@ RECOMMENDATION: Consolidate to docs/reports/ structure
 1. README.md                      → Project overview ✅
 2. docs/README.md                 → Documentation hub ✅
 3. docs/PROJECT_REFERENCE.md      → Detailed statistics ✅
-4. docs/user-guide/quick-start.md → Getting started ✅
+4. docs/guides/user/quick-start.md → Getting started ✅
 5. src/workflow/README.md         → Module documentation ✅
 ```
 
@@ -889,13 +889,13 @@ RECOMMENDATION: Consolidate to docs/reports/ structure
 **Navigation Patterns**:
 ```
 New User Journey:
-  README.md → docs/user-guide/quick-start.md → Usage
+  README.md → docs/guides/user/quick-start.md → Usage
 
 New Developer Journey:
-  README.md → docs/developer-guide/architecture.md → src/workflow/README.md → Code
+  README.md → docs/guides/developer/architecture.md → src/workflow/README.md → Code
 
 New Contributor Journey:
-  CONTRIBUTING.md → docs/developer-guide/testing.md → tests/README.md
+  CONTRIBUTING.md → docs/guides/developer/testing.md → tests/README.md
 ```
 
 **Assessment**: ⭐⭐⭐⭐⭐ EXCELLENT onboarding experience
@@ -922,7 +922,7 @@ New Contributor Journey:
 | ID | Issue | Priority | Impact | Effort | Type |
 |----|-------|----------|--------|--------|------|
 | 1 | Empty `docs/guides/` directory | MEDIUM | Confusion | 1 min | Organization |
-| 2 | `docs/user-guide/` not in PROJECT_REFERENCE.md | LOW | Documentation | 5 min | Documentation |
+| 2 | `docs/guides/user/` not in PROJECT_REFERENCE.md | LOW | Documentation | 5 min | Documentation |
 | 3 | `docs/bugfixes/` redundant with `docs/reports/bugfixes/` | LOW | Organization | 2 min | Consolidation |
 | 4 | `test-results/` not documented | VERY LOW | Documentation | 5 min | Documentation |
 | 5 | Backup files in src/workflow/ | LOW | Housekeeping | 1 min | Cleanup |
@@ -948,7 +948,7 @@ ls -la docs/ | grep guides
 
 **Rationale**:
 - Directory is empty and serves no purpose
-- `docs/user-guide/` fulfills the same role
+- `docs/guides/user/` fulfills the same role
 - Eliminates confusion about which directory to use
 
 **Impact**:
@@ -958,7 +958,7 @@ ls -la docs/ | grep guides
 
 ---
 
-#### Recommendation #2: Document `docs/user-guide/` in PROJECT_REFERENCE.md
+#### Recommendation #2: Document `docs/guides/user/` in PROJECT_REFERENCE.md
 
 **Priority**: LOW  
 **Effort**: 5 minutes  
@@ -972,14 +972,14 @@ Add to `docs/PROJECT_REFERENCE.md` after "Documentation Structure" section:
 ## Documentation Structure
 
 ### User Documentation
-- **docs/user-guide/** (9 files) - End-user documentation
+- **docs/guides/user/** (9 files) - End-user documentation
   - Installation, quick start, usage guides
   - Troubleshooting, FAQ, migration guides
   - Feature guide and example projects
   - Release notes and changelogs
 
 ### Developer Documentation
-- **docs/developer-guide/** (6 files) - Contributor documentation
+- **docs/guides/developer/** (6 files) - Contributor documentation
   - Architecture overview and patterns
   - API reference and module documentation
   - Testing guide and development setup
@@ -993,7 +993,7 @@ Add to `docs/PROJECT_REFERENCE.md` after "Documentation Structure" section:
   - Performance metrics and optimization guides
 
 ### Design Documents
-- **docs/design/** (12 files) - Architecture decisions
+- **docs/architecture/** (12 files) - Architecture decisions
   - Architecture Decision Records (ADRs)
   - Framework designs (project-kind, tech-stack)
   - Design patterns and rationale
@@ -1144,7 +1144,7 @@ git status --ignored | grep -E "\.backup|\.bak"
 ```bash
 # Remove empty directories
 rmdir docs/architecture/
-rmdir docs/workflow-automation/
+rmdir docs/workflows/
 
 # Verify removal
 find docs/ -type d -empty
@@ -1313,7 +1313,7 @@ git log --follow docs/reports/bugfixes/step13_prompt_fix_20251224.md
 2. Clean up backup files (after verification)
 
 **Short-term (Next Week)**:
-3. Update PROJECT_REFERENCE.md with docs/user-guide/ and test-results/
+3. Update PROJECT_REFERENCE.md with docs/guides/user/ and test-results/
 4. Consolidate bugfix documentation to docs/reports/bugfixes/
 5. Remove other empty directories (architecture/, workflow-automation/)
 

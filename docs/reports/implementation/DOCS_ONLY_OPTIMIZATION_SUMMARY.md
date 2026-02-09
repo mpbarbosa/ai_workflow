@@ -70,7 +70,7 @@ v2.7.0: Docs Fast Track     1.5 min  ━━ (93% ↓) ⭐ NEW
 
 ### 4. Documentation (276 + 406 lines)
 **Files**:
-- `docs/workflow-automation/DOCS_ONLY_FAST_TRACK.md`
+- `docs/workflows/DOCS_ONLY_FAST_TRACK.md`
 - `DOCS_ONLY_IMPLEMENTATION.md`
 
 **Content**:
@@ -218,7 +218,7 @@ Tests Failed: 0
 
 1. ✅ `src/workflow/lib/docs_only_optimization.sh` (493 lines)
 2. ✅ `src/workflow/lib/test_docs_only_optimization.sh` (235 lines)
-3. ✅ `docs/workflow-automation/DOCS_ONLY_FAST_TRACK.md` (276 lines)
+3. ✅ `docs/workflows/DOCS_ONLY_FAST_TRACK.md` (276 lines)
 4. ✅ `DOCS_ONLY_IMPLEMENTATION.md` (406 lines)
 
 **Total**: 1,410 lines of new code + docs

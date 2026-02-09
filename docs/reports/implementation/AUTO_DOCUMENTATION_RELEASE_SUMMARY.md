@@ -11,7 +11,7 @@ Successfully integrated automatic documentation generation capabilities that ext
 ### Core Features
 
 1. **Auto-Generate Workflow Reports** (`--generate-docs` flag)
-   - Extract execution summaries to `docs/workflow-reports/`
+   - Extract execution summaries to `docs/reports/workflows/`
    - Include metrics, issues, and performance data
    - Structured markdown format
    - Historical tracking
@@ -24,7 +24,7 @@ Successfully integrated automatic documentation generation capabilities that ext
 
 3. **API Documentation Generation** (`--generate-api-docs` flag)
    - Extract function documentation from source
-   - Generate API reference docs in `docs/api/`
+   - Generate API reference docs in `docs/reference/api/`
    - Include function signatures and descriptions
    - Auto-update on workflow completion
 
@@ -47,7 +47,7 @@ Successfully integrated automatic documentation generation capabilities that ext
 - **Command-line flags**: `--generate-docs`, `--update-changelog`, `--generate-api-docs`
 - **Library module**: `src/workflow/lib/auto_documentation.sh` (17K, 500+ lines)
 - **Auto-integration**: Hooks into workflow completion
-- **Output directories**: `docs/workflow-reports/`, `docs/changelog/`, `docs/api/`
+- **Output directories**: `docs/reports/workflows/`, `docs/changelog/`, `docs/reference/api/`
 
 ## Files Changed
 
@@ -115,7 +115,7 @@ Successfully integrated automatic documentation generation capabilities that ext
 ### Workflow Reports
 
 ```
-docs/workflow-reports/
+docs/reports/workflows/
 ├── workflow_20260101_194500_report.md
 ├── workflow_20260101_183000_report.md
 └── workflow_20260101_120000_report.md
@@ -151,7 +151,7 @@ Each report contains:
 ### API Documentation
 
 ```
-docs/api/
+docs/reference/api/
 ├── auto_documentation.md
 ├── multi_stage_pipeline.md
 ├── ml_optimization.md
@@ -181,7 +181,7 @@ git commit -m "change: update report template"
 ✅ Version display: `--version` shows 2.9.0
 ✅ Help text: `--help` includes auto-doc options
 ✅ Module loaded: `auto_documentation.sh` auto-sourced
-✅ Directory creation: `docs/workflow-reports/` created
+✅ Directory creation: `docs/reports/workflows/` created
 ✅ Report generation: Works with mock data
 ✅ CHANGELOG update: Parses commits correctly
 ✅ No breaking changes: All existing flags work
@@ -268,9 +268,9 @@ jobs:
 ## Documentation
 
 - **Module Reference**: `src/workflow/lib/auto_documentation.sh`
-- **Workflow Reports**: `docs/workflow-reports/`
+- **Workflow Reports**: `docs/reports/workflows/`
 - **CHANGELOG**: `CHANGELOG.md`
-- **API Docs**: `docs/api/`
+- **API Docs**: `docs/reference/api/`
 
 ## Verification Commands
 

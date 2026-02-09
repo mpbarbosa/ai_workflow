@@ -60,7 +60,7 @@ These files were already at v2.6.0 or don't require version updates:
 
 These files could benefit from minor updates but are not critical:
 
-### 1. docs/design/adr/README.md
+### 1. docs/architecture/adr/README.md
 **Current State**: May not reference v2.6.0 ADRs if any were created  
 **Suggested Action**: Review if new ADRs need to be added for v2.6.0 features  
 **Priority**: LOW  
@@ -100,8 +100,8 @@ The following files are intentionally NOT updated because they are:
 - Historical documentation
 
 ### Design Documents (No Version References Needed)
-- `docs/design/clarify-*.md` - Design clarifications (no version needed)
-- `docs/design/remove-nested-markdown-blocks.md` - Design decision (no version needed)
+- `docs/architecture/clarify-*.md` - Design clarifications (no version needed)
+- `docs/architecture/remove-nested-markdown-blocks.md` - Design decision (no version needed)
 - Individual ADR files (each has its own date/context)
 
 ---

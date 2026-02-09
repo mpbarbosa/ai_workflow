@@ -258,7 +258,7 @@ This architecture enables the same workflow to intelligently adapt to different 
 - **Configuration migration**: Moved to `.workflow_core` submodule
 
 ### v2.9.0 (2026-01-01)
-- **Auto-documentation**: `--generate-docs` extracts summaries to `docs/workflow-reports/`
+- **Auto-documentation**: `--generate-docs` extracts summaries to `docs/reports/workflows/`
 - **Auto-CHANGELOG**: `--update-changelog` parses conventional commits
 - **API documentation**: `--generate-api-docs` extracts function docs
 - **100% backward compatible**

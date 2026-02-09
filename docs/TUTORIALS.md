@@ -1118,7 +1118,7 @@ watch -n 1 'free -h'
 1. **Check logs**: `cat src/workflow/logs/workflow_*/error.log`
 2. **Run health check**: `./src/workflow/lib/health_check.sh`
 3. **Enable verbose mode**: `./execute_tests_docs_workflow.sh --verbose`
-4. **Review documentation**: [docs/user-guide/troubleshooting.md](user-guide/troubleshooting.md)
+4. **Review documentation**: [docs/guides/user/troubleshooting.md](user-guide/troubleshooting.md)
 5. **Open issue**: [GitHub Issues](https://github.com/mpbarbosa/ai_workflow/issues)
 
 ### ✅ Success Criteria
@@ -1133,8 +1133,8 @@ watch -n 1 'free -h'
 
 After completing these tutorials:
 
-1. **Explore Advanced Features**: [docs/user-guide/feature-guide.md](user-guide/feature-guide.md)
-2. **Read API Documentation**: [docs/api/API_REFERENCE.md](api/API_REFERENCE.md)
+1. **Explore Advanced Features**: [docs/guides/user/feature-guide.md](user-guide/feature-guide.md)
+2. **Read API Documentation**: [docs/reference/api/API_REFERENCE.md](api/API_REFERENCE.md)
 3. **Contribute**: [CONTRIBUTING.md](../CONTRIBUTING.md)
 4. **Join Community**: GitHub Discussions
 

@@ -60,12 +60,12 @@ See [Example Projects Guide](docs/EXAMPLE_PROJECTS_GUIDE.md) for detailed testin
 **[docs/EXAMPLE_PROJECTS_GUIDE.md](docs/EXAMPLE_PROJECTS_GUIDE.md)**: Example projects and testing guide (NEW)
 ```
 
-**Actual Location**: `docs/user-guide/example-projects.md`
+**Actual Location**: `docs/guides/user/example-projects.md`
 
 **Fix Required**:
 ```markdown
-See [Example Projects Guide](docs/user-guide/example-projects.md) for detailed testing scenarios.
-**[docs/user-guide/example-projects.md](docs/user-guide/example-projects.md)**: Example projects and testing guide (NEW)
+See [Example Projects Guide](docs/guides/user/example-projects.md) for detailed testing scenarios.
+**[docs/guides/user/example-projects.md](docs/guides/user/example-projects.md)**: Example projects and testing guide (NEW)
 ```
 
 **Priority**: 🔴 **CRITICAL** (Quick Start section, high visibility)
@@ -101,11 +101,11 @@ See [Example Projects Guide](docs/user-guide/example-projects.md) for detailed t
 - **[docs/FAQ.md](docs/FAQ.md)**: Frequently Asked Questions (NEW)
 ```
 
-**Actual Location**: `docs/user-guide/faq.md`
+**Actual Location**: `docs/guides/user/faq.md`
 
 **Fix Required**:
 ```markdown
-- **[docs/user-guide/faq.md](docs/user-guide/faq.md)**: Frequently Asked Questions (NEW)
+- **[docs/guides/user/faq.md](docs/guides/user/faq.md)**: Frequently Asked Questions (NEW)
 ```
 
 **Priority**: 🔴 **CRITICAL** (Quick Start section)
@@ -121,11 +121,11 @@ See [Example Projects Guide](docs/user-guide/example-projects.md) for detailed t
 - **[docs/V2.4.0_COMPLETE_FEATURE_GUIDE.md](docs/V2.4.0_COMPLETE_FEATURE_GUIDE.md)**: Complete v2.4.0 feature guide (NEW)
 ```
 
-**Actual Location**: `docs/user-guide/feature-guide.md`
+**Actual Location**: `docs/guides/user/feature-guide.md`
 
 **Fix Required**:
 ```markdown
-- **[docs/user-guide/feature-guide.md](docs/user-guide/feature-guide.md)**: Complete v2.4.0 feature guide (NEW)
+- **[docs/guides/user/feature-guide.md](docs/guides/user/feature-guide.md)**: Complete v2.4.0 feature guide (NEW)
 ```
 
 **Priority**: 🔴 **CRITICAL** (Quick Start section)
@@ -240,11 +240,11 @@ See [Example Projects Guide](docs/user-guide/example-projects.md) for detailed t
 - **[docs/ORCHESTRATOR_ARCHITECTURE.md](docs/ORCHESTRATOR_ARCHITECTURE.md)**: Orchestrator design (v2.4.0)
 ```
 
-**Actual Location**: `docs/developer-guide/architecture.md`
+**Actual Location**: `docs/guides/developer/architecture.md`
 
 **Fix Required**:
 ```markdown
-- **[docs/developer-guide/architecture.md](docs/developer-guide/architecture.md)**: Orchestrator design (v2.4.0)
+- **[docs/guides/developer/architecture.md](docs/guides/developer/architecture.md)**: Orchestrator design (v2.4.0)
 ```
 
 **Priority**: 🔴 **CRITICAL** (Technical Documentation section)
@@ -260,11 +260,11 @@ See [Example Projects Guide](docs/user-guide/example-projects.md) for detailed t
 - **[docs/RELEASE_NOTES_v2.4.0.md](docs/RELEASE_NOTES_v2.4.0.md)**: Step 14 release notes
 ```
 
-**Actual Location**: `docs/user-guide/release-notes.md`
+**Actual Location**: `docs/guides/user/release-notes.md`
 
 **Fix Required**:
 ```markdown
-- **[docs/user-guide/release-notes.md](docs/user-guide/release-notes.md)**: Step 14 release notes
+- **[docs/guides/user/release-notes.md](docs/guides/user/release-notes.md)**: Step 14 release notes
 ```
 
 **Priority**: 🔴 **CRITICAL** (Technical Documentation section)
@@ -469,7 +469,7 @@ Update `src/workflow/README.md:28`:
 ### 3.3 Structure and Navigation Improvements
 
 #### Issue #3.3.1: Documentation Organization Pattern Inconsistency
-**Observation**: README.md references documentation with flat paths (`docs/FILE.md`) but actual files are organized in subdirectories (`docs/reference/`, `docs/user-guide/`, etc.).
+**Observation**: README.md references documentation with flat paths (`docs/FILE.md`) but actual files are organized in subdirectories (`docs/reference/`, `docs/guides/user/`, etc.).
 
 **Analysis**: This appears to be a **refactoring issue** - documentation was reorganized into subdirectories but README links weren't updated systematically.
 
@@ -702,7 +702,7 @@ All 32 library modules and 15 step modules follow bash documentation standards:
    
 2. 🔧 **Add redirect system or aliases** (1 hour)
    - Consider symlinks for common paths
-   - Example: `docs/FAQ.md` → `docs/user-guide/faq.md`
+   - Example: `docs/FAQ.md` → `docs/guides/user/faq.md`
 
 ### Long-Term (Next Quarter)
 1. 🔮 **Documentation refactoring review**
@@ -745,32 +745,32 @@ The AI Workflow Automation project has **exceptional documentation quality** wit
 
 | Line | Current Link | Correct Link |
 |------|--------------|--------------|
-| 57 | `docs/EXAMPLE_PROJECTS_GUIDE.md` | `docs/user-guide/example-projects.md` |
+| 57 | `docs/EXAMPLE_PROJECTS_GUIDE.md` | `docs/guides/user/example-projects.md` |
 | 109 | `docs/PERFORMANCE_BENCHMARKS.md` | `docs/reference/performance-benchmarks.md` |
 | 116 | `docs/DOCUMENTATION_HUB.md` | `docs/archive/DOCUMENTATION_HUB.md` |
-| 119 | `docs/FAQ.md` | `docs/user-guide/faq.md` |
-| 121 | `docs/V2.4.0_COMPLETE_FEATURE_GUIDE.md` | `docs/user-guide/feature-guide.md` |
-| 122 | `docs/EXAMPLE_PROJECTS_GUIDE.md` | `docs/user-guide/example-projects.md` |
+| 119 | `docs/FAQ.md` | `docs/guides/user/faq.md` |
+| 121 | `docs/V2.4.0_COMPLETE_FEATURE_GUIDE.md` | `docs/guides/user/feature-guide.md` |
+| 122 | `docs/EXAMPLE_PROJECTS_GUIDE.md` | `docs/guides/user/example-projects.md` |
 | 123 | `docs/TARGET_PROJECT_FEATURE.md` | `docs/reference/target-project-feature.md` |
 | 124 | `docs/QUICK_REFERENCE_TARGET_OPTION.md` | `docs/reference/target-option-quick-reference.md` |
 | 125 | `docs/INIT_CONFIG_WIZARD.md` | `docs/reference/init-config-wizard.md` |
 | 129 | `docs/WORKFLOW_DIAGRAMS.md` | `docs/reference/workflow-diagrams.md` |
-| 130 | `docs/ORCHESTRATOR_ARCHITECTURE.md` | `docs/developer-guide/architecture.md` |
-| 131 | `docs/RELEASE_NOTES_v2.4.0.md` | `docs/user-guide/release-notes.md` |
+| 130 | `docs/ORCHESTRATOR_ARCHITECTURE.md` | `docs/guides/developer/architecture.md` |
+| 131 | `docs/RELEASE_NOTES_v2.4.0.md` | `docs/guides/user/release-notes.md` |
 
 **Bulk Fix Command** (verify before running):
 ```bash
-sed -i 's|docs/EXAMPLE_PROJECTS_GUIDE.md|docs/user-guide/example-projects.md|g' README.md
+sed -i 's|docs/EXAMPLE_PROJECTS_GUIDE.md|docs/guides/user/example-projects.md|g' README.md
 sed -i 's|docs/PERFORMANCE_BENCHMARKS.md|docs/reference/performance-benchmarks.md|g' README.md
 sed -i 's|docs/DOCUMENTATION_HUB.md|docs/archive/DOCUMENTATION_HUB.md|g' README.md
-sed -i 's|docs/FAQ.md|docs/user-guide/faq.md|g' README.md
-sed -i 's|docs/V2.4.0_COMPLETE_FEATURE_GUIDE.md|docs/user-guide/feature-guide.md|g' README.md
+sed -i 's|docs/FAQ.md|docs/guides/user/faq.md|g' README.md
+sed -i 's|docs/V2.4.0_COMPLETE_FEATURE_GUIDE.md|docs/guides/user/feature-guide.md|g' README.md
 sed -i 's|docs/TARGET_PROJECT_FEATURE.md|docs/reference/target-project-feature.md|g' README.md
 sed -i 's|docs/QUICK_REFERENCE_TARGET_OPTION.md|docs/reference/target-option-quick-reference.md|g' README.md
 sed -i 's|docs/INIT_CONFIG_WIZARD.md|docs/reference/init-config-wizard.md|g' README.md
 sed -i 's|docs/WORKFLOW_DIAGRAMS.md|docs/reference/workflow-diagrams.md|g' README.md
-sed -i 's|docs/ORCHESTRATOR_ARCHITECTURE.md|docs/developer-guide/architecture.md|g' README.md
-sed -i 's|docs/RELEASE_NOTES_v2.4.0.md|docs/user-guide/release-notes.md|g' README.md
+sed -i 's|docs/ORCHESTRATOR_ARCHITECTURE.md|docs/guides/developer/architecture.md|g' README.md
+sed -i 's|docs/RELEASE_NOTES_v2.4.0.md|docs/guides/user/release-notes.md|g' README.md
 ```
 
 ---
@@ -787,10 +787,10 @@ test -f docs/PROJECT_REFERENCE.md && echo "✅ PROJECT_REFERENCE.md" || echo "�
 test -f SECURITY.md && echo "✅ SECURITY.md" || echo "❌ SECURITY.md"
 
 # Check user docs
-test -f docs/user-guide/example-projects.md && echo "✅ example-projects.md" || echo "❌"
-test -f docs/user-guide/faq.md && echo "✅ faq.md" || echo "❌"
-test -f docs/user-guide/feature-guide.md && echo "✅ feature-guide.md" || echo "❌"
-test -f docs/user-guide/release-notes.md && echo "✅ release-notes.md" || echo "❌"
+test -f docs/guides/user/example-projects.md && echo "✅ example-projects.md" || echo "❌"
+test -f docs/guides/user/faq.md && echo "✅ faq.md" || echo "❌"
+test -f docs/guides/user/feature-guide.md && echo "✅ feature-guide.md" || echo "❌"
+test -f docs/guides/user/release-notes.md && echo "✅ release-notes.md" || echo "❌"
 
 # Check reference docs
 test -f docs/reference/performance-benchmarks.md && echo "✅ performance-benchmarks.md" || echo "❌"
@@ -800,7 +800,7 @@ test -f docs/reference/init-config-wizard.md && echo "✅ init-config-wizard.md"
 test -f docs/reference/workflow-diagrams.md && echo "✅ workflow-diagrams.md" || echo "❌"
 
 # Check developer docs
-test -f docs/developer-guide/architecture.md && echo "✅ architecture.md" || echo "❌"
+test -f docs/guides/developer/architecture.md && echo "✅ architecture.md" || echo "❌"
 
 # Check archive docs
 test -f docs/archive/DOCUMENTATION_HUB.md && echo "✅ DOCUMENTATION_HUB.md" || echo "❌"

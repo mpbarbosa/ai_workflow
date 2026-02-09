@@ -142,9 +142,9 @@ See [PROJECT_REFERENCE.md](PROJECT_REFERENCE.md) for complete details.
 ### Recent Releases
 
 ✅ **v2.9.0 COMPLETED** (2026-01-01): Auto-documentation
-- **Workflow report generation**: `--generate-docs` extracts summaries to `docs/workflow-reports/`
+- **Workflow report generation**: `--generate-docs` extracts summaries to `docs/reports/workflows/`
 - **Auto-CHANGELOG**: `--update-changelog` parses conventional commits into Keep a Changelog format
-- **API documentation**: `--generate-api-docs` extracts function docs to `docs/api/`
+- **API documentation**: `--generate-api-docs` extracts function docs to `docs/reference/api/`
 - **Documentation validation**: Built-in quality checks for completeness
 - **Historical tracking**: Maintains execution history and report archives
 - **CI/CD friendly**: Integrates seamlessly with automated pipelines

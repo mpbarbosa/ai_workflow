@@ -382,7 +382,7 @@ version_update:
 
 - [ ] README.md - Add Step 15 to workflow overview
 - [ ] docs/PROJECT_REFERENCE.md - Update step count and features
-- [ ] docs/workflow-automation/COMPREHENSIVE_WORKFLOW_EXECUTION_ANALYSIS.md
+- [ ] docs/workflows/COMPREHENSIVE_WORKFLOW_EXECUTION_ANALYSIS.md
 - [ ] CHANGELOG.md - Add v3.0.0 release notes
 
 ## Changelog

@@ -298,10 +298,10 @@ See [docs/reference/init-config-wizard.md](docs/reference/init-config-wizard.md)
 - **[docs/reference/init-config-wizard.md](docs/reference/init-config-wizard.md)**: Configuration wizard guide
 
 ### Technical Documentation
-- **[docs/design/adr/](docs/design/adr/)**: Architecture Decision Records (modular architecture, YAML config, orchestrators)
+- **[docs/architecture/adr/](docs/architecture/adr/)**: Architecture Decision Records (modular architecture, YAML config, orchestrators)
 - **[docs/reference/workflow-diagrams.md](docs/reference/workflow-diagrams.md)**: Visual diagrams for complex workflows
 - **[docs/RELEASE_NOTES_v2.6.0.md](docs/RELEASE_NOTES_v2.6.0.md)**: Latest release notes
-- **[docs/workflow-automation/](docs/workflow-automation/)**: Comprehensive workflow documentation
+- **[docs/workflows/](docs/workflows/)**: Comprehensive workflow documentation
 - **[src/workflow/README.md](src/workflow/README.md)**: Module API reference
 - **[.github/copilot-instructions.md](.github/copilot-instructions.md)**: Complete system reference for GitHub Copilot
 
@@ -398,7 +398,7 @@ done
 - `test_step01_refactoring.sh` - Validates Step 1 modular architecture
 - `test_step01_simple.sh` - Basic Step 1 functionality tests
 
-See [Testing Guide](docs/developer-guide/testing.md) for comprehensive test documentation.
+See [Testing Guide](docs/guides/developer/testing.md) for comprehensive test documentation.
 
 ## License
 
@@ -571,5 +571,5 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for how to contribute.
 
 ---
 
-For detailed architecture information, see [Architecture Decision Records](docs/design/adr/) and [PROJECT_REFERENCE.md](docs/PROJECT_REFERENCE.md)
+For detailed architecture information, see [Architecture Decision Records](docs/architecture/adr/) and [PROJECT_REFERENCE.md](docs/PROJECT_REFERENCE.md)
 

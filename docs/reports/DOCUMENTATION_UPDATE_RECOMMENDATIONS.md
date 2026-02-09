@@ -15,7 +15,7 @@ Analysis of recent changes shows that **most documentation is already up-to-date
 - ✅ README.md - Fully updated with v2.4.0 features
 - ✅ .github/copilot-instructions.md - Fully updated
 - ✅ docs/PROJECT_REFERENCE.md - Complete with Step 14 info
-- ✅ docs/user-guide/release-notes.md - Comprehensive v2.4.0 notes
+- ✅ docs/guides/user/release-notes.md - Comprehensive v2.4.0 notes
 - ⚠️ Minor fixes needed (see below)
 
 ---
@@ -35,7 +35,7 @@ The workflow detected 37 consistency issues, primarily:
    - **Recommendation**: Add comment blocks to clarify these are examples
 
 2. **Regex Pattern Documentation**
-   - Files: `docs/design/yaml-parsing-design.md`, `docs/reference/yaml-parsing-quick-reference.md`
+   - Files: `docs/architecture/yaml-parsing-design.md`, `docs/reference/yaml-parsing-quick-reference.md`
    - Contains regex patterns that look like paths (e.g., `/^[^:]*:[[:space:]]*/`)
    - **Recommendation**: Wrap regex examples in code blocks or add explanatory comments
 
@@ -46,7 +46,7 @@ docs/archive/reports/analysis/SHELL_SCRIPT_REFERENCE_VALIDATION_REPORT_20251220.
 docs/archive/reports/analysis/DOCUMENTATION_CONSISTENCY_REPORT.md
 docs/archive/reports/bugfixes/ISSUE_4.4_INCONSISTENT_DATES_FIX.md
 docs/archive/CONSOLIDATED_FUNCTIONAL_REQUIREMENTS.md
-docs/design/yaml-parsing-design.md
+docs/architecture/yaml-parsing-design.md
 docs/reference/yaml-parsing-quick-reference.md
 ```
 
@@ -108,12 +108,12 @@ All key documentation is complete:
 ### Optional Enhancements (Low Priority)
 
 1. **Add Step 14 Example Output**
-   - **File**: `docs/user-guide/feature-guide.md`
+   - **File**: `docs/guides/user/feature-guide.md`
    - **Add**: Example of Step 14 output showing accessibility issues
    - **Why**: Helps users understand what to expect
 
 2. **Add UX Analysis to FAQ**
-   - **File**: `docs/user-guide/faq.md`
+   - **File**: `docs/guides/user/faq.md`
    - **Add**: Q&A about when Step 14 runs, how to force/skip it
    - **Example Questions**:
      - "Why was Step 14 skipped in my project?"
@@ -121,7 +121,7 @@ All key documentation is complete:
      - "Can I run only Step 14?"
 
 3. **Update Troubleshooting Guide**
-   - **File**: `docs/user-guide/troubleshooting.md`
+   - **File**: `docs/guides/user/troubleshooting.md`
    - **Add**: Common Step 14 issues (UI detection failures, false positives)
 
 ---
@@ -134,7 +134,7 @@ All files correctly reference v2.4.0:
 - README.md: ✅ v2.4.0
 - .github/copilot-instructions.md: ✅ v2.4.0
 - docs/PROJECT_REFERENCE.md: ✅ v2.4.0
-- docs/user-guide/release-notes.md: ✅ v2.4.0
+- docs/guides/user/release-notes.md: ✅ v2.4.0
 - src/workflow/execute_tests_docs_workflow.sh: ✅ v2.4.0
 
 ---

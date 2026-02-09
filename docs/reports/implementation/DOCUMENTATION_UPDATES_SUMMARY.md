@@ -85,7 +85,7 @@
 
 #### Removed Empty Directories
 - **Deleted**: `docs/guides/` (empty placeholder)
-- **Deleted**: `docs/workflow-automation/` (empty, moved to archive)
+- **Deleted**: `docs/workflows/` (empty, moved to archive)
 - **Impact**: Reduces confusion about directory purpose
 
 ---
@@ -166,7 +166,7 @@ test-results/
 ### Directories Removed (3)
 - `src/workflow/src/` - Nested source directory
 - `docs/guides/` - Empty placeholder
-- `docs/workflow-automation/` - Empty directory
+- `docs/workflows/` - Empty directory
 
 ### Files Untracked from Git (3+)
 - `test-results/*.txt` - Test execution reports
@@ -202,7 +202,7 @@ grep -c "Development Testing" README.md  # Should return 1+
 # Verify directory cleanup
 ls -d src/workflow/src/ 2>/dev/null  # Should not exist
 ls -d docs/guides/ 2>/dev/null  # Should not exist
-ls -d docs/workflow-automation/ 2>/dev/null  # Should not exist
+ls -d docs/workflows/ 2>/dev/null  # Should not exist
 
 # Verify .gitignore patterns
 grep "test-results/" .gitignore  # Should return match
@@ -242,7 +242,7 @@ All **critical (P0)** and **directory architecture** issues identified in the va
 ✅ 16 step submodules documented with architecture principles  
 ✅ Development test scripts documented  
 ✅ Nested `src/workflow/src/` directory removed  
-✅ Empty `docs/guides/` and `docs/workflow-automation/` removed  
+✅ Empty `docs/guides/` and `docs/workflows/` removed  
 ✅ `.gitignore` updated with backup and test-results patterns  
 ✅ test-results/ untracked from git  
 
@@ -264,7 +264,7 @@ docs: complete documentation updates and directory cleanup
 - Document 16 step submodules in src/workflow/steps/README.md
 - Add development testing section to README.md
 - Remove nested src/workflow/src/ directory
-- Remove empty docs/guides/ and docs/workflow-automation/
+- Remove empty docs/guides/ and docs/workflows/
 - Update .gitignore with backup and test-results patterns
 - Untrack test-results/ from git
 

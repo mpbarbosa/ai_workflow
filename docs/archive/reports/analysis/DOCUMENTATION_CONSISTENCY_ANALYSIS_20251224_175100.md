@@ -39,9 +39,9 @@ Overall documentation quality is **excellent (9.2/10)** with only minor inconsis
 
 2. **docs/FAQ.md** (referenced at README.md:119)
    - **Current**: File doesn't exist at this path
-   - **Actual Location**: `docs/user-guide/faq.md`
+   - **Actual Location**: `docs/guides/user/faq.md`
    - **Impact**: Broken link in Quick Start section
-   - **Fix**: Update README.md line 119: `[docs/user-guide/faq.md](docs/user-guide/faq.md)`
+   - **Fix**: Update README.md line 119: `[docs/guides/user/faq.md](docs/guides/user/faq.md)`
 
 3. **docs/DOCUMENTATION_HUB.md** (referenced at README.md:116)
    - **Current**: File doesn't exist at this path
@@ -72,27 +72,27 @@ Overall documentation quality is **excellent (9.2/10)** with only minor inconsis
 
 1. **docs/V2.4.0_COMPLETE_FEATURE_GUIDE.md**
    - Referenced: README.md:121, multiple archive files
-   - **Actual Location**: `docs/user-guide/feature-guide.md`
+   - **Actual Location**: `docs/guides/user/feature-guide.md`
    - **Impact**: Version-specific feature guide broken
-   - **Fix**: Update all references to `docs/user-guide/feature-guide.md`
+   - **Fix**: Update all references to `docs/guides/user/feature-guide.md`
 
 2. **docs/EXAMPLE_PROJECTS_GUIDE.md**
    - Referenced: README.md:122, multiple files
-   - **Actual Location**: `docs/user-guide/example-projects.md`
+   - **Actual Location**: `docs/guides/user/example-projects.md`
    - **Impact**: Example projects guide unreachable
-   - **Fix**: Update all references to `docs/user-guide/example-projects.md`
+   - **Fix**: Update all references to `docs/guides/user/example-projects.md`
 
 3. **docs/ORCHESTRATOR_ARCHITECTURE.md**
    - Referenced: README.md:130, ADR 003, multiple analysis reports
-   - **Actual Location**: `docs/developer-guide/architecture.md`
+   - **Actual Location**: `docs/guides/developer/architecture.md`
    - **Impact**: Architecture documentation unreachable
-   - **Fix**: Update all references to `docs/developer-guide/architecture.md`
+   - **Fix**: Update all references to `docs/guides/developer/architecture.md`
 
 4. **docs/RELEASE_NOTES_v2.4.0.md**
    - Referenced: README.md:131
-   - **Actual Location**: `docs/user-guide/release-notes.md`
+   - **Actual Location**: `docs/guides/user/release-notes.md`
    - **Impact**: Release notes unreachable
-   - **Fix**: Update reference to `docs/user-guide/release-notes.md`
+   - **Fix**: Update reference to `docs/guides/user/release-notes.md`
 
 **Priority**: 🟡 **MEDIUM** - Core documentation links but alternatives exist
 
@@ -191,9 +191,9 @@ shell_scripts: ${project.root}/src/workflow  ✅ CORRECT
 ### Issue 3.1: Documentation Organization
 
 **Observation**: Documentation structure is well-organized with clear separation:
-- `docs/user-guide/` - 9 files (2,883 lines)
+- `docs/guides/user/` - 9 files (2,883 lines)
 - `docs/reference/` - 22 files (13,775 lines)
-- `docs/developer-guide/` - 6 files
+- `docs/guides/developer/` - 6 files
 - `docs/archive/` - 143+ historical files
 
 **Suggestion**: Consider creating a documentation map or index at `docs/README.md` to help new contributors navigate the extensive documentation tree.
@@ -230,8 +230,8 @@ shell_scripts: ${project.root}/src/workflow  ✅ CORRECT
 **Observation**: Some documentation files lack proper cross-references to related content.
 
 **Examples**:
-1. `docs/user-guide/feature-guide.md` - Missing table of contents for navigation
-2. `docs/developer-guide/architecture.md` - Could reference related ADRs
+1. `docs/guides/user/feature-guide.md` - Missing table of contents for navigation
+2. `docs/guides/developer/architecture.md` - Could reference related ADRs
 3. `docs/reference/performance-benchmarks.md` - Could link to metrics interpretation guide
 
 **Recommendation**: Add cross-reference sections to major documentation files.
@@ -355,15 +355,15 @@ shell_scripts: ${project.root}/src/workflow  ✅ CORRECT
 
 1. **Fix README.md Broken Links** (30 minutes)
    - Update docs/PERFORMANCE_BENCHMARKS.md → docs/reference/performance-benchmarks.md (line 109)
-   - Update docs/FAQ.md → docs/user-guide/faq.md (line 119)
+   - Update docs/FAQ.md → docs/guides/user/faq.md (line 119)
    - Update docs/DOCUMENTATION_HUB.md → docs/archive/DOCUMENTATION_HUB.md (line 116)
    - Move or update SECURITY.md reference (line 268)
 
 2. **Fix Version-Specific Documentation References** (20 minutes)
-   - Update docs/V2.4.0_COMPLETE_FEATURE_GUIDE.md → docs/user-guide/feature-guide.md
-   - Update docs/EXAMPLE_PROJECTS_GUIDE.md → docs/user-guide/example-projects.md
-   - Update docs/ORCHESTRATOR_ARCHITECTURE.md → docs/developer-guide/architecture.md
-   - Update docs/RELEASE_NOTES_v2.4.0.md → docs/user-guide/release-notes.md
+   - Update docs/V2.4.0_COMPLETE_FEATURE_GUIDE.md → docs/guides/user/feature-guide.md
+   - Update docs/EXAMPLE_PROJECTS_GUIDE.md → docs/guides/user/example-projects.md
+   - Update docs/ORCHESTRATOR_ARCHITECTURE.md → docs/guides/developer/architecture.md
+   - Update docs/RELEASE_NOTES_v2.4.0.md → docs/guides/user/release-notes.md
 
 **Estimated Fix Time**: 50 minutes
 
@@ -382,8 +382,8 @@ shell_scripts: ${project.root}/src/workflow  ✅ CORRECT
    - Consider creating `docs/reference/ai-personas-architecture.md`
 
 5. **Add Table of Contents to Long Documents** (1 hour)
-   - Add TOC to `docs/user-guide/feature-guide.md`
-   - Add TOC to `docs/developer-guide/architecture.md`
+   - Add TOC to `docs/guides/user/feature-guide.md`
+   - Add TOC to `docs/guides/developer/architecture.md`
    - Add TOC to major reference documents
 
 **Estimated Fix Time**: 2.5 hours
@@ -453,7 +453,7 @@ The automated checks reported these patterns:
 docs/archive/reports/analysis/SHELL_SCRIPT_REFERENCE_VALIDATION_REPORT_20251220.md: /shell_scripts/README.md
 docs/archive/reports/analysis/SHELL_SCRIPT_REFERENCE_VALIDATION_REPORT_20251220.md: /shell_scripts/CHANGELOG.md
 docs/archive/reports/analysis/DOCUMENTATION_CONSISTENCY_ANALYSIS_20251223_185454.md: /shell_scripts/ references persist
-docs/design/remove-nested-markdown-blocks.md: /approach: \|/
+docs/architecture/remove-nested-markdown-blocks.md: /approach: \|/
 docs/reports/analysis/DOCUMENTATION_CONSISTENCY_ANALYSIS_20251224.md: /shell_scripts/
 docs/reports/analysis/DOCUMENTATION_CONSISTENCY_ANALYSIS_COMPREHENSIVE_20251224.md: /shell_scripts/README.md
 ```
@@ -480,9 +480,9 @@ Total Documentation:         248 files
 ### Line Counts by Category
 
 ```
-docs/user-guide/:      2,883 lines (9 files)
+docs/guides/user/:      2,883 lines (9 files)
 docs/reference/:      13,775 lines (22 files)
-docs/developer-guide/: ~5,000 lines (6 files)
+docs/guides/developer/: ~5,000 lines (6 files)
 docs/archive/:       100,000+ lines (143 files)
 ```
 

@@ -350,7 +350,7 @@ These are critical architectural components implementing the "Step Refactoring P
    **Documentation**: See [steps/README.md](steps/README.md#step-library-submodules)
    ```
 
-3. **Create architecture decision record** (`docs/design/adr/004-step-submodule-pattern.md`):
+3. **Create architecture decision record** (`docs/architecture/adr/004-step-submodule-pattern.md`):
    ```markdown
    # ADR 004: Step Submodule Pattern
    
@@ -1124,22 +1124,22 @@ All documented in orchestrators/README.md
 - `/docs/reference/glossary.md` - Terminology
 
 ### User Guides
-- `/docs/user-guide/quick-start.md`
-- `/docs/user-guide/usage.md`
-- `/docs/user-guide/installation.md`
-- `/docs/user-guide/troubleshooting.md`
-- `/docs/user-guide/faq.md`
-- `/docs/user-guide/example-projects.md`
+- `/docs/guides/user/quick-start.md`
+- `/docs/guides/user/usage.md`
+- `/docs/guides/user/installation.md`
+- `/docs/guides/user/troubleshooting.md`
+- `/docs/guides/user/faq.md`
+- `/docs/guides/user/example-projects.md`
 
 ### Developer Documentation
-- `/docs/developer-guide/architecture.md`
-- `/docs/developer-guide/contributing.md`
-- `/docs/developer-guide/development-setup.md`
+- `/docs/guides/developer/architecture.md`
+- `/docs/guides/developer/contributing.md`
+- `/docs/guides/developer/development-setup.md`
 
 ### Design Documentation
-- `/docs/design/adr/` - Architecture Decision Records
-- `/docs/design/project-kind-framework.md`
-- `/docs/design/tech-stack-framework.md`
+- `/docs/architecture/adr/` - Architecture Decision Records
+- `/docs/architecture/project-kind-framework.md`
+- `/docs/architecture/tech-stack-framework.md`
 
 ### Archive
 - `/docs/archive/` - Historical documentation

@@ -88,7 +88,7 @@ Despite successful repository migration from mpbarbosa_site (2025-12-18), **20+ 
 - `docs/archive/reports/analysis/DOCUMENTATION_CONSISTENCY_COMPREHENSIVE.md`
 - `docs/archive/reports/analysis/DOCUMENTATION_CONSISTENCY_FINAL_ANALYSIS_20251224.md`
 - `docs/archive/reports/analysis/DOCUMENTATION_CONSISTENCY_ANALYSIS_20251224_175100.md`
-- `docs/misc/documentation_analysis_parallel.md`
+- `docs/reports/historical/documentation_analysis_parallel.md`
 - `docs/reports/implementation/DOCUMENTATION_CONSISTENCY_SUMMARY.md`
 - `docs/reports/implementation/DOCUMENTATION_UPDATE_SUMMARY.md`
 - `docs/reports/DOCUMENTATION_CONSISTENCY_ANALYSIS_20251224_144913.md`
@@ -110,7 +110,7 @@ done
 **Option 2: Update Paths** (For non-archived files)
 ```bash
 # Update current documentation
-sed -i 's|/shell_scripts/|src/workflow/|g' docs/misc/documentation_analysis_parallel.md
+sed -i 's|/shell_scripts/|src/workflow/|g' docs/reports/historical/documentation_analysis_parallel.md
 sed -i 's|/shell_scripts/|src/workflow/|g' docs/reports/implementation/DOCUMENTATION_*.md
 sed -i 's|/shell_scripts/|src/workflow/|g' docs/reports/bugfixes/DOCUMENTATION_FIXES_ACTION_PLAN.md
 ```
@@ -127,7 +127,7 @@ sed -i 's|/shell_scripts/|src/workflow/|g' docs/reports/bugfixes/DOCUMENTATION_F
 
 #### Issue Description
 
-`docs/design/remove-nested-markdown-blocks.md` line 23 contains:
+`docs/architecture/remove-nested-markdown-blocks.md` line 23 contains:
 ```
 /approach: |/
 ```
@@ -276,7 +276,7 @@ README.md line 35-38 mentions:
 However, this feature is NOT mentioned in:
 - PROJECT_REFERENCE.md
 - docs/reference/performance-benchmarks.md
-- docs/user-guide/feature-guide.md
+- docs/guides/user/feature-guide.md
 
 This is a **major performance improvement** (75-85% faster) that deserves documentation.
 
@@ -285,7 +285,7 @@ This is a **major performance improvement** (75-85% faster) that deserves docume
 Add Step 1 optimization to:
 1. **PROJECT_REFERENCE.md** - Performance Optimization section
 2. **docs/reference/performance-benchmarks.md** - Benchmark comparisons
-3. **docs/user-guide/feature-guide.md** - Feature description
+3. **docs/guides/user/feature-guide.md** - Feature description
 
 **Action Required**: Document Step 1 optimization across user-facing docs
 
@@ -453,7 +453,7 @@ sed -i 's/15-step pipeline/18-step pipeline/' README.md
 
 #### Issue Description
 
-`docs/user-guide/release-notes.md` contains detailed release notes for v2.4.1 but no entry for v3.0.0, v3.1.0, or v3.2.0.
+`docs/guides/user/release-notes.md` contains detailed release notes for v2.4.1 but no entry for v3.0.0, v3.1.0, or v3.2.0.
 
 The file appears to be version-specific (title: "Release Notes: Version 2.4.1 (UX Designer Feature)") rather than a comprehensive changelog.
 
@@ -522,7 +522,7 @@ Quick scan shows proper heading hierarchy in main docs (h1 → h2 → h3 progres
 
 #### Day 1: Critical Fixes
 1. ✅ **Update version numbers** to v3.2.0 across README.md, PROJECT_REFERENCE.md, copilot-instructions.md
-2. ✅ **Fix broken markdown reference** in docs/design/remove-nested-markdown-blocks.md
+2. ✅ **Fix broken markdown reference** in docs/architecture/remove-nested-markdown-blocks.md
 
 #### Day 2-3: High Priority
 3. ✅ **Update module counts** to 66 libraries / 92 total
@@ -590,7 +590,7 @@ The AI Workflow Automation project demonstrates **excellent documentation practi
 3. ✅ **RESOLVED**: `docs/archive/reports/analysis/DOCUMENTATION_CONSISTENCY_ANALYSIS_COMPREHENSIVE_20251224.md: /shell_scripts/CHANGELOG.md`
    - **Resolution**: Add migration note (archived historical document)
 
-4. ⚠️ **REQUIRES MANUAL REVIEW**: `docs/design/remove-nested-markdown-blocks.md: /approach: |/`
+4. ⚠️ **REQUIRES MANUAL REVIEW**: `docs/architecture/remove-nested-markdown-blocks.md: /approach: |/`
    - **Resolution**: Manual review needed - appears to be malformed YAML or markdown
 
 ---

@@ -314,7 +314,7 @@ cat src/workflow/backlog/workflow_*/step_09_code_quality.md
 vim src/api/v2/users.js
 
 # 2. Update API documentation
-vim docs/api/users.md
+vim docs/reference/api/users.md
 
 # 3. Run documentation-focused workflow
 ~/projects/ai_workflow/src/workflow/execute_tests_docs_workflow.sh \
@@ -335,7 +335,7 @@ cat src/workflow/backlog/workflow_*/step_01_documentation_analysis.md
 cat src/workflow/backlog/workflow_*/step_03_script_validation.md
 
 # 6. Manual commit (review changes first)
-git add docs/api/users.md
+git add docs/reference/api/users.md
 git commit -m "docs(api): update users endpoint documentation"
 ```
 
@@ -398,7 +398,7 @@ vim README.md
 # 1. Make documentation changes
 vim docs/guides/*.md
 vim docs/reference/*.md
-vim docs/developer-guide/*.md
+vim docs/guides/developer/*.md
 
 # 2. Run parallel documentation workflow
 ~/projects/ai_workflow/src/workflow/execute_tests_docs_workflow.sh \
@@ -1539,7 +1539,7 @@ chmod +x ~/my-workflows/hotfix.sh
 - **Data Flow**: `docs/reference/DATA_FLOW.md`
 - **CLI Options**: `docs/reference/cli-options.md`
 - **Troubleshooting**: `docs/guides/TROUBLESHOOTING.md`
-- **Quick Start**: `docs/user-guide/quick-start.md`
+- **Quick Start**: `docs/guides/user/quick-start.md`
 - **Project Reference**: `docs/PROJECT_REFERENCE.md`
 
 ---

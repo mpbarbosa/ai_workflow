@@ -355,7 +355,7 @@ docs/README.md
 package.json"
 
 test_docs="README.md
-docs/api/API.md"
+docs/reference/api/API.md"
 
 result=$(build_doc_analysis_prompt "$test_files" "$test_docs")
 

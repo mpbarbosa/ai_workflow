@@ -1137,9 +1137,9 @@ test_function() {
 
 ## Next Steps
 
-- **Full API Reference**: [docs/api/API_REFERENCE.md](api/API_REFERENCE.md)
-- **Module Documentation**: [docs/api/LIBRARY_API_REFERENCE.md](api/LIBRARY_API_REFERENCE.md)
-- **Developer Guide**: [docs/developer-guide/MODULE_DEVELOPMENT.md](developer-guide/MODULE_DEVELOPMENT.md)
+- **Full API Reference**: [docs/reference/api/API_REFERENCE.md](api/API_REFERENCE.md)
+- **Module Documentation**: [docs/reference/api/LIBRARY_API_REFERENCE.md](api/LIBRARY_API_REFERENCE.md)
+- **Developer Guide**: [docs/guides/developer/MODULE_DEVELOPMENT.md](developer-guide/MODULE_DEVELOPMENT.md)
 - **Contributing**: [CONTRIBUTING.md](../CONTRIBUTING.md)
 
 ---

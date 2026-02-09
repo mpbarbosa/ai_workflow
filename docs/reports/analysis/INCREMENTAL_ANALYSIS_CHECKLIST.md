@@ -130,7 +130,7 @@
 3. ✅ `INCREMENTAL_ANALYSIS_IMPLEMENTATION.md` (9.3K)
 4. ✅ `INCREMENTAL_ANALYSIS_SUMMARY.md` (8.3K)
 5. ✅ `QUICK_REFERENCE_INCREMENTAL.md` (2.1K)
-6. ✅ `docs/diagrams/incremental-analysis-flow.md` (1.8K)
+6. ✅ `docs/architecture/diagrams/incremental-analysis-flow.md` (1.8K)
 7. ✅ `INCREMENTAL_ANALYSIS_CHECKLIST.md` (this file)
 
 ### Modified Files (2)

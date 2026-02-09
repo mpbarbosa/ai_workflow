@@ -163,6 +163,43 @@ step13_markdown_linting() {
         local lint_results
         lint_results=$(cat "$lint_report" 2>/dev/null || echo "No linting results available")
         
+        # Summarize lint results to avoid "Argument list too long" error
+        # Count issues by type and show only summary + first few examples
+        local lint_summary=""
+        local total_lines=$(echo "$lint_results" | wc -l)
+        
+        if [[ $total_lines -gt 50 ]]; then
+            # Create summary for large reports
+            local issue_counts=$(echo "$lint_results" | grep -oE 'MD[0-9]+' | sort | uniq -c | sort -rn)
+            local top_examples=$(echo "$lint_results" | head -20)
+            
+            lint_summary="# Linting Summary
+Total issues found: $total_lines
+
+## Issue Type Distribution:
+$issue_counts
+
+## Sample Issues (showing first 20):
+$top_examples
+
+... ($((total_lines - 20)) more issues - see full report at: $lint_report)"
+            
+            lint_results="$lint_summary"
+            print_info "Summarized $total_lines lint issues for AI analysis"
+        fi
+        
+        # Final safety check: truncate if still too large
+        local max_lint_size=50000  # 50KB limit for safety
+        if [[ ${#lint_results} -gt $max_lint_size ]]; then
+            local truncated_size=$((${#lint_results} - max_lint_size))
+            lint_results="${lint_results:0:$max_lint_size}
+
+... [Output truncated - $truncated_size characters omitted]
+
+Full report: $lint_report"
+            print_warning "Lint results further truncated for AI analysis"
+        fi
+        
         # Build prompt with pre-expanded context (no command substitution in prompt)
         cat > "$ai_prompt_file" << EOF
 You are a Technical Documentation Specialist with expertise in markdown best practices.
@@ -196,7 +233,27 @@ EOF
         if [[ "$AUTO_MODE" == false ]]; then
             print_info "Opening GitHub Copilot for interactive review..."
             print_info "Copy the analysis from Copilot and save it to improve documentation."
-            copilot -p "$(cat "$ai_prompt_file")" || print_warning "Copilot interaction skipped or failed"
+            
+            if [[ -f "$ai_prompt_file" ]]; then
+                # Check prompt size before attempting to pass it
+                local prompt_content
+                prompt_content=$(cat "$ai_prompt_file" 2>/dev/null)
+                local prompt_size=${#prompt_content}
+                
+                # Shell argument limit is typically 128KB, be conservative
+                if [[ $prompt_size -gt 100000 ]]; then
+                    print_warning "Prompt too large ($prompt_size chars) for command line"
+                    print_info "Prompt saved to: $ai_prompt_file"
+                    print_info "View with: cat $ai_prompt_file"
+                else
+                    # Safe to pass as argument
+                    if ! copilot -p "$prompt_content" 2>&1; then
+                        print_warning "Copilot interaction failed"
+                    fi
+                fi
+            else
+                print_warning "Copilot interaction skipped - prompt file not found"
+            fi
         else
             print_info "Auto mode: Skipping interactive AI review"
         fi

@@ -82,6 +82,39 @@ git merge upstream/main
 git checkout -b feature/your-feature-name
 ```
 
+### Pre-Commit Validation
+
+Before committing changes, consider running these validation scripts:
+
+```bash
+# Validate documentation structure and context blocks
+python3 .workflow_core/scripts/validate_structure.py docs/
+python3 .workflow_core/scripts/validate_context_blocks.py docs/
+
+# Check documentation links
+python3 scripts/check_doc_links.py
+
+# Validate documentation examples (if you modified examples)
+./scripts/validate_doc_examples.sh
+
+# For major documentation changes, check for inconsistencies
+./scripts/doc_diff_checker.sh
+```
+
+**Note:** These validations help catch issues early and maintain documentation quality standards.
+
+### Cleaning Up Artifacts
+
+To keep your workspace clean:
+
+```bash
+# Preview what would be cleaned
+./scripts/cleanup_artifacts.sh --all --dry-run
+
+# Clean artifacts older than 7 days
+./scripts/cleanup_artifacts.sh --logs --older-than 7
+```
+
 ---
 
 ## Workflow Usage Patterns
@@ -923,8 +956,8 @@ See [`docs/reference/release-process.md`](docs/reference/release-process.md) for
 
 ### Documentation
 
-- **Quick Start**: [`docs/user-guide/quick-start.md`](docs/user-guide/quick-start.md)
-- **Testing Strategy**: [`docs/developer-guide/testing.md`](docs/developer-guide/testing.md)
+- **Quick Start**: [`docs/guides/user/quick-start.md`](docs/guides/user/quick-start.md)
+- **Testing Strategy**: [`docs/guides/developer/testing.md`](docs/guides/developer/testing.md)
 - **Release Process**: [`docs/reference/release-process.md`](docs/reference/release-process.md)
 - **Configuration Schema**: [`docs/reference/configuration.md`](docs/reference/configuration.md)
 - **Performance Benchmarks**: [`docs/reference/performance-benchmarks.md`](docs/reference/performance-benchmarks.md)

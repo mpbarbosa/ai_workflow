@@ -140,7 +140,7 @@ docs/archive/reports/analysis/SHELL_SCRIPT_REFERENCE_VALIDATION_REPORT_20251220.
 Several files contain sed/regex patterns that look like paths:
 
 ```
-docs/design/yaml-parsing-design.md:
+docs/architecture/yaml-parsing-design.md:
 - /^[^:]*:[[:space:]]*/, ""   # This is a sed pattern, NOT a broken link
 - /"/, ""                       # This is a sed pattern, NOT a broken link
 ```

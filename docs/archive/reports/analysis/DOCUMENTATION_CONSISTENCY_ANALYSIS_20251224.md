@@ -281,7 +281,7 @@ Upon investigation, **all of these are intentional examples** used in:
 - `docs/archive/reports/analysis/DOCUMENTATION_CONSISTENCY_REPORT.md`
 - `docs/archive/reports/bugfixes/DOCUMENTATION_CONSISTENCY_FIX.md`
 - `docs/archive/CONSOLIDATED_FUNCTIONAL_REQUIREMENTS.md`
-- `docs/design/yaml-parsing-design.md` (regex patterns)
+- `docs/architecture/yaml-parsing-design.md` (regex patterns)
 
 #### Recommendation
 **NO ACTION REQUIRED** - These are properly labeled as examples.
@@ -534,7 +534,7 @@ graph TB
 **High Priority Additions**:
 
 1. **Migration Guide for Users** (NEW)
-   - File: `docs/user-guide/migration-from-2.3-to-2.4.md`
+   - File: `docs/guides/user/migration-from-2.3-to-2.4.md`
    - Content: Breaking changes, new features, upgrade steps
 
 2. **Step 14 UX Analysis Deep Dive** (NEW for v2.4.0)
@@ -542,7 +542,7 @@ graph TB
    - Content: WCAG 2.1 checks, accessibility scoring, remediation
 
 3. **Troubleshooting Section Expansion**
-   - Current: `docs/user-guide/troubleshooting.md` (basic)
+   - Current: `docs/guides/user/troubleshooting.md` (basic)
    - Add: Common error codes, debugging steps, support channels
 
 4. **Performance Tuning Guide**
@@ -550,7 +550,7 @@ graph TB
    - Content: Optimization strategies beyond smart/parallel execution
 
 5. **Integration Examples**
-   - File: `docs/user-guide/integration-examples.md`
+   - File: `docs/guides/user/integration-examples.md`
    - Content: CI/CD integration, git hooks, custom automation
 
 **Medium Priority Additions**:
@@ -834,10 +834,10 @@ The AI Workflow Automation project maintains **high-quality, comprehensive docum
 | Directory | File Count | Purpose |
 |-----------|-----------|---------|
 | `docs/` | 193 | Current documentation |
-| `docs/user-guide/` | 9 | End-user documentation |
-| `docs/developer-guide/` | 6 | Contributor documentation |
+| `docs/guides/user/` | 9 | End-user documentation |
+| `docs/guides/developer/` | 6 | Contributor documentation |
 | `docs/reference/` | 19 | Technical reference |
-| `docs/design/` | 8 | Architecture decisions |
+| `docs/architecture/` | 8 | Architecture decisions |
 | `docs/archive/` | 151 | Historical documents |
 | `.ai_workflow/` | 725 | Workflow execution artifacts |
 | Root | 8 | Key project files |
@@ -846,15 +846,15 @@ The AI Workflow Automation project maintains **high-quality, comprehensive docum
 
 **User-Facing**:
 - `README.md` - Project overview
-- `docs/user-guide/quick-start.md` - Getting started
+- `docs/guides/user/quick-start.md` - Getting started
 - `docs/reference/cli-options.md` - Command reference
-- `docs/user-guide/faq.md` - Common questions
+- `docs/guides/user/faq.md` - Common questions
 
 **Developer-Facing**:
 - `docs/PROJECT_REFERENCE.md` - Single source of truth
-- `docs/developer-guide/architecture.md` - System design
+- `docs/guides/developer/architecture.md` - System design
 - `.github/copilot-instructions.md` - AI assistant context
-- `docs/developer-guide/api-reference.md` - Module APIs
+- `docs/guides/developer/api-reference.md` - Module APIs
 
 **Process Documentation**:
 - `CONTRIBUTING.md` - Contribution guidelines
@@ -934,8 +934,8 @@ REQUIRED_FILES=(
     "README.md"
     "docs/PROJECT_REFERENCE.md"
     ".github/copilot-instructions.md"
-    "docs/user-guide/quick-start.md"
-    "docs/developer-guide/architecture.md"
+    "docs/guides/user/quick-start.md"
+    "docs/guides/developer/architecture.md"
 )
 
 for file in "${REQUIRED_FILES[@]}"; do

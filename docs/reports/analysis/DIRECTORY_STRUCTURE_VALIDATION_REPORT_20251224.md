@@ -43,7 +43,7 @@ The directory structure demonstrates excellent architectural organization with c
 
 ### 📋 MINOR GAPS: Undocumented Directories (2)
 
-#### 1. `./docs/user-guide/` - MINOR PRIORITY
+#### 1. `./docs/guides/user/` - MINOR PRIORITY
 **Status**: ✅ Directory exists and is functional  
 **Issue**: Not explicitly described in PROJECT_REFERENCE.md module inventory  
 **Impact**: LOW - Directory is referenced in docs/README.md
@@ -79,7 +79,7 @@ user-guide/ contains 9 files:
 ## Documentation Structure
 
 ### User Documentation
-- **docs/user-guide/** - End-user documentation including installation, usage, troubleshooting, and FAQ
+- **docs/guides/user/** - End-user documentation including installation, usage, troubleshooting, and FAQ
 ```
 
 #### 2. `./test-results/` - LOW PRIORITY
@@ -93,7 +93,7 @@ user-guide/ contains 9 files:
 
 Referenced in documentation:
 - docs/archive/QUICK_REFERENCE_SPRINT_IMPROVEMENTS.md
-- docs/design/clarify-broken-reference-analysis.md
+- docs/architecture/clarify-broken-reference-analysis.md
 - docs/reports/implementation/DOCUMENTATION_VALIDATION_COMPLETE.md
 ```
 
@@ -312,8 +312,8 @@ Average depth: 2.5 levels
 
 Examples:
 Level 1: docs/, src/, tests/
-Level 2: docs/user-guide/, src/workflow/, tests/unit/
-Level 3: docs/design/adr/, src/workflow/lib/, tests/unit/lib/
+Level 2: docs/guides/user/, src/workflow/, tests/unit/
+Level 3: docs/architecture/adr/, src/workflow/lib/, tests/unit/lib/
 Level 4: docs/archive/reports/bugfixes/
 
 Assessment: ✅ Appropriate depth - not too deep, not too flat
@@ -348,7 +348,7 @@ Entry points clearly marked:
 1. README.md → Quick start and overview
 2. docs/README.md → Documentation hub
 3. docs/PROJECT_REFERENCE.md → Single source of truth
-4. docs/developer-guide/architecture.md → System architecture
+4. docs/guides/developer/architecture.md → System architecture
 5. src/workflow/execute_tests_docs_workflow.sh → Main executable
 
 Excellent discoverability with clear signposting.
@@ -399,7 +399,7 @@ $ ls -la docs/architecture/
 
 **Recommendations**:
 1. **Option A - Consolidation**: Remove empty directories and consolidate
-   - Move architecture content to `docs/design/architecture/` (already exists)
+   - Move architecture content to `docs/architecture/architecture/` (already exists)
    - Clarify that user/developer guides live in respective directories
    
 2. **Option B - Population**: Add README.md explaining purpose
@@ -411,7 +411,7 @@ $ ls -la docs/architecture/
 ### Low Priority Issues: **4**
 
 #### L-1: Undocumented Directories
-**Location**: `docs/user-guide/`, `test-results/`  
+**Location**: `docs/guides/user/`, `test-results/`  
 **Impact**: LOW - Functionality not affected, minor documentation gap  
 **Remediation**: Add descriptions to PROJECT_REFERENCE.md (see Section 1)
 
@@ -447,7 +447,7 @@ find src/workflow/ -name "*.before_*" -delete
 ```
 
 #### L-4: Documentation Organization Redundancy
-**Location**: `docs/architecture/` vs `docs/design/architecture/`  
+**Location**: `docs/architecture/` vs `docs/architecture/architecture/`  
 **Impact**: LOW - Minor confusion about proper location  
 **Remediation**: Choose one canonical location (recommend keeping design/architecture/)
 

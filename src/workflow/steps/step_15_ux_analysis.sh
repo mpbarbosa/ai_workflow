@@ -122,11 +122,11 @@ should_run_ux_analysis_step() {
         step_relevance="optional"
     fi
     
-    print_info "Step 14 relevance for '$project_kind': $step_relevance"
+    print_info "Step 15 relevance for '$project_kind': $step_relevance"
     
     # Skip if explicitly marked as skip
     if [[ "$step_relevance" == "skip" ]]; then
-        print_info "Step 14 skipped (marked as skip for this project kind)"
+        print_info "Step 15 skipped (marked as skip for this project kind)"
         return 1
     fi
     
@@ -192,110 +192,93 @@ build_ux_analysis_prompt() {
     local ui_files_summary="$2"
     local target_dir="${TARGET_PROJECT_ROOT:-${PROJECT_ROOT}}"
     
-    # Get UX Designer persona from configuration
-    local persona_role=""
-    local persona_task=""
-    local persona_approach=""
-    
-    # Try to load from ai_prompts_project_kinds.yaml
-    local ai_prompts_file="${SCRIPT_DIR}/../../../.workflow_core/config/ai_prompts_project_kinds.yaml"
-    if [[ -f "$ai_prompts_file" ]]; then
-        # Extract role, task_context, and approach for ux_designer persona
-        persona_role=$(awk -v kind="$project_kind" '
-            $0 ~ "^" kind ":" {found=1}
-            found && /^  ux_designer:/ {in_ux=1}
-            in_ux && /^    role:/ {
-                match($0, /role:[[:space:]]*"(.+)"/, arr)
-                print arr[1]
-                exit
-            }
-            /^[a-z_]+:/ && in_ux {exit}
-        ' "$ai_prompts_file")
-        
-        persona_task=$(awk -v kind="$project_kind" '
-            $0 ~ "^" kind ":" {found=1}
-            found && /^  ux_designer:/ {in_ux=1}
-            in_ux && /^    task_context:/ {in_task=1; next}
-            in_task && /^    approach:/ {exit}
-            in_task && /^      / {sub(/^      /, ""); print}
-            /^  [a-z_]+:/ && in_task {exit}
-        ' "$ai_prompts_file")
-        
-        persona_approach=$(awk -v kind="$project_kind" '
-            $0 ~ "^" kind ":" {found=1}
-            found && /^  ux_designer:/ {in_ux=1}
-            in_ux && /^    approach:/ {in_approach=1; next}
-            in_approach && /^  [a-z_]+:/ {exit}
-            in_approach && /^      / {sub(/^      /, ""); print}
-        ' "$ai_prompts_file")
+    # Get recent changes if available
+    local recent_changes="No recent changes detected"
+    if command -v git &>/dev/null && git rev-parse --git-dir >/dev/null 2>&1; then
+        recent_changes=$(git diff --name-only HEAD~1..HEAD 2>/dev/null | grep -E '\.(jsx|tsx|vue|svelte|html|css)$' | head -20 || echo "No recent changes")
     fi
     
-    # Fallback to default if persona not found
-    if [[ -z "$persona_role" ]]; then
-        persona_role="You are a senior UX/UI Designer and Frontend Specialist with expertise in user experience design, accessibility standards (WCAG 2.1 AA/AAA), responsive design, and modern frontend frameworks."
-    fi
-    
-    if [[ -z "$persona_task" ]]; then
-        persona_task="Analyze the UI code for usability issues, accessibility violations, visual design inconsistencies, and provide actionable improvement recommendations."
-    fi
-    
-    if [[ -z "$persona_approach" ]]; then
-        persona_approach="- Identify accessibility issues\n- Check usability problems\n- Review visual consistency\n- Assess interaction patterns\n- Prioritize improvements by impact"
-    fi
-    
-    # Build complete prompt
+    # Build the prompt using modern pattern (matching step_11_7)
     cat << EOF
-**Role**: ${persona_role}
+**Role**: Senior UI/UX Designer (User Experience & Visual Design Focus)
 
-**Task**: ${persona_task}
+**Context**: Analyze UI/UX for usability, visual design quality, and user experience.
 
-**Project Context**:
+**Project Information**:
 - Project Type: ${project_kind}
 - Target Directory: ${target_dir}
-- UI Files Found: ${ui_files_summary}
 
-**Your Analysis Should Cover**:
-1. **Accessibility Issues** (WCAG 2.1 violations)
-   - Missing ARIA labels and semantic HTML
-   - Color contrast problems
-   - Keyboard navigation issues
-   - Screen reader compatibility
+**Recent Changes**:
+${recent_changes}
 
-2. **Usability Problems**
-   - Confusing navigation or information architecture
-   - Unclear call-to-action buttons
-   - Missing or poor error messages
-   - Inconsistent interaction patterns
-   - Poor mobile experience
+**Files to Analyze**:
+${ui_files_summary}
 
-3. **Visual Design Issues**
-   - Inconsistent spacing and alignment
-   - Typography problems
-   - Color scheme inconsistencies
-   - Layout and responsive design issues
+**YOUR ANALYSIS SHOULD COVER**:
 
-4. **Component Architecture**
-   - Reusability opportunities
-   - Design system consistency
-   - Component complexity
+1. **Usability Assessment**
+   - Task completion paths and friction points
+   - Cognitive load (complexity, mental effort required)
+   - Clear affordances (buttons look clickable, links are obvious)
+   - Error prevention and recovery mechanisms
+   - Learnability for new users
+   - Confusing or ambiguous interface elements
 
-5. **Performance & Perception**
-   - Loading states and user feedback
-   - Animation and transition issues
-   - Perceived performance problems
+2. **Visual Design Review**
+   - Typography (hierarchy, readability, font pairing)
+   - Color usage (contrast, meaning, consistency, brand alignment)
+   - Spacing and layout (white space, visual rhythm, grid alignment)
+   - Visual hierarchy (attention flow: first, second, third)
+   - Consistent use of design tokens
 
-**Approach**: ${persona_approach}
+3. **Interaction Design**
+   - Navigation patterns and information architecture
+   - Micro-interactions and feedback
+   - Transitions and animation quality
+   - Touch targets and mobile usability
+   - State communication (loading, error, success)
 
-**Output Format**:
-Provide your analysis in the following markdown format:
+4. **Accessibility (User Perspective)**
+   - Readability and text contrast (WCAG 2.1+ AA)
+   - Cognitive load and clarity
+   - Focus indicators and keyboard navigation
+   - Screen reader friendliness
+   - Color contrast ratios
+   - Alternative text for images
+
+5. **Information Architecture**
+   - Content organization and labeling
+   - Navigation structure and findability
+   - Content hierarchy and grouping
+   - Search and filtering capabilities
+
+6. **Responsive Design Strategy**
+   - Mobile-first approach
+   - Breakpoint strategy
+   - Touch-friendly targets
+   - Content prioritization across devices
+
+7. **User Flows**
+   - Task completion optimization
+   - Conversion funnel analysis
+   - Drop-off points
+   - User journey friction
+
+8. **Design System Consistency**
+   - Component library usage
+   - Pattern reuse and coherence
+   - Design token adherence
+   - Visual language consistency
+
+**OUTPUT FORMAT**:
 
 # UX Analysis Report
 
 ## Executive Summary
-[Brief overview of findings with counts: X critical issues, Y warnings, Z recommendations]
+[Brief overview with priority counts: X critical issues, Y improvements, Z optimizations]
 
 ## Critical Issues
-[Issues that severely impact user experience - must fix]
+[Issues that severely impact usability or accessibility - must fix]
 
 ### Issue 1: [Title]
 - **Category**: [Accessibility/Usability/Visual/Performance]
@@ -305,25 +288,30 @@ Provide your analysis in the following markdown format:
 - **Impact**: [How it affects users]
 - **Recommendation**: [How to fix it]
 
-## Warnings
-[Issues that should be addressed but aren't blocking]
+## Usability Improvements
+[Issues that impact user experience but aren't critical]
 
-## Improvement Suggestions
-[Nice-to-have enhancements ranked by impact]
+## Visual Design Enhancements
+[Design consistency, typography, spacing, color improvements]
 
-## Next Development Steps
-[Prioritized list of recommended actions]
+## Interaction Design
+[Navigation, micro-interactions, feedback, transitions]
 
-1. **Quick Wins** (1-2 hours): [List]
-2. **Short Term** (1 week): [List]
-3. **Long Term** (1 month+): [List]
+## Accessibility Enhancements
+[WCAG compliance, keyboard navigation, screen reader support]
 
-## Design Patterns to Consider
-[Modern UX patterns that could improve the experience]
+## Information Architecture
+[Content organization, labeling, navigation structure]
 
----
+## Recommendations
+[Prioritized action items]
 
-Please analyze the UI files and provide your detailed assessment.
+1. **Critical** (Fix immediately): [List]
+2. **High Priority** (Next sprint): [List]
+3. **Medium Priority** (Next month): [List]
+4. **Low Priority** (Nice to have): [List]
+
+**Focus on user experience and visual design - NOT technical implementation** (that's handled by Step 11.7: Front-End Development).
 EOF
 }
 
@@ -334,7 +322,7 @@ EOF
 # Main step function - performs UX analysis
 # Returns: 0 for success, 1 for failure
 step15_ux_analysis() {
-    print_step "14" "UX Analysis"
+    print_step "15" "UX Analysis"
     
     # Check if this step should run
     if ! should_run_ux_analysis_step; then
@@ -375,7 +363,7 @@ If your project does have UI components that were not detected, please:
 
 EOF
         
-        print_success "Step 14 completed (skipped - no UI)"
+        print_success "Step 15 completed (skipped - no UI)"
         return 0
     fi
     
@@ -479,7 +467,7 @@ EOF
 2. Prioritize fixes based on severity and user impact
 3. Create GitHub issues for tracking improvements
 4. Update UI components with recommended changes
-5. Re-run Step 14 to validate improvements
+5. Re-run Step 15 to validate improvements
 
 EOF
     

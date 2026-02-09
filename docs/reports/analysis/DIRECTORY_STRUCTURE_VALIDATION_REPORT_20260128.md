@@ -67,7 +67,7 @@ The project demonstrates **exemplary documentation practices** with multiple aut
 | `docs/README.md` | Documentation hub | 75 | ✅ Complete |
 | `README.md` | Project entry point | 400+ | ✅ Complete |
 | `src/workflow/README.md` | Module API reference | 100+ | ✅ Complete |
-| `docs/developer-guide/architecture.md` | Technical architecture | N/A | ✅ Complete |
+| `docs/guides/developer/architecture.md` | Technical architecture | N/A | ✅ Complete |
 
 **Evidence of Strong Documentation**:
 ```
@@ -149,9 +149,9 @@ These directories serve as runtime artifact storage and are **properly gitignore
 | Directory | Status | Priority | Impact |
 |-----------|--------|----------|--------|
 | `docs/archive/` | Active, 2 files | MEDIUM | Documentation organization |
-| `docs/workflow-reports/` | Active, 11 reports | MEDIUM | Runtime artifacts in docs/ |
+| `docs/reports/workflows/` | Active, 11 reports | MEDIUM | Runtime artifacts in docs/ |
 | `docs/guides/` | Active, 4 files | LOW | Duplicate of user-guide/ |
-| `docs/misc/` | Active, 4 files | LOW | Uncategorized content |
+| `docs/reports/historical/` | Active, 4 files | LOW | Uncategorized content |
 | `docs/bugfixes/` | Active, 1 file | LOW | Should be in reports/ |
 | `src/.ml_data/` | Duplicate location | MEDIUM | Architectural clarity |
 | `src/workflow/src/` | Nested redundancy | MEDIUM | Organizational confusion |
@@ -313,9 +313,9 @@ Source Code Directories:
 
 Documentation Directories:
   ✅ docs/reference/                - Lowercase, semantic categories
-  ✅ docs/user-guide/               - Hyphenated compound words
-  ✅ docs/developer-guide/          - Consistent with user-guide pattern
-  ✅ docs/workflow-automation/      - Hyphenated for readability
+  ✅ docs/guides/user/               - Hyphenated compound words
+  ✅ docs/guides/developer/          - Consistent with user-guide pattern
+  ✅ docs/workflows/      - Hyphenated for readability
 
 Test Directories:
   ✅ tests/unit/                    - Lowercase, type-based
@@ -337,7 +337,7 @@ Artifact Directories:
 
 ### 3.2 Naming Issues Identified (2% - Minor)
 
-#### Issue #1: Inconsistent Naming - `docs/misc/` vs. Other Dirs
+#### Issue #1: Inconsistent Naming - `docs/reports/historical/` vs. Other Dirs
 **Priority**: LOW  
 **Impact**: MINOR
 
@@ -349,10 +349,10 @@ Artifact Directories:
 **Recommendation**:
 ```bash
 # Recategorize content:
-docs/misc/DOCUMENTATION_UPDATES_2026-01-28.md → docs/changelog/
-docs/misc/FINAL_INTEGRATION_VERIFICATION.md → docs/reports/implementation/
-docs/misc/MITIGATION_STRATEGIES.md → docs/design/
-docs/misc/documentation_updates.md → docs/changelog/
+docs/reports/historical/DOCUMENTATION_UPDATES_2026-01-28.md → docs/changelog/
+docs/reports/historical/FINAL_INTEGRATION_VERIFICATION.md → docs/reports/implementation/
+docs/reports/historical/MITIGATION_STRATEGIES.md → docs/architecture/
+docs/reports/historical/documentation_updates.md → docs/changelog/
 ```
 
 #### Issue #2: Redundant Naming - `src/workflow/src/`
@@ -466,9 +466,9 @@ docs/                           - Centralized documentation root
 ```
 
 **Issues**:
-1. **Runtime artifacts in docs/** - `docs/workflow-reports/` contains 11 execution reports
+1. **Runtime artifacts in docs/** - `docs/reports/workflows/` contains 11 execution reports
 2. **Category overlap** - `docs/bugfixes/` vs. `docs/reports/bugfixes/`
-3. **Uncategorized content** - `docs/misc/` and `docs/guides/`
+3. **Uncategorized content** - `docs/reports/historical/` and `docs/guides/`
 
 **Recommendations**:
 ```bash
@@ -484,7 +484,7 @@ rmdir docs/bugfixes/
 
 # 4. Clarify guides vs user-guide distinction or consolidate
 mv docs/guides/QUICK_REFERENCE_INCREMENTAL.md docs/reference/
-mv docs/guides/QUICK_START_*.md docs/user-guide/
+mv docs/guides/QUICK_START_*.md docs/guides/user/
 rmdir docs/guides/
 ```
 
@@ -634,7 +634,7 @@ Source Code:
 
 Documentation:
   docs/reference/               - 2-3 levels ✅ Navigable
-  docs/user-guide/              - 2 levels ✅ Flat, easy to find
+  docs/guides/user/              - 2 levels ✅ Flat, easy to find
   docs/reports/analysis/        - 3 levels ✅ Logical categorization
 
 Tests:
@@ -712,7 +712,7 @@ Entry Points:
   2. ✅ docs/PROJECT_REFERENCE.md    - Single source of truth
   3. ✅ docs/README.md                - Documentation navigation
   4. ✅ src/workflow/README.md       - Module API reference
-  5. ✅ docs/developer-guide/         - Architecture and contribution guide
+  5. ✅ docs/guides/developer/         - Architecture and contribution guide
 
 Navigation Aids:
   ✅ Clear directory names describe purpose
@@ -760,16 +760,16 @@ Structural Support:
 ### 6.1 MEDIUM Priority Issues (3 Total)
 
 #### Issue #1: Runtime Artifacts in Documentation Directory
-**Directory**: `docs/workflow-reports/`  
+**Directory**: `docs/reports/workflows/`  
 **Priority**: MEDIUM  
 **Impact**: ARCHITECTURAL CLARITY
 
 **Analysis**:
 ```bash
-$ ls -1 docs/workflow-reports/ | wc -l
+$ ls -1 docs/reports/workflows/ | wc -l
 11
 
-$ ls -1 docs/workflow-reports/
+$ ls -1 docs/reports/workflows/
 workflow_20260101_110233_report.md
 workflow_20260102_100319_report.md
 workflow_20260103_123558_report.md
@@ -793,14 +793,14 @@ workflow_20260103_123558_report.md
 ```bash
 # Step 1: Move to artifacts directory
 mkdir -p .ai_workflow/workflow-reports
-mv docs/workflow-reports/* .ai_workflow/workflow-reports/
-rmdir docs/workflow-reports/
+mv docs/reports/workflows/* .ai_workflow/workflow-reports/
+rmdir docs/reports/workflows/
 
 # Step 2: Update .gitignore
 echo ".ai_workflow/workflow-reports/" >> .gitignore
 
 # Step 3: Update documentation references
-# Update any docs that reference docs/workflow-reports/
+# Update any docs that reference docs/reports/workflows/
 grep -r "docs/workflow-reports" docs/ --files-with-matches
 # (Update these references to new location)
 
@@ -952,13 +952,13 @@ EOF
 
 ### 6.2 LOW Priority Issues (5 Total)
 
-#### Issue #4: Uncategorized Documentation in `docs/misc/`
+#### Issue #4: Uncategorized Documentation in `docs/reports/historical/`
 **Priority**: LOW  
 **Impact**: DOCUMENTATION ORGANIZATION
 
 **Analysis**:
 ```bash
-$ ls -1 docs/misc/
+$ ls -1 docs/reports/historical/
 DOCUMENTATION_UPDATES_2026-01-28.md
 FINAL_INTEGRATION_VERIFICATION.md
 MITIGATION_STRATEGIES.md
@@ -970,11 +970,11 @@ documentation_updates.md
 **Recommendation**:
 ```bash
 # Recategorize files by content:
-mv docs/misc/DOCUMENTATION_UPDATES_2026-01-28.md docs/changelog/
-mv docs/misc/FINAL_INTEGRATION_VERIFICATION.md docs/reports/implementation/
-mv docs/misc/MITIGATION_STRATEGIES.md docs/design/
-mv docs/misc/documentation_updates.md docs/changelog/
-rmdir docs/misc/
+mv docs/reports/historical/DOCUMENTATION_UPDATES_2026-01-28.md docs/changelog/
+mv docs/reports/historical/FINAL_INTEGRATION_VERIFICATION.md docs/reports/implementation/
+mv docs/reports/historical/MITIGATION_STRATEGIES.md docs/architecture/
+mv docs/reports/historical/documentation_updates.md docs/changelog/
+rmdir docs/reports/historical/
 ```
 
 **Effort**: 10 minutes  
@@ -1029,13 +1029,13 @@ QUICK_START_MULTI_STAGE.md
 STEP_15_QUICK_START.md
 ```
 
-**Issue**: Unclear distinction from `docs/user-guide/` which also contains guides
+**Issue**: Unclear distinction from `docs/guides/user/` which also contains guides
 
 **Recommendation**:
 
 **Option A: Consolidate with user-guide/**
 ```bash
-mv docs/guides/* docs/user-guide/
+mv docs/guides/* docs/guides/user/
 rmdir docs/guides/
 ```
 
@@ -1122,8 +1122,8 @@ documentation_updates.md
 
 **Consolidation**:
 1. Merge `docs/bugfixes/` into `docs/reports/bugfixes/` - 5 minutes
-2. Recategorize `docs/misc/` content - 10 minutes
-3. Consolidate `docs/guides/` into `docs/user-guide/` - 10 minutes
+2. Recategorize `docs/reports/historical/` content - 10 minutes
+3. Consolidate `docs/guides/` into `docs/guides/user/` - 10 minutes
 4. Update documentation references - 5 minutes
 
 ### 7.3 Optional Enhancements
@@ -1153,7 +1153,7 @@ documentation_updates.md
 | **Consolidate ML Data** | MEDIUM | 1h | HIGH | MEDIUM | ✅ Do First |
 | **Move Workflow Reports** | MEDIUM | 30m | MEDIUM | LOW | ✅ Do Second |
 | **Remove Nested src/** | MEDIUM | 30m | MEDIUM | LOW | ✅ Do Third |
-| **Recategorize docs/misc/** | LOW | 10m | LOW | NONE | ✅ Quick Win |
+| **Recategorize docs/reports/historical/** | LOW | 10m | LOW | NONE | ✅ Quick Win |
 | **Merge docs/bugfixes/** | LOW | 5m | LOW | NONE | ✅ Quick Win |
 | **Consolidate docs/guides/** | LOW | 10m | LOW | NONE | ✅ Quick Win |
 | **Update PROJECT_REFERENCE** | LOW | 3m | LOW | NONE | ✅ Quick Win |
@@ -1226,10 +1226,10 @@ documentation_updates.md
 # Before making changes, create backup
 tar czf directory_structure_backup_$(date +%Y%m%d_%H%M%S).tar.gz \
   src/.ml_data/ \
-  docs/workflow-reports/ \
+  docs/reports/workflows/ \
   src/workflow/src/ \
   docs/bugfixes/ \
-  docs/misc/ \
+  docs/reports/historical/ \
   docs/guides/
 
 # If rollback needed:

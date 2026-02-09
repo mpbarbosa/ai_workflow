@@ -44,17 +44,17 @@ The AI Workflow Automation project demonstrates a **mature, well-structured arch
 ### 1.2 Documentation Accuracy
 
 **✅ Accurately Documented**:
-- `docs/user-guide/` - Fully documented with 9 files (docs/README.md:7-14)
-- `docs/developer-guide/` - Comprehensive with 6 files (docs/README.md:16-22)
+- `docs/guides/user/` - Fully documented with 9 files (docs/README.md:7-14)
+- `docs/guides/developer/` - Comprehensive with 6 files (docs/README.md:16-22)
 - `docs/reference/` - Well documented with 23 files (docs/README.md:24-31)
-- `docs/design/` - Documented with ADRs and architecture subdirs (docs/README.md:33-38)
+- `docs/architecture/` - Documented with ADRs and architecture subdirs (docs/README.md:33-38)
 - `src/workflow/` - Extensively documented in main README.md:161-165
 - `tests/` - Documented with structure breakdown (README.md:169-172)
 
 **❌ Documentation Mismatches**:
 1. **docs/archive** - EXISTS with 2 files but docs/README.md:40-44 doesn't mention it
 2. **docs/guides/** - Empty directory, not in docs/README.md
-3. **docs/misc/** - EXISTS with 1 file but not documented
+3. **docs/reports/historical/** - EXISTS with 1 file but not documented
 4. **docs/bugfixes/** - EXISTS with 1 file but not in docs/README.md
 5. **test-results/** - Generated artifacts, documented in .gitignore but not main README
 
@@ -198,7 +198,7 @@ docs/
 **Issue 2: Empty/Minimal Directories**
 ```
 docs/guides/           # Empty (0 files)
-docs/misc/             # 1 file (documentation_updates.md)
+docs/reports/historical/             # 1 file (documentation_updates.md)
 ```
 
 **Impact**: **HIGH** - `guides/` suggests structured content but is empty; `misc/` is a catch-all
@@ -208,18 +208,18 @@ docs/misc/             # 1 file (documentation_updates.md)
 **Three Parallel Documentation Hierarchies**:
 
 1. **Top-level docs/** - Root documentation files (PROJECT_REFERENCE.md, ROADMAP.md, etc.)
-2. **docs/user-guide/** - User-facing guides (quick-start.md, installation.md, etc.)
+2. **docs/guides/user/** - User-facing guides (quick-start.md, installation.md, etc.)
 3. **docs/reference/** - Technical reference (cli-options.md, configuration.md, etc.)
 
 **Confusion Points**:
-- `docs/RELEASE_NOTES_v2.6.0.md` vs `docs/user-guide/release-notes.md` (redundancy?)
+- `docs/RELEASE_NOTES_v2.6.0.md` vs `docs/guides/user/release-notes.md` (redundancy?)
 - `docs/DOCUMENTATION_UPDATE_RECOMMENDATIONS.md` vs organized docs structure
 
 ### 3.2 Specific Naming Issues
 
 | Directory | Issue | Suggested Rename | Priority |
 |-----------|-------|------------------|----------|
-| `docs/misc/` | Generic catch-all name | `docs/archive/legacy/` or merge content | **HIGH** |
+| `docs/reports/historical/` | Generic catch-all name | `docs/archive/legacy/` or merge content | **HIGH** |
 | `docs/guides/` | Empty directory | Delete or populate | **HIGH** |
 | `docs/bugfixes/` | Redundant with `fixes/` and `reports/bugfixes/` | Consolidate to `docs/reports/bugfixes/` | **MEDIUM** |
 | `docs/fixes/` | Ambiguous (fixes vs bugfixes) | Consolidate to `docs/reports/fixes/` | **MEDIUM** |
@@ -276,7 +276,7 @@ build/               # Optional build outputs
 2. Clear hierarchy: user-guide/, developer-guide/, reference/, design/
 3. Single source of truth: `docs/PROJECT_REFERENCE.md`
 4. Version-controlled documentation
-5. Architecture Decision Records (ADRs) in docs/design/adr/
+5. Architecture Decision Records (ADRs) in docs/architecture/adr/
 
 **⚠️  Minor Issues**:
 1. Top-level docs files mixed with structured docs/ directory:
@@ -435,7 +435,7 @@ Root (1)
 
 4. **Documentation redundancy**:
    - `docs/bugfixes/` + `docs/fixes/` + `docs/reports/bugfixes/`
-   - `docs/misc/documentation_updates.md` + `docs/archive/documentation_updates.md`
+   - `docs/reports/historical/documentation_updates.md` + `docs/archive/documentation_updates.md`
 
 ### 5.3 Module/Component Boundaries ✅ EXCELLENT
 
@@ -695,7 +695,7 @@ rm stdout.txt stderr.txt "t:coverage" "cript (Step 7)..."  # These appear to be 
 | Issue ID | Description | Location | Impact | Remediation |
 |----------|-------------|----------|--------|-------------|
 | **CRIT-01** | Undocumented directory `docs/archive/` | docs/README.md | **HIGH** - New contributors won't know purpose | Add section in docs/README.md:40-44 |
-| **CRIT-02** | Undocumented directory `docs/misc/` | docs/README.md | **HIGH** - Unclear where to put new docs | Add section in docs/README.md or merge content |
+| **CRIT-02** | Undocumented directory `docs/reports/historical/` | docs/README.md | **HIGH** - Unclear where to put new docs | Add section in docs/README.md or merge content |
 | **CRIT-03** | Undocumented directory `docs/bugfixes/` | docs/README.md | **MEDIUM** - Bug fix docs lack clear home | Add section in docs/README.md |
 | **CRIT-04** | Empty directory `docs/guides/` | docs/ | **MEDIUM** - Suggests missing content | Populate or remove directory |
 | **CRIT-05** | Undocumented `test-results/` | README.md:145-174 | **MEDIUM** - Build artifact not documented | Add to structure diagram in README |
@@ -715,7 +715,7 @@ rm stdout.txt stderr.txt "t:coverage" "cript (Step 7)..."  # These appear to be 
 | Issue ID | Description | Location | Impact | Remediation |
 |----------|-------------|----------|--------|-------------|
 | **MED-01** | Documentation hierarchy complexity | docs/ | **MEDIUM** - Three parallel structures confusing | Document clearly or consolidate |
-| **MED-02** | docs/misc/ catch-all directory | docs/misc/ | **MEDIUM** - Prevents organized structure | Merge content to appropriate directories |
+| **MED-02** | docs/reports/historical/ catch-all directory | docs/reports/historical/ | **MEDIUM** - Prevents organized structure | Merge content to appropriate directories |
 | **MED-03** | Orphaned files in root | ai_documentation_analysis.txt, documentation_updates.md | **LOW** - Makes root cluttered | Move to docs/reports/ and docs/archive/ |
 | **MED-04** | Unclear temporary files in root | stdout.txt, stderr.txt, t:coverage | **LOW** - Should be gitignored | Add to .gitignore, verify purpose |
 
@@ -738,7 +738,7 @@ rm stdout.txt stderr.txt "t:coverage" "cript (Step 7)..."  # These appear to be 
    # Add sections for:
    - docs/archive/
    - docs/guides/ (or remove if staying empty)
-   - docs/misc/
+   - docs/reports/historical/
    - docs/bugfixes/
    - docs/fixes/
    ```

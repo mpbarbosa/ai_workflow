@@ -325,7 +325,7 @@ find docs/archive -name "*.md" -type f -exec sed -i 's|/shell_scripts/|/src/work
 
 **Problem**: Valid sed/grep regex patterns in YAML parsing documentation are being incorrectly flagged as "broken links":
 
-**Examples from `docs/design/yaml-parsing-design.md`**:
+**Examples from `docs/architecture/yaml-parsing-design.md`**:
 ```bash
 sed 's/^[^:]*:[[:space:]]*//; s/"//g'  # Valid sed pattern
 sed 's/^[[:space:]]+-[[:space:]]*//g'   # Valid regex

@@ -90,11 +90,11 @@ Test scripts are **referenced in README.md** but lack comprehensive documentatio
 - `test_step01_refactoring.sh` - Validates Step 1 modular architecture
 - `test_step01_simple.sh` - Basic Step 1 functionality tests
 
-See [Testing Guide](docs/developer-guide/testing.md) for comprehensive test documentation.
+See [Testing Guide](docs/guides/developer/testing.md) for comprehensive test documentation.
 ```
 
 **Problems**:
-1. ❌ `docs/developer-guide/testing.md` **does not exist**
+1. ❌ `docs/guides/developer/testing.md` **does not exist**
 2. ❌ One-line descriptions insufficient for 9KB test suite
 3. ❌ No usage examples (CLI arguments, expected output)
 4. ❌ No explanation of what "refactoring validation" tests
@@ -106,7 +106,7 @@ See [Testing Guide](docs/developer-guide/testing.md) for comprehensive test docu
 - Test failures difficult to diagnose without context
 
 **Recommendation**:
-1. **Create** `docs/developer-guide/testing.md` with:
+1. **Create** `docs/guides/developer/testing.md` with:
    - Purpose of each test script
    - Usage examples with actual commands
    - Expected output samples
@@ -519,7 +519,7 @@ Add header documentation:
    - Update `.github/copilot-instructions.md` references
 
 2. **CI-2**: Create missing test documentation (3 hours)
-   - Create `docs/developer-guide/testing.md`
+   - Create `docs/guides/developer/testing.md`
    - Add usage examples to test scripts
    - Document test output format
 
@@ -556,7 +556,7 @@ Add header documentation:
 ## Recommendations Summary
 
 ### Immediate Actions (This Sprint)
-1. ✅ **Create** `docs/developer-guide/testing.md` (fixes broken link)
+1. ✅ **Create** `docs/guides/developer/testing.md` (fixes broken link)
 2. ✅ **Document** step sub-module architecture pattern
 3. ✅ **Update** module count in PROJECT_REFERENCE.md
 4. ✅ **Add** header documentation to 16 sub-modules

@@ -460,7 +460,7 @@ done
 - `test_step01_refactoring.sh` - Validates Step 1 modular architecture
 - `test_step01_simple.sh` - Basic Step 1 functionality tests
 
-See [Testing Guide](docs/developer-guide/testing.md) for comprehensive test documentation.
+See [Testing Guide](docs/guides/developer/testing.md) for comprehensive test documentation.
 ```
 
 ---
@@ -700,7 +700,7 @@ Add **Integration Examples** section to each submodule showing:
 **Issues**:
 1. `README.md` references `docs/PROJECT_REFERENCE.md` but not reciprocal
 2. `.github/copilot-instructions.md` mentions modules without linking to API docs
-3. `src/workflow/README.md` missing links to `docs/developer-guide/api-reference.md`
+3. `src/workflow/README.md` missing links to `docs/guides/developer/api-reference.md`
 4. Step README missing links to architecture diagrams
 5. API reference missing links back to source files
 6. Developer guide missing workflow execution examples
@@ -723,13 +723,13 @@ Add reciprocal cross-references:
    ```markdown
    **API Documentation**:
    - [Library Module API](src/workflow/README.md#library-modules-33-total)
-   - [Developer API Reference](docs/developer-guide/api-reference.md)
+   - [Developer API Reference](docs/guides/developer/api-reference.md)
    - [Step Module Architecture](src/workflow/steps/README.md)
    ```
 
 3. **src/workflow/README.md** - Add after line 20:
    ```markdown
-   > 📚 **See Also**: [Developer API Reference](../../docs/developer-guide/api-reference.md) for function signatures
+   > 📚 **See Also**: [Developer API Reference](../../docs/guides/developer/api-reference.md) for function signatures
    ```
 
 4. **api-reference.md** - Add at top of each module section:

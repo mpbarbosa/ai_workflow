@@ -489,7 +489,7 @@ See [Migration Guide](docs/MIGRATION_GUIDE_v4.0.md) for detailed instructions.
   - Improved error handling for missing test configurations
 
 ### Documentation
-- Added `docs/workflow-automation/PHASE2_COMPLETION.md`
+- Added `docs/workflows/PHASE2_COMPLETION.md`
 - Updated performance benchmarks in `docs/PROJECT_REFERENCE.md`
 
 ## [2.4.0] - 2025-12-23
@@ -569,7 +569,7 @@ See [Migration Guide](docs/MIGRATION_GUIDE_v4.0.md) for detailed instructions.
 - Code quality: B+ grade (87/100)
 
 ### Documentation
-- Added `docs/workflow-automation/WORKFLOW_MODULARIZATION_PHASE1.md`
+- Added `docs/workflows/WORKFLOW_MODULARIZATION_PHASE1.md`
 - Updated module inventory documentation
 
 ## [2.0.0] - 2025-12-15

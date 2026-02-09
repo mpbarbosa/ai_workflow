@@ -682,7 +682,7 @@ prompt=$(build_ai_prompt \
 # Build specialized documentation prompt
 doc_prompt=$(build_doc_analysis_prompt \
     "src/api/*.js" \
-    "docs/api/*.md")
+    "docs/reference/api/*.md")
 ```
 
 **When to use:** When building custom AI prompts outside standard personas
