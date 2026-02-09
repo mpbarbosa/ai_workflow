@@ -25,6 +25,28 @@ DEPENDENCY_CACHE_TTL=3600  # 1 hour in seconds (dependencies change more frequen
 DEPENDENCY_CACHE_MAX_SIZE_MB=50  # Maximum cache size in MB
 
 # ==============================================================================
+# CLEANUP MANAGEMENT
+# ==============================================================================
+
+# Track temporary files for cleanup
+declare -a DEP_CACHE_TEMP_FILES=()
+
+# Register temp file for cleanup
+track_dep_cache_temp() {
+    local temp_file="$1"
+    [[ -n "$temp_file" ]] && DEP_CACHE_TEMP_FILES+=("$temp_file")
+}
+
+# Cleanup handler for dependency cache
+cleanup_dep_cache_files() {
+    local file
+    for file in "${DEP_CACHE_TEMP_FILES[@]}"; do
+        [[ -f "$file" ]] && rm -f "$file" 2>/dev/null
+    done
+    DEP_CACHE_TEMP_FILES=()
+}
+
+# ==============================================================================
 # CACHE INITIALIZATION
 # ==============================================================================
 
@@ -199,6 +221,7 @@ update_dependency_cache_index() {
     if command -v jq &>/dev/null; then
         local temp_index
         temp_index=$(mktemp)
+        track_dep_cache_temp "$temp_index"
         jq --arg key "${cache_key}" \
            --arg type "${cache_type}" \
            --arg timestamp "${now}" \
@@ -248,6 +271,7 @@ cleanup_dependency_cache_old_entries() {
         local now=$(date -Iseconds)
         local temp_index
         temp_index=$(mktemp)
+        track_dep_cache_temp "$temp_index"
         jq --arg timestamp "$now" '.last_cleanup = $timestamp' "${DEPENDENCY_CACHE_INDEX}" > "$temp_index"
         mv "$temp_index" "${DEPENDENCY_CACHE_INDEX}"
     fi
@@ -303,3 +327,12 @@ export -f save_to_dependency_cache
 export -f cleanup_dependency_cache_old_entries
 export -f clear_dependency_cache
 export -f get_dependency_cache_stats
+export -f track_dep_cache_temp
+export -f cleanup_dep_cache_files
+
+# ==============================================================================
+# CLEANUP TRAP
+# ==============================================================================
+
+# Ensure cleanup runs on exit
+trap cleanup_dep_cache_files EXIT INT TERM

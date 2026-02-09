@@ -36,6 +36,28 @@ declare -g VALIDATION_CACHE_MISSES=0
 declare -g VALIDATION_CACHE_SKIPPED_FILES=0
 
 # ==============================================================================
+# CLEANUP MANAGEMENT
+# ==============================================================================
+
+# Track temporary files for cleanup
+declare -a STEP_VAL_CACHE_TEMP_FILES=()
+
+# Register temp file for cleanup
+track_step_val_cache_temp() {
+    local temp_file="$1"
+    [[ -n "$temp_file" ]] && STEP_VAL_CACHE_TEMP_FILES+=("$temp_file")
+}
+
+# Cleanup handler for step validation cache
+cleanup_step_val_cache_files() {
+    local file
+    for file in "${STEP_VAL_CACHE_TEMP_FILES[@]}"; do
+        [[ -f "$file" ]] && rm -f "$file" 2>/dev/null
+    done
+    STEP_VAL_CACHE_TEMP_FILES=()
+}
+
+# ==============================================================================
 # CACHE INITIALIZATION
 # ==============================================================================
 
@@ -249,6 +271,7 @@ EOF
     
     # Update index atomically
     local temp_index=$(mktemp)
+    track_step_val_cache_temp "$temp_index"
     jq ".entries[\"${cache_key}\"] = ${cache_entry}" "${VALIDATION_CACHE_INDEX}" > "${temp_index}"
     mv "${temp_index}" "${VALIDATION_CACHE_INDEX}"
     
@@ -415,6 +438,7 @@ cleanup_validation_cache_old_entries() {
     
     local now=$(date +%s)
     local temp_index=$(mktemp)
+    track_step_val_cache_temp "$temp_index"
     
     # Filter out expired entries using jq
     jq --arg now "${now}" --arg ttl "${VALIDATION_CACHE_TTL}" '
@@ -446,6 +470,7 @@ invalidate_files_cache() {
     fi
     
     local temp_index=$(mktemp)
+    track_step_val_cache_temp "$temp_index"
     local jq_filter='.entries'
     
     for file_path in "$@"; do
@@ -566,6 +591,15 @@ export -f validate_file_cached validate_directory_cached batch_validate_files_ca
 export -f cleanup_validation_cache_old_entries invalidate_files_cache clear_validation_cache
 export -f get_validation_cache_stats export_validation_cache_metrics
 export -f invalidate_changed_files_cache
+export -f track_step_val_cache_temp
+export -f cleanup_step_val_cache_files
+
+# ==============================================================================
+# CLEANUP TRAP
+# ==============================================================================
+
+# Ensure cleanup runs on exit
+trap cleanup_step_val_cache_files EXIT INT TERM
 
 # Export configuration variables
 export VALIDATION_CACHE_DIR VALIDATION_CACHE_INDEX USE_VALIDATION_CACHE

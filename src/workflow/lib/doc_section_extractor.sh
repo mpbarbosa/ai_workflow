@@ -9,6 +9,28 @@ set -euo pipefail
 ################################################################################
 
 # ==============================================================================
+# CLEANUP MANAGEMENT
+# ==============================================================================
+
+# Track temporary files for cleanup
+declare -a DOC_EXTRACTOR_TEMP_FILES=()
+
+# Register temp file for cleanup
+track_doc_extractor_temp() {
+    local temp_file="$1"
+    [[ -n "$temp_file" ]] && DOC_EXTRACTOR_TEMP_FILES+=("$temp_file")
+}
+
+# Cleanup handler for doc section extractor
+cleanup_doc_extractor_files() {
+    local file
+    for file in "${DOC_EXTRACTOR_TEMP_FILES[@]}"; do
+        [[ -f "$file" ]] && rm -f "$file" 2>/dev/null
+    done
+    DOC_EXTRACTOR_TEMP_FILES=()
+}
+
+# ==============================================================================
 # SECTION EXTRACTION
 # ==============================================================================
 
@@ -126,6 +148,7 @@ replace_doc_section() {
     # Create temp file with replacement
     local temp_file
     temp_file=$(mktemp)
+    track_doc_extractor_temp "$temp_file"
     
     awk -v section="$normalized_id" -v content="$new_content" '
         BEGIN { found=0; level=0; replaced=0 }
@@ -269,6 +292,15 @@ export -f replace_doc_section
 export -f section_exists
 export -f validate_doc_structure
 export -f get_section_level
+export -f track_doc_extractor_temp
+export -f cleanup_doc_extractor_files
+
+# ==============================================================================
+# CLEANUP TRAP
+# ==============================================================================
+
+# Ensure cleanup runs on exit
+trap cleanup_doc_extractor_files EXIT INT TERM
 
 ################################################################################
 # Documentation Section Extractor - Complete

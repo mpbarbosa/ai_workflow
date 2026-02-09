@@ -24,6 +24,28 @@ ANALYSIS_CACHE_TTL=86400  # 24 hours
 ANALYSIS_CACHE_MAX_SIZE_MB=200  # Maximum cache size
 
 # ==============================================================================
+# CLEANUP MANAGEMENT
+# ==============================================================================
+
+# Track temporary files for cleanup
+declare -a ANALYSIS_CACHE_TEMP_FILES=()
+
+# Register temp file for cleanup
+track_analysis_cache_temp() {
+    local temp_file="$1"
+    [[ -n "$temp_file" ]] && ANALYSIS_CACHE_TEMP_FILES+=("$temp_file")
+}
+
+# Cleanup handler for analysis cache
+cleanup_analysis_cache_files() {
+    local file
+    for file in "${ANALYSIS_CACHE_TEMP_FILES[@]}"; do
+        [[ -f "$file" ]] && rm -f "$file" 2>/dev/null
+    done
+    ANALYSIS_CACHE_TEMP_FILES=()
+}
+
+# ==============================================================================
 # CACHE INITIALIZATION
 # ==============================================================================
 
@@ -418,6 +440,7 @@ update_cache_index() {
     
     # Use jq to update index
     local temp_index=$(mktemp)
+    track_analysis_cache_temp "$temp_index"
     jq --arg type "$cache_type" --arg key "$cache_key" --arg hash "$hash" --arg ts "$(date +%s)" \
         '.entries[$type] |= (. // []) + [{key: $key, hash: $hash, timestamp: ($ts | tonumber)}] | unique_by(.key)' \
         "${ANALYSIS_CACHE_INDEX}" > "$temp_index" 2>/dev/null
@@ -437,6 +460,7 @@ increment_cache_stat() {
     [[ ! -f "${ANALYSIS_CACHE_INDEX}" ]] && return 1
     
     local temp_index=$(mktemp)
+    track_analysis_cache_temp "$temp_index"
     jq --arg stat "$stat" '.[$stat] = ((.[$stat] // 0) + 1)' "${ANALYSIS_CACHE_INDEX}" > "$temp_index" 2>/dev/null
     
     if [[ $? -eq 0 ]]; then
@@ -482,6 +506,7 @@ cleanup_analysis_cache_old_entries() {
         # Update last cleanup time
         if [[ -f "${ANALYSIS_CACHE_INDEX}" ]]; then
             local temp_index=$(mktemp)
+            track_analysis_cache_temp "$temp_index"
             jq --arg ts "$(date -Iseconds)" '.last_cleanup = $ts' "${ANALYSIS_CACHE_INDEX}" > "$temp_index" 2>/dev/null
             [[ $? -eq 0 ]] && mv "$temp_index" "${ANALYSIS_CACHE_INDEX}" || rm -f "$temp_index"
         fi
@@ -565,6 +590,15 @@ export -f display_cache_stats
 export -f clear_analysis_cache
 export -f record_cache_miss
 export -f increment_cache_stat
+export -f track_analysis_cache_temp
+export -f cleanup_analysis_cache_files
+
+# ==============================================================================
+# CLEANUP TRAP
+# ==============================================================================
+
+# Ensure cleanup runs on exit
+trap cleanup_analysis_cache_files EXIT INT TERM
 
 ################################################################################
 # End of Advanced Analysis Caching Module
