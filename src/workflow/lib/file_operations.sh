@@ -487,6 +487,147 @@ ${summary_content}
 }
 
 # ==============================================================================
+# SAFE DELETION OPERATIONS
+# ==============================================================================
+
+#######################################
+# Safely remove directory with validation and safeguards
+#
+# Implements multiple safety layers to prevent accidental data loss:
+# - Path existence validation
+# - Path pattern matching (allowlist)
+# - Forbidden path checking (denylist)
+# - Confirmation for non-temporary paths
+# - Dry-run support
+#
+# Globals:
+#   DRY_RUN (read): If true, only simulates deletion
+# Arguments:
+#   $1 - Directory path to remove (required)
+#   $2 - Confirmation mode: auto|prompt|force (optional, default: auto)
+# Outputs:
+#   Status messages to stdout/stderr
+# Returns:
+#   0 - Successfully removed or validated
+#   1 - Validation failed or user aborted
+#   2 - Path does not exist (not an error)
+# Example:
+#   safe_rm_rf "/path/to/.ai_cache" "auto"
+#   safe_rm_rf "$TEMP_DIR" "force"
+#######################################
+safe_rm_rf() {
+    local target_path="$1"
+    local confirm_mode="${2:-auto}"
+    
+    # Validation 1: Path must be provided
+    if [[ -z "$target_path" ]]; then
+        echo "ERROR: safe_rm_rf requires a path argument" >&2
+        return 1
+    fi
+    
+    # Validation 2: Convert to absolute path
+    if [[ "$target_path" != /* ]]; then
+        target_path="$(cd "$(dirname "$target_path")" 2>/dev/null && pwd)/$(basename "$target_path")" || {
+            echo "ERROR: Cannot resolve path: $target_path" >&2
+            return 1
+        }
+    fi
+    
+    # Validation 3: Path must exist
+    if [[ ! -e "$target_path" ]]; then
+        echo "INFO: Path does not exist (skipping): $target_path" >&2
+        return 2  # Not an error - already gone
+    fi
+    
+    # Validation 4: Deny list - Critical paths that should NEVER be deleted
+    local -a forbidden_paths=(
+        "/"
+        "/home"
+        "/root"
+        "/usr"
+        "/etc"
+        "/var"
+        "/bin"
+        "/sbin"
+        "/lib"
+        "/lib64"
+        "/boot"
+        "$HOME"
+        "$HOME/Documents"
+        "$HOME/Desktop"
+    )
+    
+    for forbidden in "${forbidden_paths[@]}"; do
+        if [[ "$target_path" == "$forbidden" || "$target_path" == "$forbidden"/* ]]; then
+            echo "ERROR: Refusing to delete forbidden path: $target_path" >&2
+            echo "       Forbidden pattern: $forbidden" >&2
+            return 1
+        fi
+    done
+    
+    # Validation 5: Allow list - Known safe patterns
+    local is_safe=false
+    local -a safe_patterns=(
+        '.*/.ai_cache$'
+        '.*/.ai_workflow$'
+        '.*/\.ai_workflow/.*'
+        '.*/backlog/workflow_.*'
+        '.*/logs/workflow_.*'
+        '.*/\.analysis_cache$'
+        '.*/\.deps_cache$'
+        '.*/\.ml_data$'
+        '.*/\.incremental_cache$'
+        '^/tmp/.*'
+        '^/var/tmp/.*'
+    )
+    
+    for pattern in "${safe_patterns[@]}"; do
+        if [[ "$target_path" =~ $pattern ]]; then
+            is_safe=true
+            break
+        fi
+    done
+    
+    # Validation 6: Confirmation for non-safe paths
+    if [[ "$is_safe" != true && "$confirm_mode" != "force" ]]; then
+        echo "WARNING: Path is not in safe patterns list: $target_path" >&2
+        
+        if [[ "$confirm_mode" == "prompt" ]]; then
+            read -r -p "Are you sure you want to delete this? (yes/no): " response
+            if [[ "$response" != "yes" ]]; then
+                echo "INFO: Deletion cancelled by user" >&2
+                return 1
+            fi
+        elif [[ "$confirm_mode" == "auto" ]]; then
+            echo "ERROR: Refusing to auto-delete non-safe path. Use 'force' or 'prompt' mode." >&2
+            return 1
+        fi
+    fi
+    
+    # Validation 7: Final path safety check
+    if [[ "${#target_path}" -lt 10 ]]; then
+        echo "ERROR: Path suspiciously short (< 10 chars): $target_path" >&2
+        return 1
+    fi
+    
+    # Dry-run mode
+    if [[ "${DRY_RUN:-false}" == true ]]; then
+        echo "DRY-RUN: Would delete: $target_path" >&2
+        return 0
+    fi
+    
+    # Execute deletion
+    echo "INFO: Deleting: $target_path" >&2
+    if rm -rf "$target_path" 2>/dev/null; then
+        echo "INFO: Successfully deleted: $target_path" >&2
+        return 0
+    else
+        echo "ERROR: Failed to delete: $target_path" >&2
+        return 1
+    fi
+}
+
+# ==============================================================================
 # EXPORTS
 # ==============================================================================
 
@@ -494,3 +635,4 @@ export -f check_file_exists get_safe_filename safe_create_file safe_create_markd
 export -f ensure_directory retry_operation atomic_update_file
 export -f acquire_file_lock release_file_lock
 export -f resilient_save_step_issues resilient_save_step_summary
+export -f safe_rm_rf
