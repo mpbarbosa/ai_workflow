@@ -7,9 +7,9 @@
     "code_files": 3,
     "test_files": 1,
     "config_files": 1,
-    "lines_added": 465,
-    "lines_deleted": 3361,
-    "lines_changed": 3826,
+    "lines_added": 476,
+    "lines_deleted": 3366,
+    "lines_changed": 3842,
     "max_depth": 4,
     "hour_of_day": 13,
     "day_of_week": 2
@@ -21,6 +21,6 @@
     "expected_benefit_pct": "0"
   },
   "skip_steps": [],
-  "predicted_duration": 18733290,
+  "predicted_duration": 27104280,
   "confidence": "high"
 }

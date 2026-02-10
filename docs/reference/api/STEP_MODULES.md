@@ -150,7 +150,7 @@ execute_step_01() {
 
 ### Step 0a: Pre-Processing
 
-**File**: `step_0a_version_update.sh`  
+**File**: `version_update.sh`  
 **Purpose**: Version management and pre-workflow initialization  
 **AI Persona**: None (automated)  
 **Dependencies**: `utils.sh`, `git_automation.sh`

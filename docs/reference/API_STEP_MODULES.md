@@ -98,7 +98,7 @@ Each step module **must** export these functions:
 
 ### Step 0a: Version Pre-Update
 
-**File**: `step_0a_version_update.sh` (466 lines)  
+**File**: `version_update.sh` (466 lines)  
 **Purpose**: Pre-increment semantic versions before workflow starts  
 **Dependencies**: None  
 **AI Personas**: None  

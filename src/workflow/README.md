@@ -51,7 +51,7 @@ src/workflow/
 │   └── (38 additional modules...)    # See lib/ directory for complete list
 └── steps/                            # Step modules ✅ (18 modules) ⭐ NEW v3.1.0
     ├── pre_analysis.sh               # Pre-workflow change analysis
-    ├── step_0a_version_update.sh     # Semantic version pre-processing (v2.6.0)
+    ├── version_update.sh            # Semantic version pre-processing (v2.6.0)
     ├── step_0b_bootstrap_docs.sh     # Bootstrap documentation (v3.1.0) ⭐ NEW
     ├── step_01_documentation.sh      # Documentation updates
     ├── step_02_consistency.sh        # Consistency analysis

@@ -1562,7 +1562,7 @@ execute_step_01() {
 
 #### Step 0a: Pre-Processing
 
-**Module**: `step_0a_version_update.sh`  
+**Module**: `version_update.sh`  
 **Purpose**: Version management and pre-execution setup  
 **Dependencies**: None  
 **AI Persona**: None

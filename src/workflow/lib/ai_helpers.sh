@@ -2198,7 +2198,7 @@ normalize_step_id() {
     
     # Map short IDs to full step names
     case "$step_id" in
-        "0a"|"step_0a") echo "step_0a_version_update" ;;
+        "0a"|"step_0a") echo "version_update" ;;
         "0b"|"step_0b") echo "step_0b_bootstrap_docs" ;;
         "00"|"step_00") echo "step_00_pre_analysis" ;;
         "01"|"step_01"|"step01") echo "step_01_documentation" ;;

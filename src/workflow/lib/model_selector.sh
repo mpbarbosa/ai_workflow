@@ -670,8 +670,8 @@ generate_model_definitions() {
     "tests": $tests_complexity
   },
   "model_definitions": {
-    "step_0a_version_update": {
-      "model": "$(get_model_for_tier "$code_tier" "step_0a_version_update")",
+    "version_update": {
+      "model": "$(get_model_for_tier "$code_tier" "version_update")",
       "reason": "$(get_model_reason "$code_tier" "version analysis")",
       "tier": "$code_tier",
       "alternatives": [$(get_alternative_models "$code_tier" | sed 's/ /", "/g' | sed 's/^/"/' | sed 's/$/"/' | tr '\n' ' ')]

@@ -51,7 +51,7 @@ should_run_version_update_step() {
     
     # Check step relevance configuration
     if command -v get_step_relevance &>/dev/null; then
-        step_relevance=$(get_step_relevance "$project_kind" "step_0a_version_update" 2>/dev/null || echo "optional")
+        step_relevance=$(get_step_relevance "$project_kind" "version_update" 2>/dev/null || echo "optional")
     else
         step_relevance="optional"
     fi
@@ -248,7 +248,7 @@ step0a_version_update() {
         print_info "Step 0a: Version Update skipped (no versioned files)"
         
         # Create minimal backlog entry
-        local backlog_file="${BACKLOG_RUN_DIR}/step_0a_version_update.md"
+        local backlog_file="${BACKLOG_RUN_DIR}/version_update.md"
         cat > "$backlog_file" << EOF
 # Step 0a: Semantic Version Update - SKIPPED
 

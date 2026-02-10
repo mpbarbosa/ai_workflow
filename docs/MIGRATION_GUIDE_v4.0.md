@@ -37,7 +37,7 @@ All step files have been renamed from numbered to descriptive names:
 | `step_13_markdown_lint.sh` | `markdown_linting.sh` |
 | `step_14_prompt_engineer.sh` | `prompt_engineer_analysis.sh` |
 | `step_15_ux_analysis.sh` | `ux_analysis.sh` |
-| `step_0a_version_update.sh` | `version_update.sh` |
+| `version_update.sh` | `version_update.sh` | ✅ Already descriptive (Step 0a) |
 | `step_0b_bootstrap_docs.sh` | `bootstrap_documentation.sh` |
 
 ### Function Names

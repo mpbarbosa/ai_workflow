@@ -119,7 +119,7 @@
 **Execution Order** (Step 12 MUST be last):
 
 1. `pre_analysis.sh` - Pre-flight analysis
-2. `step_0a_version_update.sh` - Semantic version updates (PRE-PROCESSING - v2.6.0)
+2. `version_update.sh` - Semantic version updates (PRE-PROCESSING - v2.6.0)
 3. `step_0b_bootstrap_docs.sh` - Bootstrap documentation (NEW v3.1.0) ⭐ NEW
 4. `step_01_documentation.sh` - Documentation updates
 5. `step_02_5_doc_optimize.sh` - Documentation optimization (NEW v3.2.0) ⭐ NEW
