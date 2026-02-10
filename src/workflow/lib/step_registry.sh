@@ -175,7 +175,7 @@ _load_legacy_step_definitions() {
     
     # Define legacy step order manually
     local -a legacy_steps=(
-        "version_update:step_0a_version_update.sh:step0a_version_update"
+        "version_update:version_update.sh:step0a_version_update"
         "pre_analysis:pre_analysis.sh:step0_analyze_changes"
         "bootstrap_documentation:step_0b_bootstrap_docs.sh:step0b_bootstrap_documentation"
         "documentation_updates:step_01_documentation.sh:step1_update_documentation"
