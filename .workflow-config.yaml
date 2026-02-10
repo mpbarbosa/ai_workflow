@@ -205,33 +205,34 @@ workflow:
       can_parallelize: true
       dependencies: ["11"]
 
-    # Specialized Analysis Phase (15-16)
+    # Finalization Phase (14)
     - id: "14"
       name: "UX Analysis"
       file: "step_15_ux_analysis.sh"
       description: "UI/UX and accessibility analysis"
-      phase: "specialized"
+      phase: "finalization"
       can_parallelize: true
       dependencies: ["10"]
       ai_persona: "ux_designer"
       
+    # Version Management (15)
     - id: "15"
       name: "Version Update"
       file: "step_16_version_update.sh"
       description: "Finalize version and generate changelog"
-      phase: "specialized"
+      phase: "versioning"
       can_parallelize: false
       dependencies: ["12", "13", "14"]
       ai_persona: "version_manager"
     
-    # Finalization Phase (12-14)
+    # Git Completion - MUST BE LAST (16)
     - id: "16"
       name: "Git Operations"
       file: "step_12_git.sh"
-      description: "Git status and change management"
-      phase: "finalization"
+      description: "Git status and change management - FINAL STEP"
+      phase: "completion"
       can_parallelize: false
-      dependencies: ["15", "01.5", "02.5", "03", "11.5"]
+      dependencies: ["15"]
 
   # Step execution phases for multi-stage pipeline
   phases:
@@ -256,12 +257,16 @@ workflow:
       steps: ["09", "10", "11", "11.5", "11.7"]
       
     finalization:
-      description: "Git operations and final checks"
+      description: "Markdown linting, prompt engineering, and UX analysis"
       steps: ["12", "13", "14"]
       
-    specialized:
-      description: "UX analysis and version management"
-      steps: ["15", "16"]
+    versioning:
+      description: "Version management and changelog generation"
+      steps: ["15"]
+      
+    completion:
+      description: "Git operations - FINAL STEP"
+      steps: ["16"]
 
 # Optimization settings
 optimization:
