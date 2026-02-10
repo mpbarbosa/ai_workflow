@@ -954,7 +954,7 @@ Legacy numeric filenames (still supported, v4.0.0):
 - `api_coverage.sh` → Use `api_coverage_analysis.sh`
 - `consistency.sh` → Use `consistency_analysis.sh`
 - `doc_optimize.sh` → Use `documentation_optimization.sh`
-- `step_03_script_refs.sh` → Use `script_reference_validation.sh`
+- `script_refs.sh` → Use `script_reference_validation.sh`
 - `step_04_config_validation.sh` → Use `config_validation.sh`
 - `step_05_directory.sh` → Use `directory_validation.sh`
 - `step_06_test_review.sh` → Use `test_review.sh`

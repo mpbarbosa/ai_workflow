@@ -476,7 +476,7 @@ prompt=$(build_consistency_prompt_step2 "$issues")
 
 ### Step 03: Script Reference Validation
 
-**File**: `step_03_script_refs.sh` (338 lines)  
+**File**: `script_refs.sh` (338 lines)  
 **Purpose**: Validate script paths, command references, code examples  
 **Dependencies**: Step 02  
 **AI Personas**: `script_validator`  

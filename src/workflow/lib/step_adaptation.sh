@@ -450,7 +450,7 @@ display_execution_plan() {
         "step_00_analyze"
         "step_01_documentation"
         "consistency"
-        "step_03_script_refs"
+        "script_refs"
         "step_04_directory"
         "step_05_test_review"
         "step_06_test_gen"

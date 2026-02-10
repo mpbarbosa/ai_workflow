@@ -23,7 +23,7 @@ All step files have been renamed from numbered to descriptive names:
 | `api_coverage.sh` | `api_coverage_analysis.sh` |
 | `consistency.sh` | `consistency_analysis.sh` |
 | `doc_optimize.sh` | `documentation_optimization.sh` |
-| `step_03_script_refs.sh` | `script_reference_validation.sh` |
+| `script_refs.sh` | `script_reference_validation.sh` |
 | `step_04_config_validation.sh` | `config_validation.sh` |
 | `step_05_directory.sh` | `directory_validation.sh` |
 | `step_06_test_review.sh` | `test_review.sh` |

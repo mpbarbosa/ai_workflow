@@ -694,8 +694,8 @@ generate_model_definitions() {
       "tier": "$docs_tier",
       "alternatives": [$(get_alternative_models "$docs_tier" | sed 's/ /", "/g' | sed 's/^/"/' | sed 's/$/"/' | tr '\n' ' ')]
     },
-    "step_03_script_refs": {
-      "model": "$(get_model_for_tier "$code_tier" "step_03_script_refs")",
+    "script_refs": {
+      "model": "$(get_model_for_tier "$code_tier" "script_refs")",
       "reason": "$(get_model_reason "$code_tier" "script analysis")",
       "tier": "$code_tier",
       "alternatives": [$(get_alternative_models "$code_tier" | sed 's/ /", "/g' | sed 's/^/"/' | sed 's/$/"/' | tr '\n' ' ')]

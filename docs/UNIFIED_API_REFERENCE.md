@@ -1671,7 +1671,7 @@ step_0b:
 
 #### Step 03: Script References
 
-**Module**: `step_03_script_refs.sh`  
+**Module**: `script_refs.sh`  
 **Purpose**: Validate script references in documentation  
 **Dependencies**: `validation.sh`  
 **AI Persona**: `script_reference_validator`

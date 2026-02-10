@@ -55,7 +55,7 @@ src/workflow/
     ├── bootstrap_docs.sh             # Bootstrap documentation (v3.1.0) ⭐ NEW
     ├── documentation.sh              # Documentation updates
     ├── consistency.sh                # Consistency analysis
-    ├── step_03_script_refs.sh        # Script reference validation
+    ├── script_refs.sh                # Script reference validation
     ├── step_04_directory.sh          # Directory structure validation
     ├── step_05_test_review.sh        # Test review
     ├── step_06_test_gen.sh           # Test generation
@@ -554,7 +554,7 @@ save_step_results \
 **Impact:**
 - **Code Reduction:** Refactored and reorganized from step_02 and step_03
 - **consistency.sh:** 382 → 216 lines (-43%)
-- **step_03_script_refs.sh:** 320 lines (current)
+- **script_refs.sh:** 320 lines (current)
 - **Maintainability:** Centralized AI workflow logic for easier updates
 - **Consistency:** Guaranteed identical behavior across all workflow steps
 

@@ -42,7 +42,7 @@ The numbering allows for:
 - Reference consistency verification
 - Uses `consistency_analyst` persona
 
-**step_03_script_refs.sh** - Script Reference Validation
+**script_refs.sh** - Script Reference Validation
 - Script path validation
 - Command reference verification
 - Example code validation

@@ -7,7 +7,7 @@ step_relevance:
     step_00_analyze: required
     step_01_documentation: required
     consistency: required
-    step_03_script_refs: required        # Shell scripts need validation
+    script_refs: required        # Shell scripts need validation
     step_04_directory: recommended
     step_05_test_review: required
     step_06_test_gen: recommended
@@ -23,7 +23,7 @@ step_relevance:
     step_00_analyze: required
     step_01_documentation: required
     consistency: required
-    step_03_script_refs: skip            # No shell scripts typically
+    script_refs: skip            # No shell scripts typically
     step_04_directory: required
     step_05_test_review: required
     step_06_test_gen: required
@@ -39,7 +39,7 @@ step_relevance:
     step_00_analyze: required
     step_01_documentation: required
     consistency: required
-    step_03_script_refs: skip
+    script_refs: skip
     step_04_directory: recommended
     step_05_test_review: required
     step_06_test_gen: required
@@ -55,7 +55,7 @@ step_relevance:
     step_00_analyze: required
     step_01_documentation: required      # API docs critical
     consistency: required
-    step_03_script_refs: skip
+    script_refs: skip
     step_04_directory: recommended
     step_05_test_review: required        # High test coverage expected
     step_06_test_gen: required
@@ -71,7 +71,7 @@ step_relevance:
     step_00_analyze: required
     step_01_documentation: recommended   # User-facing content
     consistency: recommended
-    step_03_script_refs: skip
+    script_refs: skip
     step_04_directory: recommended
     step_05_test_review: optional        # Limited code
     step_06_test_gen: skip
@@ -87,7 +87,7 @@ step_relevance:
     step_00_analyze: required
     step_01_documentation: recommended   # User docs, not API docs
     consistency: recommended
-    step_03_script_refs: skip
+    script_refs: skip
     step_04_directory: recommended
     step_05_test_review: required
     step_06_test_gen: required
@@ -103,7 +103,7 @@ step_relevance:
     step_00_analyze: required
     step_01_documentation: required
     consistency: required
-    step_03_script_refs: optional        # May have shell scripts
+    script_refs: optional        # May have shell scripts
     step_04_directory: recommended
     step_05_test_review: required
     step_06_test_gen: required
@@ -119,7 +119,7 @@ step_relevance:
     step_00_analyze: required
     step_01_documentation: recommended
     consistency: recommended
-    step_03_script_refs: optional
+    script_refs: optional
     step_04_directory: recommended
     step_05_test_review: recommended
     step_06_test_gen: optional
