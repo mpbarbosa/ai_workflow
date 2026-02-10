@@ -449,7 +449,7 @@ display_execution_plan() {
     local step_names=(
         "step_00_analyze"
         "step_01_documentation"
-        "step_02_consistency"
+        "consistency"
         "step_03_script_refs"
         "step_04_directory"
         "step_05_test_review"

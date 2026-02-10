@@ -6,7 +6,7 @@ step_relevance:
   shell_script_automation:
     step_00_analyze: required
     step_01_documentation: required
-    step_02_consistency: required
+    consistency: required
     step_03_script_refs: required        # Shell scripts need validation
     step_04_directory: recommended
     step_05_test_review: required
@@ -22,7 +22,7 @@ step_relevance:
   nodejs_api:
     step_00_analyze: required
     step_01_documentation: required
-    step_02_consistency: required
+    consistency: required
     step_03_script_refs: skip            # No shell scripts typically
     step_04_directory: required
     step_05_test_review: required
@@ -38,7 +38,7 @@ step_relevance:
   nodejs_cli:
     step_00_analyze: required
     step_01_documentation: required
-    step_02_consistency: required
+    consistency: required
     step_03_script_refs: skip
     step_04_directory: recommended
     step_05_test_review: required
@@ -54,7 +54,7 @@ step_relevance:
   nodejs_library:
     step_00_analyze: required
     step_01_documentation: required      # API docs critical
-    step_02_consistency: required
+    consistency: required
     step_03_script_refs: skip
     step_04_directory: recommended
     step_05_test_review: required        # High test coverage expected
@@ -70,7 +70,7 @@ step_relevance:
   static_website:
     step_00_analyze: required
     step_01_documentation: recommended   # User-facing content
-    step_02_consistency: recommended
+    consistency: recommended
     step_03_script_refs: skip
     step_04_directory: recommended
     step_05_test_review: optional        # Limited code
@@ -86,7 +86,7 @@ step_relevance:
   react_spa:
     step_00_analyze: required
     step_01_documentation: recommended   # User docs, not API docs
-    step_02_consistency: recommended
+    consistency: recommended
     step_03_script_refs: skip
     step_04_directory: recommended
     step_05_test_review: required
@@ -102,7 +102,7 @@ step_relevance:
   python_app:
     step_00_analyze: required
     step_01_documentation: required
-    step_02_consistency: required
+    consistency: required
     step_03_script_refs: optional        # May have shell scripts
     step_04_directory: recommended
     step_05_test_review: required
@@ -118,7 +118,7 @@ step_relevance:
   generic:
     step_00_analyze: required
     step_01_documentation: recommended
-    step_02_consistency: recommended
+    consistency: recommended
     step_03_script_refs: optional
     step_04_directory: recommended
     step_05_test_review: recommended
