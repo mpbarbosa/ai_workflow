@@ -120,7 +120,7 @@
 
 1. `pre_analysis.sh` - Pre-flight analysis
 2. `version_update.sh` - Semantic version updates (PRE-PROCESSING - v2.6.0)
-3. `step_0b_bootstrap_docs.sh` - Bootstrap documentation (NEW v3.1.0) ⭐ NEW
+3. `bootstrap_docs.sh` - Bootstrap documentation (NEW v3.1.0) ⭐ NEW
 4. `step_01_documentation.sh` - Documentation updates
 5. `step_02_5_doc_optimize.sh` - Documentation optimization (NEW v3.2.0) ⭐ NEW
 6. `step_02_consistency.sh` - Cross-reference validation

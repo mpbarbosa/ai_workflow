@@ -1576,7 +1576,7 @@ execute_step_01() {
 
 #### Step 0b: Bootstrap Documentation
 
-**Module**: `step_0b_bootstrap_docs.sh`  
+**Module**: `bootstrap_docs.sh`  
 **Purpose**: Generate comprehensive documentation from scratch with necessity-first evaluation  
 **Dependencies**: `ai_helpers.sh`, `ai_personas.sh`  
 **AI Persona**: `technical_writer` (v3.1.0, UPDATED v4.0.1)

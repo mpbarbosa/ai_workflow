@@ -676,8 +676,8 @@ generate_model_definitions() {
       "tier": "$code_tier",
       "alternatives": [$(get_alternative_models "$code_tier" | sed 's/ /", "/g' | sed 's/^/"/' | sed 's/$/"/' | tr '\n' ' ')]
     },
-    "step_0b_bootstrap_docs": {
-      "model": "$(get_model_for_tier "medium" "step_0b_bootstrap_docs")",
+    "bootstrap_docs": {
+      "model": "$(get_model_for_tier "medium" "bootstrap_docs")",
       "reason": "Documentation generation from scratch requires reasoning",
       "tier": "medium",
       "alternatives": [$(get_alternative_models "medium" | sed 's/ /", "/g' | sed 's/^/"/' | sed 's/$/"/' | tr '\n' ' ')]

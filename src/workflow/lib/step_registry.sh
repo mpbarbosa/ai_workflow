@@ -177,7 +177,7 @@ _load_legacy_step_definitions() {
     local -a legacy_steps=(
         "version_update:version_update.sh:step0a_version_update"
         "pre_analysis:pre_analysis.sh:step0_analyze_changes"
-        "bootstrap_documentation:step_0b_bootstrap_docs.sh:step0b_bootstrap_documentation"
+        "bootstrap_documentation:bootstrap_docs.sh:step0b_bootstrap_documentation"
         "documentation_updates:step_01_documentation.sh:step1_update_documentation"
         "api_coverage_analysis:step_01_5_api_coverage.sh:step1_5_api_coverage_analysis"
         "consistency_analysis:step_02_consistency.sh:step2_check_consistency"

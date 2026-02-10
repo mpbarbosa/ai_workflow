@@ -179,7 +179,7 @@ Updates project version and prepares workflow execution.
 
 ### Step 0b: Bootstrap Documentation
 
-**File**: `step_0b_bootstrap_docs.sh`  
+**File**: `bootstrap_docs.sh`  
 **Purpose**: Generate comprehensive documentation from scratch for undocumented codebases  
 **AI Persona**: `technical_writer` (NEW v3.1.0)  
 **Dependencies**: `ai_helpers.sh`, `file_operations.sh`, `tech_stack.sh`

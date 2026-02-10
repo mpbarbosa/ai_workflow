@@ -144,7 +144,7 @@ new_version=$(increment_version "1.2.3" "minor")  # Returns "1.3.0"
 
 ### Step 0b: Bootstrap Documentation
 
-**File**: `step_0b_bootstrap_docs.sh` (431 lines)  
+**File**: `bootstrap_docs.sh` (431 lines)  
 **Purpose**: Generate initial documentation for new projects with necessity-first evaluation  
 **Dependencies**: None  
 **AI Personas**: `technical_writer` (v3.1.0, UPDATED v4.0.1 with necessity evaluation)  

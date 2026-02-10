@@ -52,7 +52,7 @@ src/workflow/
 └── steps/                            # Step modules ✅ (18 modules) ⭐ NEW v3.1.0
     ├── pre_analysis.sh               # Pre-workflow change analysis
     ├── version_update.sh            # Semantic version pre-processing (v2.6.0)
-    ├── step_0b_bootstrap_docs.sh     # Bootstrap documentation (v3.1.0) ⭐ NEW
+    ├── bootstrap_docs.sh             # Bootstrap documentation (v3.1.0) ⭐ NEW
     ├── step_01_documentation.sh      # Documentation updates
     ├── step_02_consistency.sh        # Consistency analysis
     ├── step_03_script_refs.sh        # Script reference validation
