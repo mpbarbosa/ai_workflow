@@ -1,7 +1,7 @@
 # AI Workflow Automation - Unified API Reference
 
-**Version**: v4.0.0  
-**Last Updated**: 2026-02-08  
+**Version**: v4.0.1  
+**Last Updated**: 2026-02-09  
 **Status**: Complete and Authoritative
 
 > 📋 **Reference**: See [PROJECT_REFERENCE.md](PROJECT_REFERENCE.md) for module inventory and version history.

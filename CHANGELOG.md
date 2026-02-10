@@ -7,6 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [4.0.1] - 2026-02-09
 
+### 🐛 Bug Fixes - Step Execution Order
+
+#### .workflow_core Submodule Update (commit 3987694)
+- **Critical Fix**: Corrected step execution order to ensure Git Finalization (Step 16) runs LAST
+- **Issue**: Step 16 had dependencies on both Step 15 AND Step 11, causing potential early execution
+- **Root Cause**: Incorrect dependency array `['15', '11']` instead of `['15']` only
+- **Fix**: Step 16 now depends ONLY on Step 15 (Version Update)
+  - Execution order: 11 → [12,13,14 parallel] → 15 → 16 (Git LAST)
+  - Updated phase assignments: finalization (12-14), versioning (15), completion (16)
+- **Impact**: Git operations now correctly capture ALL workflow changes
+- **Consistency**: Phase naming aligned with main repository structure
+
 ### 🔧 Enhancements - Technical Writer Necessity-First Evaluation
 
 #### .workflow_core Submodule Update (commit a165069)
@@ -46,9 +58,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Updated: `.github/copilot-instructions.md` - Clarified Step 0b behavior
 
 ### ⚙️ Configuration Changes
-- `.workflow_core` submodule: `6c95df5` → `a165069`
-- `ai_helpers.yaml`: Enhanced `technical_writer_prompt` with necessity evaluation
-- Prompt template updated to v4.2.0 (from v4.1.0)
+- `.workflow_core` submodule: `6c95df5` → `3987694` (includes commits 3987694, a165069)
+- `ai_helpers.yaml`: Enhanced `technical_writer_prompt` with necessity evaluation (v4.2.0)
+- `.workflow-config.yaml` (submodule): Corrected Step 16 dependencies and phase assignments
 
 ---
 
