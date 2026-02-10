@@ -316,7 +316,7 @@ Validate documentation accuracy against codebase.
 
 ### Step 02.5: Documentation Optimization
 
-**File**: `step_02_5_doc_optimize.sh`  
+**File**: `doc_optimize.sh`  
 **Purpose**: Optimize documentation structure and content  
 **AI Persona**: `documentation_specialist`  
 **Dependencies**: `ai_helpers.sh`, `doc_template_validator.sh`

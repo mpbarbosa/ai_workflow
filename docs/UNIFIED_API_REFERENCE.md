@@ -1657,7 +1657,7 @@ step_0b:
 
 #### Step 02.5: Documentation Optimization
 
-**Module**: `step_02_5_doc_optimize.sh`  
+**Module**: `doc_optimize.sh`  
 **Purpose**: Optimize documentation structure and content  
 **Dependencies**: `ai_helpers.sh`, `edit_operations.sh`  
 **AI Persona**: `documentation_specialist`

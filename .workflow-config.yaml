@@ -88,7 +88,7 @@ workflow:
       
     - id: "02.5"
       name: "Documentation Optimization"
-      file: "step_02_5_doc_optimize.sh"
+      file: "doc_optimize.sh"
       description: "Optimize documentation structure and content"
       phase: "analysis"
       can_parallelize: true

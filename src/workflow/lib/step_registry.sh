@@ -181,7 +181,7 @@ _load_legacy_step_definitions() {
         "documentation_updates:documentation.sh:step1_update_documentation"
         "api_coverage_analysis:api_coverage.sh:step1_5_api_coverage_analysis"
         "consistency_analysis:step_02_consistency.sh:step2_check_consistency"
-        "documentation_optimization:step_02_5_doc_optimize.sh:step2_5_doc_optimization"
+        "documentation_optimization:doc_optimize.sh:step2_5_doc_optimization"
         "script_reference_validation:step_03_script_refs.sh:step3_validate_script_references"
         "config_validation:step_04_config_validation.sh:step4_config_validation"
         "directory_validation:step_05_directory.sh:step5_validate_directory"

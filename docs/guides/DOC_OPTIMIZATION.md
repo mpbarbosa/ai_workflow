@@ -33,7 +33,7 @@ Preview changes without modifying files:
 
 ```bash
 cd src/workflow/steps
-PROJECT_ROOT=/path/to/project ./step_02_5_doc_optimize.sh --dry-run
+PROJECT_ROOT=/path/to/project ./doc_optimize.sh --dry-run
 ```
 
 ### Non-Interactive Mode
@@ -41,7 +41,7 @@ PROJECT_ROOT=/path/to/project ./step_02_5_doc_optimize.sh --dry-run
 Skip user prompts (auto-decline deletions):
 
 ```bash
-PROJECT_ROOT=/path/to/project ./step_02_5_doc_optimize.sh --no-interactive
+PROJECT_ROOT=/path/to/project ./doc_optimize.sh --no-interactive
 ```
 
 ## Configuration
