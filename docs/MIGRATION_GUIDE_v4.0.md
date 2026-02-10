@@ -25,18 +25,18 @@ All step files have been renamed from numbered to descriptive names:
 | `doc_optimize.sh` | `documentation_optimization.sh` |
 | `script_refs.sh` | `script_reference_validation.sh` |
 | `config_validation.sh` | `config_validation.sh` |
-| `step_05_directory.sh` | `directory_validation.sh` |
-| `step_06_test_review.sh` | `test_review.sh` |
-| `step_07_test_gen.sh` | `test_generation.sh` |
-| `step_08_test_exec.sh` | `test_execution.sh` |
-| `step_09_dependencies.sh` | `dependency_validation.sh` |
-| `step_10_code_quality.sh` | `code_quality_validation.sh` |
-| `step_11_5_context.sh` | `context_analysis.sh` |
-| `step_11_deployment_gate.sh` | `deployment_gate.sh` |
-| `step_12_git.sh` | `git_finalization.sh` |
-| `step_13_markdown_lint.sh` | `markdown_linting.sh` |
-| `step_14_prompt_engineer.sh` | `prompt_engineer_analysis.sh` |
-| `step_15_ux_analysis.sh` | `ux_analysis.sh` |
+| `directory.sh` | `directory_validation.sh` |
+| `test_review.sh` | `test_review.sh` |
+| `test_gen.sh` | `test_generation.sh` |
+| `test_exec.sh` | `test_execution.sh` |
+| `dependencies.sh` | `dependency_validation.sh` |
+| `code_quality.sh` | `code_quality_validation.sh` |
+| `context.sh` | `context_analysis.sh` |
+| `deployment_gate.sh` | `deployment_gate.sh` |
+| `git_finalization.sh` | `git_finalization.sh` |
+| `markdown_lint.sh` | `markdown_linting.sh` |
+| `prompt_engineer.sh` | `prompt_engineer_analysis.sh` |
+| `ux_analysis.sh` | `ux_analysis.sh` |
 | `version_update.sh` | `version_update.sh` | ✅ Already descriptive (Step 0a) |
 | `bootstrap_docs.sh` | `bootstrap_documentation.sh` |
 

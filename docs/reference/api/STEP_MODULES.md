@@ -412,7 +412,7 @@ Validate configuration syntax and schema.
 
 ### Step 05: Directory Structure
 
-**File**: `step_05_directory.sh`  
+**File**: `directory.sh`  
 **Purpose**: Validate and optimize directory organization  
 **AI Persona**: `documentation_specialist`  
 **Dependencies**: `ai_helpers.sh`, `file_operations.sh`
@@ -444,7 +444,7 @@ Analyze directory structure and suggest improvements.
 
 ### Step 06: Test Review
 
-**File**: `step_06_test_review.sh`  
+**File**: `test_review.sh`  
 **Purpose**: Review existing test coverage and quality  
 **AI Persona**: `test_engineer`  
 **Dependencies**: `ai_helpers.sh`, `test_analyzer.sh`
@@ -476,7 +476,7 @@ Analyze test quality and coverage.
 
 ### Step 07: Test Generation
 
-**File**: `step_07_test_gen.sh`  
+**File**: `test_gen.sh`  
 **Purpose**: Generate missing tests with AI assistance  
 **AI Persona**: `test_engineer`  
 **Dependencies**: `ai_helpers.sh`, `test_generator.sh`
@@ -508,7 +508,7 @@ Generate tests for untested code.
 
 ### Step 08: Test Execution
 
-**File**: `step_08_test_exec.sh`  
+**File**: `test_exec.sh`  
 **Purpose**: Run test suites and report results  
 **AI Persona**: None (automated)  
 **Dependencies**: `session_manager.sh`, `test_executor.sh`
@@ -540,7 +540,7 @@ Execute test suites and capture results.
 
 ### Step 09: Dependencies
 
-**File**: `step_09_dependencies.sh`  
+**File**: `dependencies.sh`  
 **Purpose**: Analyze and validate dependencies  
 **AI Persona**: None (automated)  
 **Dependencies**: `dependency_analyzer.sh`, `security_scanner.sh`
@@ -572,7 +572,7 @@ Analyze dependencies for issues.
 
 ### Step 10: Code Quality
 
-**File**: `step_10_code_quality.sh`  
+**File**: `code_quality.sh`  
 **Purpose**: AI-powered code quality assessment  
 **AI Persona**: `code_reviewer`  
 **Dependencies**: `ai_helpers.sh`, `linter_runner.sh`
@@ -636,7 +636,7 @@ Update and persist workflow context.
 
 ### Step 12: Git Automation
 
-**File**: `step_12_git.sh`  
+**File**: `git_finalization.sh`  
 **Purpose**: Git operations and repository cleanup  
 **AI Persona**: None (automated)  
 **Dependencies**: `git_automation.sh`, `commit_generator.sh`
@@ -668,7 +668,7 @@ Perform git operations (commit, tag, cleanup).
 
 ### Step 13: Markdown Lint
 
-**File**: `step_13_markdown_lint.sh`  
+**File**: `markdown_lint.sh`  
 **Purpose**: Validate markdown syntax and style  
 **AI Persona**: None (automated)  
 **Dependencies**: `markdown_linter.sh`, `link_checker.sh`
@@ -700,7 +700,7 @@ Lint markdown files and check links.
 
 ### Step 14: Prompt Engineer
 
-**File**: `step_14_prompt_engineer.sh`  
+**File**: `prompt_engineer.sh`  
 **Purpose**: Optimize AI prompts for better results  
 **AI Persona**: `prompt_engineer`  
 **Dependencies**: `ai_helpers.sh`, `prompt_analyzer.sh`
@@ -732,7 +732,7 @@ Analyze and improve AI prompts.
 
 ### Step 15: UX Analysis
 
-**File**: `step_15_ux_analysis.sh`  
+**File**: `ux_analysis.sh`  
 **Purpose**: UI/UX analysis with accessibility checking  
 **AI Persona**: `ux_designer` (NEW v2.4.0)  
 **Dependencies**: `ai_helpers.sh`, `accessibility_checker.sh`
@@ -770,7 +770,7 @@ Comprehensive UX and accessibility analysis.
 
 ### Step 16: Version Update
 
-**File**: `step_16_version_update.sh`  
+**File**: `final_version_update.sh`  
 **Purpose**: Final version update and CHANGELOG generation  
 **AI Persona**: None (automated)  
 **Dependencies**: `version_manager.sh`, `changelog_generator.sh`

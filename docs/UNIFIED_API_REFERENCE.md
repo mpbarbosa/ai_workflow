@@ -1699,7 +1699,7 @@ step_0b:
 
 #### Step 05: Directory Structure
 
-**Module**: `step_05_directory.sh`  
+**Module**: `directory.sh`  
 **Purpose**: Analyze and validate project directory structure  
 **Dependencies**: `validation.sh`  
 **AI Persona**: `directory_analyst`
@@ -1713,7 +1713,7 @@ step_0b:
 
 #### Step 06: Test Review
 
-**Module**: `step_06_test_review.sh`  
+**Module**: `test_review.sh`  
 **Purpose**: Review existing tests for coverage and quality  
 **Dependencies**: `ai_helpers.sh`, `tech_stack.sh`  
 **AI Persona**: `test_engineer`
@@ -1727,7 +1727,7 @@ step_0b:
 
 #### Step 07: Test Generation
 
-**Module**: `step_07_test_gen.sh`  
+**Module**: `test_gen.sh`  
 **Purpose**: Generate missing tests  
 **Dependencies**: `ai_helpers.sh`, `tech_stack.sh`  
 **AI Persona**: `test_engineer`
@@ -1741,7 +1741,7 @@ step_0b:
 
 #### Step 08: Test Execution
 
-**Module**: `step_08_test_exec.sh`  
+**Module**: `test_exec.sh`  
 **Purpose**: Execute test suite and validate results  
 **Dependencies**: `tech_stack.sh`, `metrics.sh`  
 **AI Persona**: None
@@ -1755,7 +1755,7 @@ step_0b:
 
 #### Step 09: Dependencies
 
-**Module**: `step_09_dependencies.sh`  
+**Module**: `dependencies.sh`  
 **Purpose**: Analyze and update project dependencies  
 **Dependencies**: `tech_stack.sh`  
 **AI Persona**: `dependency_analyst`
@@ -1769,7 +1769,7 @@ step_0b:
 
 #### Step 10: Code Quality
 
-**Module**: `step_10_code_quality.sh`  
+**Module**: `code_quality.sh`  
 **Purpose**: Comprehensive code quality assessment  
 **Dependencies**: `ai_helpers.sh`, `metrics.sh`  
 **AI Persona**: `software_quality_engineer`
@@ -1784,7 +1784,7 @@ step_0b:
 
 #### Step 11: Deployment Gate
 
-**Module**: `step_11_deployment_gate.sh`  
+**Module**: `deployment_gate.sh`  
 **Purpose**: Pre-deployment validation and gating  
 **Dependencies**: `validation.sh`, `metrics.sh`  
 **AI Persona**: None
@@ -1798,7 +1798,7 @@ step_0b:
 
 #### Step 11.5: Context Management
 
-**Module**: `step_11_5_context.sh`  
+**Module**: `context.sh`  
 **Purpose**: Manage workflow context and scope  
 **Dependencies**: None  
 **AI Persona**: `context_manager`
@@ -1812,7 +1812,7 @@ step_0b:
 
 #### Step 12: Git Automation
 
-**Module**: `step_12_git.sh`  
+**Module**: `git_finalization.sh`  
 **Purpose**: Automated Git operations and finalization  
 **Dependencies**: `git_automation.sh`, `auto_commit.sh`  
 **AI Persona**: `git_automation_specialist`
@@ -1827,7 +1827,7 @@ step_0b:
 
 #### Step 13: Markdown Linting
 
-**Module**: `step_13_markdown_lint.sh`  
+**Module**: `markdown_lint.sh`  
 **Purpose**: Lint and format Markdown documentation  
 **Dependencies**: None (uses markdownlint-cli if available)  
 **AI Persona**: `markdown_formatter`
@@ -1841,7 +1841,7 @@ step_0b:
 
 #### Step 14: Prompt Engineer
 
-**Module**: `step_14_prompt_engineer.sh`  
+**Module**: `prompt_engineer.sh`  
 **Purpose**: Optimize AI prompts and templates  
 **Dependencies**: `ai_helpers.sh`, `ai_prompt_builder.sh`  
 **AI Persona**: `prompt_engineer`
@@ -1855,7 +1855,7 @@ step_0b:
 
 #### Step 15: UX Analysis
 
-**Module**: `step_15_ux_analysis.sh`  
+**Module**: `ux_analysis.sh`  
 **Purpose**: UI/UX and accessibility analysis  
 **Dependencies**: `ai_helpers.sh`  
 **AI Persona**: `ux_designer`
@@ -1871,7 +1871,7 @@ step_0b:
 
 #### Step 16: Version Update
 
-**Module**: `step_16_version_update.sh`  
+**Module**: `final_version_update.sh`  
 **Purpose**: Update version numbers and finalize workflow  
 **Dependencies**: `metrics.sh`, `changelog_generator.sh`  
 **AI Persona**: None
