@@ -193,7 +193,15 @@ No changes were detected. Repository is up to date with remote.
     if [[ "$INTERACTIVE_MODE" == true ]]; then
         if ! confirm_action "Push to remote repository?"; then
             print_warning "Push skipped - workflow incomplete"
-            return 0
+            
+            # Save step summary indicating push was skipped
+            if [[ "$commit_was_made" == "true" ]]; then
+                save_step_summary "11" "Git_Finalization" "SKIPPED: User declined to push to ${current_branch}. Changes committed locally but not pushed." "⚠️"
+            else
+                save_step_summary "11" "Git_Finalization" "SKIPPED: User declined to push ${commits_ahead} commit(s) to ${current_branch}." "⚠️"
+            fi
+            update_workflow_status "step12" "⚠️"
+            return 1
         fi
     fi
     
