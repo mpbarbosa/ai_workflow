@@ -71,7 +71,7 @@ workflow:
       
     - id: "01.5"
       name: "API Coverage Analysis"
-      file: "step_01_5_api_coverage.sh"
+      file: "api_coverage.sh"
       description: "Analyze API documentation coverage"
       phase: "analysis"
       can_parallelize: true

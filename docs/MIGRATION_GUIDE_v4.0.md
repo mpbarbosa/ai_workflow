@@ -20,7 +20,7 @@ All step files have been renamed from numbered to descriptive names:
 |-----------|-----------|
 | `step_00_analyze.sh` | `pre_analysis.sh` |
 | `step_01_documentation.sh` | `documentation_updates.sh` |
-| `step_01_5_api_coverage.sh` | `api_coverage_analysis.sh` |
+| `api_coverage.sh` | `api_coverage_analysis.sh` |
 | `step_02_consistency.sh` | `consistency_analysis.sh` |
 | `step_02_5_doc_optimize.sh` | `documentation_optimization.sh` |
 | `step_03_script_refs.sh` | `script_reference_validation.sh` |

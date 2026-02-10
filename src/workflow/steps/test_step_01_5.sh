@@ -52,7 +52,7 @@ echo ""
 # Test 1: Module loading
 print_info "Testing module loading..."
 run_test "Load main step script" \
-    "source '${STEP_DIR}/step_01_5_api_coverage.sh' 2>/dev/null"
+    "source '${STEP_DIR}/api_coverage.sh' 2>/dev/null"
 
 run_test "Load coverage_threshold.sh" \
     "source '${STEP_DIR}/step_01_5_lib/coverage_threshold.sh' 2>/dev/null"
@@ -67,7 +67,7 @@ echo ""
 
 # Test 2: Function exports
 print_info "Testing exported functions..."
-source "${STEP_DIR}/step_01_5_api_coverage.sh" 2>/dev/null || true
+source "${STEP_DIR}/api_coverage.sh" 2>/dev/null || true
 source "${STEP_DIR}/step_01_5_lib/coverage_threshold.sh" 2>/dev/null || true
 source "${STEP_DIR}/step_01_5_lib/incremental.sh" 2>/dev/null || true
 source "${STEP_DIR}/step_01_5_lib/reporting.sh" 2>/dev/null || true
