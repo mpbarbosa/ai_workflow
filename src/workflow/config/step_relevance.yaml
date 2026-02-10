@@ -9,15 +9,15 @@ step_relevance:
     consistency: required
     script_refs: required        # Shell scripts need validation
     step_04_directory: recommended
-    step_05_test_review: required
-    step_06_test_gen: recommended
-    step_07_test_exec: required
-    step_08_dependencies: optional       # May not have package.json
-    step_09_code_quality: required
-    step_10_context: recommended
-    step_11_git: required
-    step_12_markdown_lint: required
-    step_14_ux_analysis: skip            # No UI components
+    test_review: required
+    test_gen: recommended
+    test_exec: required
+    dependencies: optional       # May not have package.json
+    code_quality: required
+    context: recommended
+    git_finalization: required
+    markdown_lint: required
+    ux_analysis: skip            # No UI components
 
   nodejs_api:
     step_00_analyze: required
@@ -25,15 +25,15 @@ step_relevance:
     consistency: required
     script_refs: skip            # No shell scripts typically
     step_04_directory: required
-    step_05_test_review: required
-    step_06_test_gen: required
-    step_07_test_exec: required
-    step_08_dependencies: required       # Critical for Node.js
-    step_09_code_quality: required
-    step_10_context: recommended
-    step_11_git: required
-    step_12_markdown_lint: recommended
-    step_14_ux_analysis: optional        # May have admin UI
+    test_review: required
+    test_gen: required
+    test_exec: required
+    dependencies: required       # Critical for Node.js
+    code_quality: required
+    context: recommended
+    git_finalization: required
+    markdown_lint: recommended
+    ux_analysis: optional        # May have admin UI
 
   nodejs_cli:
     step_00_analyze: required
@@ -41,15 +41,15 @@ step_relevance:
     consistency: required
     script_refs: skip
     step_04_directory: recommended
-    step_05_test_review: required
-    step_06_test_gen: required
-    step_07_test_exec: required
-    step_08_dependencies: required
-    step_09_code_quality: required
-    step_10_context: recommended
-    step_11_git: required
-    step_12_markdown_lint: recommended
-    step_14_ux_analysis: optional        # May have TUI components
+    test_review: required
+    test_gen: required
+    test_exec: required
+    dependencies: required
+    code_quality: required
+    context: recommended
+    git_finalization: required
+    markdown_lint: recommended
+    ux_analysis: optional        # May have TUI components
 
   nodejs_library:
     step_00_analyze: required
@@ -57,15 +57,15 @@ step_relevance:
     consistency: required
     script_refs: skip
     step_04_directory: recommended
-    step_05_test_review: required        # High test coverage expected
-    step_06_test_gen: required
-    step_07_test_exec: required
-    step_08_dependencies: required
-    step_09_code_quality: required
-    step_10_context: recommended
-    step_11_git: required
-    step_12_markdown_lint: required
-    step_14_ux_analysis: skip            # No UI components
+    test_review: required        # High test coverage expected
+    test_gen: required
+    test_exec: required
+    dependencies: required
+    code_quality: required
+    context: recommended
+    git_finalization: required
+    markdown_lint: required
+    ux_analysis: skip            # No UI components
 
   static_website:
     step_00_analyze: required
@@ -73,15 +73,15 @@ step_relevance:
     consistency: recommended
     script_refs: skip
     step_04_directory: recommended
-    step_05_test_review: optional        # Limited code
-    step_06_test_gen: skip
-    step_07_test_exec: optional
-    step_08_dependencies: optional
-    step_09_code_quality: recommended    # HTML/CSS validation
-    step_10_context: recommended
-    step_11_git: required
-    step_12_markdown_lint: required      # Content quality
-    step_14_ux_analysis: required        # Static website has UI
+    test_review: optional        # Limited code
+    test_gen: skip
+    test_exec: optional
+    dependencies: optional
+    code_quality: recommended    # HTML/CSS validation
+    context: recommended
+    git_finalization: required
+    markdown_lint: required      # Content quality
+    ux_analysis: required        # Static website has UI
 
   react_spa:
     step_00_analyze: required
@@ -89,15 +89,15 @@ step_relevance:
     consistency: recommended
     script_refs: skip
     step_04_directory: recommended
-    step_05_test_review: required
-    step_06_test_gen: required
-    step_07_test_exec: required
-    step_08_dependencies: required
-    step_09_code_quality: required       # Includes accessibility
-    step_10_context: recommended
-    step_11_git: required
-    step_12_markdown_lint: optional
-    step_14_ux_analysis: required        # React SPA has UI
+    test_review: required
+    test_gen: required
+    test_exec: required
+    dependencies: required
+    code_quality: required       # Includes accessibility
+    context: recommended
+    git_finalization: required
+    markdown_lint: optional
+    ux_analysis: required        # React SPA has UI
 
   python_app:
     step_00_analyze: required
@@ -105,15 +105,15 @@ step_relevance:
     consistency: required
     script_refs: optional        # May have shell scripts
     step_04_directory: recommended
-    step_05_test_review: required
-    step_06_test_gen: required
-    step_07_test_exec: required
-    step_08_dependencies: required       # requirements.txt, etc.
-    step_09_code_quality: required
-    step_10_context: recommended
-    step_11_git: required
-    step_12_markdown_lint: recommended
-    step_14_ux_analysis: optional        # May have web UI
+    test_review: required
+    test_gen: required
+    test_exec: required
+    dependencies: required       # requirements.txt, etc.
+    code_quality: required
+    context: recommended
+    git_finalization: required
+    markdown_lint: recommended
+    ux_analysis: optional        # May have web UI
 
   generic:
     step_00_analyze: required
@@ -121,19 +121,19 @@ step_relevance:
     consistency: recommended
     script_refs: optional
     step_04_directory: recommended
-    step_05_test_review: recommended
-    step_06_test_gen: optional
-    step_07_test_exec: optional
-    step_08_dependencies: optional
-    step_09_code_quality: recommended
-    step_10_context: recommended
-    step_11_git: required
-    step_12_markdown_lint: recommended
-    step_14_ux_analysis: optional        # Unknown if UI exists
+    test_review: recommended
+    test_gen: optional
+    test_exec: optional
+    dependencies: optional
+    code_quality: recommended
+    context: recommended
+    git_finalization: required
+    markdown_lint: recommended
+    ux_analysis: optional        # Unknown if UI exists
 
 # Step-specific adaptations for each project kind
 step_adaptations:
-  step_05_test_review:
+  test_review:
     nodejs_api:
       focus_areas:
         - "API endpoint coverage"
@@ -215,7 +215,7 @@ step_adaptations:
         - unit
         - integration
 
-  step_06_test_gen:
+  test_gen:
     nodejs_api:
       test_frameworks:
         - jest
@@ -250,7 +250,7 @@ step_adaptations:
         - unit
         - integration
 
-  step_08_dependencies:
+  dependencies:
     nodejs_api:
       check_files:
         - package.json
@@ -313,7 +313,7 @@ step_adaptations:
         - "Required system packages"
         - "Version compatibility"
 
-  step_09_code_quality:
+  code_quality:
     nodejs_api:
       linters:
         - eslint
@@ -427,7 +427,7 @@ step_adaptations:
         html_errors: 0
         accessibility_score: 85
 
-  step_10_context:
+  context:
     nodejs_api:
       analysis_focus:
         - "API design patterns"
@@ -491,7 +491,7 @@ step_adaptations:
         - "Testing strategy"
         - "Performance"
 
-  step_14_ux_analysis:
+  ux_analysis:
     react_spa:
       focus_areas:
         - "Component accessibility (ARIA, semantic HTML)"

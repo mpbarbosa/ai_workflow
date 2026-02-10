@@ -126,20 +126,20 @@
 6. `consistency.sh` - Cross-reference validation
 7. `script_refs.sh` - Script reference validation (shell projects only, auto-skips for Node.js/Python)
 8. `config_validation.sh` - Configuration validation
-9. `step_05_directory.sh` - Directory structure validation
-10. `step_06_test_review.sh` - Test coverage review
-11. `step_07_test_gen.sh` - Test case generation
-12. `step_08_test_exec.sh` - Test execution
-13. `step_09_dependencies.sh` - Dependency validation
-14. `step_10_code_quality.sh` - Code quality checks
-15. `step_11_7_frontend_dev.sh` - **Front-end development analysis (NEW v4.0.1)** ⭐ NEW
+9. `directory.sh` - Directory structure validation
+10. `test_review.sh` - Test coverage review
+11. `test_gen.sh` - Test case generation
+12. `test_exec.sh` - Test execution
+13. `dependencies.sh` - Dependency validation
+14. `code_quality.sh` - Code quality checks
+15. `frontend_dev.sh` - **Front-end development analysis (NEW v4.0.1)** ⭐ NEW
 16. `step_11_context.sh` - Context analysis
-17. `step_13_markdown_lint.sh` - Markdown linting
-18. `step_14_prompt_engineer.sh` - Prompt engineering (ai_workflow only)
-19. `step_15_ux_analysis.sh` - UX/UI analysis (v2.4.0, updated v4.0.1)
-20. `step_16_version_update.sh` - **AI-powered version updates (POST-PROCESSING - runs after 10,11.7,13,14,15)** ⭐ UPDATED
-21. `step_11_deployment_gate.sh` - Deployment readiness gate
-22. `step_12_git.sh` - **Git operations [FINAL STEP - commits all changes]**
+17. `markdown_lint.sh` - Markdown linting
+18. `prompt_engineer.sh` - Prompt engineering (ai_workflow only)
+19. `ux_analysis.sh` - UX/UI analysis (v2.4.0, updated v4.0.1)
+20. `final_version_update.sh` - **AI-powered version updates (POST-PROCESSING - runs after 10,11.7,13,14,15)** ⭐ UPDATED
+21. `deployment_gate.sh` - Deployment readiness gate
+22. `git_finalization.sh` - **Git operations [FINAL STEP - commits all changes]**
 
 ### Configuration Files (4 total in .workflow_core/config/)
 

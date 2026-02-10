@@ -1750,7 +1750,7 @@ fi
 
 ### Step 11.7: Front-End Development Analysis
 
-**File**: `step_11_7_frontend_dev.sh` (653 lines)  
+**File**: `frontend_dev.sh` (653 lines)  
 **Purpose**: Analyze front-end code for technical implementation quality and performance  
 **Dependencies**: Step 10 (code quality)  
 **AI Personas**: `front_end_developer` (NEW v4.0.1)  
@@ -1933,7 +1933,7 @@ esac
 
 ### Step 15: UX Analysis
 
-**File**: `step_15_ux_analysis.sh` (634 lines)  
+**File**: `ux_analysis.sh` (634 lines)  
 **Purpose**: Analyze UI for user experience and visual design quality  
 **Dependencies**: Step 11.7 (front-end development)  
 **AI Personas**: `ui_ux_designer` (UPDATED v4.0.1)  
@@ -2140,7 +2140,7 @@ esac
 
 ### Step 16: Semantic Version Update
 
-**File**: `step_16_version_update.sh` (484 lines)  
+**File**: `final_version_update.sh` (484 lines)  
 **Purpose**: Update semantic versions in files and project metadata  
 **Dependencies**: Steps 10, 11.7, 12, 13, 15 (runs after analysis)  
 **AI Personas**: `version_specialist`  

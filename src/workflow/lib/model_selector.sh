@@ -700,38 +700,86 @@ generate_model_definitions() {
       "tier": "$code_tier",
       "alternatives": [$(get_alternative_models "$code_tier" | sed 's/ /", "/g' | sed 's/^/"/' | sed 's/$/"/' | tr '\n' ' ')]
     },
-    "step_05_test_review": {
-      "model": "$(get_model_for_tier "$tests_tier" "step_05_test_review")",
+    "directory": {
+      "model": "$(get_model_for_tier "low" "directory")",
+      "reason": "$(get_model_reason "low" "directory validation")",
+      "tier": "low",
+      "alternatives": [$(get_alternative_models "low" | sed 's/ /", "/g' | sed 's/^/"/' | sed 's/$/"/' | tr '\n' ' ')]
+    },
+    "test_review": {
+      "model": "$(get_model_for_tier "$tests_tier" "test_review")",
       "reason": "$(get_model_reason "$tests_tier" "test analysis")",
       "tier": "$tests_tier",
       "alternatives": [$(get_alternative_models "$tests_tier" | sed 's/ /", "/g' | sed 's/^/"/' | sed 's/$/"/' | tr '\n' ' ')]
     },
-    "step_06_test_gen": {
-      "model": "$(get_model_for_tier "$tests_tier" "step_06_test_gen")",
+    "test_gen": {
+      "model": "$(get_model_for_tier "$tests_tier" "test_gen")",
       "reason": "Test generation (tier adjusted: $tests_tier → higher)",
       "tier": "$tests_tier",
       "alternatives": [$(get_alternative_models "$tests_tier" | sed 's/ /", "/g' | sed 's/^/"/' | sed 's/$/"/' | tr '\n' ' ')]
     },
-    "step_09_code_quality": {
-      "model": "$(get_model_for_tier "$code_tier" "step_09_code_quality")",
+    "test_exec": {
+      "model": "$(get_model_for_tier "low" "test_exec")",
+      "reason": "$(get_model_reason "low" "test execution")",
+      "tier": "low",
+      "alternatives": [$(get_alternative_models "low" | sed 's/ /", "/g' | sed 's/^/"/' | sed 's/$/"/' | tr '\n' ' ')]
+    },
+    "dependencies": {
+      "model": "$(get_model_for_tier "$code_tier" "dependencies")",
+      "reason": "$(get_model_reason "$code_tier" "dependency analysis")",
+      "tier": "$code_tier",
+      "alternatives": [$(get_alternative_models "$code_tier" | sed 's/ /", "/g' | sed 's/^/"/' | sed 's/$/"/' | tr '\n' ' ')]
+    },
+    "code_quality": {
+      "model": "$(get_model_for_tier "$code_tier" "code_quality")",
       "reason": "$(get_model_reason "$code_tier" "code analysis")",
       "tier": "$code_tier",
       "alternatives": [$(get_alternative_models "$code_tier" | sed 's/ /", "/g' | sed 's/^/"/' | sed 's/$/"/' | tr '\n' ' ')]
     },
-    "step_13_prompt_engineer": {
-      "model": "$(get_model_for_tier "high" "step_13_prompt_engineer")",
+    "deployment_gate": {
+      "model": "$(get_model_for_tier "high" "deployment_gate")",
+      "reason": "Deployment readiness requires careful analysis",
+      "tier": "high",
+      "alternatives": [$(get_alternative_models "high" | sed 's/ /", "/g' | sed 's/^/"/' | sed 's/$/"/' | tr '\n' ' ')]
+    },
+    "context": {
+      "model": "$(get_model_for_tier "medium" "context")",
+      "reason": "Context building for AI workflows",
+      "tier": "medium",
+      "alternatives": [$(get_alternative_models "medium" | sed 's/ /", "/g' | sed 's/^/"/' | sed 's/$/"/' | tr '\n' ' ')]
+    },
+    "frontend_dev": {
+      "model": "$(get_model_for_tier "high" "frontend_dev")",
+      "reason": "Frontend development analysis requires UI expertise",
+      "tier": "high",
+      "alternatives": [$(get_alternative_models "high" | sed 's/ /", "/g' | sed 's/^/"/' | sed 's/$/"/' | tr '\n' ' ')]
+    },
+    "git_finalization": {
+      "model": "$(get_model_for_tier "low" "git_finalization")",
+      "reason": "$(get_model_reason "low" "git operations")",
+      "tier": "low",
+      "alternatives": [$(get_alternative_models "low" | sed 's/ /", "/g' | sed 's/^/"/' | sed 's/$/"/' | tr '\n' ' ')]
+    },
+    "markdown_lint": {
+      "model": "$(get_model_for_tier "low" "markdown_lint")",
+      "reason": "$(get_model_reason "low" "markdown validation")",
+      "tier": "low",
+      "alternatives": [$(get_alternative_models "low" | sed 's/ /", "/g' | sed 's/^/"/' | sed 's/$/"/' | tr '\n' ' ')]
+    },
+    "prompt_engineer": {
+      "model": "$(get_model_for_tier "high" "prompt_engineer")",
       "reason": "Prompt engineering requires deep reasoning",
       "tier": "high",
       "alternatives": [$(get_alternative_models "high" | sed 's/ /", "/g' | sed 's/^/"/' | sed 's/$/"/' | tr '\n' ' ')]
     },
-    "step_14_ux_analysis": {
-      "model": "$(get_model_for_tier "$code_tier" "step_14_ux_analysis")",
+    "ux_analysis": {
+      "model": "$(get_model_for_tier "$code_tier" "ux_analysis")",
       "reason": "UX analysis (forced tier: high for UI reasoning)",
       "tier": "high",
       "alternatives": [$(get_alternative_models "high" | sed 's/ /", "/g' | sed 's/^/"/' | sed 's/$/"/' | tr '\n' ' ')]
     },
-    "step_15_version_update": {
-      "model": "$(get_model_for_tier "$code_tier" "step_15_version_update")",
+    "final_version_update": {
+      "model": "$(get_model_for_tier "$code_tier" "final_version_update")",
       "reason": "$(get_model_reason "$code_tier" "version finalization")",
       "tier": "$code_tier",
       "alternatives": [$(get_alternative_models "$code_tier" | sed 's/ /", "/g' | sed 's/^/"/' | sed 's/$/"/' | tr '\n' ' ')]
