@@ -113,7 +113,7 @@ workflow:
       
     - id: "05"
       name: "Directory Structure"
-      file: "step_05_directory.sh"
+      file: "directory.sh"
       description: "Validate and organize directory structure"
       phase: "structure"
       can_parallelize: false
@@ -122,7 +122,7 @@ workflow:
     # Testing Phase (06-08)
     - id: "06"
       name: "Test Review"
-      file: "step_06_test_review.sh"
+      file: "test_review.sh"
       description: "Review existing tests and identify gaps"
       phase: "testing"
       can_parallelize: false
@@ -131,7 +131,7 @@ workflow:
       
     - id: "07"
       name: "Test Generation"
-      file: "step_07_test_gen.sh"
+      file: "test_gen.sh"
       description: "Generate new tests based on review"
       phase: "testing"
       can_parallelize: false
@@ -140,7 +140,7 @@ workflow:
       
     - id: "08"
       name: "Test Execution"
-      file: "step_08_test_exec.sh"
+      file: "test_exec.sh"
       description: "Execute test suite and collect results"
       phase: "testing"
       can_parallelize: false
@@ -149,7 +149,7 @@ workflow:
     # Quality Phase (09-11)
     - id: "09"
       name: "Dependency Analysis"
-      file: "step_09_dependencies.sh"
+      file: "dependencies.sh"
       description: "Analyze and validate dependencies"
       phase: "quality"
       can_parallelize: true
@@ -157,7 +157,7 @@ workflow:
       
     - id: "10"
       name: "Code Quality"
-      file: "step_10_code_quality.sh"
+      file: "code_quality.sh"
       description: "Run code quality checks and linting"
       phase: "quality"
       can_parallelize: true
@@ -166,7 +166,7 @@ workflow:
       
     - id: "11"
       name: "Deployment Gate"
-      file: "step_11_deployment_gate.sh"
+      file: "deployment_gate.sh"
       description: "Validate deployment readiness"
       phase: "quality"
       can_parallelize: false
@@ -174,7 +174,7 @@ workflow:
       
     - id: "11.5"
       name: "Context Analysis"
-      file: "step_11_5_context.sh"
+      file: "context.sh"
       description: "Analyze project context and relationships"
       phase: "quality"
       can_parallelize: true
@@ -182,7 +182,7 @@ workflow:
       
     - id: "11.7"
       name: "Front-End Development Analysis"
-      file: "step_11_7_frontend_dev.sh"
+      file: "frontend_dev.sh"
       description: "Analyze front-end code for technical implementation and performance"
       phase: "quality"
       can_parallelize: true
@@ -191,7 +191,7 @@ workflow:
       
     - id: "12"
       name: "Markdown Linting"
-      file: "step_13_markdown_lint.sh"
+      file: "markdown_lint.sh"
       description: "Lint and fix markdown documentation"
       phase: "finalization"
       can_parallelize: true
@@ -199,7 +199,7 @@ workflow:
       
     - id: "13"
       name: "Prompt Engineering"
-      file: "step_14_prompt_engineer.sh"
+      file: "prompt_engineer.sh"
       description: "Optimize AI prompts and templates"
       phase: "finalization"
       can_parallelize: true
@@ -208,7 +208,7 @@ workflow:
     # Finalization Phase (14)
     - id: "14"
       name: "UX Analysis"
-      file: "step_15_ux_analysis.sh"
+      file: "ux_analysis.sh"
       description: "UI/UX and accessibility analysis"
       phase: "finalization"
       can_parallelize: true
@@ -218,7 +218,7 @@ workflow:
     # Version Management (15)
     - id: "15"
       name: "Version Update"
-      file: "step_16_version_update.sh"
+      file: "final_version_update.sh"
       description: "Finalize version and generate changelog"
       phase: "versioning"
       can_parallelize: false
@@ -228,7 +228,7 @@ workflow:
     # Git Completion - MUST BE LAST (16)
     - id: "16"
       name: "Git Operations"
-      file: "step_12_git.sh"
+      file: "git_finalization.sh"
       description: "Git status and change management - FINAL STEP"
       phase: "completion"
       can_parallelize: false

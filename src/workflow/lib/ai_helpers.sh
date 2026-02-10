@@ -2205,18 +2205,20 @@ normalize_step_id() {
         "02"|"step_02"|"step02") echo "consistency" ;;
         "03"|"step_03"|"step03") echo "script_refs" ;;
         "04"|"step_04"|"step04") echo "config_validation" ;;
-        "05"|"step_05"|"step05") echo "step_05_test_review" ;;
-        "06"|"step_06"|"step06") echo "step_06_test_gen" ;;
-        "07"|"step_07"|"step07") echo "step_07_test_exec" ;;
-        "08"|"step_08"|"step08") echo "step_08_test_exec" ;;
-        "09"|"step_09"|"step09") echo "step_09_code_quality" ;;
-        "10"|"step_10"|"step10") echo "step_10_code_quality" ;;
-        "11"|"step_11"|"step11") echo "step_11_context" ;;
-        "12"|"step_12"|"step12") echo "step_12_markdown_lint" ;;
-        "13"|"step_13"|"step13") echo "step_13_prompt_engineer" ;;
-        "14"|"step_14"|"step14") echo "step_14_ux_analysis" ;;
-        "15"|"step_15"|"step15") echo "step_15_version_update" ;;
-        "16"|"step_16"|"step16") echo "step_16_git_finalization" ;;
+        "05"|"step_05"|"step05") echo "directory" ;;
+        "06"|"step_06"|"step06") echo "test_review" ;;
+        "07"|"step_07"|"step07") echo "test_gen" ;;
+        "08"|"step_08"|"step08") echo "test_exec" ;;
+        "09"|"step_09"|"step09") echo "dependencies" ;;
+        "10"|"step_10"|"step10") echo "code_quality" ;;
+        "11"|"step_11"|"step11") echo "deployment_gate" ;;
+        "11.5"|"step_11_5") echo "context" ;;
+        "11.7"|"step_11_7") echo "frontend_dev" ;;
+        "12"|"step_12"|"step12") echo "git_finalization" ;;
+        "13"|"step_13"|"step13") echo "markdown_lint" ;;
+        "14"|"step_14"|"step14") echo "prompt_engineer" ;;
+        "15"|"step_15"|"step15") echo "ux_analysis" ;;
+        "16"|"step_16"|"step16") echo "final_version_update" ;;
         *) echo "$step_id" ;;  # Return original if no match
     esac
 }

@@ -5,11 +5,11 @@ set -euo pipefail
 # Step 6: AI-Powered Test Review (Refactored)
 # Purpose: Review existing tests and identify coverage gaps
 # Part of: Tests & Documentation Workflow Automation v2.0.7
-# Version: 2.0.7 (Refactored - High Cohesion, Low Coupling)
+# Version: 2.0.10 (Refactored - High Cohesion, Low Coupling)
 ################################################################################
 
 # Module version information
-readonly STEP6_VERSION="2.0.7"
+readonly STEP6_VERSION="2.0.8"
 readonly STEP6_VERSION_MAJOR=2
 readonly STEP6_VERSION_MINOR=0
 readonly STEP6_VERSION_PATCH=0
@@ -18,17 +18,17 @@ readonly STEP6_VERSION_PATCH=0
 STEP6_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 # Source modular libraries
-# shellcheck source=step_06_lib/test_discovery.sh
-source "${STEP6_DIR}/step_06_lib/test_discovery.sh"
+# shellcheck source=test_review_lib/test_discovery.sh
+source "${STEP6_DIR}/test_review_lib/test_discovery.sh"
 
-# shellcheck source=step_06_lib/coverage_analysis.sh
-source "${STEP6_DIR}/step_06_lib/coverage_analysis.sh"
+# shellcheck source=test_review_lib/coverage_analysis.sh
+source "${STEP6_DIR}/test_review_lib/coverage_analysis.sh"
 
-# shellcheck source=step_06_lib/ai_integration.sh
-source "${STEP6_DIR}/step_06_lib/ai_integration.sh"
+# shellcheck source=test_review_lib/ai_integration.sh
+source "${STEP6_DIR}/test_review_lib/ai_integration.sh"
 
-# shellcheck source=step_06_lib/reporting.sh
-source "${STEP6_DIR}/step_06_lib/reporting.sh"
+# shellcheck source=test_review_lib/reporting.sh
+source "${STEP6_DIR}/test_review_lib/reporting.sh"
 
 # ==============================================================================
 # BACKWARD COMPATIBILITY ALIASES
