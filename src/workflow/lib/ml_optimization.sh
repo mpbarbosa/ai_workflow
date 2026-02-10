@@ -3,7 +3,7 @@ set -euo pipefail
 
 ################################################################################
 # Machine Learning Optimization Module
-# Version: 3.0.5
+# Version: 3.0.9
 # Purpose: Predictive optimization using historical workflow data
 #
 # Features:
@@ -153,7 +153,7 @@ extract_change_features() {
         } >> "${WORKFLOW_LOG_FILE:-/dev/null}" 2>/dev/null
     fi
     
-    features=$(jq_safe -n \
+    features=$(jq_safe -nc \
         --arg change_type "$change_type" \
         --argjson total_files "$total_files" \
         --argjson doc_files "$doc_files" \
@@ -179,7 +179,10 @@ extract_change_features() {
             max_depth: $max_depth,
             hour_of_day: $hour,
             day_of_week: $day
-        }')
+        }' 2>/dev/null || echo '{}')
+    
+    # Ensure features is valid single-line JSON
+    features=$(echo "$features" | jq -c '.' 2>/dev/null || echo '{}')
     
     echo "$features"
 }
@@ -401,7 +404,7 @@ recommend_parallelization() {
             strategy: $strategy,
             confidence: $confidence,
             expected_benefit_pct: $benefit
-        }'
+        }' 2>/dev/null || echo '{"recommend_parallel": false, "strategy": "sequential", "confidence": "low", "expected_benefit_pct": "0"}'
 }
 
 # ==============================================================================
@@ -470,7 +473,7 @@ recommend_skip_steps() {
     if [[ ${#unique_steps[@]} -eq 0 ]]; then
         echo "[]"
     else
-        printf '%s\n' "${unique_steps[@]}" | jq -R 'tonumber' | jq -s .
+        printf '%s\n' "${unique_steps[@]}" | jq -R 'tonumber' | jq -s . 2>/dev/null || echo "[]"
     fi
 }
 
@@ -543,7 +546,7 @@ log_anomaly() {
             predicted_duration: $predicted,
             deviation_pct: $deviation,
             date: (now | strftime("%Y-%m-%d %H:%M:%S"))
-        }' >> "$anomaly_log"
+        }' 2>/dev/null >> "$anomaly_log" || true
 }
 
 # ==============================================================================
@@ -585,9 +588,14 @@ record_step_execution() {
     [[ -z "$features" || "$features" == '""' || "$features" == "null" ]] && features="{}"
     
     # Compact features JSON to single line for jq --argjson (multiline breaks parsing)
-    # Take only the first line to avoid multi-object issues
+    # Use jq -c to compact the entire JSON structure, not just first line
     local features_compact
-    features_compact=$(echo "$features" | head -1 | jq -c '.' 2>/dev/null || echo "{}")
+    features_compact=$(echo "$features" | jq -c '.' 2>/dev/null || echo "{}")
+    
+    # Validate features_compact is valid JSON and single-line (no newlines)
+    if [[ -z "$features_compact" ]] || [[ "$features_compact" == *$'\n'* ]]; then
+        features_compact="{}"
+    fi
     
     local record
     record=$(jq_safe -n \
@@ -605,9 +613,13 @@ record_step_execution() {
             timestamp: $timestamp,
             parallel: $parallel,
             date: (now | strftime("%Y-%m-%d %H:%M:%S"))
-        }')
+        }' 2>/dev/null || echo '{}')
     
-    echo "$record" >> "$ML_TRAINING_DATA"
+    # Only append if we got a valid record
+    if [[ -n "$record" && "$record" != "{}" ]]; then
+        # Compact the record to a single line before appending (JSONL format requirement)
+        echo "$record" | jq -c . >> "$ML_TRAINING_DATA" 2>/dev/null || true
+    fi
 }
 
 # ==============================================================================
@@ -706,21 +718,33 @@ apply_ml_optimization() {
     fi
     
     echo "Features detected:" >&2
-    echo "$features" | jq . >&2
+    if echo "$features" | jq . >/dev/null 2>&1; then
+        echo "$features" | jq . >&2
+    else
+        echo "$features" >&2
+    fi
     echo "" >&2
     
     # Get parallelization recommendation
     local parallel_rec=$(recommend_parallelization "$features")
     
     echo "Parallelization recommendation:" >&2
-    echo "$parallel_rec" | jq . >&2
+    if echo "$parallel_rec" | jq . >/dev/null 2>&1; then
+        echo "$parallel_rec" | jq . >&2
+    else
+        echo "$parallel_rec" >&2
+    fi
     echo "" >&2
     
     # Get skip recommendations
     local skip_rec=$(recommend_skip_steps "$features")
     
     echo "Skip recommendations:" >&2
-    echo "$skip_rec" | jq . >&2
+    if echo "$skip_rec" | jq . >/dev/null 2>&1; then
+        echo "$skip_rec" | jq . >&2
+    else
+        echo "$skip_rec" >&2
+    fi
     echo "" >&2
     
     # Predict workflow duration
@@ -734,10 +758,30 @@ apply_ml_optimization() {
     echo "" >&2
     
     # Build complete recommendation
+    # Compact JSON to single line for jq --argjson compatibility
+    # Suppress errors to avoid polluting output - we validate and use fallbacks below
+    local features_compact=$(echo "$features" | jq -c . 2>/dev/null)
+    local parallel_compact=$(echo "$parallel_rec" | jq -c . 2>/dev/null)
+    local skip_compact=$(echo "$skip_rec" | jq -c . 2>/dev/null)
+    
+    # Validate compacted values and use fallbacks if invalid
+    if [[ -z "$features_compact" ]] || [[ "$features_compact" == *$'\n'* ]] || ! echo "$features_compact" | jq -e . >/dev/null 2>&1; then
+        [[ "${DEBUG:-false}" == "true" ]] && echo "[DEBUG] Invalid or empty features_compact, using fallback" >&2
+        features_compact="{}"
+    fi
+    if [[ -z "$parallel_compact" ]] || [[ "$parallel_compact" == *$'\n'* ]] || ! echo "$parallel_compact" | jq -e . >/dev/null 2>&1; then
+        [[ "${DEBUG:-false}" == "true" ]] && echo "[DEBUG] Invalid or empty parallel_compact, using fallback" >&2
+        parallel_compact="{}"
+    fi
+    if [[ -z "$skip_compact" ]] || [[ "$skip_compact" == *$'\n'* ]] || ! echo "$skip_compact" | jq -e . >/dev/null 2>&1; then
+        [[ "${DEBUG:-false}" == "true" ]] && echo "[DEBUG] Invalid or empty skip_compact, using fallback" >&2
+        skip_compact="[]"
+    fi
+    
     local recommendations=$(jq_safe -n \
-        --argjson features "$features" \
-        --argjson parallel "$parallel_rec" \
-        --argjson skip "$skip_rec" \
+        --argjson features "$features_compact" \
+        --argjson parallel "$parallel_compact" \
+        --argjson skip "$skip_compact" \
         --argjson duration "$predicted_duration" \
         '{
             ml_enabled: true,
@@ -746,10 +790,16 @@ apply_ml_optimization() {
             skip_steps: $skip,
             predicted_duration: $duration,
             confidence: "high"
-        }')
+        }' 2>/dev/null || echo '{"ml_enabled": false, "error": "recommendation_build_failed"}')
+    
+    # Validate recommendations is valid JSON
+    if ! echo "$recommendations" | jq -e . >/dev/null 2>&1; then
+        print_error "Failed to build valid recommendations JSON"
+        recommendations='{"ml_enabled": false, "error": "invalid_recommendations"}'
+    fi
     
     # Save predictions for validation
-    echo "$recommendations" > "$ML_PREDICTIONS"
+    echo "$recommendations" > "$ML_PREDICTIONS" 2>/dev/null || true
     
     echo "$recommendations"
 }

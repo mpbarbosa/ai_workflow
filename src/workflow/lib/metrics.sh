@@ -160,6 +160,11 @@ stop_step_timer() {
         local features="${ML_FEATURES:-{}}"
         # Ensure features is valid JSON (not empty string)
         [[ -z "$features" || "$features" == '""' ]] && features="{}"
+        
+        # Compact features to single line for jq --argjson (required by jq_safe validation)
+        local features_compact
+        features_compact=$(echo "$features" | jq -c '.' 2>/dev/null || echo "{}")
+        
         local issues_found=0
         
         # Try to determine if issues were found (heuristic based on status)
@@ -167,7 +172,7 @@ stop_step_timer() {
             issues_found=1
         fi
         
-        record_step_execution "${step_num}" "${duration}" "${features}" "${issues_found}"
+        record_step_execution "${step_num}" "${duration}" "${features_compact}" "${issues_found}"
     fi
 }
 

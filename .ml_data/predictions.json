@@ -1,1 +1,26 @@
-
+{
+  "ml_enabled": true,
+  "features": {
+    "change_type": "code_only",
+    "total_files": 6,
+    "doc_files": 0,
+    "code_files": 3,
+    "test_files": 1,
+    "config_files": 1,
+    "lines_added": 465,
+    "lines_deleted": 3361,
+    "lines_changed": 3826,
+    "max_depth": 4,
+    "hour_of_day": 13,
+    "day_of_week": 2
+  },
+  "parallelization": {
+    "recommend_parallel": false,
+    "strategy": "sequential",
+    "confidence": "low",
+    "expected_benefit_pct": "0"
+  },
+  "skip_steps": [],
+  "predicted_duration": 18733290,
+  "confidence": "high"
+}

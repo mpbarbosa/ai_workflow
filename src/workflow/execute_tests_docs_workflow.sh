@@ -4,7 +4,7 @@ set -euo pipefail
 
 ################################################################################
 # Tests & Documentation Workflow Automation Script
-# Version: 4.0.5
+# Version: 4.0.7
 # Purpose: Automate the complete tests and documentation update workflow
 # Related: /prompts/tests_documentation_update_enhanced.txt
 #
@@ -26,7 +26,7 @@ set -euo pipefail
 #   Step 16:  Test Execution (QA Automation Engineer + CI/CD Specialist)
 #   Step 16:  Dependency Validation (DevOps Engineer + Package Management Specialist)
 #   Step 16:  Code Quality Validation (Software Quality Engineer + Code Review Specialist)
-#   Step 11.7: Front-End Development (Front-End Developer + Technical Architect) ⭐ NEW v4.0.5
+#   Step 11.7: Front-End Development (Front-End Developer + Technical Architect) ⭐ NEW v4.0.7
 #   Step 16: Context Analysis (Technical Project Manager + Workflow Orchestration Specialist)
 #   Step 16: Markdown Linting (Technical Documentation Specialist) ⭐ NEW
 #   Step 16: Prompt Engineer Analysis (Prompt Engineer + AI Specialist) ⭐ NEW v2.3.1
@@ -123,7 +123,7 @@ set -euo pipefail
 # CONFIGURATION & CONSTANTS
 # ==============================================================================
 
-SCRIPT_VERSION="4.0.5"  # Configuration-Driven Step Execution
+SCRIPT_VERSION="4.0.7"  # Configuration-Driven Step Execution
 SCRIPT_NAME="Tests & Documentation Workflow Automation"
 WORKFLOW_HOME="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
 PROJECT_ROOT="$(pwd)"  # Default: current directory; can be overridden with --target option
@@ -1440,7 +1440,7 @@ execute_step() {
     # Resolve step name and number
     if [[ "$STEP_REGISTRY_LOADED" == true ]]; then
         # v4.0.0: Use step registry for resolution
-        # v4.0.5: Support fractional step numbers (11.7, 01.5, etc.)
+        # v4.0.7: Support fractional step numbers (11.7, 01.5, etc.)
         if [[ "$step_identifier" =~ ^[0-9]+(\.[0-9]+)?[a-z]?$ ]]; then
             # It's a number (possibly with decimal) - get the name
             step_num="$step_identifier"
@@ -2204,7 +2204,7 @@ execute_full_workflow() {
     fi
     
     # Step 11.7: Front-End Development Analysis (with checkpoint)
-    # NEW in v4.0.5: Analyzes front-end code for technical implementation and performance
+    # NEW in v4.0.7: Analyzes front-end code for technical implementation and performance
     # Runs AFTER Step 10 (Code Quality), BEFORE Step 15 (UX Analysis)
     # Only executes for projects with front-end code (React, Vue, Angular, Svelte, etc.)
     if [[ -z "$failed_step" && $resume_from -le 117 ]] && should_execute_step "11.7"; then
@@ -3031,7 +3031,7 @@ main() {
         # Apply parallelization recommendation
         # NOTE: Only applies if user hasn't explicitly disabled parallel execution with --no-parallel
         # We check if PARALLEL_EXECUTION was explicitly set by the user via command-line
-        local ml_parallel=$(echo "$ML_RECOMMENDATIONS" | jq -r '.parallelization.recommend_parallel // false')
+        local ml_parallel=$(echo "$ML_RECOMMENDATIONS" | jq -r '.parallelization.recommend_parallel // false' 2>/dev/null || echo "false")
         if [[ "$ml_parallel" == "true" ]] && [[ "${PARALLEL_EXECUTION}" == "false" ]] && [[ "${USER_DISABLED_PARALLEL:-false}" != "true" ]]; then
             print_info "ML recommendation: Enabling parallel execution"
             PARALLEL_EXECUTION=true
@@ -3039,7 +3039,7 @@ main() {
         fi
         
         # Show predicted duration
-        local predicted_duration=$(echo "$ML_RECOMMENDATIONS" | jq -r '.predicted_duration // 0')
+        local predicted_duration=$(echo "$ML_RECOMMENDATIONS" | jq -r '.predicted_duration // 0' 2>/dev/null || echo "0")
         if [[ $predicted_duration -gt 0 ]]; then
             local pred_min=$((predicted_duration / 60))
             print_success "Predicted workflow duration: ${pred_min}m (${predicted_duration}s)"

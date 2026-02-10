@@ -14,7 +14,7 @@ readonly STEP14_VERSION_MINOR=0
 readonly STEP14_VERSION_PATCH=0
 
 # Configuration file path
-readonly AI_HELPERS_YAML="${SCRIPT_DIR}/../../.workflow_core/config/ai_helpers.yaml"
+readonly AI_HELPERS_YAML="${SCRIPT_DIR}/../../../.workflow_core/config/ai_helpers.yaml"
 
 # Check if this step should run based on project type
 # Returns: 0 if should run, 1 if should skip
