@@ -187,7 +187,7 @@ step0_analyze_changes() {
                 # Display key model assignments
                 print_info ""
                 print_info "Key model assignments:"
-                local step1_model=$(echo "$model_definitions" | jq -r '.model_definitions.step_01_documentation.model' 2>/dev/null || echo "N/A")
+                local step1_model=$(echo "$model_definitions" | jq -r '.model_definitions.documentation.model' 2>/dev/null || echo "N/A")
                 local step5_model=$(echo "$model_definitions" | jq -r '.model_definitions.step_05_test_review.model' 2>/dev/null || echo "N/A")
                 local step9_model=$(echo "$model_definitions" | jq -r '.model_definitions.step_09_code_quality.model' 2>/dev/null || echo "N/A")
                 

@@ -30,7 +30,7 @@ The numbering allows for:
 - Prerequisites verification
 - Environment readiness check
 
-**step_01_documentation.sh** - Documentation Updates
+**documentation.sh** - Documentation Updates
 - AI-powered documentation review
 - README and guide updates
 - Documentation consistency checks
