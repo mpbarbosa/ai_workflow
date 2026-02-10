@@ -1366,8 +1366,9 @@ should_execute_step() {
     # Normalize step identifier (support both name and index)
     local step_to_check="$step_identifier"
     
-    # If it's a number and registry is loaded, convert to name
-    if [[ "$step_identifier" =~ ^[0-9]+[a-z]?$ ]] && [[ "$STEP_REGISTRY_LOADED" == true ]]; then
+    # If it's a number (with optional letter or decimal) and registry is loaded, convert to name
+    # Supports: 1, 1a, 11.7, etc.
+    if [[ "$step_identifier" =~ ^[0-9]+(\.[0-9]+)?[a-z]?$ ]] && [[ "$STEP_REGISTRY_LOADED" == true ]]; then
         local step_name
         step_name=$(get_step_by_index "$step_identifier" 2>/dev/null)
         if [[ -n "$step_name" ]]; then
@@ -1379,7 +1380,7 @@ should_execute_step() {
     local alt_identifier=""
     if [[ "$step_identifier" =~ ^[a-z_]+$ ]] && [[ "$STEP_REGISTRY_LOADED" == true ]]; then
         alt_identifier=$(get_step_index "$step_identifier" 2>/dev/null)
-    elif [[ "$step_identifier" =~ ^[0-9]+[a-z]?$ ]] && [[ "$STEP_REGISTRY_LOADED" == true ]]; then
+    elif [[ "$step_identifier" =~ ^[0-9]+(\.[0-9]+)?[a-z]?$ ]] && [[ "$STEP_REGISTRY_LOADED" == true ]]; then
         alt_identifier=$(get_step_by_index "$step_identifier" 2>/dev/null)
     fi
     
@@ -1411,8 +1412,9 @@ execute_step() {
     # Resolve step name and number
     if [[ "$STEP_REGISTRY_LOADED" == true ]]; then
         # v4.0.0: Use step registry for resolution
-        if [[ "$step_identifier" =~ ^[0-9]+[a-z]?$ ]]; then
-            # It's a number - get the name
+        # v4.0.1: Support fractional step numbers (11.7, 01.5, etc.)
+        if [[ "$step_identifier" =~ ^[0-9]+(\.[0-9]+)?[a-z]?$ ]]; then
+            # It's a number (possibly with decimal) - get the name
             step_num="$step_identifier"
             step_name=$(get_step_by_index "$step_num" 2>/dev/null)
             if [[ -z "$step_name" ]]; then
@@ -2177,11 +2179,11 @@ execute_full_workflow() {
     # NEW in v4.0.1: Analyzes front-end code for technical implementation and performance
     # Runs AFTER Step 10 (Code Quality), BEFORE Step 15 (UX Analysis)
     # Only executes for projects with front-end code (React, Vue, Angular, Svelte, etc.)
-    if [[ -z "$failed_step" && $resume_from -le 117 ]] && should_execute_step 117; then
-        log_step_start 117 "Front-End Development Analysis"
+    if [[ -z "$failed_step" && $resume_from -le 117 ]] && should_execute_step "11.7"; then
+        log_step_start "11.7" "Front-End Development Analysis"
         step11_7_frontend_dev_analysis || { failed_step="Step 11.7"; }
         ((executed_steps++)) || true
-        save_checkpoint 117
+        save_checkpoint "11.7"
     elif [[ -z "$failed_step" && $resume_from -le 117 ]]; then
         print_info "Skipping Step 11.7 (not selected)"
         log_to_workflow "INFO" "Skipping Step 11.7 (not selected)"
@@ -2246,15 +2248,29 @@ execute_full_workflow() {
     # Final status
     echo ""
     print_header "Workflow Execution Summary"
-    log_to_workflow "INFO" "Workflow execution completed"
+    
+    # Show failure status FIRST and prominently
+    if [[ -n "$failed_step" ]]; then
+        log_to_workflow "ERROR" "Workflow FAILED at: $failed_step"
+        echo ""
+        print_error "════════════════════════════════════════════════════════"
+        print_error "   ❌ WORKFLOW FAILED"
+        print_error "════════════════════════════════════════════════════════"
+        print_error "Failed at: $failed_step"
+        print_error "════════════════════════════════════════════════════════"
+        echo ""
+    else
+        log_to_workflow "INFO" "Workflow execution completed successfully"
+        print_success "✅ Workflow completed successfully"
+        echo ""
+    fi
+    
     print_info "Executed steps: $executed_steps"
     log_to_workflow "INFO" "Executed steps: $executed_steps"
     print_info "Skipped steps: $skipped_steps"
     log_to_workflow "INFO" "Skipped steps: $skipped_steps"
     
     if [[ -n "$failed_step" ]]; then
-        print_error "Workflow failed at: $failed_step"
-        log_to_workflow "ERROR" "Workflow FAILED at: $failed_step"
         show_progress
         
         # Play completion sound notification (v3.1.0)

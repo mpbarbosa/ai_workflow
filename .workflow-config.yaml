@@ -180,6 +180,15 @@ workflow:
       can_parallelize: true
       dependencies: ["10"]
       
+    - id: "11.7"
+      name: "Front-End Development Analysis"
+      file: "step_11_7_frontend_dev.sh"
+      description: "Analyze front-end code for technical implementation and performance"
+      phase: "quality"
+      can_parallelize: true
+      dependencies: ["10"]
+      ai_persona: "front_end_developer"
+      
     - id: "12"
       name: "Markdown Linting"
       file: "step_13_markdown_lint.sh"
@@ -244,7 +253,7 @@ workflow:
       
     quality:
       description: "Code quality and dependency checks"
-      steps: ["09", "10", "11", "11.5"]
+      steps: ["09", "10", "11", "11.5", "11.7"]
       
     finalization:
       description: "Git operations and final checks"
