@@ -74,9 +74,9 @@ AI Personas (17 total)
 
 These personas handle documentation analysis, creation, and quality assurance.
 
-#### technical_writer (NEW v3.1.0)
+#### technical_writer (NEW v3.1.0, UPDATED v4.0.1)
 
-**Purpose**: Generate comprehensive documentation from scratch for undocumented or new projects.
+**Purpose**: Generate comprehensive documentation from scratch for undocumented or new projects with necessity-first evaluation.
 
 **Expertise**:
 - API documentation creation
@@ -84,10 +84,12 @@ These personas handle documentation analysis, creation, and quality assurance.
 - User guides and tutorials
 - Developer guides
 - Code documentation standards
+- Documentation needs assessment (NEW v4.0.1)
 
 **Used In**: Step 0b (Bootstrap Documentation)
 
 **Key Capabilities**:
+- **Necessity Evaluation** (NEW v4.0.1): Evaluates whether documentation generation is truly needed before proceeding
 - Analyzes codebase structure to understand components
 - Creates comprehensive documentation hierarchy
 - Generates API references with examples
@@ -95,8 +97,38 @@ These personas handle documentation analysis, creation, and quality assurance.
 - Creates getting started guides and tutorials
 - Language-agnostic with dynamic language-specific standards
 
+**Necessity-First Framework** (v4.0.1):
+
+The technical_writer now evaluates documentation needs BEFORE generating content:
+
+✅ **Generates Documentation When**:
+- Critical Gap: No/minimal README (< 100 words)
+- Public API Undocumented: Missing function/class docs
+- Setup Impossible: No installation instructions
+- Architecture Mystery: Complex system without overview
+- Breaking Changes: Major version without migration guide
+- Legal/Security Gap: Missing LICENSE/security policy
+- Explicit Request: Task specifically asks for docs
+
+❌ **Skips Generation When**:
+- Complete Coverage: All public APIs documented
+- Clear Getting Started: README has basics
+- Recent Updates: Docs modified < 3 months ago
+- No Code Changes: No new features since last update
+- Adequate Examples: Working examples exist
+- Architecture Documented: System design is clear
+
+**Decision Framework**:
+- **Phase 0 (Necessity Check)**: Evaluates all criteria before generation
+- **Default Behavior**: Do nothing unless clear need demonstrated
+- **Transparent Decisions**: Always outputs evaluation with evidence
+- **Token Efficient**: Prevents unnecessary AI processing for well-documented projects
+
 **Output Format**:
-- Complete documentation files (README, API docs, guides)
+- **Necessity Report**: Clear PASS/FAIL decision with evidence
+- **IF PASS**: Shows criteria met → generates documentation
+- **IF FAIL**: Shows evaluation → exits with optional minor suggestions
+- Complete documentation files (README, API docs, guides) - only if needed
 - Organized documentation structure
 - Code examples and usage patterns
 - Architecture diagrams (when applicable)
@@ -105,6 +137,8 @@ These personas handle documentation analysis, creation, and quality assurance.
 ```bash
 # Bootstrap documentation for a new project
 ./execute_tests_docs_workflow.sh --steps 0b --target /path/to/undocumented-project
+
+# Result: Evaluates necessity first, generates only if criteria met
 ```
 
 **When to Use**:
@@ -112,6 +146,19 @@ These personas handle documentation analysis, creation, and quality assurance.
 - Legacy projects needing documentation overhaul
 - Open source projects requiring comprehensive docs
 - After major refactoring requiring doc rewrite
+- Periodic documentation audits (will skip if docs are current)
+
+**Configuration** (`.workflow_core/config/ai_helpers.yaml`):
+- Prompt template: `technical_writer_prompt` (v4.2.0)
+- Submodule commit: `a165069` (2026-02-09)
+- Enhancement: Necessity-first evaluation framework
+- Lines: ~150 (evaluation criteria + task template + approach)
+
+**Behavioral Changes (v4.0.1)**:
+- **OLD**: Always proceeded with documentation generation
+- **NEW**: Evaluates necessity → generates only if criteria met
+- **Impact**: 60-80% reduction in unnecessary documentation generation for well-documented projects
+- **Token Savings**: Significant reduction in AI processing costs
 
 ---
 

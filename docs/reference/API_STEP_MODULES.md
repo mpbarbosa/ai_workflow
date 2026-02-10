@@ -145,10 +145,10 @@ new_version=$(increment_version "1.2.3" "minor")  # Returns "1.3.0"
 ### Step 0b: Bootstrap Documentation
 
 **File**: `step_0b_bootstrap_docs.sh` (431 lines)  
-**Purpose**: Generate initial documentation for new projects  
+**Purpose**: Generate initial documentation for new projects with necessity-first evaluation  
 **Dependencies**: None  
-**AI Personas**: `documentation_specialist`  
-**Execution**: ~2-3 minutes
+**AI Personas**: `technical_writer` (v3.1.0, UPDATED v4.0.1 with necessity evaluation)  
+**Execution**: ~2-3 minutes (if generation needed; < 30 seconds if skipped)
 
 #### Key Functions
 
@@ -156,14 +156,16 @@ new_version=$(increment_version "1.2.3" "minor")  # Returns "1.3.0"
 ```bash
 step0b_bootstrap_documentation
 ```
-- **Description**: Creates starter documentation for projects with minimal docs
+- **Description**: Creates starter documentation for projects with minimal docs (with necessity-first evaluation v4.0.1)
 - **Logic**:
-  1. Check if documentation exists (README.md, docs/)
-  2. Detect project type and tech stack
-  3. Generate AI-powered initial documentation
-  4. Create standard doc structure
-- **Returns**: 0 on success, 1 on failure
-- **Triggers**: Projects with < 3 documentation files
+  1. Evaluate necessity using 7 criteria (NEW v4.0.1)
+  2. Exit cleanly if documentation is adequate
+  3. Check if documentation exists (README.md, docs/)
+  4. Detect project type and tech stack
+  5. Generate AI-powered initial documentation (only if needed)
+  6. Create standard doc structure
+- **Returns**: 0 on success/skip, 1 on failure
+- **Triggers**: Projects meeting necessity criteria (critical gaps, missing APIs, no setup docs, etc.)
 
 ##### `should_bootstrap()`
 ```bash
@@ -178,11 +180,13 @@ fi
   - No CHANGELOG.md
 - **Returns**: 0 if should bootstrap, 1 otherwise
 
-**AI Integration**:
-- Generates README.md with project overview
-- Creates initial CHANGELOG.md
-- Generates docs/QUICK_START.md
-- Suggests documentation structure
+**AI Integration** (technical_writer persona v4.0.1):
+- **Phase 0**: Necessity evaluation (7 criteria for generation, 6 for skip)
+- **Phase 1**: Generates README.md with project overview (if needed)
+- **Phase 2**: Creates initial CHANGELOG.md (if needed)
+- **Phase 3**: Generates docs/QUICK_START.md (if needed)
+- **Phase 4**: Suggests documentation structure (if gaps exist)
+- **Default**: Do nothing unless clear documentation need demonstrated
 
 ---
 

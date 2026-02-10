@@ -1,6 +1,6 @@
 # AI Workflow Automation - Quick Reference
 
-**Version**: v4.0.0  
+**Version**: v4.0.1  
 **One-Page Cheat Sheet** for common operations
 
 ## Table of Contents

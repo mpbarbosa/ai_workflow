@@ -320,20 +320,21 @@ cd /path/to/your/project
 # Step 15: Generate reports
 ```
 
-### Option 3: Bootstrap New Documentation (v3.1.0)
+### Option 3: Bootstrap New Documentation (v3.1.0, UPDATED v4.0.1)
 
 ```bash
-# Generate comprehensive docs from scratch
+# Generate comprehensive docs from scratch (with necessity-first evaluation)
 ./execute_tests_docs_workflow.sh \
   --steps 0b \
   --auto
 
-# Step 0b creates:
+# Step 0b evaluates necessity FIRST, then creates (if needed):
 # - README.md
 # - API documentation
 # - Architecture guides
 # - User guides
 # - Developer documentation
+# Note: Will skip generation if documentation is already adequate
 ```
 
 ### Step-by-Step: Documentation Workflow

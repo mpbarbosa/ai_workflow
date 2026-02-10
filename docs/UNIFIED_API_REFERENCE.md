@@ -1577,15 +1577,16 @@ execute_step_01() {
 #### Step 0b: Bootstrap Documentation
 
 **Module**: `step_0b_bootstrap_docs.sh`  
-**Purpose**: Generate comprehensive documentation from scratch  
+**Purpose**: Generate comprehensive documentation from scratch with necessity-first evaluation  
 **Dependencies**: `ai_helpers.sh`, `ai_personas.sh`  
-**AI Persona**: `technical_writer`
+**AI Persona**: `technical_writer` (v3.1.0, UPDATED v4.0.1)
 
 **Key Operations**:
-- Analyze codebase structure
-- Generate API documentation
-- Create user guides
-- Generate architecture documentation
+- Evaluate documentation necessity (NEW v4.0.1)
+- Analyze codebase structure (if generation needed)
+- Generate API documentation (if gaps exist)
+- Create user guides (if missing)
+- Generate architecture documentation (if complex system undocumented)
 
 **Configuration**:
 ```yaml

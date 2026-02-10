@@ -1,6 +1,6 @@
 # AI Workflow Automation
 
-[![Current version is 4.0.0](https://img.shields.io/badge/version-4.0.0-blue.svg)](https://github.com/mpbarbosa/ai_workflow/releases)
+[![Current version is 4.0.1](https://img.shields.io/badge/version-4.0.1-blue.svg)](https://github.com/mpbarbosa/ai_workflow/releases)
 [![License is MIT](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 [![Code quality score is B+ with 87 out of 100 points](https://img.shields.io/badge/quality-B%2B%20(87%2F100)-brightgreen.svg)](src/COMPREHENSIVE_CODE_QUALITY_REPORT.md)
 [![37 or more tests are passing](https://img.shields.io/badge/tests-37%2B%20passing-brightgreen.svg)](tests/)
@@ -13,7 +13,7 @@
 Intelligent workflow automation system for validating and enhancing documentation, code, and tests with AI support.
 
 **Migrated from**: mpbarbosa_site repository (2025-12-18)  
-**Version**: v4.0.0  
+**Version**: v4.0.1  
 **Repository**: [github.com/mpbarbosa/ai_workflow](https://github.com/mpbarbosa/ai_workflow)
 
 > 🚀 **NEW in v4.0.0**: Configuration-driven step execution! Use descriptive step names (`documentation_updates`) instead of numbers. See [Migration Guide](docs/MIGRATION_GUIDE_v4.0.md).
@@ -50,7 +50,7 @@ This repository provides a comprehensive, modular workflow automation system tha
 - **Smart Execution**: 40-85% faster (change-based step skipping)
 - **Parallel Execution**: 33% faster (independent steps run simultaneously)
 - **Audio Notifications** (NEW v3.1.0): Sound alerts for continue prompts and workflow completion
-- **Step 0b: Bootstrap Documentation** (NEW v3.1.0): Generate comprehensive docs from scratch
+- **Step 0b: Bootstrap Documentation** (NEW v3.1.0, UPDATED v4.0.1): Generate comprehensive docs from scratch with necessity-first evaluation
 - **Step 1 Optimization** (NEW v3.2.0): 75-85% faster documentation analysis
   - Incremental processing: Skip unchanged docs (96% savings)
   - Parallel analysis: Concurrent AI processing (71% savings)
@@ -430,7 +430,7 @@ This project is licensed under the **MIT License** - see the [LICENSE](LICENSE) 
 - **Created**: 2025-12-14
 - **Repository**: [github.com/mpbarbosa/ai_workflow](https://github.com/mpbarbosa/ai_workflow)
 - **Migrated From**: mpbarbosa_site (2025-12-18)
-- **Current Version**: v3.2.7 (2026-02-08)
+- **Current Version**: v4.0.1 (2026-02-09)
 
 ### Contributing
 

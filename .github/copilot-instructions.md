@@ -328,10 +328,10 @@ python3 scripts/validate_api_docs.py                                # Validate A
 
 > 📋 **Complete List**: See [docs/PROJECT_REFERENCE.md#ai-personas-17-total](../docs/PROJECT_REFERENCE.md#ai-personas-17-total) for all 17 functional AI personas.
 
-The system uses **17 specialized AI personas** including documentation_specialist, code_reviewer, test_engineer, front_end_developer (NEW v4.0.1), ui_ux_designer (UPDATED v4.0.1), and technical_writer (v3.1.0). ⭐ UPDATED
+The system uses **17 specialized AI personas** including documentation_specialist, code_reviewer, test_engineer, front_end_developer (NEW v4.0.1), ui_ux_designer (UPDATED v4.0.1), and technical_writer (v3.1.0, UPDATED v4.0.1 with necessity-first evaluation). ⭐ UPDATED
 
 **Key Steps Using AI**:
-- **Step 0b: Bootstrap Documentation** (v3.1.0): technical_writer persona generates comprehensive documentation from scratch
+- **Step 0b: Bootstrap Documentation** (v3.1.0, UPDATED v4.0.1): technical_writer persona generates comprehensive documentation from scratch with necessity-first evaluation (only generates when truly needed)
 - **Step 11.7: Front-End Development Analysis** (NEW v4.0.1): front_end_developer persona analyzes technical implementation ⭐ NEW
 - **Step 15: UX Analysis** (v2.4.0, updated v4.0.1): ui_ux_designer persona reviews user experience and visual design ⭐ UPDATED
 - **Steps 1-16**: Various specialized personas for documentation, testing, code quality, and finalization

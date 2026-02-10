@@ -1,7 +1,7 @@
 # Getting Started with AI Workflow Automation
 
-**Version**: 3.1.0  
-**Last Updated**: 2026-02-08  
+**Version**: 4.0.1  
+**Last Updated**: 2026-02-09  
 **Prerequisites**: Bash 4.0+, Git, Node.js 25.2.1+, GitHub Copilot CLI
 
 ## Table of Contents

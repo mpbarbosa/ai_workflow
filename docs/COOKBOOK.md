@@ -1,7 +1,7 @@
 # Workflow Cookbook - Practical Recipes and Patterns
 
-**Version**: v4.0.0  
-**Last Updated**: 2026-02-08
+**Version**: v4.0.1  
+**Last Updated**: 2026-02-09
 
 This cookbook provides practical, copy-paste ready recipes for common workflow automation scenarios. Each recipe includes context, step-by-step instructions, and expected outcomes.
 

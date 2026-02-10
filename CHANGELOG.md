@@ -5,6 +5,53 @@ All notable changes to the AI Workflow Automation project will be documented in 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [4.0.1] - 2026-02-09
+
+### 🔧 Enhancements - Technical Writer Necessity-First Evaluation
+
+#### .workflow_core Submodule Update (commit a165069)
+- **technical_writer Persona Enhancement**: Added necessity-first evaluation framework to prevent unnecessary documentation generation
+- **Decision Criteria**: Evaluates 7 generation criteria and 6 skip conditions before generating docs
+- **Token Optimization**: Reduces AI token usage by skipping generation for well-documented projects
+- **Conservative Approach**: Default behavior is "do nothing" unless clear documentation gap exists
+
+#### Impact on Step 0b (Bootstrap Documentation)
+- **Smarter Execution**: Step 0b now evaluates documentation necessity before proceeding
+- **Token Savings**: Avoids redundant documentation generation when docs are adequate
+- **Clear Decision Framework**: Transparent evaluation with explicit criteria
+- **Backward Compatible**: Existing workflows continue to function unchanged
+
+#### Necessity Evaluation Criteria
+
+✅ **Generates Documentation When**:
+1. Critical Gap: No/minimal README (< 100 words)
+2. Public API Undocumented: Missing function/class docs
+3. Setup Impossible: No installation instructions
+4. Architecture Mystery: Complex system (5+ modules) without overview
+5. Breaking Changes: Major version without migration guide
+6. Legal/Security Gap: Missing LICENSE/security policy
+7. Explicit Request: Task specifically asks for new documentation
+
+❌ **Skips Generation When**:
+1. Complete Coverage: All public APIs documented
+2. Clear Getting Started: README covers basics
+3. Recent Updates: Docs modified < 3 months ago
+4. No Code Changes: No new features since last update
+5. Adequate Examples: Working examples exist
+6. Architecture Documented: System design is clear
+
+### 📝 Documentation
+- Updated: `docs/reference/AI_PERSONAS_GUIDE.md` - Added necessity-first framework details
+- Updated: `docs/PROJECT_REFERENCE.md` - Noted technical_writer enhancement
+- Updated: `.github/copilot-instructions.md` - Clarified Step 0b behavior
+
+### ⚙️ Configuration Changes
+- `.workflow_core` submodule: `6c95df5` → `a165069`
+- `ai_helpers.yaml`: Enhanced `technical_writer_prompt` with necessity evaluation
+- Prompt template updated to v4.2.0 (from v4.1.0)
+
+---
+
 ## [4.0.0] - 2026-02-08
 
 ### 🚀 Major Features - Configuration-Driven Step Execution

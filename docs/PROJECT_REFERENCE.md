@@ -224,7 +224,9 @@ This architecture enables the same workflow to intelligently adapt to different 
 ### v4.0.1 (2026-02-09)
 - **Front-end development analysis**: New Step 11.7 with front_end_developer AI persona ⭐ NEW
 - **UI/UX designer modernization**: Step 15 updated to use ui_ux_designer persona ⭐ UPDATED
+- **Technical writer enhancement** (v4.0.1): Added necessity-first evaluation framework to technical_writer persona with 7 generation criteria and 6 skip conditions for smarter documentation generation ⭐ UPDATED
 - **17 AI personas**: Added front_end_developer and updated ui_ux_designer (previously ux_designer)
+- **Smart documentation generation**: Generate-only-when-needed with 7 criteria for necessity
 - **Persona separation**: Technical implementation (Step 11.7) vs. user experience (Step 15)
 - **Project-kind support**: React SPA, Vue SPA, Static Website, Client SPA enhancements
 - **23 workflow steps**: Expanded from 20 steps
