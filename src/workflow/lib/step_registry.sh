@@ -183,7 +183,7 @@ _load_legacy_step_definitions() {
         "consistency_analysis:consistency.sh:step2_check_consistency"
         "documentation_optimization:doc_optimize.sh:step2_5_doc_optimization"
         "script_reference_validation:script_refs.sh:step3_validate_script_references"
-        "config_validation:step_04_config_validation.sh:step4_config_validation"
+        "config_validation:config_validation.sh:step4_config_validation"
         "directory_validation:step_05_directory.sh:step5_validate_directory"
         "test_review:step_06_test_review.sh:step6_review_tests"
         "test_generation:step_07_test_gen.sh:step7_generate_tests"

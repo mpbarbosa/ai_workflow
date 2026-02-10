@@ -955,7 +955,7 @@ Legacy numeric filenames (still supported, v4.0.0):
 - `consistency.sh` → Use `consistency_analysis.sh`
 - `doc_optimize.sh` → Use `documentation_optimization.sh`
 - `script_refs.sh` → Use `script_reference_validation.sh`
-- `step_04_config_validation.sh` → Use `config_validation.sh`
+- `config_validation.sh` → Use `config_validation.sh`
 - `step_05_directory.sh` → Use `directory_validation.sh`
 - `step_06_test_review.sh` → Use `test_review.sh`
 - `step_07_test_gen.sh` → Use `test_generation.sh`

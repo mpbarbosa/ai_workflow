@@ -380,7 +380,7 @@ Analyze script interdependencies and validate references.
 
 ### Step 04: Config Validation
 
-**File**: `step_04_config_validation.sh`  
+**File**: `config_validation.sh`  
 **Purpose**: Validate configuration files (YAML, JSON, .env)  
 **AI Persona**: None (automated)  
 **Dependencies**: `config_validator.sh`, `jq_wrapper.sh`, `yaml_parser.sh`

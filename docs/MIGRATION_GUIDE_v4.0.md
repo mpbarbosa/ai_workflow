@@ -24,7 +24,7 @@ All step files have been renamed from numbered to descriptive names:
 | `consistency.sh` | `consistency_analysis.sh` |
 | `doc_optimize.sh` | `documentation_optimization.sh` |
 | `script_refs.sh` | `script_reference_validation.sh` |
-| `step_04_config_validation.sh` | `config_validation.sh` |
+| `config_validation.sh` | `config_validation.sh` |
 | `step_05_directory.sh` | `directory_validation.sh` |
 | `step_06_test_review.sh` | `test_review.sh` |
 | `step_07_test_gen.sh` | `test_generation.sh` |

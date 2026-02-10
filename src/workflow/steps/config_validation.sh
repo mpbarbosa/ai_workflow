@@ -392,7 +392,7 @@ step4_validate_configuration() {
     # Phase 4: AI-powered validation
     print_info "Running AI-powered validation..."
     
-    local validation_output="${BACKLOG_RUN_DIR}/step_04_config_validation.md"
+    local validation_output="${BACKLOG_RUN_DIR}/config_validation.md"
     mkdir -p "${BACKLOG_RUN_DIR}"
     
     # Get project context
@@ -435,7 +435,7 @@ $(if [[ $syntax_errors -eq 0 && -z "$security_findings" ]]; then
     echo "- ✅ All validation checks passed"
 fi)
 
-See \`step_04_config_validation.md\` for detailed AI analysis.
+See \`config_validation.md\` for detailed AI analysis.
 EOF
     
     print_info "Summary saved to: $summary_file"

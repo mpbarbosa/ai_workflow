@@ -125,7 +125,7 @@
 5. `doc_optimize.sh` - Documentation optimization (NEW v3.2.0) ⭐ NEW
 6. `consistency.sh` - Cross-reference validation
 7. `script_refs.sh` - Script reference validation (shell projects only, auto-skips for Node.js/Python)
-8. `step_04_config_validation.sh` - Configuration validation
+8. `config_validation.sh` - Configuration validation
 9. `step_05_directory.sh` - Directory structure validation
 10. `step_06_test_review.sh` - Test coverage review
 11. `step_07_test_gen.sh` - Test case generation

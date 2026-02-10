@@ -1685,7 +1685,7 @@ step_0b:
 
 #### Step 04: Config Validation
 
-**Module**: `step_04_config_validation.sh`  
+**Module**: `config_validation.sh`  
 **Purpose**: Validate workflow and project configuration  
 **Dependencies**: `config_wizard.sh`, `validation.sh`  
 **AI Persona**: `config_validator`
