@@ -14,6 +14,28 @@ readonly STEP9_VERSION_MAJOR=2
 readonly STEP9_VERSION_MINOR=2
 readonly STEP9_VERSION_PATCH=0
 
+# ==============================================================================
+# CLEANUP MANAGEMENT
+# ==============================================================================
+
+# Track temporary files for cleanup
+declare -a STEP09_TEMP_FILES=()
+
+# Register temp file for cleanup
+track_step09_temp() {
+    local temp_file="$1"
+    [[ -n "$temp_file" ]] && STEP09_TEMP_FILES+=("$temp_file")
+}
+
+# Cleanup handler for step 9
+cleanup_step09_files() {
+    local file
+    for file in "${STEP09_TEMP_FILES[@]}"; do
+        [[ -f "$file" ]] && rm -f "$file" 2>/dev/null
+    done
+    STEP09_TEMP_FILES=()
+}
+
 # Source dependency cache module
 STEP9_LIB_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/../lib" && pwd)"
 if [[ -f "${STEP9_LIB_DIR}/dependency_cache.sh" ]]; then
@@ -131,7 +153,7 @@ Validation focused on system tools and git repository health.
     local issues=0
     local dependency_report
     dependency_report=$(mktemp)
-    TEMP_FILES+=("$dependency_report")
+    track_step09_temp "$dependency_report"
     
     # Initialize dependency cache
     if command -v init_dependency_cache &>/dev/null; then
@@ -146,10 +168,10 @@ Validation focused on system tools and git repository health.
     local npm_version="N/A"
     local audit_output
     audit_output=$(mktemp)
-    TEMP_FILES+=("$audit_output")
+    track_step09_temp "$audit_output"
     local outdated_output
     outdated_output=$(mktemp)
-    TEMP_FILES+=("$outdated_output")
+    track_step09_temp "$outdated_output"
     
     # PHASE 1: Automated dependency analysis (ADAPTIVE - Phase 3)
     print_info "Phase 1: Automated dependency analysis (${language})..."
@@ -492,7 +514,7 @@ CRITICAL: Invalid ${package_file} syntax. Cannot validate dependencies.
             # Save prompt to temporary file for tracking
             local temp_prompt_file
             temp_prompt_file=$(mktemp)
-            TEMP_FILES+=("$temp_prompt_file")
+            track_step09_temp "$temp_prompt_file"
             echo "$copilot_prompt" > "$temp_prompt_file"
             
             # Invoke Copilot CLI
@@ -547,5 +569,16 @@ step8_validate_dependencies() {
     step9_validate_dependencies "$@"
 }
 
+# Export cleanup functions
+export -f track_step09_temp
+export -f cleanup_step09_files
+
 # Export step functions
 export -f detect_project_tech_stack_step9 step9_validate_dependencies step8_validate_dependencies
+
+# ==============================================================================
+# CLEANUP TRAP
+# ==============================================================================
+
+# Ensure cleanup runs on exit
+trap cleanup_step09_files EXIT INT TERM

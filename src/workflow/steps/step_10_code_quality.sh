@@ -14,6 +14,28 @@ readonly STEP10_VERSION_MAJOR=2
 readonly STEP10_VERSION_MINOR=1
 readonly STEP10_VERSION_PATCH=0
 
+# ==============================================================================
+# CLEANUP MANAGEMENT
+# ==============================================================================
+
+# Track temporary files for cleanup
+declare -a STEP10_TEMP_FILES=()
+
+# Register temp file for cleanup
+track_step10_temp() {
+    local temp_file="$1"
+    [[ -n "$temp_file" ]] && STEP10_TEMP_FILES+=("$temp_file")
+}
+
+# Cleanup handler for step 10
+cleanup_step10_files() {
+    local file
+    for file in "${STEP10_TEMP_FILES[@]}"; do
+        [[ -f "$file" ]] && rm -f "$file" 2>/dev/null
+    done
+    STEP10_TEMP_FILES=()
+}
+
 # Build AI prompt for code quality validation
 # Args: $1=total_files $2=js_files $3=html_files $4=css_files
 #       $5=quality_summary $6=quality_report_content $7=large_files_list $8=sample_code
@@ -77,7 +99,7 @@ step10_code_quality_validation() {
     
     local quality_issues=0
     local quality_report=$(mktemp)
-    TEMP_FILES+=("$quality_report")
+    track_step10_temp "$quality_report"
     
     # PHASE 1: Automated code quality checks (ADAPTIVE - Phase 3)
     local language="${PRIMARY_LANGUAGE:-javascript}"
@@ -135,7 +157,7 @@ step10_code_quality_validation() {
     if [[ -n "$lint_cmd" ]]; then
         print_info "Running ${language} linter..."
         local lint_output=$(mktemp)
-        TEMP_FILES+=("$lint_output")
+        track_step10_temp "$lint_output"
         
         if [[ "$DRY_RUN" == true ]]; then
             print_info "[DRY RUN] Would execute: $lint_cmd"
@@ -171,7 +193,7 @@ step10_code_quality_validation() {
     if [[ "$language" == "bash" ]] && command -v shellmetrics >/dev/null 2>&1; then
         print_info "Running shellmetrics for bash script complexity analysis..."
         local shellmetrics_output=$(mktemp)
-        TEMP_FILES+=("$shellmetrics_output")
+        track_step10_temp "$shellmetrics_output"
         
         # Find all shell scripts
         local shell_scripts=$(find . -type f -name "*.sh" ! -path "*/node_modules/*" ! -path "*/.git/*" 2>/dev/null)
@@ -383,7 +405,7 @@ $(head -50 "$file" 2>/dev/null)  # Increased from 30 lines (Dec 15, 2025) for be
             # Save prompt to temporary file for tracking
             local temp_prompt_file
             temp_prompt_file=$(mktemp)
-            TEMP_FILES+=("$temp_prompt_file")
+            track_step10_temp "$temp_prompt_file"
             echo "$copilot_prompt" > "$temp_prompt_file"
             
             # Invoke Copilot CLI
@@ -438,5 +460,16 @@ step9_code_quality_validation() {
     step10_code_quality_validation "$@"
 }
 
+# Export cleanup functions
+export -f track_step10_temp
+export -f cleanup_step10_files
+
 # Export step function
 export -f step10_code_quality_validation step9_code_quality_validation
+
+# ==============================================================================
+# CLEANUP TRAP
+# ==============================================================================
+
+# Ensure cleanup runs on exit
+trap cleanup_step10_files EXIT INT TERM

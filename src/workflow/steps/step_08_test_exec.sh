@@ -14,6 +14,28 @@ readonly STEP8_VERSION_MAJOR=2
 readonly STEP8_VERSION_MINOR=2
 readonly STEP8_VERSION_PATCH=0
 
+# ==============================================================================
+# CLEANUP MANAGEMENT
+# ==============================================================================
+
+# Track temporary files for cleanup
+declare -a STEP08_TEMP_FILES=()
+
+# Register temp file for cleanup
+track_step08_temp() {
+    local temp_file="$1"
+    [[ -n "$temp_file" ]] && STEP08_TEMP_FILES+=("$temp_file")
+}
+
+# Cleanup handler for step 8
+cleanup_step08_files() {
+    local file
+    for file in "${STEP08_TEMP_FILES[@]}"; do
+        [[ -f "$file" ]] && rm -f "$file" 2>/dev/null
+    done
+    STEP08_TEMP_FILES=()
+}
+
 # Source test validation library
 STEP8_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 source "${STEP8_DIR}/../lib/test_validation.sh"
@@ -81,8 +103,9 @@ step8_execute_test_suite() {
     local coverage_summary_file
     
     test_results_file=$(mktemp)
+    track_step08_temp "$test_results_file"
     coverage_summary_file=$(mktemp)
-    TEMP_FILES+=("$test_results_file" "$coverage_summary_file")
+    track_step08_temp "$coverage_summary_file"
     
     # PHASE 1: Automated test execution (ADAPTIVE - Phase 3)
     local test_cmd=""
@@ -290,7 +313,7 @@ Coverage Metrics:
             # Save prompt to temporary file for tracking
             local temp_prompt_file
             temp_prompt_file=$(mktemp)
-            TEMP_FILES+=("$temp_prompt_file")
+            track_step08_temp "$temp_prompt_file"
             echo "$copilot_prompt" > "$temp_prompt_file"
             
             # Invoke Copilot CLI
@@ -413,5 +436,16 @@ $(cat "$test_results_file")
     fi
 }
 
+# Export cleanup functions
+export -f track_step08_temp
+export -f cleanup_step08_files
+
 # Export step function
 export -f step8_execute_test_suite
+
+# ==============================================================================
+# CLEANUP TRAP
+# ==============================================================================
+
+# Ensure cleanup runs on exit
+trap cleanup_step08_files EXIT INT TERM

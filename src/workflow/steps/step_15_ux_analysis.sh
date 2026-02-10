@@ -18,6 +18,28 @@ readonly STEP15_VERSION_MAJOR=1
 readonly STEP15_VERSION_MINOR=0
 readonly STEP15_VERSION_PATCH=0
 
+# ==============================================================================
+# CLEANUP MANAGEMENT
+# ==============================================================================
+
+# Track temporary files for cleanup
+declare -a STEP15_TEMP_FILES=()
+
+# Register temp file for cleanup
+track_step15_temp() {
+    local temp_file="$1"
+    [[ -n "$temp_file" ]] && STEP15_TEMP_FILES+=("$temp_file")
+}
+
+# Cleanup handler for step 15
+cleanup_step15_files() {
+    local file
+    for file in "${STEP15_TEMP_FILES[@]}"; do
+        [[ -f "$file" ]] && rm -f "$file" 2>/dev/null
+    done
+    STEP15_TEMP_FILES=()
+}
+
 # Determine script directory and project root
 STEP15_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 WORKFLOW_LIB_DIR="${STEP15_DIR}/../lib"
@@ -375,8 +397,9 @@ EOF
     
     local project_kind="${PROJECT_KIND:-generic}"
     local ux_report=$(mktemp)
+    track_step15_temp "$ux_report"
     local ai_output=$(mktemp)
-    TEMP_FILES+=("$ux_report" "$ai_output")
+    track_step15_temp "$ai_output"
     
     print_info "Analyzing UI components for project type: $project_kind"
     
@@ -615,8 +638,19 @@ For comprehensive UX analysis:
 EOF
 }
 
+# Export cleanup functions
+export -f track_step15_temp
+export -f cleanup_step15_files
+
 # Export main function for workflow execution
 if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
     echo "This script should be sourced by the main workflow, not executed directly."
     exit 1
 fi
+
+# ==============================================================================
+# CLEANUP TRAP
+# ==============================================================================
+
+# Ensure cleanup runs on exit
+trap cleanup_step15_files EXIT INT TERM

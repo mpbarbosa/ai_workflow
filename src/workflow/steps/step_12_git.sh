@@ -50,6 +50,28 @@ readonly STEP12_VERSION_MAJOR=2
 readonly STEP12_VERSION_MINOR=3
 readonly STEP12_VERSION_PATCH=0
 
+# ==============================================================================
+# CLEANUP MANAGEMENT
+# ==============================================================================
+
+# Track temporary files for cleanup
+declare -a STEP12_TEMP_FILES=()
+
+# Register temp file for cleanup
+track_step12_temp() {
+    local temp_file="$1"
+    [[ -n "$temp_file" ]] && STEP12_TEMP_FILES+=("$temp_file")
+}
+
+# Cleanup handler for step 12
+cleanup_step12_files() {
+    local file
+    for file in "${STEP12_TEMP_FILES[@]}"; do
+        [[ -f "$file" ]] && rm -f "$file" 2>/dev/null
+    done
+    STEP12_TEMP_FILES=()
+}
+
 # Build AI prompt for git commit message generation
 # Args: $1=script_version $2=change_scope $3=git_context $4=changed_files
 #       $5=diff_summary $6=git_analysis_content $7=diff_sample
@@ -441,7 +463,7 @@ step12_git_finalization() {
     cd "$PROJECT_ROOT"
     
     local git_analysis=$(mktemp)
-    TEMP_FILES+=("$git_analysis")
+    track_step12_temp "$git_analysis"
     
     # Dry-run preview
     if [[ "$DRY_RUN" == true ]]; then
@@ -710,7 +732,7 @@ Dry run mode enabled. No actual git operations performed.
     local ai_commit_msg=""
     local use_ai_message=false
     local commit_msg_file=$(mktemp)
-    TEMP_FILES+=("$commit_msg_file")
+    track_step12_temp "$commit_msg_file"
     
     # Check if Copilot CLI is available
     if is_copilot_available; then
@@ -854,7 +876,18 @@ step11_git_finalization() {
     step12_git_finalization "$@"
 }
 
+# Export cleanup functions
+export -f track_step12_temp
+export -f cleanup_step12_files
+
 # Export functions
 export -f push_if_ahead
 export -f process_submodules
 export -f step12_git_finalization step11_git_finalization
+
+# ==============================================================================
+# CLEANUP TRAP
+# ==============================================================================
+
+# Ensure cleanup runs on exit
+trap cleanup_step12_files EXIT INT TERM

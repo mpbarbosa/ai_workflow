@@ -15,6 +15,28 @@ readonly STEP13_VERSION_MAJOR=2
 readonly STEP13_VERSION_MINOR=1
 readonly STEP13_VERSION_PATCH=0
 
+# ==============================================================================
+# CLEANUP MANAGEMENT
+# ==============================================================================
+
+# Track temporary files for cleanup
+declare -a STEP13_TEMP_FILES=()
+
+# Register temp file for cleanup
+track_step13_temp() {
+    local temp_file="$1"
+    [[ -n "$temp_file" ]] && STEP13_TEMP_FILES+=("$temp_file")
+}
+
+# Cleanup handler for step 13
+cleanup_step13_files() {
+    local file
+    for file in "${STEP13_TEMP_FILES[@]}"; do
+        [[ -f "$file" ]] && rm -f "$file" 2>/dev/null
+    done
+    STEP13_TEMP_FILES=()
+}
+
 # Main step function - validates markdown files with mdl linting
 # Returns: 0 for success, 1 for failure
 step13_markdown_linting() {
@@ -24,7 +46,7 @@ step13_markdown_linting() {
     
     local lint_issues=0
     local lint_report=$(mktemp)
-    TEMP_FILES+=("$lint_report")
+    track_step13_temp "$lint_report"
     
     # PHASE 1: Automated markdown linting with mdl
     print_info "Phase 1: Markdown linting analysis with mdl..."
@@ -56,7 +78,7 @@ step13_markdown_linting() {
     
     # Create temporary file for mdl output
     local mdl_output=$(mktemp)
-    TEMP_FILES+=("$mdl_output")
+    track_step13_temp "$mdl_output"
     
     # Run mdl and capture output
     if [[ "$DRY_RUN" == false ]]; then
@@ -151,7 +173,7 @@ step13_markdown_linting() {
         print_info "Preparing AI analysis request..."
         
         local ai_prompt_file=$(mktemp)
-        TEMP_FILES+=("$ai_prompt_file")
+        track_step13_temp "$ai_prompt_file"
         
         # Pre-gather all context to avoid Copilot needing to run commands
         local current_branch
@@ -285,3 +307,17 @@ markdownlint integration complete"
         return 0  # Non-blocking - warnings don't fail the workflow
     fi
 }
+
+# Export cleanup functions
+export -f track_step13_temp
+export -f cleanup_step13_files
+
+# Export step function
+export -f step13_markdown_linting
+
+# ==============================================================================
+# CLEANUP TRAP
+# ==============================================================================
+
+# Ensure cleanup runs on exit
+trap cleanup_step13_files EXIT INT TERM
