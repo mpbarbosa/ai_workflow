@@ -21,7 +21,7 @@ All step files have been renamed from numbered to descriptive names:
 | `step_00_analyze.sh` | `pre_analysis.sh` |
 | `documentation.sh` | `documentation_updates.sh` |
 | `api_coverage.sh` | `api_coverage_analysis.sh` |
-| `step_02_consistency.sh` | `consistency_analysis.sh` |
+| `consistency.sh` | `consistency_analysis.sh` |
 | `doc_optimize.sh` | `documentation_optimization.sh` |
 | `step_03_script_refs.sh` | `script_reference_validation.sh` |
 | `step_04_config_validation.sh` | `config_validation.sh` |

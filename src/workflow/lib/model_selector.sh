@@ -688,8 +688,8 @@ generate_model_definitions() {
       "tier": "$docs_tier",
       "alternatives": [$(get_alternative_models "$docs_tier" | sed 's/ /", "/g' | sed 's/^/"/' | sed 's/$/"/' | tr '\n' ' ')]
     },
-    "step_02_consistency": {
-      "model": "$(get_model_for_tier "$docs_tier" "step_02_consistency")",
+    "consistency": {
+      "model": "$(get_model_for_tier "$docs_tier" "consistency")",
       "reason": "$(get_model_reason "$docs_tier" "documentation validation")",
       "tier": "$docs_tier",
       "alternatives": [$(get_alternative_models "$docs_tier" | sed 's/ /", "/g' | sed 's/^/"/' | sed 's/$/"/' | tr '\n' ' ')]

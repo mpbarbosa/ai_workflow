@@ -952,7 +952,7 @@ Legacy numeric filenames (still supported, v4.0.0):
 - `bootstrap_docs.sh` → Use `bootstrap_documentation.sh`
 - `documentation.sh` → Use `documentation_updates.sh`
 - `api_coverage.sh` → Use `api_coverage_analysis.sh`
-- `step_02_consistency.sh` → Use `consistency_analysis.sh`
+- `consistency.sh` → Use `consistency_analysis.sh`
 - `doc_optimize.sh` → Use `documentation_optimization.sh`
 - `step_03_script_refs.sh` → Use `script_reference_validation.sh`
 - `step_04_config_validation.sh` → Use `config_validation.sh`

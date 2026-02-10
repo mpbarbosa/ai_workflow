@@ -377,7 +377,7 @@ execute_ai_review_step1 "$prompt" "step_01_analysis.md"
 
 ### Step 02: Cross-Reference Validation
 
-**File**: `step_02_consistency.sh` (210 lines) + **4 submodules** (790 lines)  
+**File**: `consistency.sh` (210 lines) + **4 submodules** (790 lines)  
 **Purpose**: Validate documentation consistency and cross-references  
 **Dependencies**: Step 01  
 **AI Personas**: `consistency_analyst`  

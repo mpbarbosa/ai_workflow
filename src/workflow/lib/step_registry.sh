@@ -180,7 +180,7 @@ _load_legacy_step_definitions() {
         "bootstrap_documentation:bootstrap_docs.sh:step0b_bootstrap_documentation"
         "documentation_updates:documentation.sh:step1_update_documentation"
         "api_coverage_analysis:api_coverage.sh:step1_5_api_coverage_analysis"
-        "consistency_analysis:step_02_consistency.sh:step2_check_consistency"
+        "consistency_analysis:consistency.sh:step2_check_consistency"
         "documentation_optimization:doc_optimize.sh:step2_5_doc_optimization"
         "script_reference_validation:step_03_script_refs.sh:step3_validate_script_references"
         "config_validation:step_04_config_validation.sh:step4_config_validation"

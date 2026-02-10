@@ -123,7 +123,7 @@
 3. `bootstrap_docs.sh` - Bootstrap documentation (NEW v3.1.0) ⭐ NEW
 4. `documentation.sh` - Documentation updates
 5. `doc_optimize.sh` - Documentation optimization (NEW v3.2.0) ⭐ NEW
-6. `step_02_consistency.sh` - Cross-reference validation
+6. `consistency.sh` - Cross-reference validation
 7. `step_03_script_refs.sh` - Script reference validation (shell projects only, auto-skips for Node.js/Python)
 8. `step_04_config_validation.sh` - Configuration validation
 9. `step_05_directory.sh` - Directory structure validation

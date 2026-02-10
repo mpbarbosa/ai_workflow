@@ -1643,7 +1643,7 @@ step_0b:
 
 #### Step 02: Consistency Check
 
-**Module**: `step_02_consistency.sh`  
+**Module**: `consistency.sh`  
 **Purpose**: Verify consistency across documentation  
 **Dependencies**: `ai_helpers.sh`  
 **AI Persona**: `documentation_specialist`

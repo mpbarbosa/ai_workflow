@@ -36,7 +36,7 @@ The numbering allows for:
 - Documentation consistency checks
 - Uses `documentation_specialist` persona
 
-**step_02_consistency.sh** - Cross-Reference Validation
+**consistency.sh** - Cross-Reference Validation
 - Documentation cross-reference validation
 - Link integrity checks
 - Reference consistency verification

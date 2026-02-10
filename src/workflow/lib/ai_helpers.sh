@@ -2202,7 +2202,7 @@ normalize_step_id() {
         "0b"|"step_0b") echo "bootstrap_docs" ;;
         "00"|"step_00") echo "step_00_pre_analysis" ;;
         "01"|"step_01"|"step01") echo "documentation" ;;
-        "02"|"step_02"|"step02") echo "step_02_consistency" ;;
+        "02"|"step_02"|"step02") echo "consistency" ;;
         "03"|"step_03"|"step03") echo "step_03_script_refs" ;;
         "04"|"step_04"|"step04") echo "step_04_config_validation" ;;
         "05"|"step_05"|"step05") echo "step_05_test_review" ;;

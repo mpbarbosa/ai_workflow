@@ -54,7 +54,7 @@ src/workflow/
     ├── version_update.sh            # Semantic version pre-processing (v2.6.0)
     ├── bootstrap_docs.sh             # Bootstrap documentation (v3.1.0) ⭐ NEW
     ├── documentation.sh              # Documentation updates
-    ├── step_02_consistency.sh        # Consistency analysis
+    ├── consistency.sh                # Consistency analysis
     ├── step_03_script_refs.sh        # Script reference validation
     ├── step_04_directory.sh          # Directory structure validation
     ├── step_05_test_review.sh        # Test review
@@ -553,7 +553,7 @@ save_step_results \
 
 **Impact:**
 - **Code Reduction:** Refactored and reorganized from step_02 and step_03
-- **step_02_consistency.sh:** 382 → 216 lines (-43%)
+- **consistency.sh:** 382 → 216 lines (-43%)
 - **step_03_script_refs.sh:** 320 lines (current)
 - **Maintainability:** Centralized AI workflow logic for easier updates
 - **Consistency:** Guaranteed identical behavior across all workflow steps
@@ -1538,7 +1538,7 @@ All 13 step modules successfully extracted from the monolithic script:
 **Features:** Two-phase validation, AI-powered documentation analysis, automatic issue extraction in auto-mode
 **Recent Updates (Dec 15, 2025):** Auto-mode now automatically extracts structured issues from Copilot logs
 
-### Step 2: `steps/step_02_consistency.sh` (373 lines)
+### Step 2: `steps/consistency.sh` (373 lines)
 **Purpose:** Consistency analysis across codebase
 **Function:** `step2_consistency_analysis()`
 **Features:** Cross-reference validation, AI consistency checking
