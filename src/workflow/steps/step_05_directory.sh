@@ -14,6 +14,28 @@ readonly STEP5_VERSION_MAJOR=2
 readonly STEP5_VERSION_MINOR=3
 readonly STEP5_VERSION_PATCH=0
 
+# ==============================================================================
+# CLEANUP MANAGEMENT
+# ==============================================================================
+
+# Track temporary files for cleanup
+declare -a STEP05_TEMP_FILES=()
+
+# Register temp file for cleanup
+track_step05_temp() {
+    local temp_file="$1"
+    [[ -n "$temp_file" ]] && STEP05_TEMP_FILES+=("$temp_file")
+}
+
+# Cleanup handler for step 5
+cleanup_step05_files() {
+    local file
+    for file in "${STEP05_TEMP_FILES[@]}"; do
+        [[ -f "$file" ]] && rm -f "$file" 2>/dev/null
+    done
+    STEP05_TEMP_FILES=()
+}
+
 # Source incremental analysis optimization
 STEP5_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 LIB_DIR="$(cd "${STEP5_DIR}/../lib" && pwd)"
@@ -182,7 +204,7 @@ step5_validate_directory_structure() {
     local issues=0
     local structure_issues_file
     structure_issues_file=$(mktemp)
-    TEMP_FILES+=("$structure_issues_file")
+    track_step05_temp "$structure_issues_file"
     
     # PHASE 1: Automated directory structure detection (ADAPTIVE - Phase 3)
     local language="${PRIMARY_LANGUAGE:-javascript}"
@@ -377,7 +399,7 @@ step5_validate_directory_structure() {
             # Save prompt to temporary file for tracking
             local temp_prompt_file
             temp_prompt_file=$(mktemp)
-            TEMP_FILES+=("$temp_prompt_file")
+            track_step05_temp "$temp_prompt_file"
             echo "$copilot_prompt" > "$temp_prompt_file"
             
             # Invoke Copilot CLI
@@ -439,5 +461,16 @@ $(cat "$structure_issues_file")
     update_workflow_status "step5" "✅"
 }
 
+# Export cleanup functions
+export -f track_step05_temp
+export -f cleanup_step05_files
+
 # Export step function
 export -f step5_validate_directory_structure
+
+# ==============================================================================
+# CLEANUP TRAP
+# ==============================================================================
+
+# Ensure cleanup runs on exit
+trap cleanup_step05_files EXIT INT TERM

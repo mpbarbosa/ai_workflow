@@ -13,6 +13,28 @@ readonly STEP14_VERSION_MAJOR=1
 readonly STEP14_VERSION_MINOR=0
 readonly STEP14_VERSION_PATCH=0
 
+# ==============================================================================
+# CLEANUP MANAGEMENT
+# ==============================================================================
+
+# Track temporary files for cleanup
+declare -a STEP14_TEMP_FILES=()
+
+# Register temp file for cleanup
+track_step14_temp() {
+    local temp_file="$1"
+    [[ -n "$temp_file" ]] && STEP14_TEMP_FILES+=("$temp_file")
+}
+
+# Cleanup handler for step 14
+cleanup_step14_files() {
+    local file
+    for file in "${STEP14_TEMP_FILES[@]}"; do
+        [[ -f "$file" ]] && rm -f "$file" 2>/dev/null
+    done
+    STEP14_TEMP_FILES=()
+}
+
 # Configuration file path
 readonly AI_HELPERS_YAML="${SCRIPT_DIR}/../../.workflow_core/config/ai_helpers.yaml"
 
@@ -362,7 +384,8 @@ step14_prompt_engineer_analysis() {
     # Create temporary files
     local ai_output=$(mktemp)
     local opportunities_file=$(mktemp)
-    TEMP_FILES+=("$ai_output" "$opportunities_file")
+    track_step14_temp "$ai_output"
+    track_step14_temp "$opportunities_file"
     
     # Execute AI analysis
     print_info "Executing AI analysis..."
@@ -506,6 +529,10 @@ Parsed opportunities saved to: \`$opportunities_file\`
     prompt_for_continuation
 }
 
+# Export cleanup functions
+export -f track_step14_temp
+export -f cleanup_step14_files
+
 # Export step function
 export -f step14_prompt_engineer_analysis
 export -f should_run_prompt_engineer_step
@@ -515,3 +542,10 @@ export -f extract_prompts_content
 export -f build_prompt_engineer_analysis_prompt
 export -f parse_improvement_opportunities
 export -f create_github_issue
+
+# ==============================================================================
+# CLEANUP TRAP
+# ==============================================================================
+
+# Ensure cleanup runs on exit
+trap cleanup_step14_files EXIT INT TERM

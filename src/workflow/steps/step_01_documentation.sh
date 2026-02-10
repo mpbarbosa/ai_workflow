@@ -14,6 +14,32 @@ readonly STEP1_VERSION_MAJOR=3
 readonly STEP1_VERSION_MINOR=2
 readonly STEP1_VERSION_PATCH=0
 
+# ==============================================================================
+# CLEANUP MANAGEMENT
+# ==============================================================================
+
+# Track temporary files for cleanup
+declare -a STEP01_TEMP_FILES=()
+
+# Register temp file for cleanup
+track_step01_temp() {
+    local temp_file="$1"
+    [[ -n "$temp_file" ]] && STEP01_TEMP_FILES+=("$temp_file")
+}
+
+# Cleanup handler for step 1
+cleanup_step01_files() {
+    local file
+    for file in "${STEP01_TEMP_FILES[@]}"; do
+        if [[ -d "$file" ]]; then
+            rm -rf "$file" 2>/dev/null
+        elif [[ -f "$file" ]]; then
+            rm -f "$file" 2>/dev/null
+        fi
+    done
+    STEP01_TEMP_FILES=()
+}
+
 # Get script directory for sourcing modules
 STEP1_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
@@ -87,7 +113,7 @@ parallel_file_analysis() {
     local job_count=0
     local temp_dir
     temp_dir=$(mktemp -d)
-    TEMP_FILES+=("$temp_dir")
+    track_step01_temp "$temp_dir"
     
     # Use find_with_exclusions if available, otherwise fall back to regular find
     local files
@@ -159,7 +185,7 @@ test_documentation_consistency() {
     local failed_tests=0
     local test_results_file
     test_results_file=$(mktemp)
-    TEMP_FILES+=("$test_results_file")
+    track_step01_temp "$test_results_file"
     
     # Log exclusion information if module is available
     if declare -f log_exclusions &>/dev/null; then
@@ -457,6 +483,10 @@ step1_update_documentation() {
 # EXPORTS
 # ==============================================================================
 
+# Export cleanup functions
+export -f track_step01_temp
+export -f cleanup_step01_files
+
 # Export primary step functions
 export -f step1_update_documentation
 export -f step1_get_version
@@ -481,3 +511,10 @@ export -f build_documentation_prompt
 export -f execute_ai_documentation_analysis
 export -f process_ai_response
 export -f run_ai_documentation_workflow
+
+# ==============================================================================
+# CLEANUP TRAP
+# ==============================================================================
+
+# Ensure cleanup runs on exit
+trap cleanup_step01_files EXIT INT TERM
