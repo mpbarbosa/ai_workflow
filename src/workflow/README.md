@@ -53,7 +53,7 @@ src/workflow/
     ├── pre_analysis.sh               # Pre-workflow change analysis
     ├── version_update.sh            # Semantic version pre-processing (v2.6.0)
     ├── bootstrap_docs.sh             # Bootstrap documentation (v3.1.0) ⭐ NEW
-    ├── step_01_documentation.sh      # Documentation updates
+    ├── documentation.sh              # Documentation updates
     ├── step_02_consistency.sh        # Consistency analysis
     ├── step_03_script_refs.sh        # Script reference validation
     ├── step_04_directory.sh          # Directory structure validation
@@ -1532,7 +1532,7 @@ All 13 step modules successfully extracted from the monolithic script:
 **Function:** `step0_pre_analysis()`
 **Features:** Git change detection, scope determination
 
-### Step 1: `steps/step_01_documentation.sh` (1,020 lines)
+### Step 1: `steps/documentation.sh` (1,020 lines)
 **Purpose:** Documentation updates and validation
 **Function:** `step1_update_documentation()`
 **Features:** Two-phase validation, AI-powered documentation analysis, automatic issue extraction in auto-mode

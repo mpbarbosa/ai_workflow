@@ -682,8 +682,8 @@ generate_model_definitions() {
       "tier": "medium",
       "alternatives": [$(get_alternative_models "medium" | sed 's/ /", "/g' | sed 's/^/"/' | sed 's/$/"/' | tr '\n' ' ')]
     },
-    "step_01_documentation": {
-      "model": "$(get_model_for_tier "$docs_tier" "step_01_documentation")",
+    "documentation": {
+      "model": "$(get_model_for_tier "$docs_tier" "documentation")",
       "reason": "$(get_model_reason "$docs_tier" "documentation")",
       "tier": "$docs_tier",
       "alternatives": [$(get_alternative_models "$docs_tier" | sed 's/ /", "/g' | sed 's/^/"/' | sed 's/$/"/' | tr '\n' ' ')]

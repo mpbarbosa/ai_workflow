@@ -178,7 +178,7 @@ _load_legacy_step_definitions() {
         "version_update:version_update.sh:step0a_version_update"
         "pre_analysis:pre_analysis.sh:step0_analyze_changes"
         "bootstrap_documentation:bootstrap_docs.sh:step0b_bootstrap_documentation"
-        "documentation_updates:step_01_documentation.sh:step1_update_documentation"
+        "documentation_updates:documentation.sh:step1_update_documentation"
         "api_coverage_analysis:api_coverage.sh:step1_5_api_coverage_analysis"
         "consistency_analysis:step_02_consistency.sh:step2_check_consistency"
         "documentation_optimization:step_02_5_doc_optimize.sh:step2_5_doc_optimization"

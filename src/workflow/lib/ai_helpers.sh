@@ -2186,7 +2186,7 @@ EOF
 
 # Normalize step ID to match model_definitions.json keys
 # Usage: normalize_step_id <step_id>
-# Returns: normalized step ID (e.g., "0b" → "bootstrap_docs", "step01" → "step_01_documentation")
+# Returns: normalized step ID (e.g., "0b" → "bootstrap_docs", "step01" → "documentation")
 normalize_step_id() {
     local step_id="$1"
     
@@ -2201,7 +2201,7 @@ normalize_step_id() {
         "0a"|"step_0a") echo "version_update" ;;
         "0b"|"step_0b") echo "bootstrap_docs" ;;
         "00"|"step_00") echo "step_00_pre_analysis" ;;
-        "01"|"step_01"|"step01") echo "step_01_documentation" ;;
+        "01"|"step_01"|"step01") echo "documentation" ;;
         "02"|"step_02"|"step02") echo "step_02_consistency" ;;
         "03"|"step_03"|"step03") echo "step_03_script_refs" ;;
         "04"|"step_04"|"step04") echo "step_04_config_validation" ;;
@@ -2253,7 +2253,7 @@ get_model_for_step() {
 
 # Get current step ID from environment or call stack
 # Usage: get_current_step_id
-# Returns: step ID (e.g., "step_01_documentation")
+# Returns: step ID (e.g., "documentation")
 get_current_step_id() {
     # Try to extract from CURRENT_STEP environment variable
     if [[ -n "${CURRENT_STEP:-}" ]]; then

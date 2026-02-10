@@ -950,7 +950,7 @@ Legacy numeric filenames (still supported, v4.0.0):
 - Legacy numeric naming supported for backward compatibility
 - `version_update.sh` → Pre-processing version (Step 0a)
 - `bootstrap_docs.sh` → Use `bootstrap_documentation.sh`
-- `step_01_documentation.sh` → Use `documentation_updates.sh`
+- `documentation.sh` → Use `documentation_updates.sh`
 - `api_coverage.sh` → Use `api_coverage_analysis.sh`
 - `step_02_consistency.sh` → Use `consistency_analysis.sh`
 - `step_02_5_doc_optimize.sh` → Use `documentation_optimization.sh`

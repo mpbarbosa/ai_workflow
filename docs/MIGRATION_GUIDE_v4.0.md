@@ -5,7 +5,7 @@
 Version 4.0.0 introduces **configuration-driven step execution**, eliminating the need to renumber files and functions when modifying workflow steps.
 
 **Key Benefits**:
-- 📝 Descriptive step names (e.g., `documentation_updates.sh` instead of `step_01_documentation.sh`)
+- 📝 Descriptive step names (e.g., `documentation_updates.sh` instead of `documentation.sh`)
 - 🔧 Configure execution order in YAML (no more hardcoded sequences)
 - ⚡ Add/remove/reorder steps without touching code
 - 🔄 100% backward compatible (automatic legacy mode)
@@ -19,7 +19,7 @@ All step files have been renamed from numbered to descriptive names:
 | v3.x File | v4.0 File |
 |-----------|-----------|
 | `step_00_analyze.sh` | `pre_analysis.sh` |
-| `step_01_documentation.sh` | `documentation_updates.sh` |
+| `documentation.sh` | `documentation_updates.sh` |
 | `api_coverage.sh` | `api_coverage_analysis.sh` |
 | `step_02_consistency.sh` | `consistency_analysis.sh` |
 | `step_02_5_doc_optimize.sh` | `documentation_optimization.sh` |
@@ -229,7 +229,7 @@ documentation_updates
 
 ```bash
 # Old
-source "${WORKFLOW_ROOT}/steps/step_01_documentation.sh"
+source "${WORKFLOW_ROOT}/steps/documentation.sh"
 
 # New
 source "${WORKFLOW_ROOT}/steps/documentation_updates.sh"

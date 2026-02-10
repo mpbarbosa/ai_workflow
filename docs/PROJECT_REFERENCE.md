@@ -27,7 +27,7 @@
 ## Core Features (v4.0.0)
 
 ### Configuration-Driven Workflow
-- **Descriptive Step Names** (NEW v4.0.0): Use meaningful names like `documentation_updates.sh` instead of `step_01_documentation.sh`
+- **Descriptive Step Names** (NEW v4.0.0): Use meaningful names like `documentation_updates.sh` instead of `documentation.sh`
 - **Named Step Selection** (NEW v4.0.0): `--steps documentation_updates,test_execution,git_finalization`
 - **YAML Configuration** (NEW v4.0.0): Define step order in `.workflow_core/config/workflow_steps.yaml`
 - **Mixed Syntax Support** (NEW v4.0.0): Combine step names and indices: `--steps 0,documentation_updates,12`
@@ -121,7 +121,7 @@
 1. `pre_analysis.sh` - Pre-flight analysis
 2. `version_update.sh` - Semantic version updates (PRE-PROCESSING - v2.6.0)
 3. `bootstrap_docs.sh` - Bootstrap documentation (NEW v3.1.0) ⭐ NEW
-4. `step_01_documentation.sh` - Documentation updates
+4. `documentation.sh` - Documentation updates
 5. `step_02_5_doc_optimize.sh` - Documentation optimization (NEW v3.2.0) ⭐ NEW
 6. `step_02_consistency.sh` - Cross-reference validation
 7. `step_03_script_refs.sh` - Script reference validation (shell projects only, auto-skips for Node.js/Python)
@@ -243,7 +243,7 @@ This architecture enables the same workflow to intelligently adapt to different 
 - **Named step selection**: `--steps documentation_updates,test_execution,git_finalization`
 - **Mixed syntax support**: Combine names and indices: `--steps 0,documentation_updates,12`
 - **YAML-based step configuration**: Define execution order in `.workflow_core/config/workflow_steps.yaml`
-- **All step files renamed**: `step_01_documentation.sh` → `documentation_updates.sh` (see Migration Guide)
+- **All step files renamed**: `documentation.sh` → `documentation_updates.sh` (see Migration Guide)
 - **100% backward compatible**: Legacy numeric syntax still works
 
 ### v3.3.0 (2026-02-08)
