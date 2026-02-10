@@ -1,8 +1,8 @@
 # AI Workflow Automation - Project Reference
 
 **SINGLE SOURCE OF TRUTH**  
-**Version**: v4.0.1  
-**Last Updated**: 2026-02-09
+**Version**: v4.1.0  
+**Last Updated**: 2026-02-10
 
 > ⚠️ **Important**: This document is the authoritative source for project statistics, features, and module lists. All other documentation should reference this file, not duplicate its content.
 
@@ -12,7 +12,7 @@
 
 - **Repository**: [github.com/mpbarbosa/ai_workflow](https://github.com/mpbarbosa/ai_workflow)
 - **License**: MIT
-- **Current Version**: v4.0.1 ⭐ NEW
+- **Current Version**: v4.1.0 ⭐ NEW
 - **Previous Repository**: mpbarbosa_site (migrated 2025-12-18)
 - **Primary Maintainer**: Marcelo Pereira Barbosa ([@mpbarbosa](https://github.com/mpbarbosa))
 - **Contact**: mpbarbosa@gmail.com
@@ -20,7 +20,7 @@
 ### Key Statistics
 
 - **Total Lines**: 26,562 (22,411 shell + 4,151 YAML)
-- **Total Modules**: 111 (81 libraries + 22 steps + 4 configs + 4 orchestrators) ⭐ UPDATED
+- **Total Modules**: 112 (82 libraries + 22 steps + 4 configs + 4 orchestrators) ⭐ UPDATED
 - **Test Coverage**: 100% (37+ automated tests)
 - **Performance**: Up to 93% faster with ML optimization
 
@@ -72,9 +72,9 @@
 
 ## Module Inventory
 
-### Library Modules (81 total in src/workflow/lib/)
+### Library Modules (82 total in src/workflow/lib/)
 
-> **Note**: Module count updated 2026-02-08 to reflect actual inventory (81 modules verified via `ls src/workflow/lib/*.sh | wc -l`).
+> **Note**: Module count updated 2026-02-10 to reflect actual inventory (82 modules verified via `ls src/workflow/lib/*.sh | wc -l`).
 
 #### Core Modules (12 modules)
 - `ai_helpers.sh` (102K) - AI integration with 17 functional personas (NEW: front_end_developer, ui_ux_designer) ⭐ UPDATED v4.0.1
@@ -118,7 +118,7 @@
 
 **Execution Order** (Step 12 MUST be last):
 
-1. `step_00_analyze.sh` - Pre-flight analysis
+1. `pre_analysis.sh` - Pre-flight analysis
 2. `step_0a_version_update.sh` - Semantic version updates (PRE-PROCESSING - v2.6.0)
 3. `step_0b_bootstrap_docs.sh` - Bootstrap documentation (NEW v3.1.0) ⭐ NEW
 4. `step_01_documentation.sh` - Documentation updates
@@ -220,6 +220,13 @@ The AI Workflow uses a **flexible persona system** with dynamic prompt construct
 This architecture enables the same workflow to intelligently adapt to different project types without code changes.
 
 ## Version History (Major Releases)
+
+### v4.1.0 (2026-02-10)
+- **Interactive step skipping**: Press space bar at continue prompts to skip the next step ⭐ NEW
+- **One-time skip behavior**: Skips only the immediately following step
+- **Compatible with all modes**: Works with smart execution, parallel, and ML optimization
+- **Keyboard input**: Space bar at continue prompt triggers skip
+- **Disabled in auto mode**: Interactive controls unavailable with `--auto` flag
 
 ### v4.0.1 (2026-02-09)
 - **Front-end development analysis**: New Step 11.7 with front_end_developer AI persona ⭐ NEW

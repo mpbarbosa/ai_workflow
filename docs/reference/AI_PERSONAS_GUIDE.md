@@ -1,7 +1,7 @@
 # AI Personas Reference Guide
 
-**Version**: v4.0.1  
-**Last Updated**: 2026-02-09  
+**Version**: v4.1.0  
+**Last Updated**: 2026-02-10  
 **Audience**: Users and developers working with AI-powered workflow steps
 
 ## Table of Contents

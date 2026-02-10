@@ -30,8 +30,8 @@ cleanup_test_files() {
     [[ -d "$TEST_DIR" ]] && rm -rf "$TEST_DIR"
 }
 
-# Register cleanup on exit
-trap cleanup_test_files EXIT
+# Register cleanup on exit (ignore cleanup errors)
+trap 'rm -rf "$TEST_DIR" 2>/dev/null || true' EXIT
 
 # Setup
 setup() {
@@ -452,5 +452,3 @@ main() {
 
 # Run tests
 main "$@"
-exit_code=$?
-exit $exit_code

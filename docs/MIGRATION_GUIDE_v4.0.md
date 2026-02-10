@@ -78,7 +78,7 @@ step_11_lib/          → deployment_gate_lib/
 ./execute_tests_docs_workflow.sh --steps 0,1,8
 
 # New syntax (v4.0) - NOW AVAILABLE
-./execute_tests_docs_workflow.sh --steps pre_analysis,documentation_updates,test_execution
+./execute_tests_docs_workflow.sh --steps bootstrap_documentation,documentation_updates,test_execution
 
 # Mixed syntax - ALSO WORKS
 ./execute_tests_docs_workflow.sh --steps 0,documentation_updates,8
@@ -118,19 +118,19 @@ workflow:
     smart_execution: true
     
   steps:
-    # Core validation steps
-    - name: pre_analysis
-      module: pre_analysis.sh
-      function: pre_analysis
+    # Pre-processing steps
+    - name: bootstrap_documentation
+      module: bootstrap_documentation.sh
+      function: bootstrap_documentation
       enabled: true
       dependencies: []
-      description: "Analyze changes and project state"
+      description: "Generate initial documentation from code"
       
     - name: documentation_updates
       module: documentation_updates.sh
       function: documentation_updates
       enabled: true
-      dependencies: [pre_analysis]
+      dependencies: [bootstrap_documentation]
       description: "Update and validate documentation"
       ai_persona: "documentation_specialist"
       
@@ -188,6 +188,7 @@ Control execution order:
 ```yaml
 - name: test_execution
   dependencies: [test_generation, dependency_validation]
+  description: "Execute test suite"
 ```
 
 ### 4. Step Selection by Name

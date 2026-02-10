@@ -1,6 +1,6 @@
 # AI Workflow Automation - Quick Reference
 
-**Version**: v4.0.1  
+**Version**: v4.1.0  
 **One-Page Cheat Sheet** for common operations
 
 ## Table of Contents
@@ -11,6 +11,7 @@
   - [Performance Options](#performance-options)
   - [Workflow Templates](#workflow-templates)
   - [Selective Execution](#selective-execution)
+- [Interactive Controls](#-interactive-controls)
 - [Configuration](#-configuration)
 - [Tech Stack Detection](#-tech-stack-detection)
 - [Performance Optimization](#-performance-optimization)
@@ -102,6 +103,22 @@ cd /path/to/your/project
 ./execute_tests_docs_workflow.sh --no-ai-cache
 ```
 
+## 🎮 Interactive Controls
+
+**NEW in v4.1.0**: Control workflow execution with keyboard shortcuts
+
+```bash
+# Start workflow with interactive prompts (not in --auto mode)
+./execute_tests_docs_workflow.sh --smart-execution --parallel
+
+# At each continue prompt, use:
+# ENTER or 'yes'  → Continue to next step
+# SPACE or 'skip' → Skip the next step (shows "⏭️  Next step will be skipped")
+# 'no'            → Exit workflow
+
+# Note: Interactive controls disabled with --auto flag
+```
+
 ### Configuration
 ```bash
 # Initialize project configuration
@@ -172,9 +189,9 @@ cd /path/to/your/project
 ./templates/workflows/docs-only.sh
 
 # Code + tests development (v4.0.0: use step names)
-./execute_tests_docs_workflow.sh --steps pre_analysis,config_validation,directory_validation,test_generation,test_execution --smart-execution
+./execute_tests_docs_workflow.sh --steps config_validation,directory_validation,test_generation,test_execution --smart-execution
 
-# Legacy numeric syntax also works
+# Legacy numeric syntax also works (step 0 always runs first)
 ./execute_tests_docs_workflow.sh --steps 0,3,4,7,8 --smart-execution
 ```
 
@@ -205,9 +222,9 @@ cd /path/to/your/project
 ./execute_tests_docs_workflow.sh --dry-run --verbose
 
 # Skip problematic steps (v4.0.0: use step names)
-./execute_tests_docs_workflow.sh --steps pre_analysis,consistency_analysis,directory_validation,code_quality_validation,version_update
+./execute_tests_docs_workflow.sh --steps consistency_analysis,directory_validation,code_quality_validation,version_update
 
-# Legacy numeric syntax
+# Legacy numeric syntax (step 0 always runs)
 ./execute_tests_docs_workflow.sh --steps 0,2,5,10,15
 ```
 

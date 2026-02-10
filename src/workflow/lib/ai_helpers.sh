@@ -2184,6 +2184,43 @@ EOF
 # MODEL SELECTION SUPPORT (v3.2.0)
 # ==============================================================================
 
+# Normalize step ID to match model_definitions.json keys
+# Usage: normalize_step_id <step_id>
+# Returns: normalized step ID (e.g., "0b" → "step_0b_bootstrap_docs", "step01" → "step_01_documentation")
+normalize_step_id() {
+    local step_id="$1"
+    
+    # If already in full format (step_XX_name), return as-is
+    if [[ "$step_id" =~ ^step_[0-9]+[a-z]?_.+ ]]; then
+        echo "$step_id"
+        return 0
+    fi
+    
+    # Map short IDs to full step names
+    case "$step_id" in
+        "0a"|"step_0a") echo "step_0a_version_update" ;;
+        "0b"|"step_0b") echo "step_0b_bootstrap_docs" ;;
+        "00"|"step_00") echo "step_00_pre_analysis" ;;
+        "01"|"step_01"|"step01") echo "step_01_documentation" ;;
+        "02"|"step_02"|"step02") echo "step_02_consistency" ;;
+        "03"|"step_03"|"step03") echo "step_03_script_refs" ;;
+        "04"|"step_04"|"step04") echo "step_04_config_validation" ;;
+        "05"|"step_05"|"step05") echo "step_05_test_review" ;;
+        "06"|"step_06"|"step06") echo "step_06_test_gen" ;;
+        "07"|"step_07"|"step07") echo "step_07_test_exec" ;;
+        "08"|"step_08"|"step08") echo "step_08_test_exec" ;;
+        "09"|"step_09"|"step09") echo "step_09_code_quality" ;;
+        "10"|"step_10"|"step10") echo "step_10_code_quality" ;;
+        "11"|"step_11"|"step11") echo "step_11_context" ;;
+        "12"|"step_12"|"step12") echo "step_12_markdown_lint" ;;
+        "13"|"step_13"|"step13") echo "step_13_prompt_engineer" ;;
+        "14"|"step_14"|"step14") echo "step_14_ux_analysis" ;;
+        "15"|"step_15"|"step15") echo "step_15_version_update" ;;
+        "16"|"step_16"|"step16") echo "step_16_git_finalization" ;;
+        *) echo "$step_id" ;;  # Return original if no match
+    esac
+}
+
 # Get model for specific workflow step from model definitions
 # Usage: get_model_for_step <step_id>
 # Returns: model name or "default"
@@ -2197,10 +2234,13 @@ get_model_for_step() {
         return 0
     fi
     
+    # Normalize step ID to match model_definitions.json keys
+    local normalized_id=$(normalize_step_id "$step_id")
+    
     # Load from JSON if available
     if [[ -f "$definitions_file" ]]; then
         if command -v jq &>/dev/null; then
-            local model=$(jq -r ".model_definitions[\"$step_id\"].model // \"default\"" "$definitions_file" 2>/dev/null || echo "default")
+            local model=$(jq -r ".model_definitions[\"$normalized_id\"].model // \"default\"" "$definitions_file" 2>/dev/null || echo "default")
             if [[ "$model" != "null" ]] && [[ "$model" != "default" ]]; then
                 echo "$model"
                 return 0
@@ -2415,6 +2455,7 @@ execute_copilot_prompt() {
 
 export -f log_ai_prompt
 export -f get_model_for_step
+export -f normalize_step_id
 export -f get_current_step_id
 export -f execute_copilot_batch
 
@@ -2632,7 +2673,7 @@ export -f extract_and_save_issues_from_log
 
 ################################################################################
 # PHASE 4: LANGUAGE-SPECIFIC PROMPT GENERATION
-# Version: 5.0.1
+# Version: 5.0.5
 # Added: 2025-12-18
 ################################################################################
 

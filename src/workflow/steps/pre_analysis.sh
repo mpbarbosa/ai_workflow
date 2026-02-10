@@ -5,7 +5,7 @@ set -euo pipefail
 # Step 0: Pre-Analysis - Analyzing Recent Changes
 # Purpose: Analyze git state and capture change context before workflow execution (adaptive)
 # Part of: Tests & Documentation Workflow Automation v2.6.1
-# Version: 3.0.8 (Added test infrastructure smoke test)
+# Version: 3.0.13 (Added test infrastructure smoke test)
 ################################################################################
 
 # Source test smoke test module
@@ -16,7 +16,7 @@ fi
 
 # Main step function - analyzes recent changes and sets workflow context
 # Returns: 0 for success
-pre_analysis() {
+step0_analyze_changes() {
     print_step "0" "Pre-Analysis - Analyzing Recent Changes"
     cd "$PROJECT_ROOT" || return 1
     
@@ -326,4 +326,4 @@ $(get_git_status_output)
 }
 
 # Export step function
-export -f pre_analysis
+export -f step0_analyze_changes

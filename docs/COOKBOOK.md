@@ -1,7 +1,7 @@
 # Workflow Cookbook - Practical Recipes and Patterns
 
 **Version**: v4.0.1  
-**Last Updated**: 2026-02-09
+**Last Updated**: 2026-02-10
 
 This cookbook provides practical, copy-paste ready recipes for common workflow automation scenarios. Each recipe includes context, step-by-step instructions, and expected outcomes.
 
@@ -119,7 +119,7 @@ cd ~/projects/ai_workflow
 
 # Or manual command (v4.0.0: use step names)
 ./src/workflow/execute_tests_docs_workflow.sh \
-  --steps pre_analysis,documentation_updates,consistency_analysis,directory_validation,markdown_linting \
+  --steps documentation_updates,consistency_analysis,directory_validation,markdown_linting \
   --smart-execution \
   --parallel \
   --auto-commit
@@ -133,7 +133,7 @@ cd ~/projects/ai_workflow
 ```
 
 **What it does**:
-- pre_analysis (Step 0): Tech stack detection, git state
+- Step 0 (Pre-analysis): Tech stack detection, git state (always runs)
 - documentation_updates (Step 1): AI review
 - consistency_analysis (Step 2): Cross-references
 - directory_validation (Step 4): Structure validation
@@ -231,16 +231,16 @@ vim CHANGELOG.md
 # 5. Run focused workflow (no test generation needed)
 # v4.0.0: Use descriptive step names
 ~/projects/ai_workflow/src/workflow/execute_tests_docs_workflow.sh \
-  --steps pre_analysis,documentation_updates,consistency_analysis,test_review,test_execution,code_quality_validation,git_finalization \
+  --steps documentation_updates,consistency_analysis,test_review,test_execution,code_quality_validation,git_finalization \
   --auto
 
-# Legacy numeric syntax
+# Legacy numeric syntax (includes step 0 which always runs)
 ~/projects/ai_workflow/src/workflow/execute_tests_docs_workflow.sh \
   --steps 0,1,2,5,7,9,11 \
   --auto
 
 # Steps explained:
-# pre_analysis (0): Pre-analysis
+# Step 0 (Pre-analysis): Git and project state analysis
 # documentation_updates (1): Documentation updates (CHANGELOG)
 # consistency_analysis (2): Consistency check
 # test_review (5): Test review (validate existing tests)
@@ -1545,5 +1545,5 @@ chmod +x ~/my-workflows/hotfix.sh
 ---
 
 **Document Version**: 1.0.0  
-**Workflow Version: v4.0.0  
-**Last Updated**: 2026-01-31
+**Workflow Version**: v4.0.1  
+**Last Updated**: 2026-02-10

@@ -53,7 +53,7 @@ workflow:
       
     - id: "00"
       name: "Pre-Analysis"
-      file: "step_00_analyze.sh"
+      file: "pre_analysis.sh"
       description: "Analyze project structure and changes"
       phase: "pre-flight"
       can_parallelize: false

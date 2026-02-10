@@ -104,9 +104,12 @@ get_cached_git_diff_step1() {
 clear_cache_entry_step1() {
     local cache_key="$1"
     
+    # Temporarily disable nounset for unset operation
+    set +u
     if [[ -v "STEP1_CACHE[$cache_key]" ]]; then
         unset STEP1_CACHE["$cache_key"]
     fi
+    set -u
     
     return 0
 }

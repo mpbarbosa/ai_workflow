@@ -5,6 +5,35 @@ All notable changes to the AI Workflow Automation project will be documented in 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### ✨ New Features - Interactive Step Skipping
+
+#### Enhanced User Control at Continue Prompts
+- **Space Bar Skip**: Press space at continue prompts to skip the next workflow step
+- **Workflow**: Press Enter → continues normally | Press Space → skips next step | Ctrl+C → exits
+- **Scope**: One-time skip (press space again to skip another step)
+- **Location**: Works at all `confirm_action()` prompts throughout the workflow
+- **User Feedback**: Visual confirmation when skip is requested: "⏭️ Next step will be skipped"
+- **Auto-Mode**: Skip feature disabled in `--auto` mode (no interactive prompts)
+
+#### Implementation Details
+- **Flag-Based**: Uses session-level `SKIP_NEXT_STEP` flag (not persistent)
+- **Centralized**: All skip logic in `confirm_action()` function for maintainability
+- **Safe**: Flag clears after exactly one step skip
+- **Compatible**: Works with all workflow options (--steps, --resume, --parallel, etc.)
+
+#### Modified Functions
+- `confirm_action()` in `lib/utils.sh` - Added space bar input detection
+- `confirm_action()` in `execute_tests_docs_workflow.sh` - Duplicate function updated
+- `should_execute_step()` - Checks and clears skip flag before step execution
+
+### 📝 Documentation
+- Updated: Function comments in `lib/utils.sh` and main workflow script
+- Updated: Inline comments to reflect v4.1.0 changes
+
+---
+
 ## [4.0.1] - 2026-02-09
 
 ### 🐛 Bug Fixes - Step Execution Order

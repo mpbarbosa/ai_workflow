@@ -140,8 +140,8 @@ EOF
 # USER INTERACTION
 # ==============================================================================
 
-# User confirmation prompt with auto-mode bypass
-# Updated: Simplified to "Enter to continue or Ctrl+C to exit" pattern
+# User confirmation prompt with auto-mode bypass and skip-next-step feature
+# Updated: Added space bar option to skip next step (v4.1.0)
 confirm_action() {
     local prompt="$1"
     local default_answer="${2:-}"  # Optional: kept for compatibility but not used
@@ -159,10 +159,20 @@ confirm_action() {
     # Display the prompt message
     echo -e "${CYAN}ℹ️  ${prompt}${NC}"
     
-    # Simple continuation prompt - read from /dev/tty to handle input redirection
-    read -r -p "$(echo -e "${YELLOW}Enter to continue or Ctrl+C to exit...${NC}")" < /dev/tty
+    # Enhanced continuation prompt with skip option - read from /dev/tty to handle input redirection
+    local input=""
+    read -n1 -r -p "$(echo -e "${YELLOW}Enter to continue, space to skip the next step or Ctrl+C to exit...${NC}")" input < /dev/tty
+    echo  # Add newline after input
     
-    # Any response (including empty) continues
+    # Check if user pressed space to skip next step
+    if [[ "$input" == " " ]]; then
+        SKIP_NEXT_STEP=true
+        export SKIP_NEXT_STEP
+        echo -e "${YELLOW}⏭️  Next step will be skipped${NC}"
+        return 1  # Return false to indicate skip
+    fi
+    
+    # Any other response (including empty/Enter) continues
     return 0
 }
 

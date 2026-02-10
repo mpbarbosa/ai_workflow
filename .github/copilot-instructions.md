@@ -1,8 +1,8 @@
 # GitHub Copilot Instructions - AI Workflow Automation
 
 **Repository**: ai_workflow  
-**Version**: v4.0.1  
-**Last Updated**: 2026-02-09  
+**Version**: v4.1.0  
+**Last Updated**: 2026-02-10  
 **Maintainer**: Marcelo Pereira Barbosa ([@mpbarbosa](https://github.com/mpbarbosa))
 
 ## Project Overview
@@ -17,6 +17,7 @@ AI Workflow Automation is an intelligent workflow system for validating and enha
 - **23-Step Automated Pipeline** with 17 AI personas ⭐ UPDATED v4.0.1
 - **81 Library Modules** + **22 Step Modules** + **4 Orchestrators** + **4 Configs** ⭐ UPDATED
 - **Configuration-Driven Steps** (NEW v4.0.0): Use descriptive step names instead of numbers
+- **Interactive Step Skipping** (NEW v4.1.0): Press space bar at continue prompts to skip the next step ⭐ NEW
 - **Smart Execution**: 40-85% faster | **Parallel Execution**: 33% faster
 - **AI Response Caching**: 60-80% token reduction
 - **Pre-Commit Hooks** (v3.0.0): Fast validation checks to prevent broken commits
@@ -58,7 +59,7 @@ AI Workflow Automation is an intelligent workflow system for validating and enha
 **Quick Reference**:
 - **Core Modules** (12): ai_helpers.sh, tech_stack.sh, workflow_optimization.sh, change_detection.sh, etc.
 - **Supporting Modules** (50): edit_operations.sh, ai_cache.sh, session_manager.sh, ai_personas.sh, ai_prompt_builder.sh, etc.
-- **Step Modules** (18): step_00_analyze.sh through step_15_version_update.sh (includes step_0a pre-processing and step_0b bootstrap docs)
+- **Step Modules** (18): pre_analysis.sh through step_15_version_update.sh (includes step_0a pre-processing and step_0b bootstrap docs)
 - **Orchestrators** (4): pre_flight, validation, quality, finalization
 - **Configuration Files** (4): YAML-based prompt templates and project configuration in .workflow_core/config/
 

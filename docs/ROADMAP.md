@@ -1,7 +1,7 @@
 # AI Workflow Automation - Roadmap
 
-**Project Version**: v4.0.0  
-**Last Updated**: 2026-02-08  
+**Project Version**: v4.0.1  
+**Last Updated**: 2026-02-10  
 **Status**: 🎯 Active Development  
 **Maintained By**: Marcelo Pereira Barbosa ([@mpbarbosa](https://github.com/mpbarbosa))
 
@@ -13,14 +13,14 @@ To create the most comprehensive, intelligent, and developer-friendly workflow a
 
 ---
 
-## Current Status (v4.0.0)
+## Current Status (v4.1.0)
 
 ### ✅ Completed
 
 **Core Features**:
-- ✅ 20-step automated pipeline with checkpoint resume
-- ✅ 81 library modules + 21 step modules (26K+ lines)
-- ✅ 15 AI personas with GitHub Copilot CLI integration
+- ✅ **23-step automated pipeline** with checkpoint resume
+- ✅ 82 library modules + 22 step modules (26K+ lines)
+- ✅ **17 AI personas** with GitHub Copilot CLI integration
 - ✅ **Configuration-driven step execution (v4.0.0)** - Use descriptive names instead of numbers
 - ✅ **Step selection by name (v4.0.0)** - `--steps documentation_updates,test_execution`
 - ✅ **Git commit hash tracking (v3.3.0)** - Track historical workflow commits
@@ -133,7 +133,7 @@ See [PROJECT_REFERENCE.md](PROJECT_REFERENCE.md) for complete details.
 
 ## Version 2.x Series
 
-## Version 2.9.3 - Auto-Documentation
+## Version 2.9.4 - Auto-Documentation
 
 **Target**: Q1 2026  
 **Status**: ✅ COMPLETED (2026-01-01)  
@@ -731,7 +731,7 @@ Open a [GitHub Discussion](https://github.com/mpbarbosa/ai_workflow/discussions)
 
 ---
 
-**Last Updated**: 2025-12-24  
+**Last Updated**: 2026-02-10  
 **Version**: 1.1.0  
 **Maintainer**: [@mpbarbosa](https://github.com/mpbarbosa)  
 **Next Review**: 2026-03-24

@@ -66,7 +66,7 @@ set -euo pipefail
 # Purpose: [Clear description of what this step does]
 # Dependencies: [List required modules and previous steps]
 # AI Persona: [If using AI, specify which persona]
-# Version: 1.0.0
+# Version: 1.0.1
 ################################################################################
 
 # Source required modules
@@ -78,7 +78,7 @@ source "${SCRIPT_DIR}/../lib/validation.sh"
 # Step constants
 readonly STEP_NAME="custom_validation"
 readonly STEP_DESCRIPTION="Custom validation logic"
-readonly STEP_VERSION="1.0.0"
+readonly STEP_VERSION="1.0.1"
 
 # ==============================================================================
 # VALIDATION
@@ -201,7 +201,6 @@ workflow:
       function: custom_validation
       enabled: true
       dependencies: 
-        - pre_analysis
         - documentation_updates
       description: "Custom validation logic"
       category: validation
@@ -229,10 +228,10 @@ The workflow automatically loads steps from configuration via `step_registry.sh`
 ./execute_tests_docs_workflow.sh --steps custom_validation
 
 # By name with dependencies
-./execute_tests_docs_workflow.sh --steps pre_analysis,custom_validation
+./execute_tests_docs_workflow.sh --steps custom_validation,documentation_updates
 
-# Mixed with other steps
-./execute_tests_docs_workflow.sh --steps documentation_updates,custom_validation,test_execution
+# With step index
+./execute_tests_docs_workflow.sh --steps 0,custom_validation,test_execution
 ```
 
 4. **Legacy Integration** (if not using YAML configuration):
@@ -243,7 +242,7 @@ If you're in legacy mode (no `workflow:` section in config), you still need manu
 # In src/workflow/lib/dependency_graph.sh
 case "${step_id}" in
     "custom_validation")
-        echo "pre_analysis documentation_updates"
+        echo "documentation_updates"
         ;;
 esac
 ```
@@ -281,7 +280,7 @@ set -euo pipefail
 
 # Module constants
 readonly MODULE_NAME="your_module"
-readonly MODULE_VERSION="1.0.0"
+readonly MODULE_VERSION="1.0.1"
 
 # ==============================================================================
 # PUBLIC API
@@ -652,7 +651,7 @@ set -euo pipefail
 # Security Audit Step
 # Purpose: Scan codebase for security vulnerabilities
 # Dependencies: consistency_analysis
-# Version: 1.0.0
+# Version: 1.0.1
 ################################################################################
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
@@ -661,7 +660,7 @@ source "${SCRIPT_DIR}/../lib/colors.sh"
 source "${SCRIPT_DIR}/../lib/utils.sh"
 
 readonly STEP_NAME="security_audit"
-readonly STEP_VERSION="1.0.0"
+readonly STEP_VERSION="1.0.1"
 
 # Main execution function (called by orchestrator)
 security_audit() {
@@ -727,8 +726,8 @@ workflow:
 # Run in workflow
 ./execute_tests_docs_workflow.sh --steps security_audit
 
-# Run with dependencies
-./execute_tests_docs_workflow.sh --steps pre_analysis,security_audit
+# Run with step 0
+./execute_tests_docs_workflow.sh --steps 0,security_audit
 ```
 
 ### Example: Custom Validation Module (v4.0.0-compatible)
@@ -740,7 +739,7 @@ set -euo pipefail
 ################################################################################
 # Custom Validation Module
 # Purpose: Project-specific validation rules
-# Version: 1.0.0
+# Version: 1.0.1
 ################################################################################
 
 # Validate API endpoints structure

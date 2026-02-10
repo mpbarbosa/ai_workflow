@@ -50,7 +50,7 @@ src/workflow/
 │   ├── tech_stack.sh                 # Tech stack detection
 │   └── (38 additional modules...)    # See lib/ directory for complete list
 └── steps/                            # Step modules ✅ (18 modules) ⭐ NEW v3.1.0
-    ├── step_00_analyze.sh            # Pre-workflow change analysis
+    ├── pre_analysis.sh               # Pre-workflow change analysis
     ├── step_0a_version_update.sh     # Semantic version pre-processing (v2.6.0)
     ├── step_0b_bootstrap_docs.sh     # Bootstrap documentation (v3.1.0) ⭐ NEW
     ├── step_01_documentation.sh      # Documentation updates
@@ -1527,7 +1527,7 @@ To extract a step from the monolithic script:
 
 All 13 step modules successfully extracted from the monolithic script:
 
-### Step 0: `steps/step_00_analyze.sh` (56 lines)
+### Step 0: `steps/pre_analysis.sh` (56 lines)
 **Purpose:** Pre-workflow change analysis
 **Function:** `step0_pre_analysis()`
 **Features:** Git change detection, scope determination

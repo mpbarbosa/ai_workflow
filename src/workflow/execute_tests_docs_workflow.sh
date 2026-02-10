@@ -4,7 +4,7 @@ set -euo pipefail
 
 ################################################################################
 # Tests & Documentation Workflow Automation Script
-# Version: 4.0.1
+# Version: 4.0.5
 # Purpose: Automate the complete tests and documentation update workflow
 # Related: /prompts/tests_documentation_update_enhanced.txt
 #
@@ -26,7 +26,7 @@ set -euo pipefail
 #   Step 16:  Test Execution (QA Automation Engineer + CI/CD Specialist)
 #   Step 16:  Dependency Validation (DevOps Engineer + Package Management Specialist)
 #   Step 16:  Code Quality Validation (Software Quality Engineer + Code Review Specialist)
-#   Step 11.7: Front-End Development (Front-End Developer + Technical Architect) ⭐ NEW v4.0.1
+#   Step 11.7: Front-End Development (Front-End Developer + Technical Architect) ⭐ NEW v4.0.5
 #   Step 16: Context Analysis (Technical Project Manager + Workflow Orchestration Specialist)
 #   Step 16: Markdown Linting (Technical Documentation Specialist) ⭐ NEW
 #   Step 16: Prompt Engineer Analysis (Prompt Engineer + AI Specialist) ⭐ NEW v2.3.1
@@ -123,7 +123,7 @@ set -euo pipefail
 # CONFIGURATION & CONSTANTS
 # ==============================================================================
 
-SCRIPT_VERSION="4.0.1"  # Configuration-Driven Step Execution
+SCRIPT_VERSION="4.0.5"  # Configuration-Driven Step Execution
 SCRIPT_NAME="Tests & Documentation Workflow Automation"
 WORKFLOW_HOME="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
 PROJECT_ROOT="$(pwd)"  # Default: current directory; can be overridden with --target option
@@ -252,6 +252,7 @@ export FORCE_SAVE_HISTORY
 # Step execution control
 EXECUTE_STEPS="all"  # Default: execute all steps
 declare -a SELECTED_STEPS
+SKIP_NEXT_STEP=false  # Flag to skip next step (set by confirm_action)
 
 # Configuration wizard control
 INIT_CONFIG_WIZARD=false
@@ -380,8 +381,15 @@ prompt_for_continuation() {
         echo -e "${CYAN}║${NC}    • Deploying to production environments                    ${CYAN}║${NC}"
         echo -e "${CYAN}╚════════════════════════════════════════════════════════════════╝${NC}"
         echo ""
-        echo -e "${YELLOW}Press Enter to continue or Ctrl+C to exit...${NC}"
-        read -r
+        echo -e "${YELLOW}Press Enter to continue, space to skip the next step or Ctrl+C to exit...${NC}"
+        local input=""
+        read -n1 -r input
+        echo  # Add newline after input
+        if [[ "$input" == " " ]]; then
+            SKIP_NEXT_STEP=true
+            export SKIP_NEXT_STEP
+            echo -e "${YELLOW}⏭️  Next step will be skipped${NC}"
+        fi
         log_to_workflow "INFO" "User acknowledged workflow completion"
     fi
 }
@@ -593,8 +601,8 @@ EOF
     print_info "Saved summary to: ${summary_file}"
 }
 
-# User confirmation prompt with auto-mode bypass
-# Updated: Simplified to "Enter to continue or Ctrl+C to exit" pattern
+# User confirmation prompt with auto-mode bypass and skip-next-step feature
+# Updated: Added space bar option to skip next step (v4.1.0)
 confirm_action() {
     local prompt="$1"
     local default_answer="${2:-}"  # Kept for backward compatibility but ignored
@@ -609,7 +617,18 @@ confirm_action() {
     fi
     
     echo -e "${CYAN}ℹ️  ${prompt}${NC}"
-    read -r -p "$(echo -e "${YELLOW}Enter to continue or Ctrl+C to exit...${NC}")" 
+    
+    # Enhanced continuation prompt with skip option
+    local input=""
+    read -n1 -r -p "$(echo -e "${YELLOW}Enter to continue, space to skip the next step or Ctrl+C to exit...${NC}")" input
+    echo  # Add newline after input
+    
+    # Check if user pressed space to skip next step
+    if [[ "$input" == " " ]]; then
+        SKIP_NEXT_STEP=true
+        export SKIP_NEXT_STEP
+        echo -e "${YELLOW}⏭️  Next step will be skipped${NC}"
+    fi
     
     return 0
 }
@@ -1358,6 +1377,15 @@ validate_and_parse_steps() {
 should_execute_step() {
     local step_identifier="$1"
     
+    # Check if skip flag is set - if so, clear it and skip this step
+    if [[ "${SKIP_NEXT_STEP:-false}" == "true" ]]; then
+        SKIP_NEXT_STEP=false
+        export SKIP_NEXT_STEP
+        log_to_workflow "INFO" "Skipping step $step_identifier (user requested skip)" 2>/dev/null || true
+        echo -e "${YELLOW}⏭️  Skipping step $step_identifier as requested${NC}"
+        return 1  # Return false to skip
+    fi
+    
     # If executing all steps, always return true
     if [[ "$EXECUTE_STEPS" == "all" ]]; then
         return 0
@@ -1412,7 +1440,7 @@ execute_step() {
     # Resolve step name and number
     if [[ "$STEP_REGISTRY_LOADED" == true ]]; then
         # v4.0.0: Use step registry for resolution
-        # v4.0.1: Support fractional step numbers (11.7, 01.5, etc.)
+        # v4.0.5: Support fractional step numbers (11.7, 01.5, etc.)
         if [[ "$step_identifier" =~ ^[0-9]+(\.[0-9]+)?[a-z]?$ ]]; then
             # It's a number (possibly with decimal) - get the name
             step_num="$step_identifier"
@@ -2143,11 +2171,11 @@ execute_full_workflow() {
         ((skipped_steps++)) || true
     fi
     
-    # Step 12: Git Finalization (with checkpoint)
+    # Step 12: Markdown Linting (with checkpoint)
+    # Runs before Git Finalization to ensure documentation is clean
     if [[ -z "$failed_step" && $resume_from -le 12 ]] && should_execute_step 12; then
-        log_step_start 12 "Git Finalization"
-        step12_git_finalization || { failed_step="Step 12"; }
-        [[ -z "$failed_step" ]] && update_workflow_status 12 "✅"
+        log_step_start 12 "Markdown Linting"
+        step13_markdown_linting || { failed_step="Step 12"; }
         ((executed_steps++)) || true
         save_checkpoint 12
     elif [[ -z "$failed_step" && $resume_from -le 12 ]]; then
@@ -2159,11 +2187,11 @@ execute_full_workflow() {
         ((skipped_steps++)) || true
     fi
     
-    # Step 13: Markdown Linting (with checkpoint)
-    # MUST run before Step 11 (Git Finalization)
+    # Step 13: Prompt Engineering (with checkpoint)
+    # Optimize AI prompts and templates
     if [[ -z "$failed_step" && $resume_from -le 13 ]] && should_execute_step 13; then
-        log_step_start 13 "Markdown Linting"
-        step13_markdown_linting || { failed_step="Step 13"; }
+        log_step_start 13 "Prompt Engineering"
+        step14_prompt_engineer_analysis || { failed_step="Step 13"; }
         ((executed_steps++)) || true
         save_checkpoint 13
     elif [[ -z "$failed_step" && $resume_from -le 13 ]]; then
@@ -2176,7 +2204,7 @@ execute_full_workflow() {
     fi
     
     # Step 11.7: Front-End Development Analysis (with checkpoint)
-    # NEW in v4.0.1: Analyzes front-end code for technical implementation and performance
+    # NEW in v4.0.5: Analyzes front-end code for technical implementation and performance
     # Runs AFTER Step 10 (Code Quality), BEFORE Step 15 (UX Analysis)
     # Only executes for projects with front-end code (React, Vue, Angular, Svelte, etc.)
     if [[ -z "$failed_step" && $resume_from -le 117 ]] && should_execute_step "11.7"; then
@@ -2193,8 +2221,8 @@ execute_full_workflow() {
         ((skipped_steps++)) || true
     fi
     
-    # Step 16: UX Analysis (with checkpoint)
-    # MUST run before Step 11 (Git Finalization)
+    # Step 14: UX Analysis (with checkpoint)
+    # MUST run before Git Finalization
     if [[ -z "$failed_step" && $resume_from -le 14 ]] && should_execute_step 14; then
         log_step_start 14 "UX Analysis"
         step15_ux_analysis || { failed_step="Step 14"; }
@@ -2210,11 +2238,11 @@ execute_full_workflow() {
     fi
     
     
-    # Step 16: AI-Powered Semantic Version Update (with checkpoint)
-    # NEW in v2.13.0: Runs after all analysis steps, before Git Finalization
+    # Step 15: AI-Powered Semantic Version Update (with checkpoint)
+    # Runs after all analysis steps, before Git Finalization
     if [[ -z "$failed_step" && $resume_from -le 15 ]] && should_execute_step 15; then
         log_step_start 15 "AI-Powered Semantic Version Update"
-        step15_version_update || { failed_step="Step 15"; }
+        step16_version_update || { failed_step="Step 15"; }
         [[ -z "$failed_step" ]] && update_workflow_status 15 "✅"
         ((executed_steps++)) || true
         save_checkpoint 15
@@ -2228,20 +2256,20 @@ execute_full_workflow() {
     fi
     
     
-    # Step 16: Git Finalization (with checkpoint)
+    # Step 16: Git Operations (with checkpoint)
     # MANDATORY: MUST BE THE FINAL STEP - runs after all analysis and validation steps
-    if [[ -z "$failed_step" && $resume_from -le 11 ]] && should_execute_step 11; then
-        log_step_start 11 "Git Finalization"
-        step11_git_finalization || { failed_step="Step 11"; }
-        [[ -z "$failed_step" ]] && update_workflow_status 11 "✅"
+    if [[ -z "$failed_step" && $resume_from -le 16 ]] && should_execute_step 16; then
+        log_step_start 16 "Git Operations"
+        step12_git_finalization || { failed_step="Step 16"; }
+        [[ -z "$failed_step" ]] && update_workflow_status 16 "✅"
         ((executed_steps++)) || true
-        save_checkpoint 11
-    elif [[ -z "$failed_step" && $resume_from -le 11 ]]; then
-        print_info "Skipping Step 11 (not selected)"
-        log_to_workflow "INFO" "Skipping Step 11 (not selected)"
+        save_checkpoint 16
+    elif [[ -z "$failed_step" && $resume_from -le 16 ]]; then
+        print_info "Skipping Step 16 (not selected)"
+        log_to_workflow "INFO" "Skipping Step 16 (not selected)"
         ((skipped_steps++)) || true
-    elif [[ $resume_from -gt 11 ]]; then
-        print_info "Skipping Step 11 (resuming from checkpoint)"
+    elif [[ $resume_from -gt 16 ]]; then
+        print_info "Skipping Step 16 (resuming from checkpoint)"
         ((skipped_steps++)) || true
     fi
     

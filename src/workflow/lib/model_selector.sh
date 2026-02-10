@@ -670,6 +670,18 @@ generate_model_definitions() {
     "tests": $tests_complexity
   },
   "model_definitions": {
+    "step_0a_version_update": {
+      "model": "$(get_model_for_tier "$code_tier" "step_0a_version_update")",
+      "reason": "$(get_model_reason "$code_tier" "version analysis")",
+      "tier": "$code_tier",
+      "alternatives": [$(get_alternative_models "$code_tier" | sed 's/ /", "/g' | sed 's/^/"/' | sed 's/$/"/' | tr '\n' ' ')]
+    },
+    "step_0b_bootstrap_docs": {
+      "model": "$(get_model_for_tier "medium" "step_0b_bootstrap_docs")",
+      "reason": "Documentation generation from scratch requires reasoning",
+      "tier": "medium",
+      "alternatives": [$(get_alternative_models "medium" | sed 's/ /", "/g' | sed 's/^/"/' | sed 's/$/"/' | tr '\n' ' ')]
+    },
     "step_01_documentation": {
       "model": "$(get_model_for_tier "$docs_tier" "step_01_documentation")",
       "reason": "$(get_model_reason "$docs_tier" "documentation")",
@@ -717,6 +729,12 @@ generate_model_definitions() {
       "reason": "UX analysis (forced tier: high for UI reasoning)",
       "tier": "high",
       "alternatives": [$(get_alternative_models "high" | sed 's/ /", "/g' | sed 's/^/"/' | sed 's/$/"/' | tr '\n' ' ')]
+    },
+    "step_15_version_update": {
+      "model": "$(get_model_for_tier "$code_tier" "step_15_version_update")",
+      "reason": "$(get_model_reason "$code_tier" "version finalization")",
+      "tier": "$code_tier",
+      "alternatives": [$(get_alternative_models "$code_tier" | sed 's/ /", "/g' | sed 's/^/"/' | sed 's/$/"/' | tr '\n' ' ')]
     }
   },
   "override": null

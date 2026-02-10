@@ -1366,14 +1366,13 @@ cleanup_step_XX() {
 
 ### Step 0: Pre-Analysis
 
-**File**: `src/workflow/steps/step_0_pre_analysis.sh`  
-**Purpose**: Initial project analysis and validation  
-**AI Persona**: Project Analyst  
+**File**: `src/workflow/steps/step_00_analyze.sh`  
+**Purpose**: Analyze changes and project state before workflow execution  
+**AI Persona**: N/A (core infrastructure)  
 **Execution Time**: ~30 seconds
 
 **Functions**:
-- `validate_step_0()`: Check project structure
-- `execute_step_0()`: Analyze project and generate initial report
+- `step0_analyze_changes()`: Analyze git changes and project context
 
 ### Step 0a: Pre-Processing
 

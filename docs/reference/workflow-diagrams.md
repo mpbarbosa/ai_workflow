@@ -21,40 +21,52 @@ This document provides visual diagrams using Mermaid to explain the complex work
 
 ---
 
-## 15-Step Workflow Flow
+## 18-Step Workflow Flow (v4.1.0+)
 
 ### Sequential Execution (Baseline)
 
 ```mermaid
 graph TD
     Start([Workflow Start]) --> Step0[Step 0: Pre-Analysis<br/>30s]
-    Step0 --> Step1[Step 1: Documentation Updates<br/>120s]
+    Step0 --> Step0a[Step 0a: Version Prep<br/>45s]
+    Step0a --> Step0b[Step 0b: Bootstrap Docs<br/>120s]
+    Step0b --> Step1[Step 1: Documentation Updates<br/>120s]
     Step1 --> Step2[Step 2: Consistency Analysis<br/>90s]
-    Step2 --> Step3[Step 3: Script Reference Validation<br/>60s]
-    Step3 --> Step4[Step 4: Directory Structure Validation<br/>90s]
-    Step4 --> Step5[Step 5: Test Review<br/>120s]
-    Step5 --> Step6[Step 6: Test Generation<br/>180s]
-    Step6 --> Step7[Step 7: Test Execution<br/>240s]
-    Step7 --> Step8[Step 8: Dependency Validation<br/>60s]
-    Step8 --> Step9[Step 9: Code Quality<br/>150s]
-    Step9 --> Step10[Step 10: Context Analysis<br/>120s]
-    Step10 --> Step12[Step 12: Markdown Linting<br/>45s]
-    Step12 --> Step13[Step 13: Prompt Engineering<br/>150s]
-    Step13 --> Step14[Step 14: UX Analysis<br/>180s]
-    Step14 --> Step11[Step 11: Git Finalization FINAL<br/>90s]
-    Step11 --> End([Workflow Complete])
+    Step2 --> Step3[Step 3: Script Reference<br/>60s]
+    Step3 --> Step4[Step 4: Config Validation<br/>90s]
+    Step4 --> Step5[Step 5: Directory Structure<br/>90s]
+    Step5 --> Step6[Step 6: Test Review<br/>120s]
+    Step6 --> Step7[Step 7: Test Generation<br/>180s]
+    Step7 --> Step8[Step 8: Test Execution<br/>240s]
+    Step8 --> Step9[Step 9: Dependencies<br/>60s]
+    Step9 --> Step10[Step 10: Code Quality<br/>150s]
+    Step10 --> Step11[Step 11: Deployment Gate*<br/>45s]
+    Step11 --> Step11_5[Step 11.5: Context Analysis<br/>120s]
+    Step11_5 --> Step11_7[Step 11.7: Front-End Dev*<br/>180s]
+    Step11_7 --> Step13[Step 13: Markdown Linting<br/>45s]
+    Step13 --> Step14[Step 14: Prompt Engineering<br/>150s]
+    Step14 --> Step15[Step 15: UX Analysis<br/>180s]
+    Step15 --> Step16[Step 16: Version Update<br/>60s]
+    Step16 --> Step12[Step 12: Git Finalization FINAL<br/>90s]
+    Step12 --> End([Workflow Complete])
     
     style Start fill:#90EE90
     style End fill:#87CEEB
-    style Step7 fill:#FFB6C1
-    style Step11 fill:#FFD700
-    style Step14 fill:#FFE4B5
+    style Step8 fill:#FFB6C1
+    style Step12 fill:#FFD700
+    style Step15 fill:#FFE4B5
     
     classDef aiStep fill:#E6E6FA
-    class Step1,Step5,Step6,Step9,Step10,Step11,Step13,Step14 aiStep
+    classDef conditional fill:#FFA500,stroke:#FF6600,stroke-width:2px
+    class Step1,Step2,Step6,Step7,Step10,Step11_5,Step11_7,Step12,Step14,Step15,Step16 aiStep
+    class Step11,Step11_7 conditional
+    
+    Note1[* Step 11 & 11.7 are conditional]
 ```
 
-**Total Sequential Time**: ~1,545 seconds (~26 minutes)
+**Total Sequential Time**: ~2,145 seconds (~36 minutes)  
+**Note**: Step 11 (Deployment Gate) requires `--validate-release` flag  
+**Note**: Step 11.7 (Front-End Dev) only runs for front-end projects
 
 ---
 
@@ -115,10 +127,11 @@ graph TD
     Step13 --> Step14
     
     %% Git Finalization - MUST BE LAST
-    Step10 --> Step11
-    Step12 --> Step11
-    Step13 --> Step11
-    Step14 --> Step11
+    Step10 --> Step12
+    Step13 --> Step12
+    Step14 --> Step12
+    Step15 --> Step12
+    Step16 --> Step12
     
     style Step0 fill:#90EE90
     style Step7 fill:#FFB6C1

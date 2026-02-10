@@ -1,6 +1,6 @@
 # AI Workflow Automation
 
-[![Current version is 4.0.1](https://img.shields.io/badge/version-4.0.1-blue.svg)](https://github.com/mpbarbosa/ai_workflow/releases)
+[![Current version is 4.1.0](https://img.shields.io/badge/version-4.1.0-blue.svg)](https://github.com/mpbarbosa/ai_workflow/releases)
 [![License is MIT](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 [![Code quality score is B+ with 87 out of 100 points](https://img.shields.io/badge/quality-B%2B%20(87%2F100)-brightgreen.svg)](src/COMPREHENSIVE_CODE_QUALITY_REPORT.md)
 [![37 or more tests are passing](https://img.shields.io/badge/tests-37%2B%20passing-brightgreen.svg)](tests/)
@@ -13,10 +13,10 @@
 Intelligent workflow automation system for validating and enhancing documentation, code, and tests with AI support.
 
 **Migrated from**: mpbarbosa_site repository (2025-12-18)  
-**Version**: v4.0.1  
+**Version**: v4.1.0  
 **Repository**: [github.com/mpbarbosa/ai_workflow](https://github.com/mpbarbosa/ai_workflow)
 
-> 🚀 **NEW in v4.0.0**: Configuration-driven step execution! Use descriptive step names (`documentation_updates`) instead of numbers. See [Migration Guide](docs/MIGRATION_GUIDE_v4.0.md).
+> 🚀 **NEW in v4.1.0**: Interactive step skipping! Press space bar at continue prompts to skip the next step. See [Getting Started](docs/getting-started/GETTING_STARTED.md#interactive-step-skipping).
 
 ## Table of Contents
 
@@ -47,6 +47,7 @@ This repository provides a comprehensive, modular workflow automation system tha
 - **23-Step Automated Pipeline** with checkpoint resume ⭐ UPDATED
 - **111 Total Modules**: 81 libraries + 22 steps + 4 configs + 4 orchestrators (See [Project Reference](docs/PROJECT_REFERENCE.md#module-inventory))
 - **17 AI Personas** with GitHub Copilot CLI integration (See [AI Personas Guide](docs/reference/AI_PERSONAS_GUIDE.md))
+- **Interactive Step Skipping** (NEW v4.1.0): Press space bar at continue prompts to skip the next step
 - **Smart Execution**: 40-85% faster (change-based step skipping)
 - **Parallel Execution**: 33% faster (independent steps run simultaneously)
 - **Audio Notifications** (NEW v3.1.0): Sound alerts for continue prompts and workflow completion

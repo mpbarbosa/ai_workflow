@@ -24,7 +24,7 @@ The numbering allows for:
 
 ### Analysis & Documentation (00-03)
 
-**step_00_analyze.sh** - Pre-flight Analysis
+**pre_analysis.sh** - Pre-flight Analysis
 - Project structure validation
 - Tech stack detection (v2.3.0+)
 - Prerequisites verification

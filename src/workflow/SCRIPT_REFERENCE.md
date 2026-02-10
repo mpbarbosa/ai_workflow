@@ -947,7 +947,7 @@ Modern descriptive filenames (recommended):
 
 Legacy numeric filenames (still supported, v4.0.0):
 
-- `step_00_analyze.sh` → Use `pre_analysis.sh`
+- Legacy numeric naming supported for backward compatibility
 - `step_0a_version_update.sh` → Pre-processing version (deprecated in favor of Step 16)
 - `step_0b_bootstrap_docs.sh` → Use `bootstrap_documentation.sh`
 - `step_01_documentation.sh` → Use `documentation_updates.sh`
@@ -971,7 +971,7 @@ Legacy numeric filenames (still supported, v4.0.0):
 - `step_15_ux_analysis.sh` → Use `ux_analysis.sh`
 - `step_16_version_update.sh` → Use `version_update.sh`
 
-**Migration:** See [docs/user-guide/migration-guide.md](../../docs/user-guide/migration-guide.md) for v4.0.0 migration guide.
+**Migration:** See [docs/MIGRATION_GUIDE_v4.0.md](../../docs/MIGRATION_GUIDE_v4.0.md) for v4.0.0 migration guide.
 
 ---
 
@@ -1454,7 +1454,7 @@ See [docs/PROJECT_REFERENCE.md](../../docs/PROJECT_REFERENCE.md#version-history-
 - **[Workflow Diagrams](../../docs/reference/workflow-diagrams.md)** - Visual workflow diagrams (17 Mermaid diagrams)
 - **[Architecture](../../docs/developer-guide/architecture.md)** - Orchestrator design and patterns
 - **[Feature Guide](../../docs/user-guide/feature-guide.md)** - Complete feature documentation
-- **[Migration Guide](../../docs/user-guide/migration-guide.md)** - v4.0.0 migration instructions
+- **[Migration Guide](../../docs/MIGRATION_GUIDE_v4.0.md)** - v4.0.0 migration instructions
 - **[GitHub Copilot Instructions](../../.github/copilot-instructions.md)** - Development reference
 
 ---

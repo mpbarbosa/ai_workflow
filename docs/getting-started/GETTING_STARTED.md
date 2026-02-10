@@ -1,7 +1,7 @@
 # Getting Started with AI Workflow Automation
 
-**Version**: 4.0.1  
-**Last Updated**: 2026-02-09  
+**Version**: 4.1.0  
+**Last Updated**: 2026-02-10  
 **Prerequisites**: Bash 4.0+, Git, Node.js 25.2.1+, GitHub Copilot CLI
 
 ## Table of Contents
@@ -13,6 +13,7 @@
 - [Command-Line Options](#command-line-options)
 - [Performance Optimization](#performance-optimization)
 - [AI Features](#ai-features)
+- [Interactive Step Skipping](#interactive-step-skipping)
 - [Troubleshooting](#troubleshooting)
 - [Next Steps](#next-steps)
 - [FAQ](#faq)
@@ -237,6 +238,56 @@ Check what optimizations are working:
 #   - Smart execution: ENABLED ✓
 #   - Parallel execution: ENABLED ✓
 #   - ML optimization: AVAILABLE (use --ml-optimize)
+#   - ML optimization: AVAILABLE (use --ml-optimize)
+```
+
+## Interactive Step Skipping
+
+**NEW in v4.1.0**: You can now skip steps interactively without re-running the workflow.
+
+### How It Works
+
+When the workflow pauses to ask if you want to continue to the next step, you can:
+
+- **Press ENTER**: Continue to the next step normally
+- **Press SPACE**: Skip the next step (show "⏭️  Next step will be skipped")
+
+### Examples
+
+```bash
+# Run workflow with interactive prompts (not in --auto mode)
+./src/workflow/execute_tests_docs_workflow.sh \
+  --smart-execution \
+  --parallel
+
+# At each continue prompt, you can:
+# >>> Continue to next step? [yes/no/skip] 
+# Press: SPACE to skip next step
+#        ENTER to continue normally
+```
+
+### Behavior Details
+
+- **One-time skip**: Skips only the immediately following step
+- **Not available in auto mode**: When using `--auto` flag, interactive skip is disabled
+- **Works with all workflows**: Compatible with smart execution, parallel, and ML optimization
+- **No step number needed**: Works with both numbered and named steps
+
+### Use Cases
+
+```bash
+# Scenario 1: Skip UX analysis on familiar projects
+./src/workflow/execute_tests_docs_workflow.sh
+# At UX analysis prompt → SPACE to skip
+
+# Scenario 2: Skip code quality checks for documentation-only changes
+./src/workflow/execute_tests_docs_workflow.sh
+# At code quality prompt → SPACE to skip
+
+# Scenario 3: Manual step selection for precise control
+./src/workflow/execute_tests_docs_workflow.sh \
+  --steps documentation_updates,test_review,test_execution
+# Use --steps for more fine-grained control
 ```
 
 ## Next Steps
@@ -308,7 +359,9 @@ A: Yes! Use `--target /path/to/project` or run from within any project directory
 A: Don't use `--auto-commit` flag. Review changes manually with `git status` and commit yourself.
 
 **Q: How do I skip certain steps?**  
-A: Use `--steps 0,2,5,7` to run only specific steps, or let smart execution auto-skip based on changes.
+A: You have two options:
+  1. **Interactive skipping** (NEW v4.1.0): Press space bar at continue prompts to skip the next step
+  2. **Pre-planned skipping**: Use `--steps 0,2,5,7` to run only specific steps, or let smart execution auto-skip based on changes
 
 ## Getting Help
 
