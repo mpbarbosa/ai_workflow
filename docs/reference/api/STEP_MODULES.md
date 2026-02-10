@@ -1,7 +1,7 @@
 # Step Modules API Reference
 
-**Version**: v3.1.0  
-**Last Updated**: 2026-02-08
+**Version**: v4.0.1  
+**Last Updated**: 2026-02-10
 
 > 📖 **Reference**: See [docs/PROJECT_REFERENCE.md](../../PROJECT_REFERENCE.md) for module inventory and version history.
 
@@ -216,7 +216,7 @@ Generate comprehensive documentation using AI technical writer persona.
 
 ### Step 00: Change Analysis
 
-**File**: `step_00_analyze.sh`  
+**File**: `pre_analysis.sh`  
 **Purpose**: Analyze git changes to optimize workflow execution  
 **AI Persona**: None (automated)  
 **Dependencies**: `change_detection.sh`, `git_automation.sh`
@@ -247,7 +247,7 @@ Analyze changes and determine execution strategy.
 
 ### Step 01: Documentation Analysis
 
-**File**: `step_01_documentation.sh`  
+**File**: `documentation.sh`  
 **Purpose**: AI-powered documentation analysis and issue detection  
 **AI Persona**: `documentation_specialist`  
 **Dependencies**: `ai_helpers.sh`, `ai_prompt_builder.sh`, `third_party_exclusion.sh`
@@ -284,7 +284,7 @@ Analyze documentation quality and generate improvement recommendations.
 
 ### Step 02: Consistency Check
 
-**File**: `step_02_consistency.sh`  
+**File**: `consistency.sh`  
 **Purpose**: Cross-reference validation between documentation and code  
 **AI Persona**: `documentation_specialist`  
 **Dependencies**: `ai_helpers.sh`, `consistency_checker.sh`
@@ -348,7 +348,7 @@ Apply AI-driven documentation improvements.
 
 ### Step 03: Script References
 
-**File**: `step_03_script_refs.sh`  
+**File**: `script_reference_validation.sh`  
 **Purpose**: Validate script references and dependencies  
 **AI Persona**: None (automated)  
 **Dependencies**: `script_analyzer.sh`, `dependency_graph.sh`
@@ -412,7 +412,7 @@ Validate configuration syntax and schema.
 
 ### Step 05: Directory Structure
 
-**File**: `directory.sh`  
+**File**: `directory_validation.sh`  
 **Purpose**: Validate and optimize directory organization  
 **AI Persona**: `documentation_specialist`  
 **Dependencies**: `ai_helpers.sh`, `file_operations.sh`
@@ -476,7 +476,7 @@ Analyze test quality and coverage.
 
 ### Step 07: Test Generation
 
-**File**: `test_gen.sh`  
+**File**: `test_generation.sh`  
 **Purpose**: Generate missing tests with AI assistance  
 **AI Persona**: `test_engineer`  
 **Dependencies**: `ai_helpers.sh`, `test_generator.sh`
@@ -508,7 +508,7 @@ Generate tests for untested code.
 
 ### Step 08: Test Execution
 
-**File**: `test_exec.sh`  
+**File**: `test_execution.sh`  
 **Purpose**: Run test suites and report results  
 **AI Persona**: None (automated)  
 **Dependencies**: `session_manager.sh`, `test_executor.sh`
@@ -540,7 +540,7 @@ Execute test suites and capture results.
 
 ### Step 09: Dependencies
 
-**File**: `dependencies.sh`  
+**File**: `dependency_validation.sh`  
 **Purpose**: Analyze and validate dependencies  
 **AI Persona**: None (automated)  
 **Dependencies**: `dependency_analyzer.sh`, `security_scanner.sh`
@@ -572,7 +572,7 @@ Analyze dependencies for issues.
 
 ### Step 10: Code Quality
 
-**File**: `code_quality.sh`  
+**File**: `code_quality_validation.sh`  
 **Purpose**: AI-powered code quality assessment  
 **AI Persona**: `code_reviewer`  
 **Dependencies**: `ai_helpers.sh`, `linter_runner.sh`
@@ -604,7 +604,7 @@ Comprehensive code quality analysis.
 
 ### Step 11: Context Management
 
-**File**: `step_11_context.sh`  
+**File**: `context_analysis.sh`  
 **Purpose**: Manage workflow context and state  
 **AI Persona**: None (automated)  
 **Dependencies**: `context_manager.sh`, `checkpoint_handler.sh`
@@ -668,7 +668,7 @@ Perform git operations (commit, tag, cleanup).
 
 ### Step 13: Markdown Lint
 
-**File**: `markdown_lint.sh`  
+**File**: `markdown_linting.sh`  
 **Purpose**: Validate markdown syntax and style  
 **AI Persona**: None (automated)  
 **Dependencies**: `markdown_linter.sh`, `link_checker.sh`
@@ -700,7 +700,7 @@ Lint markdown files and check links.
 
 ### Step 14: Prompt Engineer
 
-**File**: `prompt_engineer.sh`  
+**File**: `prompt_engineer_analysis.sh`  
 **Purpose**: Optimize AI prompts for better results  
 **AI Persona**: `prompt_engineer`  
 **Dependencies**: `ai_helpers.sh`, `prompt_analyzer.sh`
@@ -770,7 +770,7 @@ Comprehensive UX and accessibility analysis.
 
 ### Step 16: Version Update
 
-**File**: `final_version_update.sh`  
+**File**: `version_update.sh`  
 **Purpose**: Final version update and CHANGELOG generation  
 **AI Persona**: None (automated)  
 **Dependencies**: `version_manager.sh`, `changelog_generator.sh`

@@ -1610,7 +1610,7 @@ step_0b:
 
 #### Step 00: Change Analysis
 
-**Module**: `step_00_analyze.sh`  
+**Module**: `pre_analysis.sh`  
 **Purpose**: Analyze Git changes and determine execution strategy  
 **Dependencies**: `change_detection.sh`, `workflow_optimization.sh`  
 **AI Persona**: `change_analyst`
@@ -1624,7 +1624,7 @@ step_0b:
 
 #### Step 01: Documentation Analysis
 
-**Module**: `step_01_documentation.sh`  
+**Module**: `documentation.sh`  
 **Purpose**: Analyze and validate documentation quality  
 **Dependencies**: `ai_helpers.sh`, `doc_template_validator.sh`  
 **AI Persona**: `documentation_specialist`

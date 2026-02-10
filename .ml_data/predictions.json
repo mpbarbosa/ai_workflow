@@ -1,17 +1,17 @@
 {
   "ml_enabled": true,
   "features": {
-    "change_type": "code_only",
-    "total_files": 6,
+    "change_type": "mixed",
+    "total_files": 0,
     "doc_files": 0,
-    "code_files": 3,
-    "test_files": 1,
-    "config_files": 1,
-    "lines_added": 476,
-    "lines_deleted": 3366,
-    "lines_changed": 3842,
-    "max_depth": 4,
-    "hour_of_day": 13,
+    "code_files": 0,
+    "test_files": 0,
+    "config_files": 0,
+    "lines_added": 0,
+    "lines_deleted": 0,
+    "lines_changed": 0,
+    "max_depth": 0,
+    "hour_of_day": 19,
     "day_of_week": 2
   },
   "parallelization": {
@@ -21,6 +21,6 @@
     "expected_benefit_pct": "0"
   },
   "skip_steps": [],
-  "predicted_duration": 27104280,
+  "predicted_duration": 26043127,
   "confidence": "high"
 }
